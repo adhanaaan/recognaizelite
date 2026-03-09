@@ -28,7 +28,7 @@ export default function HookEntry() {
   };
 
   return (
-    <Background className="justify-between section-padding-large">
+    <Background className="justify-center gap-10 section-padding-large">
       <div className="space-y-4 sm:space-y-6">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="Gray Matter Logo" className="size-12 sm:size-14" />
