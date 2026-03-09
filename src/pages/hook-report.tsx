@@ -1,4 +1,3 @@
-import { Icon } from "@iconify/react";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import { HeaderWrapper } from "src/components/Layout/Header";
@@ -131,11 +130,7 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
   );
 }
 
-const FULL_DOMAINS = [
-  { icon: "mdi:brain", title: "Executive Function", desc: "Planning, problem-solving, and staying focused" },
-  { icon: "mdi:eye-outline", title: "Attention", desc: "Focusing while ignoring distractions" },
-  { icon: "mdi:head-cog-outline", title: "Working Memory", desc: "Holding and recalling information" },
-];
+const OTHER_DOMAINS = ["Executive Function", "Attention", "Working Memory"];
 
 export default function HookReportPage() {
   const { result } = useResultStore();
@@ -260,44 +255,37 @@ export default function HookReportPage() {
               </section>
             </div>
 
-            {/* Hook CTA — The Main Sell */}
+            {/* Hook CTA */}
             <div className="w-full max-w-2xl mx-auto">
-              <div className="rounded-[22px] bg-gradient-to-br from-[#002D7C] to-[#1a1a3e] p-6 text-white shadow-xl md:p-8">
-                <h3 className="text-xl font-bold md:text-2xl">
-                  This is just 1 of 4 brain areas.
-                </h3>
-                <p className="mt-3 text-[15px] leading-relaxed text-blue-100 md:text-[17px]">
-                  The full RecognAIze assessment also screens:
+              <div className="rounded-[22px] bg-white p-6 shadow-[0_10px_26px_rgba(17,24,39,0.08)] md:p-8" style={{ fontFamily: "Avenir, sans-serif" }}>
+                <p className="text-[13px] font-bold uppercase tracking-wider text-[#8E8E8E]">
+                  What you haven't tested
                 </p>
-
-                <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  {FULL_DOMAINS.map((d) => (
-                    <div key={d.title} className="rounded-xl bg-white/10 px-4 py-3 backdrop-blur">
-                      <Icon icon={d.icon} className="text-blue-200 size-7" />
-                      <p className="mt-1 text-sm font-bold">{d.title}</p>
-                      <p className="mt-0.5 text-xs text-blue-200">{d.desc}</p>
-                    </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {OTHER_DOMAINS.map((d) => (
+                    <span key={d} className="rounded-full bg-[#F0F0F0] px-4 py-1.5 text-[13px] font-semibold text-[#555] md:text-[14px]">
+                      {d}
+                    </span>
                   ))}
                 </div>
-
-                <div className="mt-6 rounded-xl bg-white/15 p-4 text-center backdrop-blur">
-                  <p className="text-lg font-bold md:text-xl">
-                    Ask <span className="text-yellow-300">{clinic}</span> for the full RecognAIze assessment
-                  </p>
-                  <p className="mt-1 text-sm text-blue-200">
-                    Get a comprehensive cognitive profile with personalized insights
+                <p className="mt-5 text-[15px] leading-relaxed text-[#444] md:text-[17px]">
+                  This screening only covered processing speed. The full assessment takes about 10 minutes and gives you a complete cognitive profile.
+                </p>
+                <div className="mt-6 rounded-2xl bg-[#002D7C] px-5 py-4 text-center">
+                  <p className="text-[16px] font-bold text-white md:text-[18px]">
+                    Mention <span className="text-[#7EB8FF]">RecognAIze</span> to your doctor at {clinic !== "your clinic" ? <span className="text-[#7EB8FF]">{clinic}</span> : "your next visit"}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Retake Button */}
+            {/* Retake */}
             <div className="w-full max-w-2xl mx-auto">
               <button
                 onClick={handleRetake}
-                className="w-full rounded-full border-2 border-gray-300 py-3 text-center text-[15px] font-semibold text-gray-600 transition-colors hover:bg-gray-50"
+                className="w-full rounded-full border-2 border-gray-200 py-3 text-center text-[14px] font-medium text-gray-400 transition-colors hover:bg-gray-50"
               >
-                Retake Screening
+                Retake
               </button>
             </div>
           </>
