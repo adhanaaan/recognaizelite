@@ -130,7 +130,20 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
   );
 }
 
-const OTHER_DOMAINS = ["Executive Function", "Attention", "Working Memory"];
+const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
+  Low: {
+    headline: "This needs attention — but it\u2019s only part of the picture.",
+    body: "Processing speed is 1 of 4 cognitive areas. Decline in the other 3 — memory, attention, and executive function — can go unnoticed for years. Early screening is the single best thing you can do.",
+  },
+  Medium: {
+    headline: "Adequate today doesn\u2019t mean fine tomorrow.",
+    body: "Cognitive changes are gradual. By the time they\u2019re obvious, years have passed. A full screening covers memory, attention, and executive function — the areas where early signs often appear first.",
+  },
+  High: {
+    headline: "Processing speed is strong. But it\u2019s only 1 of 4 areas.",
+    body: "Many people with strong processing speed already show early decline in memory, attention, or executive function without realising it. A 10-minute screening can tell you where you actually stand.",
+  },
+};
 
 export default function HookReportPage() {
   const { result } = useResultStore();
@@ -258,22 +271,18 @@ export default function HookReportPage() {
             {/* Hook CTA */}
             <div className="w-full max-w-2xl mx-auto">
               <div className="rounded-[22px] bg-white p-6 shadow-[0_10px_26px_rgba(17,24,39,0.08)] md:p-8" style={{ fontFamily: "Avenir, sans-serif" }}>
-                <p className="text-[13px] font-bold uppercase tracking-wider text-[#8E8E8E]">
-                  What you haven't tested
+                <h3 className="text-[20px] font-bold leading-snug text-[#20223A] md:text-[24px]">
+                  {CTA_COPY[report.severity].headline}
+                </h3>
+                <p className="mt-4 text-[15px] leading-relaxed text-[#555] md:text-[17px]">
+                  {CTA_COPY[report.severity].body}
                 </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {OTHER_DOMAINS.map((d) => (
-                    <span key={d} className="rounded-full bg-[#F0F0F0] px-4 py-1.5 text-[13px] font-semibold text-[#555] md:text-[14px]">
-                      {d}
-                    </span>
-                  ))}
-                </div>
-                <p className="mt-5 text-[15px] leading-relaxed text-[#444] md:text-[17px]">
-                  This screening only covered processing speed. The full assessment takes about 10 minutes and gives you a complete cognitive profile.
-                </p>
-                <div className="mt-6 rounded-2xl bg-[#002D7C] px-5 py-4 text-center">
-                  <p className="text-[16px] font-bold text-white md:text-[18px]">
-                    Mention <span className="text-[#7EB8FF]">RecognAIze</span> to your doctor at {clinic !== "your clinic" ? <span className="text-[#7EB8FF]">{clinic}</span> : "your next visit"}
+                <div className="mt-6 rounded-2xl bg-[#002D7C] px-5 py-5 text-center">
+                  <p className="text-[18px] font-bold leading-snug text-white md:text-[20px]">
+                    Ask {clinic !== "your clinic" ? <span className="text-[#7EB8FF]">{clinic}</span> : "your doctor"} for the full RecognAIze screening.
+                  </p>
+                  <p className="mt-1.5 text-[14px] text-blue-200">
+                    10 minutes. Done right here in the clinic.
                   </p>
                 </div>
               </div>
