@@ -55,6 +55,30 @@
     "TAGALOG": "I-tap ang \"6\" sa number pad sa ibaba.",
     "MALAYALAM": "താഴെയുള്ള നമ്പർ പാഡിൽ \"6\" ടാപ്പ് ചെയ്യുക."
   },
+  "Look for the matching symbol and its number. Here, it is 7.": {
+    "ENGLISH": "Look for the matching symbol and its number. Here, it is 7.",
+    "MANDARIN": "\u5bfb\u627e\u5339\u914d\u7684\u7b26\u53f7\u53ca\u5176\u6570\u5b57\u3002\u5728\u8fd9\u91cc\uff0c\u662f7\u3002",
+    "BAHASA": "Cari simbol yang cocok dan angkanya. Di sini, itu adalah 7.",
+    "MALAY": "Cari simbol yang sepadan dan nombornya. Di sini, ia adalah 7.",
+    "TAGALOG": "Hanapin ang tugmang simbolo at ang numero nito. Dito, ito ay 7.",
+    "MALAYALAM": "\u0d2a\u0d4a\u0d30\u0d41\u0d24\u0d4d\u0d24\u0d2a\u0d4d\u0d2a\u0d46\u0d1f\u0d41\u0d28\u0d4d\u0d28 \u0d1a\u0d3f\u0d39\u0d4d\u0d28\u0d35\u0d41\u0d02 \u0d05\u0d24\u0d3f\u0d28\u0d4d\u0d31\u0d46 \u0d28\u0d2e\u0d4d\u0d2a\u0d31\u0d41\u0d02 \u0d24\u0d3f\u0d30\u0d2f\u0d41\u0d15. \u0d07\u0d35\u0d3f\u0d1f\u0d46, \u0d05\u0d24\u0d4d 7 \u0d06\u0d23\u0d4d."
+  },
+  "Tap \u201c7\u201d in the number pad below.": {
+    "ENGLISH": "Tap \u201c7\u201d in the number pad below.",
+    "MANDARIN": "\u70b9\u51fb\u4e0b\u65b9\u6570\u5b57\u952e\u76d8\u4e2d\u7684\"7\"\u3002",
+    "BAHASA": "Ketuk \"7\" di papan angka di bawah.",
+    "MALAY": "Ketik \"7\" dalam pad nombor di bawah.",
+    "TAGALOG": "I-tap ang \"7\" sa number pad sa ibaba.",
+    "MALAYALAM": "\u0d24\u0d3e\u0d34\u0d46\u0d2f\u0d41\u0d33\u0d4d\u0d33 \u0d28\u0d2e\u0d4d\u0d2a\u0d7c \u0d2a\u0d3e\u0d21\u0d3f\u0d7d \"7\" \u0d1f\u0d3e\u0d2a\u0d4d\u0d2a\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15."
+  },
+  "Click No. 7 on the number pad or type \u201c7\u201d on your keyboard": {
+    "ENGLISH": "Click No. 7 on the number pad or type \u201c7\u201d on your keyboard",
+    "MANDARIN": "\u70b9\u51fb\u6570\u5b57\u952e\u76d8\u4e0a\u7684\u7b2c7\u53f7\u6216\u5728\u952e\u76d8\u4e0a\u8f93\u5165\"7\"\u3002",
+    "BAHASA": "Klik No. 7 di papan angka atau ketik \"7\" di keyboard Anda.",
+    "MALAY": "Klik No. 7 pada pad nombor atau taip \"7\" pada papan kekunci anda.",
+    "TAGALOG": "I-click ang No. 7 sa number pad o i-type ang \"7\" sa iyong keyboard.",
+    "MALAYALAM": "\u0d28\u0d2e\u0d4d\u0d2a\u0d7c \u0d2a\u0d3e\u0d21\u0d3f\u0d7d No. 7 \u0d15\u0d4d\u0d32\u0d3f\u0d15\u0d4d\u0d15\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15 \u0d05\u0d32\u0d4d\u0d32\u0d46\u0d19\u0d4d\u0d15\u0d3f\u0d7d \u0d15\u0d40\u0d2c\u0d4b\u0d7c\u0d21\u0d3f\u0d7d \"7\" \u0d1f\u0d48\u0d2a\u0d4d\u0d2a\u0d4d \u0d1a\u0d46\u0d2f\u0d4d\u0d2f\u0d41\u0d15."
+  },
   "Be careful, the order of the symbols will change after every turn.": {
     "ENGLISH": "Be careful, the order of the symbols will change after every turn.",
     "MANDARIN": "请注意，符号的顺序在每轮后都会改变。",

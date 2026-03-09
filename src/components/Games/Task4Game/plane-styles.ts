@@ -7,14 +7,16 @@ export const ROTATIONS = ["rotate-90", "-rotate-90", "rotate-180", "rotate-0"];
 
 export function getStyles(planes: number, gameLevel: number) {
   const seed = getRandomNum(planes);
-  const isTall = window.innerHeight >= 720;
-  const isDesktop = window.innerWidth >= 1024;
-  const size = window.innerWidth >= 640 ? 56 : 40;
+  const winH = typeof window !== "undefined" ? window.innerHeight : 800;
+  const winW = typeof window !== "undefined" ? window.innerWidth : 400;
+  const isTall = winH >= 720;
+  const isDesktop = winW >= 1024;
+  const size = winW >= 640 ? 56 : 40;
 
   const height = isDesktop
-    ? window.innerHeight - 130
-    : window.innerHeight - (isTall ? 224 : 192);
-  const width = window.innerWidth;
+    ? winH - 130
+    : winH - (isTall ? 224 : 192);
+  const width = winW;
 
   // assumption planes <= Math.min(xFactor, yFactor) * 2
   // expected value of planes < 18

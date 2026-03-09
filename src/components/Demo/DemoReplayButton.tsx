@@ -4,7 +4,6 @@ import { createPortal } from "react-dom";
 import ReplayIcon from "src/assets/replay.svg";
 import { APP_LANG } from "src/constants";
 import { t } from "src/lib/translations";
-import { useConfigStore } from "src/stores/useConfigStore";
 import { unlockAudioOnce } from "src/lib/audio-unlock";
 
 export interface ReplayButtonProps {
@@ -12,7 +11,7 @@ export interface ReplayButtonProps {
 }
 
 export function DemoReplayButton({ source }: ReplayButtonProps) {
-  const lang = useConfigStore((s) => s.lang) ?? APP_LANG;
+  const lang = APP_LANG;
   const ref = useRef<Howl | null>(null);
 
   useEffect(() => {
