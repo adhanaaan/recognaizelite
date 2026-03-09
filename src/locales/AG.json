@@ -63,6 +63,14 @@
     "TAGALOG": "Hanapin ang eroplano sa parehong kulay.\nSa kasong ito, hanapin ang asul na eroplano.",
     "MALAYALAM": "അതേ നിറത്തിലുള്ള വിമാനം കണ്ടെത്തുക. ഈ സാഹചര്യത്തിൽ, നീല വിമാനം കണ്ടെത്തുക."
   },
+  "Since the blue plane is facing up, click/type the up arrow.": {
+    "ENGLISH": "Since the blue plane is facing up, click/type the up arrow.",
+    "MANDARIN": "由于蓝色飞机朝上，点击/按上箭头键。",
+    "BAHASA": "Karena pesawat biru menghadap ke atas, klik/ketik panah atas.",
+    "MALAY": "Memandangkan kapal terbang biru menghadap ke atas, klik/taip anak panah atas.",
+    "TAGALOG": "Dahil ang asul na eroplano ay nakaharap pataas, i-click/i-type ang up arrow.",
+    "MALAYALAM": "നീല വിമാനം മുകളിലേക്ക് അഭിമുഖമായിരിക്കുന്നതിനാൽ, മുകളിലേക്കുള്ള അമ്പടയാളം ക്ലിക്ക്/ടൈപ്പ് ചെയ്യുക."
+  },
   "Since the blue plane is facing up, tap the up arrow.": {
     "ENGLISH": "Since the blue plane is facing up, tap the up arrow.",
     "MANDARIN": "由于蓝色飞机朝上，在屏幕上的任何位置向上滑动。",
@@ -78,6 +86,14 @@
     "MALAY": "Warnanya kini Oren.",
     "TAGALOG": "Ang kulay ngayon ay Kahel.",
     "MALAYALAM": "നിറം ഇപ്പോൾ ഓറഞ്ച് ആണ്."
+  },
+  "The orange plane is facing down, click/type the down arrow.": {
+    "ENGLISH": "The orange plane is facing down, click/type the down arrow.",
+    "MANDARIN": "橙色飞机朝下，点击/按下箭头键。",
+    "BAHASA": "Pesawat oranye menghadap ke bawah, klik/ketik panah bawah.",
+    "MALAY": "Kapal terbang oren menghadap ke bawah, klik/taip anak panah bawah.",
+    "TAGALOG": "Ang kahel na eroplano ay nakaharap pababa, i-click/i-type ang down arrow.",
+    "MALAYALAM": "ഓറഞ്ച് വിമാനം താഴേക്ക് അഭിമുഖമായിരിക്കുന്നു, താഴേക്കുള്ള അമ്പടയാളം ക്ലിക്ക്/ടൈപ്പ് ചെയ്യുക."
   },
   "The orange plane is facing down, tap the down arrow.": {
     "ENGLISH": "The orange plane is facing down, tap the down arrow.",
@@ -95,6 +111,14 @@
     "TAGALOG": "Mahusay! Mag-ingat, ang eroplano ay maaaring gumalaw sa ibang direksyon kaysa sa kinakaharap nito.",
     "MALAYALAM": "മികച്ചത്! ശ്രദ്ധിക്കുക, ഒരു വിമാനം അത് അഭിമുഖമായിരിക്കുന്നതിൽ നിന്ന് വ്യത്യസ്തമായ ദിശയിലേക്ക് നീങ്ങാം."
   },
+  "Like this.\nIn this case, click/type the up arrow instead of the right arrow.": {
+    "ENGLISH": "Like this.\nIn this case, click/type the up arrow instead of the right arrow.",
+    "MANDARIN": "像这样。在这种情况下，您应该点击/按上箭头键而不是右箭头键。",
+    "BAHASA": "Seperti ini. Dalam hal ini, Anda harus klik/ketik panah atas bukan ke kanan.",
+    "MALAY": "Seperti ini. Dalam kes ini, anda harus klik/taip anak panah atas bukannya ke kanan.",
+    "TAGALOG": "Tulad nito. Sa kasong ito, i-click/i-type ang up arrow sa halip na right arrow.",
+    "MALAYALAM": "ഇതുപോലെ. ഈ സാഹചര്യത്തിൽ, വലത്തോട്ടിനുപകരം മുകളിലേക്കുള്ള അമ്പടയാളം ക്ലിക്ക്/ടൈപ്പ് ചെയ്യുക."
+  },
   "Like this.\nIn this case, tap the up arrow instead of the right arrow.": {
     "ENGLISH": "Like this.\nIn this case, tap the up arrow instead of the right arrow.",
     "MANDARIN": "像这样。在这种情况下，您应该向上滑动而不是向右。",
@@ -103,6 +127,14 @@
     "TAGALOG": "Tulad nito. Sa kasong ito, dapat kang mag-swipe pataas sa halip na pakanan.",
     "MALAYALAM": "ഇതുപോലെ. ഈ സാഹചര്യത്തിൽ, നിങ്ങൾ വലത്തോട്ടിനുപകരം മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്യണം."
   },
+  "If you click/type the wrong arrow, you lose a heart. Losing all the heart will cause the game to end.": {
+    "ENGLISH": "If you click/type the wrong arrow, you lose a heart. Losing all the heart will cause the game to end.",
+    "MANDARIN": "如果您点击/按错了箭头键，您会失去一颗心。失去所有的心会导致游戏结束。",
+    "BAHASA": "Jika Anda klik/ketik panah yang salah, Anda kehilangan satu hati. Kehilangan semua hati akan menyebabkan permainan berakhir.",
+    "MALAY": "Jika anda klik/taip anak panah yang salah, anda kehilangan satu hati. Kehilangan semua hati akan menyebabkan permainan berakhir.",
+    "TAGALOG": "Kung mag-click/mag-type ka ng maling arrow, mawawalan ka ng isang puso. Ang pagkawala ng lahat ng puso ay magtatapos ng laro.",
+    "MALAYALAM": "നിങ്ങൾ തെറ്റായ അമ്പടയാളം ക്ലിക്ക്/ടൈപ്പ് ചെയ്താൽ, ഒരു ഹൃദയം നഷ്ടപ്പെടും. എല്ലാ ഹൃദയങ്ങളും നഷ്ടപ്പെടുന്നത് ഗെയിം അവസാനിപ്പിക്കും."
+  },
   "If you tap the wrong arrow, you lose a heart. Losing all the heart will cause the game to end.": {
     "ENGLISH": "If you tap the wrong arrow, you lose a heart. Losing all the heart will cause the game to end.",
     "MANDARIN": "如果您向错误的方向滑动，您会失去一颗心。失去所有的心会导致游戏结束。",
@@ -110,6 +142,14 @@
     "MALAY": "Jika anda meleret ke arah yang salah, anda kehilangan satu hati. Kehilangan semua hati akan menyebabkan permainan berakhir.",
     "TAGALOG": "Kung mag-swipe ka sa maling direksyon, mawawalan ka ng puso. Ang pagkawala ng lahat ng puso ay magiging sanhi ng pagtatapos ng laro.",
     "MALAYALAM": "നിങ്ങൾ തെറ്റായ ദിശയിലേക്ക് സ്വൈപ്പ് ചെയ്താൽ, നിങ്ങൾക്ക് ഒരു ഹൃദയം നഷ്ടപ്പെടും. എല്ലാ ഹൃദയങ്ങളും നഷ്ടപ്പെടുന്നത് ഗെയിം അവസാനിക്കാൻ കാരണമാകും."
+  },
+  "Now try clicking/typing the arrows for the next 3 by yourself.": {
+    "ENGLISH": "Now try clicking/typing the arrows for the next 3 by yourself.",
+    "MANDARIN": "现在自己尝试点击/按接下来的3个箭头键。",
+    "BAHASA": "Sekarang coba klik/ketik panah untuk 3 berikutnya sendiri.",
+    "MALAY": "Sekarang cuba klik/taip anak panah untuk 3 seterusnya sendiri.",
+    "TAGALOG": "Ngayon subukan ang pag-click/pag-type ng arrows para sa susunod na 3 mag-isa.",
+    "MALAYALAM": "ഇപ്പോൾ അടുത്ത 3 എണ്ണത്തിന് സ്വയം അമ്പടയാളങ്ങൾ ക്ലിക്ക്/ടൈപ്പ് ചെയ്യാൻ ശ്രമിക്കുക."
   },
   "Now try tapping the arrows for the next 3 by yourself.": {
     "ENGLISH": "Now try tapping the arrows for the next 3 by yourself.",

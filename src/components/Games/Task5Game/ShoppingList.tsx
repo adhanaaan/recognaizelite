@@ -15,6 +15,7 @@ interface Props {
 }
 
 function getHeight() {
+  if (typeof window === "undefined") return 400;
   const { innerHeight } = window;
   if (innerHeight < 720) return 380 - (670 - innerHeight);
   else if (innerHeight < 820) return 440 - (770 - innerHeight);
@@ -83,7 +84,7 @@ export function ShoppingList({ gameStarted, startGame, shoppingList, pickedItems
                 >
                   <Image
                     className="mx-auto w-28 object-contain"
-                    style={window.innerWidth >= 1024 ? { width: 132, height: 131 } : undefined}
+                    style={typeof window !== "undefined" && window.innerWidth >= 1024 ? { width: 132, height: 131 } : undefined}
                     src={x}
                     alt={`Shopping item ${idx + 1}`}
                     width={132}
