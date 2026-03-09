@@ -132,16 +132,16 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
 
 const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
   Low: {
-    headline: "This needs attention — but it\u2019s only part of the picture.",
-    body: "Processing speed is 1 of 4 cognitive areas. Decline in the other 3 — memory, attention, and executive function — can go unnoticed for years. Early screening is the single best thing you can do.",
+    headline: "This is just 1 of 4 cognitive areas.",
+    body: "You\u2019ve screened processing speed. A full cognitive screening also covers memory, attention, and executive function \u2014 giving you and your doctor a more complete picture to discuss together.",
   },
   Medium: {
-    headline: "Adequate today doesn\u2019t mean fine tomorrow.",
-    body: "Cognitive changes are gradual. By the time they\u2019re obvious, years have passed. A full screening covers memory, attention, and executive function — the areas where early signs often appear first.",
+    headline: "Want the full picture?",
+    body: "This screened processing speed \u2014 1 of 4 cognitive areas. The full assessment also covers memory, attention, and executive function, and takes about 10 minutes.",
   },
   High: {
-    headline: "Processing speed is strong. But it\u2019s only 1 of 4 areas.",
-    body: "Many people with strong processing speed already show early decline in memory, attention, or executive function without realising it. A 10-minute screening can tell you where you actually stand.",
+    headline: "Processing speed looks good. What about the rest?",
+    body: "This covered 1 of 4 cognitive areas. A full screening also checks memory, attention, and executive function \u2014 areas that are worth understanding alongside processing speed.",
   },
 };
 
@@ -279,12 +279,15 @@ export default function HookReportPage() {
                 </p>
                 <div className="mt-6 rounded-2xl bg-[#002D7C] px-5 py-5 text-center">
                   <p className="text-[18px] font-bold leading-snug text-white md:text-[20px]">
-                    Ask {clinic !== "your clinic" ? <span className="text-[#7EB8FF]">{clinic}</span> : "your doctor"} for the full RecognAIze screening.
+                    Ask {clinic !== "your clinic" ? <span className="text-[#7EB8FF]">{clinic}</span> : "your doctor"} about the full RecognAIze screening.
                   </p>
                   <p className="mt-1.5 text-[14px] text-blue-200">
-                    10 minutes. Done right here in the clinic.
+                    About 10 minutes. Available at this clinic.
                   </p>
                 </div>
+                <p className="mt-4 text-[11px] leading-normal text-[#999] md:text-[12px]">
+                  This screening is not a diagnostic tool. Results are for informational purposes only and should be discussed with a healthcare professional.
+                </p>
               </div>
             </div>
 
