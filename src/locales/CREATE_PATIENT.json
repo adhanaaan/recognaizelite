@@ -1,0 +1,42 @@
+{
+  "New patient": {
+    "ENGLISH": "New patient",
+    "MANDARIN": "新患者",
+    "BAHASA": "Pasien baru",
+    "MALAY": "Pesakit baharu",
+    "TAGALOG": "Bagong pasyente",
+    "MALAYALAM": "പുതിയ രോഗി"
+  },
+  "Enter a new Patient ID": {
+    "ENGLISH": "Enter a new Patient ID",
+    "MANDARIN": "输入新的患者ID",
+    "BAHASA": "Masukkan ID Pasien baru",
+    "MALAY": "Masukkan ID Pesakit baharu",
+    "TAGALOG": "Maglagay ng bagong Patient ID",
+    "MALAYALAM": "പുതിയ രോഗി ഐഡി നൽകുക"
+  },
+  "Patient ID": {
+    "ENGLISH": "Patient ID",
+    "MANDARIN": "患者ID",
+    "BAHASA": "ID Pasien",
+    "MALAY": "ID Pesakit",
+    "TAGALOG": "Patient ID",
+    "MALAYALAM": "രോഗി ഐഡി"
+  },
+  "Register": {
+    "ENGLISH": "Register",
+    "MANDARIN": "注册",
+    "BAHASA": "Daftar",
+    "MALAY": "Daftar",
+    "TAGALOG": "Magrehistro",
+    "MALAYALAM": "രജിസ്റ്റർ ചെയ്യുക"
+  },
+  "Patient ID already exists": {
+    "ENGLISH": "Patient ID already exists",
+    "MANDARIN": "患者ID已存在",
+    "BAHASA": "ID Pasien sudah ada",
+    "MALAY": "ID Pesakit sudah wujud",
+    "TAGALOG": "Ang Patient ID ay umiiral na",
+    "MALAYALAM": "രോഗി ഐഡി ഇതിനകം നിലവിലുണ്ട്"
+  }
+}

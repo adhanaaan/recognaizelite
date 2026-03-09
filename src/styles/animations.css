@@ -1,0 +1,255 @@
+@keyframes opacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-opacity {
+  animation: opacity 5s ease-out normal;
+}
+
+@keyframes conveyor-move {
+  from {
+    left: -20%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+.conveyor-move {
+  animation: conveyor-move var(--conveyor-time) linear forwards;
+}
+
+@keyframes shake {
+  0% {
+    rotate: 0deg;
+    transform: translateY(0%);
+  }
+  25% {
+    rotate: 5deg;
+    transform: translateY(2%);
+  }
+  50% {
+    rotate: 0deg;
+    transform: translateY(0%);
+  }
+  75% {
+    rotate: -5deg;
+    transform: translateY(2%);
+  }
+  100% {
+    rotate: 0deg;
+    transform: translateY(0%);
+  }
+}
+
+.animate-shake {
+  animation: shake 4s infinite linear;
+}
+
+@keyframes from-left {
+  from {
+    left: 0%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes from-right {
+  from {
+    right: 0%;
+  }
+  to {
+    right: 100%;
+  }
+}
+
+@keyframes from-top {
+  from {
+    top: 0%;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+@keyframes from-bottom {
+  from {
+    bottom: 0%;
+  }
+  to {
+    bottom: 100%;
+  }
+}
+
+.animate-from-left {
+  animation: from-left 4s forwards linear;
+}
+
+.animate-from-right {
+  animation: from-right 4s forwards linear;
+}
+
+.animate-from-top {
+  animation: from-top 4s forwards linear;
+}
+
+.animate-from-bottom {
+  animation: from-bottom 4s forwards linear;
+}
+
+@keyframes progress-bar {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.animate-progress-bar {
+  animation: progress-bar var(--progress-time) linear forwards;
+}
+
+@keyframes shopping-list {
+  0%,
+  100% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+  50% {
+    transform: translateY(-10%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+}
+.animate-shopping-list {
+  animation: shopping-list 1.5s infinite;
+  animation-delay: 700ms;
+}
+
+@keyframes demo-intro {
+  from {
+    opacity: 1;
+    display: block;
+  }
+  to {
+    opacity: 0;
+    display: none;
+    z-index: -1000;
+  }
+}
+
+.demo-screen-intro {
+  animation: demo-intro 600ms ease-out normal forwards;
+}
+
+@keyframes ag-hand-animation-up {
+  0% {
+    transform: none;
+    animation-timing-function: linear;
+  }
+  100% {
+    transform: translateY(-200%);
+    animation-timing-function: ease-out;
+  }
+}
+
+.ag-hand-animation-up {
+  animation: ag-hand-animation-up 1s infinite;
+}
+
+@keyframes ag-hand-animation-down {
+  0% {
+    transform: translateY(-200%);
+    animation-timing-function: linear;
+  }
+  100% {
+    transform: none;
+    animation-timing-function: ease-out;
+  }
+}
+
+.ag-hand-animation-down {
+  animation: ag-hand-animation-down 1s infinite;
+}
+
+@keyframes ag-hand-animation-right {
+  0% {
+    transform: translateX(-200%);
+    animation-timing-function: linear;
+  }
+  100% {
+    transform: none;
+    animation-timing-function: ease-out;
+  }
+}
+
+.ag-hand-animation-right {
+  animation: ag-hand-animation-right 1s infinite;
+}
+
+@keyframes ag-hand-animation-left {
+  0% {
+    transform: none;
+    animation-timing-function: linear;
+  }
+  100% {
+    transform: translateX(-200%);
+    animation-timing-function: ease-out;
+  }
+}
+
+.ag-hand-animation-left {
+  animation: ag-hand-animation-left 1s infinite;
+}
+
+@keyframes bounce-right {
+  0%,
+  100% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateX(5%);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.animate-bounce-right {
+  animation: bounce-right 1s infinite;
+}
+
+@keyframes hand-show-delay {
+  from {
+    display: none;
+  }
+  to {
+    display: block;
+  }
+}
+
+.hand-show-delay {
+  animation-delay: 3s !important;
+  animation: hand-show-delay 1ms linear forwards;
+}
+
+@keyframes hand-tap {
+  0%,
+  100% {
+    transform: scale(1);
+    animation-timing-function: ease-in-out;
+  }
+  50% {
+    transform: scale(0.9);
+    animation-timing-function: ease-in-out;
+  }
+}
+
+.hand-tap-animation {
+  animation: hand-tap 1s infinite;
+}

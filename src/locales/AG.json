@@ -1,0 +1,122 @@
+{
+  "Airplane Game": {
+    "ENGLISH": "Airplane Game",
+    "MANDARIN": "飞机游戏",
+    "BAHASA": "Permainan Pesawat",
+    "MALAY": "Permainan Kapal Terbang",
+    "TAGALOG": "Laro ng Eroplano",
+    "MALAYALAM": "വിമാന ഗെയിം"
+  },
+  "Attention": {
+    "ENGLISH": "Attention",
+    "MANDARIN": "注意力",
+    "BAHASA": "Perhatian",
+    "MALAY": "Perhatian",
+    "TAGALOG": "Atensyon",
+    "MALAYALAM": "ശ്രദ്ധ"
+  },
+  "Attention refers to your brain’s ability to to focus while ignoring distractions.": {
+    "ENGLISH": "Attention refers to your brain’s ability to to focus while ignoring distractions.",
+    "MANDARIN": "注意力是指您的大脑在忽略干扰的同时保持专注的能力。",
+    "BAHASA": "Perhatian mengacu pada kemampuan otak Anda untuk fokus sambil mengabaikan gangguan.",
+    "MALAY": "Perhatian merujuk kepada keupayaan otak anda untuk fokus sambil mengabaikan gangguan.",
+    "TAGALOG": "Ang Atensyon ay tumutukoy sa kakayahan ng iyong utak na tumuon habang binabalewala ang mga distraksyon.",
+    "MALAYALAM": "ശ്രദ്ധ എന്നത് തടസ്സങ്ങൾ അവഗണിച്ചുകൊണ്ട് ശ്രദ്ധ കേന്ദ്രീകരിക്കാനുള്ള നിങ്ങളുടെ മസ്തിഷ്കത്തിന്റെ കഴിവിനെ സൂചിപ്പിക്കുന്നു."
+  },
+  "Tap the arrow in the direction the plane is facing that matches the color of the word.": {
+    "ENGLISH": "Tap the arrow in the direction the plane is facing that matches the color of the word.",
+    "MANDARIN": "向与文字颜色匹配的飞机方向滑动。",
+    "BAHASA": "Geser ke arah pesawat yang sesuai dengan warna kata.",
+    "MALAY": "Leret ke arah kapal terbang yang sepadan dengan warna perkataan.",
+    "TAGALOG": "Mag-swipe sa direksyon ng eroplano na tumutugma sa kulay ng salita.",
+    "MALAYALAM": "വാക്കിന്റെ നിറവുമായി പൊരുത്തപ്പെടുന്ന വിമാനത്തിന്റെ ദിശയിലേക്ക് സ്വൈപ്പ് ചെയ്യുക."
+  },
+  "Blue": {
+    "ENGLISH": "Blue",
+    "MANDARIN": "蓝色",
+    "BAHASA": "Biru",
+    "MALAY": "Biru",
+    "TAGALOG": "Asul",
+    "MALAYALAM": "നീല"
+  },
+  "Orange": {
+    "ENGLISH": "Orange",
+    "MANDARIN": "橙色",
+    "BAHASA": "Oranye",
+    "MALAY": "Oren",
+    "TAGALOG": "Kahel",
+    "MALAYALAM": "ഓറഞ്ച്"
+  },
+  "Take note of the colour.": {
+    "ENGLISH": "Take note of the colour.",
+    "MANDARIN": "注意颜色。",
+    "BAHASA": "Perhatikan warnanya.",
+    "MALAY": "Ambil perhatian terhadap warna.",
+    "TAGALOG": "Tandaan ang kulay.",
+    "MALAYALAM": "നിറം ശ്രദ്ധിക്കുക."
+  },
+  "Find the plane in the same colour.\nIn this case, find the blue plane.": {
+    "ENGLISH": "Find the plane in the same colour.\nIn this case, find the blue plane.",
+    "MANDARIN": "找到相同颜色的飞机。\n在这种情况下，找到蓝色飞机。",
+    "BAHASA": "Temukan pesawat dengan warna yang sama.\nDalam hal ini, temukan pesawat biru.",
+    "MALAY": "Cari kapal terbang dengan warna yang sama.\nDalam kes ini, cari kapal terbang biru.",
+    "TAGALOG": "Hanapin ang eroplano sa parehong kulay.\nSa kasong ito, hanapin ang asul na eroplano.",
+    "MALAYALAM": "അതേ നിറത്തിലുള്ള വിമാനം കണ്ടെത്തുക. ഈ സാഹചര്യത്തിൽ, നീല വിമാനം കണ്ടെത്തുക."
+  },
+  "Since the blue plane is facing up, tap the up arrow.": {
+    "ENGLISH": "Since the blue plane is facing up, tap the up arrow.",
+    "MANDARIN": "由于蓝色飞机朝上，在屏幕上的任何位置向上滑动。",
+    "BAHASA": "Karena pesawat biru menghadap ke atas, geser ke atas di mana saja pada layar.",
+    "MALAY": "Memandangkan kapal terbang biru menghadap ke atas, leret ke atas di mana-mana pada skrin.",
+    "TAGALOG": "Dahil ang asul na eroplano ay nakaharap pataas, mag-swipe pataas kahit saan sa screen.",
+    "MALAYALAM": "നീല വിമാനം മുകളിലേക്ക് അഭിമുഖമായിരിക്കുന്നതിനാൽ, സ്ക്രീനിൽ എവിടെയും മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്യുക."
+  },
+  "The colour is now Orange.": {
+    "ENGLISH": "The colour is now Orange.",
+    "MANDARIN": "现在颜色是橙色。",
+    "BAHASA": "Warnanya sekarang Oranye.",
+    "MALAY": "Warnanya kini Oren.",
+    "TAGALOG": "Ang kulay ngayon ay Kahel.",
+    "MALAYALAM": "നിറം ഇപ്പോൾ ഓറഞ്ച് ആണ്."
+  },
+  "The orange plane is facing down, tap the down arrow.": {
+    "ENGLISH": "The orange plane is facing down, tap the down arrow.",
+    "MANDARIN": "橙色飞机朝下，在屏幕上的任何位置向下滑动。",
+    "BAHASA": "Pesawat oranye menghadap ke bawah, geser ke bawah di mana saja pada layar.",
+    "MALAY": "Kapal terbang oren menghadap ke bawah, leret ke bawah di mana-mana pada skrin.",
+    "TAGALOG": "Ang kahel na eroplano ay nakaharap pababa, mag-swipe pababa kahit saan sa screen.",
+    "MALAYALAM": "ഓറഞ്ച് വിമാനം താഴേക്ക് അഭിമുഖമായിരിക്കുന്നു, സ്ക്രീനിൽ എവിടെയും താഴേക്ക് സ്വൈപ്പ് ചെയ്യുക."
+  },
+  "Great!\nBe careful, a plane can move in a different direction than it’s facing.": {
+    "ENGLISH": "Great!\nBe careful, a plane can move in a different direction than it’s facing.",
+    "MANDARIN": "太好了！小心，飞机可能会朝与其面向不同的方向移动。",
+    "BAHASA": "Bagus! Hati-hati, pesawat dapat bergerak ke arah yang berbeda dari yang dihadapinya.",
+    "MALAY": "Bagus! Berhati-hati, kapal terbang boleh bergerak ke arah yang berbeza daripada yang dihadapinya.",
+    "TAGALOG": "Mahusay! Mag-ingat, ang eroplano ay maaaring gumalaw sa ibang direksyon kaysa sa kinakaharap nito.",
+    "MALAYALAM": "മികച്ചത്! ശ്രദ്ധിക്കുക, ഒരു വിമാനം അത് അഭിമുഖമായിരിക്കുന്നതിൽ നിന്ന് വ്യത്യസ്തമായ ദിശയിലേക്ക് നീങ്ങാം."
+  },
+  "Like this.\nIn this case, tap the up arrow instead of the right arrow.": {
+    "ENGLISH": "Like this.\nIn this case, tap the up arrow instead of the right arrow.",
+    "MANDARIN": "像这样。在这种情况下，您应该向上滑动而不是向右。",
+    "BAHASA": "Seperti ini. Dalam hal ini, Anda harus menggeser ke atas bukan ke kanan.",
+    "MALAY": "Seperti ini. Dalam kes ini, anda harus meleret ke atas bukannya ke kanan.",
+    "TAGALOG": "Tulad nito. Sa kasong ito, dapat kang mag-swipe pataas sa halip na pakanan.",
+    "MALAYALAM": "ഇതുപോലെ. ഈ സാഹചര്യത്തിൽ, നിങ്ങൾ വലത്തോട്ടിനുപകരം മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്യണം."
+  },
+  "If you tap the wrong arrow, you lose a heart. Losing all the heart will cause the game to end.": {
+    "ENGLISH": "If you tap the wrong arrow, you lose a heart. Losing all the heart will cause the game to end.",
+    "MANDARIN": "如果您向错误的方向滑动，您会失去一颗心。失去所有的心会导致游戏结束。",
+    "BAHASA": "Jika Anda menggeser ke arah yang salah, Anda kehilangan satu hati. Kehilangan semua hati akan menyebabkan permainan berakhir.",
+    "MALAY": "Jika anda meleret ke arah yang salah, anda kehilangan satu hati. Kehilangan semua hati akan menyebabkan permainan berakhir.",
+    "TAGALOG": "Kung mag-swipe ka sa maling direksyon, mawawalan ka ng puso. Ang pagkawala ng lahat ng puso ay magiging sanhi ng pagtatapos ng laro.",
+    "MALAYALAM": "നിങ്ങൾ തെറ്റായ ദിശയിലേക്ക് സ്വൈപ്പ് ചെയ്താൽ, നിങ്ങൾക്ക് ഒരു ഹൃദയം നഷ്ടപ്പെടും. എല്ലാ ഹൃദയങ്ങളും നഷ്ടപ്പെടുന്നത് ഗെയിം അവസാനിക്കാൻ കാരണമാകും."
+  },
+  "Now try tapping the arrows for the next 3 by yourself.": {
+    "ENGLISH": "Now try tapping the arrows for the next 3 by yourself.",
+    "MANDARIN": "现在自己尝试滑动接下来的3个。",
+    "BAHASA": "Sekarang coba geser 3 berikutnya sendiri.",
+    "MALAY": "Sekarang cuba leret 3 seterusnya sendiri.",
+    "TAGALOG": "Ngayon subukan ang pag-swipe ng susunod na 3 mag-isa.",
+    "MALAYALAM": "ഇപ്പോൾ അടുത്ത 3 എണ്ണം സ്വയം സ്വൈപ്പ് ചെയ്യാൻ ശ്രമിക്കുക."
+  }
+}

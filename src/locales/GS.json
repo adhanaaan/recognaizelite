@@ -1,0 +1,194 @@
+{
+  "Grocery Shopping": {
+    "ENGLISH": "Grocery Shopping",
+    "MANDARIN": "杂货购物",
+    "BAHASA": "Belanja Bahan Makanan",
+    "MALAY": "Beli-belah Barangan Runcit",
+    "TAGALOG": "Pamimili ng Grocery",
+    "MALAYALAM": "പലചരക്ക് ഷോപ്പിംഗ്"
+  },
+  "Memory": {
+    "ENGLISH": "Memory",
+    "MANDARIN": "记忆力",
+    "BAHASA": "Memori",
+    "MALAY": "Ingatan",
+    "TAGALOG": "Memorya",
+    "MALAYALAM": "മെമ്മറി"
+  },
+  "Memory is the ability to store and recall information; working memory holds it temporarily.": {
+    "ENGLISH": "Memory is the ability to store and recall information; working memory holds it temporarily.",
+    "MANDARIN": "记忆力是存储和回忆信息的能力；工作记忆暂时保存信息。",
+    "BAHASA": "Memori adalah kemampuan untuk menyimpan dan mengingat informasi; memori kerja menyimpannya sementara.",
+    "MALAY": "Ingatan adalah keupayaan untuk menyimpan dan mengingat maklumat; ingatan kerja memegangnya buat sementara waktu.",
+    "TAGALOG": "Ang Memorya ay ang kakayahang mag-imbak at alalahanin ang impormasyon; ang working memory ay pansamantalang humahawak nito.",
+    "MALAYALAM": "മെമ്മറി എന്നത് വിവരങ്ങൾ സംഭരിക്കാനും തിരിച്ചുവിളിക്കാനുമുള്ള കഴിവാണ്; വർക്കിംഗ് മെമ്മറി അത് താത്കാലികമായി സൂക്ഷിക്കുന്നു."
+  },
+  "In Rounds 1–4, select the items that’s in shopping list, and in Rounds 5–6, give the exact change.": {
+    "ENGLISH": "In Rounds 1–4, select the items that’s in shopping list, and in Rounds 5–6, give the exact change.",
+    "MANDARIN": "在第1-4轮中，选择购物清单中的物品，在第5-6轮中，给出准确的找零。",
+    "BAHASA": "Di Putaran 1–4, pilih item yang ada di daftar belanja, dan di Putaran 5–6, berikan kembalian yang tepat.",
+    "MALAY": "Dalam Pusingan 1–4, pilih item yang ada dalam senarai beli-belah, dan dalam Pusingan 5–6, berikan baki yang tepat.",
+    "TAGALOG": "Sa Rounds 1–4, piliin ang mga item na nasa shopping list, at sa Rounds 5–6, magbigay ng eksaktong sukli.",
+    "MALAYALAM": "റൗണ്ട് 1-4-ൽ, ഷോപ്പിംഗ് ലിസ്റ്റിൽ ഉള്ള ഇനങ്ങൾ തിരഞ്ഞെടുക്കുക, റൗണ്ട് 5-6-ൽ, കൃത്യമായ മാറ്റം നൽകുക."
+  },
+  "Round x": {
+    "ENGLISH": "Round x",
+    "MANDARIN": "第x轮",
+    "BAHASA": "Putaran x",
+    "MALAY": "Pusingan x",
+    "TAGALOG": "Round x",
+    "MALAYALAM": "റൗണ്ട് x"
+  },
+  "Select the items on the conveyor belt that are listed in the shopping list.": {
+    "ENGLISH": "Select the items on the conveyor belt that are listed in the shopping list.",
+    "MANDARIN": "选择传送带上购物清单中列出的物品。",
+    "BAHASA": "Pilih item di ban berjalan yang tercantum dalam daftar belanja.",
+    "MALAY": "Pilih item di tali pinggang penyampai yang disenaraikan dalam senarai beli-belah.",
+    "TAGALOG": "Piliin ang mga item sa conveyor belt na nakalista sa shopping list.",
+    "MALAYALAM": "ഷോപ്പിംഗ് ലിസ്റ്റിൽ പട്ടികപ്പെടുത്തിയിട്ടുള്ള കൺവെയർ ബെൽട്ടിലെ ഇനങ്ങൾ തിരഞ്ഞെടുക്കുക."
+  },
+  "Select the items on the conveyor belt that are listed in the shopping list.\n\nBe careful! Pay closer attention to the colours and symbols.": {
+    "ENGLISH": "Select the items on the conveyor belt that are listed in the shopping list.\n\nBe careful! Pay closer attention to the colours and symbols.",
+    "MANDARIN": "选择传送带上购物清单中列出的物品。\n小心！更仔细地注意颜色和符号。",
+    "BAHASA": "Pilih item di ban berjalan yang tercantum dalam daftar belanja. \n\nHati-hati! Perhatikan lebih dekat warna dan simbolnya.",
+    "MALAY": "Pilih item di tali pinggang penyampai yang disenaraikan dalam senarai beli-belah. \n\nBerhati-hati! Beri perhatian lebih rapat kepada warna dan simbol.",
+    "TAGALOG": "Piliin ang mga item sa conveyor belt na nakalista sa shopping list. \n\nMag-ingat! Magbigay ng mas malapit na atensyon sa mga kulay at simbolo.",
+    "MALAYALAM": "ഷോപ്പിംഗ് ലിസ്റ്റിൽ പട്ടികപ്പെടുത്തിയിട്ടുള്ള കൺവെയർ ബെൽട്ടിലെ ഇനങ്ങൾ തിരഞ്ഞെടുക്കുക. ശ്രദ്ധിക്കുക! നിറങ്ങളിലും ചിഹ്നങ്ങളിലും കൂടുതൽ ശ്രദ്ധ നൽകുക."
+  },
+  "Select the correct combination of money that adds up to the exact amount needed.": {
+    "ENGLISH": "Select the correct combination of money that adds up to the exact amount needed.",
+    "MANDARIN": "选择加起来等于所需准确金额的正确货币组合。",
+    "BAHASA": "Pilih kombinasi uang yang tepat yang berjumlah jumlah yang dibutuhkan.",
+    "MALAY": "Pilih kombinasi wang yang betul yang berjumlah jumlah yang diperlukan.",
+    "TAGALOG": "Piliin ang tamang kombinasyon ng pera na sumasaklaw sa eksaktong halaga na kailangan.",
+    "MALAYALAM": "ആവശ്യമായ കൃത്യമായ തുകയിലേക്ക് കൂട്ടിച്ചേർക്കുന്ന പണത്തിന്റെ ശരിയായ കോമ്പിനേഷൻ തിരഞ്ഞെടുക്കുക"
+  },
+  "Start round": {
+    "ENGLISH": "Start round",
+    "MANDARIN": "开始轮次",
+    "BAHASA": "Mulai putaran",
+    "MALAY": "Mula pusingan",
+    "TAGALOG": "Simulan ang round",
+    "MALAYALAM": "റൗണ്ട് ആരംഭിക്കുക"
+  },
+  "Shopping List": {
+    "ENGLISH": "Shopping List",
+    "MANDARIN": "购物清单",
+    "BAHASA": "Daftar Belanja",
+    "MALAY": "Senarai Beli-belah",
+    "TAGALOG": "Listahan ng Pamimili",
+    "MALAYALAM": "ഷോപ്പിംഗ് ലിസ്റ്റ്"
+  },
+  "Remember these items.\nYou can refer back to this list later": {
+    "ENGLISH": "Remember these items.\nYou can refer back to this list later",
+    "MANDARIN": "记住这些物品。\n您稍后可以再次查看此清单",
+    "BAHASA": "Ingat item ini. Anda dapat merujuk kembali ke daftar ini nanti",
+    "MALAY": "Ingat item ini. Anda boleh rujuk semula senarai ini kemudian.",
+    "TAGALOG": "Tandaan ang mga item na ito. Maaari mong tingnan muli ang listahang ito mamaya",
+    "MALAYALAM": "ഈ ഇനങ്ങൾ ഓർക്കുക. നിങ്ങൾക്ക് പിന്നീട് ഈ ലിസ്റ്റ് വീണ്ടും കാണാം"
+  },
+  "Ready": {
+    "ENGLISH": "Ready",
+    "MANDARIN": "开始",
+    "BAHASA": "Siap",
+    "MALAY": "Sedia",
+    "TAGALOG": "Handa na",
+    "MALAYALAM": "തയ്യാർ"
+  },
+  "Tap on added notes & coins to remove them": {
+    "ENGLISH": "Tap on added notes & coins to remove them",
+    "MANDARIN": "点击纸币或硬币以移除它。",
+    "BAHASA": "Ketuk uang kertas & koin yang ditambahkan untuk menghapusnya",
+    "MALAY": "Ketik pada wang kertas & syiling yang ditambah untuk mengeluarkannya",
+    "TAGALOG": "I-tap ang mga idinagdag na barya at papel na pera upang alisin ang mga ito",
+    "MALAYALAM": "അവ നീക്കം ചെയ്യാൻ ചേർത്ത നോട്ടുകളിലും നാണയങ്ങളിലും ടാപ്പ് ചെയ്യുക"
+  },
+  "A shopping list of items will be shown.": {
+    "ENGLISH": "A shopping list of items will be shown.",
+    "MANDARIN": "将显示物品的购物清单。",
+    "BAHASA": "Daftar belanja item akan ditampilkan.",
+    "MALAY": "Senarai beli-belah item akan ditunjukkan.",
+    "TAGALOG": "Ipapakita ang shopping list ng mga item.",
+    "MALAYALAM": "ഇനങ്ങളുടെ ഒരു ഷോപ്പിംഗ് ലിസ്റ്റ് കാണിക്കും."
+  },
+  "Memorise within the given time.\nYou can view it again later.": {
+    "ENGLISH": "Memorise within the given time.\nYou can view it again later.",
+    "MANDARIN": "在给定时间内记住。您稍后可以再次查看。",
+    "BAHASA": "Hafalkan dalam waktu yang diberikan. Anda dapat melihatnya lagi nanti.",
+    "MALAY": "Hafal dalam masa yang diberikan. Anda boleh melihatnya lagi kemudian.",
+    "TAGALOG": "Kabisaduhin sa loob ng ibinigay na oras. Maaari mo itong tingnan muli mamaya.",
+    "MALAYALAM": "നൽകിയിരിക്കുന്ന സമയത്തിനുള്ളിൽ ഓർമ്മിക്കുക. നിങ്ങൾക്ക് പിന്നീട് ഇത് വീണ്ടും കാണാം."
+  },
+  "Items will appear below here.\nTap to select those in the shopping list.": {
+    "ENGLISH": "Items will appear below here.\nTap to select those in the shopping list.",
+    "MANDARIN": "物品将出现在下方。点击选择购物清单中的那些。",
+    "BAHASA": "Item akan muncul di bawah ini. Ketuk untuk memilih yang ada di daftar belanja.",
+    "MALAY": "Item akan muncul di bawah ini. Ketik untuk memilih yang ada dalam senarai beli-belah.",
+    "TAGALOG": "Lalabas ang mga item dito sa ibaba. I-tap upang piliin ang mga nasa shopping list.",
+    "MALAYALAM": "ഇനങ്ങൾ ഇവിടെ താഴെ പ്രത്യക്ഷപ്പെടും. ഷോപ്പിംഗ് ലിസ്റ്റിൽ ഉള്ളവ തിരഞ്ഞെടുക്കാൻ ടാപ്പ് ചെയ്യുക."
+  },
+  "Tap here to open the list to view the items again.": {
+    "ENGLISH": "Tap here to open the list to view the items again.",
+    "MANDARIN": "点击此处打开清单再次查看物品。",
+    "BAHASA": "Ketuk di sini untuk membuka daftar untuk melihat item lagi.",
+    "MALAY": "Ketik di sini untuk membuka senarai untuk melihat item lagi.",
+    "TAGALOG": "I-tap dito upang buksan ang listahan para tingnan muli ang mga item.",
+    "MALAYALAM": "ഇനങ്ങൾ വീണ്ടും കാണാൻ ലിസ്റ്റ് തുറക്കാൻ ഇവിടെ ടാപ്പ് ചെയ്യുക."
+  },
+  "Tap here to close the list.": {
+    "ENGLISH": "Tap here to close the list.",
+    "MANDARIN": "点击此处关闭清单。",
+    "BAHASA": "Ketuk di sini untuk menutup daftar.",
+    "MALAY": "Ketik di sini untuk menutup senarai.",
+    "TAGALOG": "I-tap dito upang isara ang listahan.",
+    "MALAYALAM": "ലിസ്റ്റ് അടയ്ക്കാൻ ഇവിടെ ടാപ്പ് ചെയ്യുക."
+  },
+  "Try finding 2 items!\nRemember you can open the list again.": {
+    "ENGLISH": "Try finding 2 items!\nRemember you can open the list again.",
+    "MANDARIN": "尝试找到2件物品！记住您可以再次打开清单。",
+    "BAHASA": "Coba temukan 2 item! Ingat Anda dapat membuka daftar lagi.",
+    "MALAY": "Cuba cari 2 item! Ingat anda boleh membuka senarai lagi.",
+    "TAGALOG": "Subukang hanapin ang 2 items! Tandaan na maaari mong buksan muli ang listahan.",
+    "MALAYALAM": "2 ഇനങ്ങൾ കണ്ടെത്താൻ ശ്രമിക്കുക! നിങ്ങൾക്ക് ലിസ്റ്റ് വീണ്ടും തുറക്കാമെന്ന് ഓർക്കുക."
+  },
+  "Great!\nOn to the next game mode.": {
+    "ENGLISH": "Great!\nOn to the next game mode.",
+    "MANDARIN": "太好了！进入下一个游戏模式。",
+    "BAHASA": "Bagus! Ke mode permainan berikutnya.",
+    "MALAY": "Bagus! Ke mod permainan seterusnya.",
+    "TAGALOG": "Mahusay! Sa susunod na game mode.",
+    "MALAYALAM": "മികച്ചത്! അടുത്ത ഗെയിം മോഡിലേക്ക്."
+  },
+  "You are shown an amount here.": {
+    "ENGLISH": "You are shown an amount here.",
+    "MANDARIN": "这里显示了一个金额。",
+    "BAHASA": "Anda ditunjukkan jumlah di sini.",
+    "MALAY": "Anda ditunjukkan jumlah di sini.",
+    "TAGALOG": "Ipinakikita sa iyo ang isang halaga dito.",
+    "MALAYALAM": "നിങ്ങൾക്ക് ഇവിടെ ഒരു തുക കാണിച്ചിരിക്കുന്നു."
+  },
+  "Select notes and coins to match the amount shown.\nYou can use them multiple times, tap to add.": {
+    "ENGLISH": "Select notes and coins to match the amount shown.\nYou can use them multiple times, tap to add.",
+    "MANDARIN": "选择纸币和硬币以匹配显示的金额。\n您可以多次使用它们，点击以添加。",
+    "BAHASA": "Pilih uang kertas dan koin untuk mencocokkan jumlah yang ditampilkan. \nAnda dapat menggunakannya beberapa kali, ketuk untuk menambahkan.",
+    "MALAY": "Pilih wang kertas dan syiling untuk sepadan dengan jumlah yang ditunjukkan. \nAnda boleh menggunakannya beberapa kali, ketik untuk menambah.",
+    "TAGALOG": "Piliin ang mga papel na pera at barya upang tumugma sa halagang ipinakita. \nMaaari mo silang gamitin ng maraming beses, i-tap upang idagdag.",
+    "MALAYALAM": "കാണിച്ചിരിക്കുന്ന തുകയുമായി പൊരുത്തപ്പെടാൻ നോട്ടുകളും നാണയങ്ങളും തിരഞ്ഞെടുക്കുക. നിങ്ങൾക്ക് അവ ഒന്നിലധികം തവണ ഉപയോഗിക്കാം, ചേർക്കാൻ ടാപ്പ് ചെയ്യുക."
+  },
+  "Tap on the note or coin to remove it.": {
+    "ENGLISH": "Tap on the note or coin to remove it.",
+    "MANDARIN": "点击纸币或硬币以移除它。",
+    "BAHASA": "Ketuk uang kertas atau koin untuk menghapusnya.",
+    "MALAY": "Ketik pada wang kertas atau syiling untuk mengeluarkannya.",
+    "TAGALOG": "I-tap ang papel na pera o barya upang alisin ito.",
+    "MALAYALAM": "അത് നീക്കം ചെയ്യാൻ നോട്ടിലോ നാണയത്തിലോ ടാപ്പ് ചെയ്യുക."
+  },
+  "Great!\nTry the next 2 rounds by yourself.": {
+    "ENGLISH": "Great!\nTry the next 2 rounds by yourself.",
+    "MANDARIN": "太好了！自己尝试接下来的2轮。",
+    "BAHASA": "Bagus! Coba 2 putaran berikutnya sendiri.",
+    "MALAY": "Bagus! Cuba 2 pusingan seterusnya sendiri.",
+    "TAGALOG": "Mahusay! Subukan ang susunod na 2 rounds mag-isa.",
+    "MALAYALAM": "മികച്ചത്! അടുത്ത 2 റൗണ്ടുകൾ സ്വയം പരീക്ഷിക്കുക."
+  }
+}

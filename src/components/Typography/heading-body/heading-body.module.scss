@@ -1,0 +1,48 @@
+.heading-generate-weight {
+  &--type {
+    &-regular {
+      font-weight: 400;
+    }
+    &-medium {
+      font-weight: 500;
+    }
+    &-semibold {
+      font-weight: 600;
+    }
+    &-bold {
+      font-weight: 700;
+    }
+  }
+}
+
+.heading-font-color {
+  &--type {
+    &-default {
+      color: #3A3A3A;
+    }
+    &-success {
+      color: #44d600;
+    }
+    &-error {
+      color: #ff1a43;
+    }
+    &-warning {
+      color: #ffa31a;
+    }
+    &-info {
+      color: #002D7C;
+    }
+     &-secondary {
+      color: #727272;
+    }
+     &-lightdark {
+      color: #4F4F4F;
+    }
+  }
+}
+
+.heading-subtitle {
+  font-size: 16px;
+  font-weight: var(--font-weight);
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+}

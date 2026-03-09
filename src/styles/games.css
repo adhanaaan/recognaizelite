@@ -1,0 +1,75 @@
+.game-1-bg {
+  background: linear-gradient(135deg, #85f9e44d 25%, transparent 25%) 0 0,
+    linear-gradient(225deg, #85f9e44d 25%, transparent 25%) 0 0, linear-gradient(315deg, #85f9e44d 25%, transparent 25%),
+    linear-gradient(45deg, #85f9e44d 25%, transparent 25%);
+  background-size: 75px 75px;
+  background-color: #f2f2f2;
+}
+
+.zig-zag {
+  --angle: 50deg;
+  --size: 45px;
+  --mask: conic-gradient(
+      from calc(var(--angle) * -1) at bottom,
+      #0000,
+      #000 1deg calc(var(--angle) * 2),
+      #0000 calc(var(--angle) * 2 + 1deg)
+    )
+    0% / var(--size) 100%;
+  -webkit-mask: var(--mask);
+  mask: var(--mask);
+}
+
+.conveyor-corner {
+  background: repeating-linear-gradient(to right, #756d79, #756d79 30px, #665f65 30px, #665f65 60px);
+}
+
+.arrow-down {
+  width: 0;
+  height: 0;
+  @apply border-emerald-500;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top-width: 20px;
+}
+
+.arrow-up {
+  width: 0;
+  height: 0;
+  @apply border-emerald-500;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom-width: 20px;
+}
+
+.custom-shadow {
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.25), 0 0 6px rgba(255, 255, 255, 0.15), 0 0 9px rgba(255, 255, 255, 0.1);
+}
+
+.custom-shadow-2 {
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.45), 0 0 6px rgba(255, 255, 255, 0.35), 0 0 9px rgba(255, 255, 255, 0.2s5);
+}
+
+body:has(#login-input:focus) .login-input {
+  @apply ring-2 ring-accent;
+}
+
+.custom-text-gradient {
+  background: -webkit-linear-gradient(#feeea0, #fbaf5b);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.highlight {
+  position: relative;
+  mix-blend-mode: inherit;
+}
+
+.highlight::before {
+  --white-area: -25px;
+  content: "";
+  position: absolute;
+  inset: var(--white-area);
+  box-shadow: inset 0px 0px 0px 0px rgba(0, 0, 0, 1), 0px 0px 0px 9999px rgba(0, 0, 0, 0.7);
+}

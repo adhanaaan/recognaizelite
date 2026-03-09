@@ -1,0 +1,58 @@
+{
+  "Back": {
+    "ENGLISH": "Back",
+    "MANDARIN": "返回",
+    "BAHASA": "Kembali",
+    "MALAY": "Kembali",
+    "TAGALOG": "Bumalik",
+    "MALAYALAM": "തിരികെ"
+  },
+  "Proceed": {
+    "ENGLISH": "Proceed",
+    "MANDARIN": "继续",
+    "BAHASA": "",
+    "MALAY": "",
+    "TAGALOG": "",
+    "MALAYALAM": ""
+  },
+  "Start assessment": {
+    "ENGLISH": "Start assessment",
+    "MANDARIN": "开始评估",
+    "BAHASA": "",
+    "MALAY": "",
+    "TAGALOG": "",
+    "MALAYALAM": ""
+  },
+  "Start tutorial": {
+    "ENGLISH": "Start tutorial",
+    "MANDARIN": "开始教程",
+    "BAHASA": "",
+    "MALAY": "",
+    "TAGALOG": "",
+    "MALAYALAM": ""
+  },
+  "Next game (as subheader)": {
+    "ENGLISH": "Next game (as subheader)",
+    "MANDARIN": "接下来",
+    "BAHASA": "",
+    "MALAY": "",
+    "TAGALOG": "",
+    "MALAYALAM": ""
+  },
+  "Next game (in button)": {
+    "ENGLISH": "Next game (in button)",
+    "MANDARIN": "下个游戏",
+    "BAHASA": "",
+    "MALAY": "",
+    "TAGALOG": "",
+    "MALAYALAM": ""
+  },
+  "Game complete": {
+    "ENGLISH": "Game complete",
+    "MANDARIN": "游戏完成",
+    "BAHASA": "",
+    "MALAY": "",
+    "TAGALOG": "",
+    "MALAYALAM": ""
+  }
+}

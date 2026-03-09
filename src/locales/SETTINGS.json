@@ -1,0 +1,82 @@
+{
+  "Language": {
+    "ENGLISH": "Language",
+    "MANDARIN": "语言",
+    "BAHASA": "Bahasa",
+    "MALAY": "Bahasa",
+    "TAGALOG": "Wika",
+    "MALAYALAM": "ഭാഷ"
+  },
+  "Voiceover": {
+    "ENGLISH": "Voiceover",
+    "MANDARIN": "语音旁白",
+    "BAHASA": "Sulih suara",
+    "MALAY": "Suara latar",
+    "TAGALOG": "Voiceover",
+    "MALAYALAM": "വോയ്‌സ്ഓവർ"
+  },
+  "English": {
+    "ENGLISH": "English",
+    "MANDARIN": "英语",
+    "BAHASA": "Bahasa Inggris",
+    "MALAY": "Bahasa Inggeris",
+    "TAGALOG": "Ingles",
+    "MALAYALAM": "ഇംഗ്ലീഷ്"
+  },
+  "Mandarin": {
+    "ENGLISH": "Mandarin",
+    "MANDARIN": "中文",
+    "BAHASA": "Bahasa Mandarin",
+    "MALAY": "Bahasa Mandarin",
+    "TAGALOG": "Mandarin",
+    "MALAYALAM": "മാൻഡറിൻ"
+  },
+  "Bahasa": {
+    "ENGLISH": "Bahasa",
+    "MANDARIN": "印尼语",
+    "BAHASA": "Bahasa Indonesia",
+    "MALAY": "Bahasa Indonesia",
+    "TAGALOG": "Bahasa",
+    "MALAYALAM": "ബഹാസ"
+  },
+  "Malay": {
+    "ENGLISH": "Malay",
+    "MANDARIN": "马来语",
+    "BAHASA": "Bahasa Melayu",
+    "MALAY": "Bahasa Melayu",
+    "TAGALOG": "Malay",
+    "MALAYALAM": "മലായ്"
+  },
+  "Tagalog": {
+    "ENGLISH": "Tagalog",
+    "MANDARIN": "他加禄语",
+    "BAHASA": "Bahasa Tagalog",
+    "MALAY": "Bahasa Tagalog",
+    "TAGALOG": "Tagalog",
+    "MALAYALAM": "ടാഗലോഗ്"
+  },
+  "Malayalam": {
+    "ENGLISH": "Malayalam",
+    "MANDARIN": "马拉雅拉姆语",
+    "BAHASA": "Bahasa Malayalam",
+    "MALAY": "Bahasa Malayalam",
+    "TAGALOG": "Malayalam",
+    "MALAYALAM": "മലയാളം"
+  },
+  "Enable": {
+    "ENGLISH": "Enable",
+    "MANDARIN": "启用",
+    "BAHASA": "Aktifkan",
+    "MALAY": "Aktifkan",
+    "TAGALOG": "Paganahin",
+    "MALAYALAM": "പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "Disable": {
+    "ENGLISH": "Disable",
+    "MANDARIN": "禁用",
+    "BAHASA": "Nonaktifkan",
+    "MALAY": "Nyahaktifkan",
+    "TAGALOG": "Huwag paganahin",
+    "MALAYALAM": "പ്രവർത്തനരഹിതമാക്കുക"
+  }
+}

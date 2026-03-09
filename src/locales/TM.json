@@ -1,0 +1,106 @@
+{
+  "Trail Making": {
+    "ENGLISH": "Trail Making",
+    "MANDARIN": "路径追踪",
+    "BAHASA": "Pembuatan Jalur",
+    "MALAY": "Membuat Jejak",
+    "TAGALOG": "Paggawa ng Landas",
+    "MALAYALAM": "ട്രയൽ മേക്കിംഗ്"
+  },
+  "Executive Function": {
+    "ENGLISH": "Executive Function",
+    "MANDARIN": "执行功能",
+    "BAHASA": "Fungsi Eksekutif",
+    "MALAY": "Fungsi Eksekutif",
+    "TAGALOG": "Executive Function",
+    "MALAYALAM": "എക്സിക്യൂട്ടീവ് ഫംഗ്ഷൻ"
+  },
+  "Executive Function refers to your brain’s ability to plan, solve problems, and stay focused.": {
+    "ENGLISH": "Executive Function refers to your brain’s ability to plan, solve problems, and stay focused.",
+    "MANDARIN": "执行功能是指您的大脑计划、解决问题和保持专注的能力。",
+    "BAHASA": "Fungsi Eksekutif mengacu pada kemampuan otak Anda untuk merencanakan, memecahkan masalah, dan tetap fokus.",
+    "MALAY": "Fungsi Eksekutif merujuk kepada keupayaan otak anda untuk merancang, menyelesaikan masalah, dan kekal fokus.",
+    "TAGALOG": "Ang Executive Function ay tumutukoy sa kakayahan ng iyong utak na magplano, maglutas ng mga problema, at manatiling nakatuon.",
+    "MALAYALAM": "എക്സിക്യൂട്ടീവ് ഫംഗ്ഷൻ എന്നത് നിങ്ങളുടെ മസ്തിഷ്കത്തിന്റെ ആസൂത്രണം, പ്രശ്നങ്ങൾ പരിഹരിക്കൽ, ശ്രദ്ധ കേന്ദ്രീകരിച്ച് നിൽക്കൽ എന്നിവയിലുള്ള കഴിവിനെ സൂചിപ്പിക്കുന്നു."
+  },
+  "Connect all circles within 3 minutes, alternating between Number and Green Area.": {
+    "ENGLISH": "Connect all circles within 3 minutes, alternating between Number and Green Area.",
+    "MANDARIN": "在3分钟内连接所有圆圈，在数字和绿色区域之间交替。",
+    "BAHASA": "Hubungkan semua lingkaran dalam 3 menit, bergantian antara Angka dan Area Hijau.",
+    "MALAY": "Sambungkan semua bulatan dalam 3 minit, berselang seli antara Nombor dan Kawasan Hijau.",
+    "TAGALOG": "Ikonekta ang lahat ng bilog sa loob ng 3 minuto, alternating sa pagitan ng Numero at Berdeng Lugar.",
+    "MALAYALAM": "3 മിനിറ്റിനുള്ളിൽ എല്ലാ വൃത്തങ്ങളും ബന്ധിപ്പിക്കുക, നമ്പറും പച്ച പ്രദേശവും തമ്മിൽ മാറിമാറി."
+  },
+  "Start by tapping 1, then tap the smallest green area. Alternating between number and green area.": {
+    "ENGLISH": "Start by tapping 1, then tap the smallest green area. Alternating between number and green area.",
+    "MANDARIN": "从点击1开始，然后点击最小的绿色区域。在数字和绿色区域之间交替。",
+    "BAHASA": "Mulai dengan mengetuk 1, lalu ketuk area hijau terkecil. Bergantian antara angka dan area hijau.",
+    "MALAY": "Mulakan dengan mengetik 1, kemudian ketik kawasan hijau terkecil. Berselang seli antara nombor dan kawasan hijau.",
+    "TAGALOG": "Magsimula sa pag-tap ng 1, pagkatapos i-tap ang pinakamaliit na berdeng lugar. Alternating sa pagitan ng numero at berdeng lugar.",
+    "MALAYALAM": "1 ടാപ്പ് ചെയ്തുകൊണ്ട് ആരംഭിക്കുക, തുടർന്ന് ഏറ്റവും ചെറിയ പച്ച പ്രദേശം ടാപ്പ് ചെയ്യുക. നമ്പറും പച്ച പ്രദേശവും തമ്മിൽ മാറിമാറി."
+  },
+  "Start at ‘1’. Tap it": {
+    "ENGLISH": "Start at ‘1’. Tap it",
+    "MANDARIN": "从\"1\"开始。点击它",
+    "BAHASA": "Mulai dari '1'. Ketuk",
+    "MALAY": "Mulakan pada '1'. Ketik ia",
+    "TAGALOG": "Magsimula sa '1'. I-tap ito",
+    "MALAYALAM": "1'-ൽ ആരംഭിക്കുക. അത് ടാപ്പ് ചെയ്യുക"
+  },
+  "Then, tap smallest green area": {
+    "ENGLISH": "Then, tap smallest green area",
+    "MANDARIN": "然后，点击最小的绿色区域",
+    "BAHASA": "Kemudian, ketuk area hijau terkecil",
+    "MALAY": "Kemudian, ketik kawasan hijau terkecil",
+    "TAGALOG": "Pagkatapos, i-tap ang pinakamaliit na berdeng lugar",
+    "MALAYALAM": "തുടർന്ന്, ഏറ്റവും ചെറിയ പച്ച പ്രദേശം ടാപ്പ് ചെയ്യുക"
+  },
+  "Next is the untapped smallest number, it is 2.": {
+    "ENGLISH": "Next is the untapped smallest number, it is 2.",
+    "MANDARIN": "接下来是未点击的最小数字，是2。",
+    "BAHASA": "Selanjutnya adalah angka terkecil yang belum diketuk, yaitu 2.",
+    "MALAY": "Seterusnya adalah nombor terkecil yang belum diketik, iaitu 2.",
+    "TAGALOG": "Susunod ay ang hindi pa na-tap na pinakamaliit na numero, ito ay 2.",
+    "MALAYALAM": "അടുത്തത് ടാപ്പ് ചെയ്യാത്ത ഏറ്റവും ചെറിയ നമ്പർ, അത് 2 ആണ്."
+  },
+  "Then find the next smallest untapped green area and tap it.": {
+    "ENGLISH": "Then find the next smallest untapped green area and tap it.",
+    "MANDARIN": "然后找到下一个未点击的最小绿色区域并点击它。",
+    "BAHASA": "Kemudian temukan area hijau yang belum diketuk terkecil berikutnya dan ketuk.",
+    "MALAY": "Kemudian cari kawasan hijau terkecil yang belum diketik seterusnya dan ketik ia.",
+    "TAGALOG": "Pagkatapos hanapin ang susunod na pinakamaliit na hindi pa na-tap na berdeng lugar at i-tap ito.",
+    "MALAYALAM": "തുടർന്ന് അടുത്ത ഏറ്റവും ചെറിയ ടാപ്പ് ചെയ്യാത്ത പച്ച പ്രദേശം കണ്ടെത്തി അത് ടാപ്പ് ചെയ്യുക."
+  },
+  "Great": {
+    "ENGLISH": "Great",
+    "MANDARIN": "太好了",
+    "BAHASA": "Bagus",
+    "MALAY": "Bagus",
+    "TAGALOG": "Mahusay",
+    "MALAYALAM": "മികച്ചത്"
+  },
+  "Tap all the circles until you reach the very last Green Area.": {
+    "ENGLISH": "Tap all the circles until you reach the very last Green Area.",
+    "MANDARIN": "点击所有圆圈，直到到达最后一个绿色区域。",
+    "BAHASA": "Ketuk semua lingkaran sampai Anda mencapai Area Hijau terakhir.",
+    "MALAY": "Ketik semua bulatan sehingga anda mencapai Kawasan Hijau terakhir.",
+    "TAGALOG": "I-tap ang lahat ng bilog hanggang sa maabot mo ang huling Berdeng Lugar.",
+    "MALAYALAM": "അവസാനത്തെ പച്ച പ്രദേശം എത്തുന്നതുവരെ എല്ലാ വൃത്തങ്ങളും ടാപ്പ് ചെയ്യുക."
+  },
+  "Be careful where you tap, tapping in the wrong order will lead to this.": {
+    "ENGLISH": "Be careful where you tap, tapping in the wrong order will lead to this.",
+    "MANDARIN": "小心点击位置，以错误的顺序点击会导致这种情况。",
+    "BAHASA": "Hati-hati di mana Anda mengetuk, mengetuk dalam urutan yang salah akan menyebabkan ini.",
+    "MALAY": "Berhati-hati di mana anda mengetik, mengetik dalam susunan yang salah akan membawa kepada ini.",
+    "TAGALOG": "Mag-ingat kung saan ka mag-tap, ang pag-tap sa maling pagkakasunod-sunod ay magreresulta sa ito.",
+    "MALAYALAM": "നിങ്ങൾ എവിടെ ടാപ്പ് ചെയ്യുന്നു എന്ന് ശ്രദ്ധിക്കുക, തെറ്റായ ക്രമത്തിൽ ടാപ്പ് ചെയ്യുന്നത് ഇതിലേക്ക് നയിക്കും."
+  },
+  "Now try tapping the next 4 by yourself.": {
+    "ENGLISH": "Now try tapping the next 4 by yourself.",
+    "MANDARIN": "现在自己尝试点击接下来的4个。",
+    "BAHASA": "Sekarang coba ketuk 4 berikutnya sendiri.",
+    "MALAY": "Sekarang cuba ketik 4 seterusnya sendiri.",
+    "TAGALOG": "Ngayon subukan ang pag-tap ng susunod na 4 mag-isa.",
+    "MALAYALAM": "ഇപ്പോൾ അടുത്ത 4 എണ്ണം സ്വയം ടാപ്പ് ചെയ്യാൻ ശ്രമിക്കുക."
+  }
+}

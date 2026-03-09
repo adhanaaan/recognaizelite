@@ -1,0 +1,99 @@
+.button {
+	border-radius: 24px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-family: inherit;
+	font-size: 20px;
+	padding: 12px 16px;
+	cursor: pointer;
+	border: none;
+	transition: all 0.2s ease;
+	position: relative;
+	font-family: 'Avenir', Helvetica, Arial, sans-serif;
+}
+
+// Full width support
+.fullWidth {
+	width: 100%;
+}
+
+// Variants
+.text {
+	background: transparent;
+	color: var(--base-color);
+}
+
+.outline {
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 40.63%, rgba(255, 255, 255, 0.12) 92.71%, rgba(255, 255, 255, 0.4) 100%);
+	color: #3A3A3A;
+}
+
+.contained {
+	background: linear-gradient(180deg, #138BB6 1.04%, #002D7C 98.96%);
+	color: var(--text-color);
+	transition: all 0.2s ease;
+
+	&:not(:disabled):hover {
+		background: linear-gradient(180deg, #2D9AC0 1.04%, #1C3E83 98.96%);
+	}
+}
+
+
+// Disabled States
+.text-disabled {
+	color: #6e759f !important;
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+.outline-disabled {
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 40.63%, rgba(255, 255, 255, 0.12) 92.71%, rgba(255, 255, 255, 0.4) 100%);
+	color: #787878 !important;
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+.contained-disabled {
+	background: linear-gradient(180deg, #52B1D4 1.04%, #3B62A6 98.96%);
+
+	color: #ffffff !important;
+	cursor: not-allowed;
+	opacity: 1; // Remove opacity so gradient is visible
+}
+
+// Color system using CSS variables
+.button-color--color-primary {
+	--base-color: linear-gradient(180deg, #138BB6 1.04%, #002D7C 98.96%);
+	--text-color: #ffffff;
+}
+.button-color--color-success {
+	--base-color: #44d600;
+	--text-color: #ffffff;
+}
+.button-color--color-error {
+	--base-color: #ff1a43;
+	--text-color: #ffffff;
+}
+.button-color--color-warning {
+	--base-color: #ffa31a;
+	--text-color: #ffffff;
+}
+.button-color--color-info {
+	--base-color: #33c2ff;
+	--text-color: #ffffff;
+}
+.button-color--color-text {
+	--base-color: #6e759f;
+	--text-color: #ffffff;
+}
+.button-color--color-disabled {
+	--base-color: #59667f;
+	--text-color: #ffffff;
+}
+
+// Spinner wrapper (for spacing)
+.spinnerWrapper {
+	display: inline-flex;
+	margin-left: 8px;
+}

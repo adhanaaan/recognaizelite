@@ -1,0 +1,321 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent: #642b73;
+  --task1: #00678c;
+  --task2: #630092;
+  --task3: #02865e;
+  --task4: #006d85;
+  --task5: #c95101;
+  --task6: #c2a03a;
+  --pc-screen-width: 1285;
+  --pc-screen-height: 804;
+}
+
+:root {
+  --accent: #642b73;
+  --task1: #00678c;
+  --task2: #630092;
+  --task3: #02865e;
+  --task4: #006d85;
+  --task5: #c95101;
+  --task6: #c2a03a;
+}
+
+h1 {
+}
+h2,
+h3,
+h4 {
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+p {
+  font-size: 1rem;
+}
+
+html,
+body,
+#__next {
+  @apply overflow-y-auto full;
+}
+
+body {
+  @apply bg-gray-900;
+}
+
+#__next {
+  @apply relative overflow-x-hidden overflow-y-hidden bg-white;
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  height: 0;
+  width: 0;
+}
+
+#__next::-webkit-scrollbar {
+  height: 0;
+  width: 0;
+}
+
+/* for non-firefox */
+::-webkit-scrollbar {
+  overflow: overlay;
+  @apply w-0.5 lg:w-1.5;
+}
+
+.scroll-thin::-webkit-scrollbar {
+  @apply w-0.5;
+}
+
+::-webkit-scrollbar-track {
+  display: initial;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #f2f2f2;
+  border-radius: 5px;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .h-screen::-webkit-scrollbar {
+    height: 0;
+    width: 0;
+  }
+}
+
+.section-padding {
+  padding: 40px 24px;
+}
+
+.section-padding-large {
+  padding: 80px 24px;
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .section-padding {
+    padding: 60px 48px;
+  }
+
+  .section-padding-large {
+    padding: 120px 48px;
+  }
+}
+
+@media (max-height: 768px) {
+  .section-padding {
+    padding: 24px;
+  }
+
+  .section-padding-large {
+    padding: 40px 24px;
+  }
+}
+
+.c-shadow {
+  box-shadow: 0px 4px 24px -1px rgba(167, 210, 208, 0.25);
+  backdrop-filter: blur(15px);
+}
+
+.home-logo {
+  width: 52px;
+  height: 45px;
+
+  /* Tablet (e.g., iPad, including iPad Pro 11") */
+  @media (min-width: 768px) {
+    width: 88px;
+    height: 70px;
+  }
+
+  /* Small desktop or larger tablets in landscape (e.g., iPad Pro 12.9") */
+  @media (min-width: 1024px) {
+    width: 100px;
+    height: 80px;
+  }
+
+  /* Large desktops or ultra-wide screens */
+  @media (min-width: 1440px) {
+    width: 120px;
+    height: 96px;
+  }
+}
+
+.pc-screen-root {
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.pc-screen-stage,
+.pc-screen-canvas {
+  width: 100%;
+  height: 100dvh;
+}
+
+.pc-screen-canvas {
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .pc-screen-root {
+    display: block;
+    overflow: hidden;
+  }
+
+  .pc-screen-stage {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
+  .pc-screen-canvas {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+.report-print-container {
+  width: 100%;
+}
+
+.report-print-layout {
+  width: 100%;
+}
+
+.report-canvas {
+  width: 100%;
+  max-width: 595px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 1024px) {
+  .report-canvas-desktop {
+    max-width: 1720px;
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 8mm;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body,
+  #__next,
+  #__next > div {
+    background: #ffffff !important;
+  }
+
+  html,
+  body,
+  #__next {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .print-hidden {
+    display: none !important;
+  }
+
+  .report-print-container {
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  .report-print-layout {
+    min-height: auto !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    align-items: stretch !important;
+  }
+
+  .report-print-sections > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0 !important;
+  }
+
+  .report-print-sections {
+    width: 100% !important;
+  }
+
+  .report-canvas {
+    width: 100% !important;
+    max-width: 178mm !important;
+    margin: 0 auto !important;
+  }
+
+  .print-page {
+    width: 100% !important;
+    min-height: calc(297mm - 16mm);
+    height: calc(297mm - 16mm);
+    margin: 0 auto !important;
+    break-after: page;
+    page-break-after: always;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    overflow: hidden;
+  }
+
+  .print-page > .report-canvas {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .report-page-fill {
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    transform: scale(0.88);
+    transform-origin: top center;
+    box-shadow: none !important;
+  }
+
+  .print-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .full {
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  .overflow-y-auto,
+  .overflow-y-hidden,
+  .overflow-hidden,
+  .overflow-x-hidden {
+    overflow: visible !important;
+  }
+}

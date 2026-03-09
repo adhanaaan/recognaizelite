@@ -1,0 +1,74 @@
+{
+  "Symbol Matching": {
+    "ENGLISH": "Symbol Matching",
+    "MANDARIN": "符号匹配",
+    "BAHASA": "Pencocokan Simbol",
+    "MALAY": "Padanan Simbol",
+    "TAGALOG": "Pagtutugma ng Simbolo",
+    "MALAYALAM": "ചിഹ്ന പൊരുത്തം"
+  },
+  "Processing Speed": {
+    "ENGLISH": "Processing Speed",
+    "MANDARIN": "处理速度",
+    "BAHASA": "Kecepatan Pemrosesan",
+    "MALAY": "Kelajuan Pemprosesan",
+    "TAGALOG": "Bilis ng Pagproseso",
+    "MALAYALAM": "പ്രോസസ്സിംഗ് വേഗത"
+  },
+  "Processing Speed refers to how quickly your brain can understand and react to information.": {
+    "ENGLISH": "Processing Speed refers to how quickly your brain can understand and react to information.",
+    "MANDARIN": "处理速度是指您的大脑理解和反应信息的速度。",
+    "BAHASA": "Kecepatan Pemrosesan mengacu pada seberapa cepat otak Anda dapat memahami dan bereaksi terhadap informasi.",
+    "MALAY": "Kelajuan Pemprosesan merujuk kepada seberapa cepat otak anda boleh memahami dan bertindak balas terhadap maklumat.",
+    "TAGALOG": "Ang Bilis ng Pagproseso ay tumutukoy sa kung gaano kabilis maintindihan at tumugon ang iyong utak sa impormasyon.",
+    "MALAYALAM": "പ്രോസസ്സിംഗ് വേഗത എന്നത് നിങ്ങളുടെ മസ്തിഷ്കത്തിന് എത്ര വേഗത്തിൽ വിവരങ്ങൾ മനസ്സിലാക്കാനും പ്രതികരിക്കാനും കഴിയും എന്നതിനെ സൂചിപ്പിക്കുന്നു."
+  },
+  "Match as many symbols to their numbers  as possible within 1 minute.": {
+    "ENGLISH": "Match as many symbols to their numbers  as possible within 1 minute.",
+    "MANDARIN": "在1分钟内尽可能多地将符号与其数字匹配。",
+    "BAHASA": "Cocokkan sebanyak mungkin simbol dengan angkanya dalam 1 menit.",
+    "MALAY": "Padankan sebanyak mungkin simbol dengan nombor mereka dalam 1 minit.",
+    "TAGALOG": "Itugma ang maraming simbolo sa kanilang mga numero hangga't maaari sa loob ng 1 minuto.",
+    "MALAYALAM": "1 മിനിറ്റിനുള്ളിൽ കഴിയുന്നത്ര ചിഹ്നങ്ങളെ അവയുടെ സംഖ്യകളുമായി പൊരുത്തപ്പെടുത്തുക."
+  },
+  "Focus on the symbol at the top of the screen.": {
+    "ENGLISH": "Focus on the symbol at the top of the screen.",
+    "MANDARIN": "专注于屏幕顶部的符号。",
+    "BAHASA": "Fokus pada simbol di bagian atas layar.",
+    "MALAY": "Fokus pada simbol di bahagian atas skrin.",
+    "TAGALOG": "Tumuon sa simbolo sa itaas ng screen.",
+    "MALAYALAM": "സ്ക്രീനിന്റെ മുകളിലുള്ള ചിഹ്നത്തിൽ ശ്രദ്ധ കേന്ദ്രീകരിക്കുക."
+  },
+  "Look for the matching symbol and its number. Here, it is 6.": {
+    "ENGLISH": "Look for the matching symbol and its number. Here, it is 6.",
+    "MANDARIN": "寻找匹配的符号及其数字。在这里，是6。",
+    "BAHASA": "Here, it is 6.: Cari simbol yang cocok dan angkanya. Di sini, itu adalah 6.",
+    "MALAY": "Cari simbol yang sepadan dan nombornya. Di sini, ia adalah 6.",
+    "TAGALOG": "Hanapin ang tugmang simbolo at ang numero nito. Dito, ito ay 6.",
+    "MALAYALAM": "പൊരുത്തപ്പെടുന്ന ചിഹ്നവും അതിന്റെ നമ്പറും തിരയുക. ഇവിടെ, അത് 6 ആണ്."
+  },
+  "Tap “6” in the number pad below.": {
+    "ENGLISH": "Tap “6” in the number pad below.",
+    "MANDARIN": "点击下方数字键盘中的\"6\"。",
+    "BAHASA": "Ketuk \"6\" di papan angka di bawah.",
+    "MALAY": "Ketik \"6\" dalam pad nombor di bawah.",
+    "TAGALOG": "I-tap ang \"6\" sa number pad sa ibaba.",
+    "MALAYALAM": "താഴെയുള്ള നമ്പർ പാഡിൽ \"6\" ടാപ്പ് ചെയ്യുക."
+  },
+  "Be careful, the order of the symbols will change after every turn.": {
+    "ENGLISH": "Be careful, the order of the symbols will change after every turn.",
+    "MANDARIN": "请注意，符号的顺序在每轮后都会改变。",
+    "BAHASA": "Hati-hati, urutan simbol akan berubah setelah setiap giliran.",
+    "MALAY": "Berhati-hati, susunan simbol akan berubah selepas setiap giliran.",
+    "TAGALOG": "Mag-ingat, ang pagkakasunod-sunod ng mga simbolo ay magbabago pagkatapos ng bawat turn.",
+    "MALAYALAM": "ശ്രദ്ധിക്കുക, ഓരോ തവണയ്ക്കും ശേഷം ചിഹ്നങ്ങളുടെ ക്രമം മാറും."
+  },
+  "Now try out the next 3 rounds by yourself!": {
+    "ENGLISH": "Now try out the next 3 rounds by yourself!",
+    "MANDARIN": "现在自己尝试接下来的3轮！",
+    "BAHASA": "Sekarang coba 3 putaran berikutnya sendiri!",
+    "MALAY": "Sekarang cuba 3 pusingan seterusnya sendiri!",
+    "TAGALOG": "Ngayon subukan ang susunod na 3 rounds mag-isa!",
+    "MALAYALAM": "ഇപ്പോൾ അടുത്ത 3 റൗണ്ടുകൾ സ്വയം പരീക്ഷിക്കുക!"
+  }
+}

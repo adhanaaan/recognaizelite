@@ -1,0 +1,74 @@
+{
+  "Email": {
+    "ENGLISH": "Email",
+    "MANDARIN": "电子邮箱",
+    "BAHASA": "Email",
+    "MALAY": "Email",
+    "TAGALOG": "Email",
+    "MALAYALAM": "ഇമെയിൽ"
+  },
+  "Password": {
+    "ENGLISH": "Password",
+    "MANDARIN": "密码",
+    "BAHASA": "Kata Sandi",
+    "MALAY": "Kata Laluan",
+    "TAGALOG": "Password",
+    "MALAYALAM": "പാസ്‌വേഡ്"
+  },
+  "Remember me": {
+    "ENGLISH": "Remember me",
+    "MANDARIN": "记住我",
+    "BAHASA": "Ingat saya",
+    "MALAY": "Ingat saya",
+    "TAGALOG": "Tandaan ako",
+    "MALAYALAM": "എന്നെ ഓർക്കുക"
+  },
+  "Forgot password?": {
+    "ENGLISH": "Forgot password?",
+    "MANDARIN": "忘记密码？",
+    "BAHASA": "Lupa kata sandi?",
+    "MALAY": "Lupa kata laluan?",
+    "TAGALOG": "Nakalimutan ang password?",
+    "MALAYALAM": "പാസ്‌വേഡ് മറന്നോ?"
+  },
+  "User ID": {
+    "ENGLISH": "User ID",
+    "MANDARIN": "用户ID",
+    "BAHASA": "ID Pengguna",
+    "MALAY": "ID Pengguna",
+    "TAGALOG": "User ID",
+    "MALAYALAM": "യൂസർ ഐഡി"
+  },
+  "Log in": {
+    "ENGLISH": "Log in",
+    "MANDARIN": "登录",
+    "BAHASA": "Masuk",
+    "MALAY": "Log masuk",
+    "TAGALOG": "Mag-log in",
+    "MALAYALAM": "ലോഗിൻ ചെയ്യുക"
+  },
+  "Don't have an account?": {
+    "ENGLISH": "Don't have an account?",
+    "MANDARIN": "还没有账户？",
+    "BAHASA": "Belum punya akun?",
+    "MALAY": "Tiada akaun?",
+    "TAGALOG": "Walang account?",
+    "MALAYALAM": "അക്കൗണ്ട് ഇല്ലേ?"
+  },
+  "Request a demo": {
+    "ENGLISH": "Request a demo",
+    "MANDARIN": "申请演示",
+    "BAHASA": "Minta demo",
+    "MALAY": "Minta demo",
+    "TAGALOG": "Humiling ng demo",
+    "MALAYALAM": "ഡെമോ അഭ്യർത്ഥിക്കുക"
+  },
+  "Incorrect email or password": {
+    "ENGLISH": "Incorrect email or password",
+    "MANDARIN": "电子邮箱或密码错误",
+    "BAHASA": "Email atau kata sandi salah",
+    "MALAY": "Email atau kata laluan salah",
+    "TAGALOG": "Maling email o password",
+    "MALAYALAM": "തെറ്റായ ഇമെയിൽ അല്ലെങ്കിൽ പാസ്‌വേഡ്"
+  }
+}

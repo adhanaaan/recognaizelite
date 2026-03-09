@@ -1,0 +1,90 @@
+{
+  "Health Questionnaire": {
+    "ENGLISH": "Health Questionnaire",
+    "MANDARIN": "健康问卷",
+    "BAHASA": "Kuesioner Kesehatan",
+    "MALAY": "Soal Selidik Kesihatan",
+    "TAGALOG": "Questionnaire sa Kalusugan",
+    "MALAYALAM": "ആരോഗ്യ ചോദ്യാവലി"
+  },
+  "What year were you born?": {
+    "ENGLISH": "What year were you born?",
+    "MANDARIN": "您出生于哪一年？",
+    "BAHASA": "Tahun berapa Anda lahir?",
+    "MALAY": "Tahun berapa anda dilahirkan?",
+    "TAGALOG": "Anong taon ka ipinanganak?",
+    "MALAYALAM": "നിങ്ങൾ ഏത് വർഷമാണ് ജനിച്ചത്?"
+  },
+  "Have you been diagnosed by a doctor or taking medication for any of the vascular health conditions in the past 1 year?\nSelect all that apply.": {
+    "ENGLISH": "Have you been diagnosed by a doctor or taking medication for any of the vascular health conditions in the past 1 year?\nSelect all that apply.",
+    "MANDARIN": "在过去1年内，您是否被医生诊断出或正在服药治疗以下任何血管健康状况？\n选择所有适用项。",
+    "BAHASA": "Apakah Anda telah didiagnosis oleh dokter atau mengonsumsi obat untuk kondisi kesehatan vaskular berikut dalam 1 tahun terakhir? \nPilih semua yang berlaku.",
+    "MALAY": "Adakah anda telah didiagnosis oleh doktor atau mengambil ubat untuk mana-mana keadaan kesihatan vaskular berikut dalam tempoh 1 tahun yang lalu? \nPilih semua yang berkenaan.",
+    "TAGALOG": "Na-diagnose ka na ba ng isang doktor o umiinom ka ba ng gamot para sa alinman sa mga kondisyong pang-vascular sa nakaraang 1 taon? \nPiliin ang lahat ng naaangkop.",
+    "MALAYALAM": "കഴിഞ്ഞ 1 വർഷത്തിനുള്ളിൽ താഴെപ്പറയുന്ന ഏതെങ്കിലും രക്തക്കുഴൽ ആരോഗ്യ അവസ്ഥകൾക്ക് ഡോക്ടർ നിങ്ങളെ രോഗനിർണയം നടത്തിയിട്ടുണ്ടോ അല്ലെങ്കിൽ മരുന്ന് കഴിക്കുന്നുണ്ടോ? ബാധകമായവയെല്ലാം തിരഞ്ഞെടുക്കുക."
+  },
+  "High blood pressure": {
+    "ENGLISH": "High blood pressure",
+    "MANDARIN": "高血压",
+    "BAHASA": "Tekanan darah tinggi",
+    "MALAY": "Tekanan darah tinggi",
+    "TAGALOG": "Altapresyon",
+    "MALAYALAM": "ഉയർന്ന രക്തസമ്മർദ്ദം"
+  },
+  "High cholesterol": {
+    "ENGLISH": "High cholesterol",
+    "MANDARIN": "高胆固醇",
+    "BAHASA": "Kolesterol tinggi",
+    "MALAY": "Kolesterol tinggi",
+    "TAGALOG": "Mataas na kolesterol",
+    "MALAYALAM": "ഉയർന്ന കൊളസ്ട്രോൾ"
+  },
+  "Diabetes": {
+    "ENGLISH": "Diabetes",
+    "MANDARIN": "糖尿病",
+    "BAHASA": "Diabetes melitus",
+    "MALAY": "Kencing Manis",
+    "TAGALOG": "Diabetes mellitus",
+    "MALAYALAM": "പ്രമേഹം"
+  },
+  "Smoking": {
+    "ENGLISH": "Smoking",
+    "MANDARIN": "吸烟",
+    "BAHASA": "Merokok",
+    "MALAY": "Merokok",
+    "TAGALOG": "Paninigarilyo",
+    "MALAYALAM": "പുകവലി"
+  },
+  "Obesity": {
+    "ENGLISH": "Obesity",
+    "MANDARIN": "肥胖",
+    "BAHASA": "Obesitas",
+    "MALAY": "Obesiti",
+    "TAGALOG": "Obesity",
+    "MALAYALAM": "അമിതവണ്ണം"
+  },
+  "None of the above": {
+    "ENGLISH": "None of the above",
+    "MANDARIN": "以上皆无",
+    "BAHASA": "Tidak ada yang di atas",
+    "MALAY": "Tiada yang di atas",
+    "TAGALOG": "Wala sa nabanggit",
+    "MALAYALAM": "മേൽപ്പറഞ്ഞവയൊന്നുമില്ല"
+  },
+  "I hereby declare that the information given above is correct.": {
+    "ENGLISH": "I hereby declare that the information given above is correct.",
+    "MANDARIN": "我在此声明以上提供的信息是正确的。",
+    "BAHASA": "Dengan ini saya menyatakan bahwa informasi yang diberikan di atas adalah benar.",
+    "MALAY": "Saya dengan ini mengisytiharkan bahawa maklumat yang diberikan di atas adalah betul.",
+    "TAGALOG": "Ako ay nagpapahayag na ang impormasyong ibinigay ko sa itaas ay tama.",
+    "MALAYALAM": "മുകളിൽ നൽകിയിരിക്കുന്ന വിവരങ്ങൾ ശരിയാണെന്ന് ഞാൻ ഇതിനാൽ പ്രഖ്യാപിക്കുന്നു."
+  },
+  "Continue": {
+    "ENGLISH": "Continue",
+    "MANDARIN": "继续",
+    "BAHASA": "Lanjutkan",
+    "MALAY": "Teruskan",
+    "TAGALOG": "Magpatuloy",
+    "MALAYALAM": "തുടരുക"
+  }
+}

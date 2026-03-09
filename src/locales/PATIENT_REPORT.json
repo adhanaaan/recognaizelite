@@ -1,0 +1,50 @@
+{
+  "Patient report": {
+    "ENGLISH": "Patient report",
+    "MANDARIN": "患者报告",
+    "BAHASA": "Laporan pasien",
+    "MALAY": "Laporan pesakit",
+    "TAGALOG": "Ulat ng pasyente",
+    "MALAYALAM": "രോഗി റിപ്പോർട്ട്"
+  },
+  "Enter Patient ID": {
+    "ENGLISH": "Enter Patient ID",
+    "MANDARIN": "输入患者ID",
+    "BAHASA": "Masukkan ID Pasien",
+    "MALAY": "Masukkan ID Pesakit",
+    "TAGALOG": "Ilagay ang Patient ID",
+    "MALAYALAM": "രോഗി ഐഡി നൽകുക"
+  },
+  "Download report": {
+    "ENGLISH": "Download report",
+    "MANDARIN": "下载报告",
+    "BAHASA": "Unduh laporan",
+    "MALAY": "Muat turun laporan",
+    "TAGALOG": "I-download ang ulat",
+    "MALAYALAM": "റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക"
+  },
+  "Patient ID does not exist": {
+    "ENGLISH": "Patient ID does not exist",
+    "MANDARIN": "患者ID不存在",
+    "BAHASA": "ID Pasien tidak ada",
+    "MALAY": "ID Pesakit tidak wujud",
+    "TAGALOG": "Ang Patient ID ay hindi umiiral",
+    "MALAYALAM": "രോഗി ഐഡി നിലവിലില്ല"
+  },
+  "Generating report...": {
+    "ENGLISH": "Generating report...",
+    "MANDARIN": "正在生成报告...",
+    "BAHASA": "Membuat laporan...",
+    "MALAY": "Menjana laporan...",
+    "TAGALOG": "Gumagawa ng ulat...",
+    "MALAYALAM": "റിപ്പോർട്ട് സൃഷ്ടിക്കുന്നു..."
+  },
+  "This may take a few seconds": {
+    "ENGLISH": "This may take a few seconds",
+    "MANDARIN": "这可能需要几秒钟",
+    "BAHASA": "Ini mungkin memakan waktu beberapa detik",
+    "MALAY": "Ini mungkin mengambil masa beberapa saat",
+    "TAGALOG": "Maaaring tumagal ito ng ilang segundo",
+    "MALAYALAM": "ഇത് ഏതാനും സെക്കൻഡുകൾ എടുത്തേക്കാം"
+  }
+}

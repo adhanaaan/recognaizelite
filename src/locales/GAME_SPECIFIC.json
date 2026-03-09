@@ -1,0 +1,146 @@
+{
+  "Next test": {
+    "ENGLISH": "Next test",
+    "MANDARIN": "下一个测试",
+    "BAHASA": "Tes berikutnya",
+    "MALAY": "Ujian seterusnya",
+    "TAGALOG": "Susunod na pagsusulit",
+    "MALAYALAM": "അടുത്ത ടെസ്റ്റ്"
+  },
+  "x tests remaining": {
+    "ENGLISH": "x tests remaining",
+    "MANDARIN": "剩余x个测试",
+    "BAHASA": "x tes tersisa",
+    "MALAY": "x ujian berbaki",
+    "TAGALOG": "x pagsusulit ang natitira",
+    "MALAYALAM": "x ടെസ്റ്റുകൾ ശേഷിക്കുന്നു"
+  },
+  "Watch demo": {
+    "ENGLISH": "Watch demo",
+    "MANDARIN": "观看演示",
+    "BAHASA": "Tonton demo",
+    "MALAY": "Tonton demo",
+    "TAGALOG": "Panoorin ang demo",
+    "MALAYALAM": "ഡെമോ കാണുക"
+  },
+  "Start tutorial": {
+    "ENGLISH": "Start tutorial",
+    "MANDARIN": "开始教程",
+    "BAHASA": "Mulai tutorial",
+    "MALAY": "Mula tutorial",
+    "TAGALOG": "Simulan ang tutorial",
+    "MALAYALAM": "ട്യൂട്ടോറിയൽ ആരംഭിക്കുക"
+  },
+  "Test Complete": {
+    "ENGLISH": "Test Complete",
+    "MANDARIN": "测试完成",
+    "BAHASA": "Tes Selesai",
+    "MALAY": "Ujian Selesai",
+    "TAGALOG": "Kumpleto na ang Pagsusulit",
+    "MALAYALAM": "ടെസ്റ്റ് പൂർത്തിയായി"
+  },
+  "Assessment Complete": {
+    "ENGLISH": "Assessment Complete",
+    "MANDARIN": "评估完成",
+    "BAHASA": "Penilaian Selesai",
+    "MALAY": "Penilaian Selesai",
+    "TAGALOG": "Kumpleto na ang Assessment",
+    "MALAYALAM": "വിലയിരുത്തൽ പൂർത്തിയായി"
+  },
+  "Well done on completing the tests, talk to your doctor to get your result.": {
+    "ENGLISH": "Well done on completing the tests, talk to your doctor to get your result.",
+    "MANDARIN": "完成测试做得很好，请与您的医生获取您的结果。",
+    "BAHASA": "Selamat telah menyelesaikan tes, bicarakan dengan dokter Anda untuk mendapatkan hasilnya.",
+    "MALAY": "Syabas kerana menyelesaikan ujian, bercakap dengan doktor anda untuk mendapatkan keputusan anda.",
+    "TAGALOG": "Mahusay na natapos mo ang mga pagsusulit, makipag-usap sa iyong doktor upang makuha ang iyong resulta.",
+    "MALAYALAM": "ടെസ്റ്റുകൾ പൂർത്തിയാക്കിയതിന് നന്ദി, നിങ്ങളുടെ ഫലം ലഭിക്കാൻ നിങ്ങളുടെ ഡോക്ടറുമായി സംസാരിക്കുക."
+  },
+  "Leave": {
+    "ENGLISH": "Leave",
+    "MANDARIN": "离开",
+    "BAHASA": "Keluar",
+    "MALAY": "Keluar",
+    "TAGALOG": "Umalis",
+    "MALAYALAM": "പോകുക"
+  },
+  "Next": {
+    "ENGLISH": "Next",
+    "MANDARIN": "下一步",
+    "BAHASA": "Berikutnya",
+    "MALAY": "Seterusnya",
+    "TAGALOG": "Susunod",
+    "MALAYALAM": "അടുത്തത്"
+  },
+  "Previous": {
+    "ENGLISH": "Previous",
+    "MANDARIN": "上一步",
+    "BAHASA": "Sebelumnya",
+    "MALAY": "Sebelumnya",
+    "TAGALOG": "Nakaraan",
+    "MALAYALAM": "മുമ്പത്തേത്"
+  },
+  "Replay audio": {
+    "ENGLISH": "Replay audio",
+    "MANDARIN": "重播音频",
+    "BAHASA": "Putar ulang audio",
+    "MALAY": "Main semula audio",
+    "TAGALOG": "I-replay ang audio",
+    "MALAYALAM": "ഓഡിയോ വീണ്ടും പ്ലേ ചെയ്യുക"
+  },
+  "Demo": {
+    "ENGLISH": "Demo",
+    "MANDARIN": "演示",
+    "BAHASA": "Demo",
+    "MALAY": "Demo",
+    "TAGALOG": "Demo",
+    "MALAYALAM": "ഡെമോ"
+  },
+  "Score:": {
+    "ENGLISH": "Score:",
+    "MANDARIN": "分数:",
+    "BAHASA": "Skor:",
+    "MALAY": "Skor:",
+    "TAGALOG": "Puntos:",
+    "MALAYALAM": "സ്കോർ:"
+  },
+  "x Sec": {
+    "ENGLISH": "x Sec",
+    "MANDARIN": "x秒",
+    "BAHASA": "x Detik",
+    "MALAY": "x Saat",
+    "TAGALOG": "x Seg",
+    "MALAYALAM": "x സെക്കൻഡ്"
+  },
+  "Start demo": {
+    "ENGLISH": "Start demo",
+    "MANDARIN": "开始演示",
+    "BAHASA": "Mulai demo",
+    "MALAY": "Mula demo",
+    "TAGALOG": "Simulan ang demo",
+    "MALAYALAM": "ഡെമോ ആരംഭിക്കുക"
+  },
+  "Try again": {
+    "ENGLISH": "Try again",
+    "MANDARIN": "再试一次",
+    "BAHASA": "Coba lagi",
+    "MALAY": "Cuba lagi",
+    "TAGALOG": "Subukan muli",
+    "MALAYALAM": "വീണ്ടും ശ്രമിക്കുക"
+  },
+  "Start test": {
+    "ENGLISH": "Start test",
+    "MANDARIN": "开始测试",
+    "BAHASA": "Mulai tes",
+    "MALAY": "Mula ujian",
+    "TAGALOG": "Simulan ang pagsusulit",
+    "MALAYALAM": "ടെസ്റ്റ് ആരംഭിക്കുക"
+  },
+  "Great!\nNow it’s time to take the actual test.": {
+    "ENGLISH": "Great!\nNow it’s time to take the actual test.",
+    "MANDARIN": "现在是进行正式测试的时候了。",
+    "BAHASA": "Bagus! Sekarang saatnya untuk mengambil tes yang sebenarnya.",
+    "MALAY": "Bagus! Kini tiba masanya untuk mengambil ujian sebenar.",
+    "TAGALOG": "Mahusay! Panahon na para kunin ang aktwal na pagsusulit.",
+    "MALAYALAM": "മികച്ചത്! ഇപ്പോൾ യഥാർത്ഥ ടെസ്റ്റ് എടുക്കാനുള്ള സമയമാണ്."
+  }
+}

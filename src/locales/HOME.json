@@ -1,0 +1,42 @@
+{
+  "New assessment": {
+    "ENGLISH": "New assessment",
+    "MANDARIN": "新评估",
+    "BAHASA": "Penilaian baru",
+    "MALAY": "Penilaian baharu",
+    "TAGALOG": "Bagong assessment",
+    "MALAYALAM": "പുതിയ വിലയിരുത്തൽ"
+  },
+  "Create patient": {
+    "ENGLISH": "Create patient",
+    "MANDARIN": "创建患者",
+    "BAHASA": "Buat pasien",
+    "MALAY": "Cipta pesakit",
+    "TAGALOG": "Lumikha ng pasyente",
+    "MALAYALAM": "രോഗി സൃഷ്ടിക്കുക"
+  },
+  "Patient report": {
+    "ENGLISH": "Patient report",
+    "MANDARIN": "患者报告",
+    "BAHASA": "Laporan pasien",
+    "MALAY": "Laporan pesakit",
+    "TAGALOG": "Ulat ng pasyente",
+    "MALAYALAM": "രോഗി റിപ്പോർട്ട്"
+  },
+  "Settings": {
+    "ENGLISH": "Settings",
+    "MANDARIN": "设置",
+    "BAHASA": "Pengaturan",
+    "MALAY": "Tetapan",
+    "TAGALOG": "Mga setting",
+    "MALAYALAM": "ക്രമീകരണങ്ങൾ"
+  },
+  "Log out": {
+    "ENGLISH": "Log out",
+    "MANDARIN": "退出登录",
+    "BAHASA": "Keluar",
+    "MALAY": "Log keluar",
+    "TAGALOG": "Log out",
+    "MALAYALAM": "ലോഗ് ഔട്ട് ചെയ്യുക"
+  }
+}
