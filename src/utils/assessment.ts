@@ -53,3 +53,26 @@ export function clearAssessmentMode() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(ASSESSMENT_MODE_KEY);
 }
+
+// --- Hook mode (QR funnel) ---
+
+const HOOK_CLINIC_KEY = "recognaize-hook-clinic";
+
+export function setHookClinic(clinic: string) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(HOOK_CLINIC_KEY, clinic);
+}
+
+export function getHookClinic(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(HOOK_CLINIC_KEY);
+}
+
+export function isHookMode(): boolean {
+  return getHookClinic() !== null;
+}
+
+export function clearHookClinic() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(HOOK_CLINIC_KEY);
+}
