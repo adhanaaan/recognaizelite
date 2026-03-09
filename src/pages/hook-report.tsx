@@ -132,16 +132,16 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
 
 const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
   Low: {
-    headline: "This is just 1 of 4 cognitive areas.",
-    body: "You\u2019ve screened processing speed. A full cognitive screening also covers memory, attention, and executive function \u2014 giving you and your doctor a more complete picture to discuss together.",
+    headline: "You\u2019ve only seen 25% of the picture.",
+    body: "Processing speed is just one piece. Memory, attention, and executive function tell the rest of the story \u2014 and they don\u2019t always move together. The full screening takes 10 minutes.",
   },
   Medium: {
-    headline: "Want the full picture?",
-    body: "This screened processing speed \u2014 1 of 4 cognitive areas. The full assessment also covers memory, attention, and executive function, and takes about 10 minutes.",
+    headline: "Good start. But there\u2019s more to the story.",
+    body: "You\u2019ve tested processing speed \u2014 1 of 4 cognitive areas. Memory, attention, and executive function each reveal something different. The full screening takes 10 minutes.",
   },
   High: {
-    headline: "Processing speed looks good. What about the rest?",
-    body: "This covered 1 of 4 cognitive areas. A full screening also checks memory, attention, and executive function \u2014 areas that are worth understanding alongside processing speed.",
+    headline: "Sharp here. But what about the other 75%?",
+    body: "Processing speed is strong \u2014 great. But memory, attention, and executive function are independent areas. Knowing all four gives you the complete picture. Takes 10 minutes.",
   },
 };
 
@@ -282,7 +282,7 @@ export default function HookReportPage() {
                     Ask {clinic !== "your clinic" ? <span className="text-[#7EB8FF]">{clinic}</span> : "your doctor"} about the full RecognAIze screening.
                   </p>
                   <p className="mt-1.5 text-[14px] text-blue-200">
-                    About 10 minutes. Available at this clinic.
+                    10 minutes. No preparation needed.
                   </p>
                 </div>
                 <p className="mt-4 text-[11px] leading-normal text-[#999] md:text-[12px]">
