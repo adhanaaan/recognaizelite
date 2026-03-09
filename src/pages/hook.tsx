@@ -28,7 +28,7 @@ export default function HookEntry() {
   };
 
   return (
-    <Background className="justify-between section-padding-large">
+    <Background className="justify-center gap-10 section-padding-large">
       <div className="space-y-4 sm:space-y-6">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="Gray Matter Logo" className="size-12 sm:size-14" />
@@ -41,14 +41,13 @@ export default function HookEntry() {
 
       <div className="w-full text-center space-y-5">
         <h1 className="text-3xl font-bold text-[#002D7C] sm:text-4xl leading-tight">
-          Quick Brain
+          How Sharp Is
           <br />
-          <span className="text-[#630092]">Check</span>
+          <span className="text-[#630092]">Your Brain?</span>
         </h1>
 
         <p className="text-base text-gray-600 sm:text-lg max-w-md mx-auto leading-relaxed">
-          Take a <strong>1-minute</strong> cognitive screening game to check your processing speed.
-          It's quick, free, and completely anonymous.
+          Play a <strong>1-minute game</strong>. Get a real cognitive score — benchmarked against your age group.
         </p>
 
         <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
@@ -56,7 +55,7 @@ export default function HookEntry() {
             <circle cx="12" cy="12" r="10" />
             <path d="M12 6v6l4 2" />
           </svg>
-          <span>Takes about 2 minutes including tutorial</span>
+          <span>Just 2 minutes — including the tutorial</span>
         </div>
       </div>
 
@@ -66,7 +65,7 @@ export default function HookEntry() {
             Provided by <strong className="text-[#002D7C]">{clinic}</strong>
           </p>
         )}
-        <Button onClick={handleStart}>Start Screening</Button>
+        <Button onClick={handleStart}>Play Now</Button>
       </div>
     </Background>
   );
