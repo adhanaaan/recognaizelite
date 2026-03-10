@@ -53,9 +53,8 @@ p {
 }
 
 html,
-body,
-#__next {
-  @apply overflow-y-auto full;
+body {
+  @apply w-full h-[100dvh] overflow-hidden;
 }
 
 body {
@@ -63,7 +62,7 @@ body {
 }
 
 #__next {
-  @apply relative overflow-x-hidden overflow-y-hidden bg-white;
+  @apply relative w-full h-full overflow-hidden bg-white;
 }
 
 .scroll-hidden::-webkit-scrollbar {
@@ -160,6 +159,8 @@ body {
 }
 
 .pc-screen-root {
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100dvh;
   overflow: hidden;
