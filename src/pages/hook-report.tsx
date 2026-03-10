@@ -132,16 +132,16 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
 
 const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
   Low: {
-    headline: "You\u2019ve only seen 25% of the picture.",
-    body: "Processing speed is just one piece. Memory, attention, and executive function tell the rest of the story \u2014 and they don\u2019t always move together. The full screening takes 10 minutes.",
+    headline: "This is worth looking into further.",
+    body: "Processing speed is 1 of 4 cognitive areas. Changes in memory, attention, and executive function can be just as subtle \u2014 and catching them early gives you more options. The full screening takes 10 minutes.",
   },
   Medium: {
-    headline: "Good start. But there\u2019s more to the story.",
-    body: "You\u2019ve tested processing speed \u2014 1 of 4 cognitive areas. Memory, attention, and executive function each reveal something different. The full screening takes 10 minutes.",
+    headline: "You\u2019ve seen 25% of the picture.",
+    body: "Processing speed is just the start. Memory, attention, and executive function each tell a different story \u2014 and they don\u2019t always change together. A full screening takes 10 minutes and gives you the complete picture.",
   },
   High: {
-    headline: "Sharp here. But what about the other 75%?",
-    body: "Processing speed is strong \u2014 great. But memory, attention, and executive function are independent areas. Knowing all four gives you the complete picture. Takes 10 minutes.",
+    headline: "Strong here. But what about the rest?",
+    body: "Processing speed is just 1 of 4 cognitive areas. Memory, attention, and executive function are independent \u2014 and early insight across all four helps you stay proactive about your brain health.",
   },
 };
 
@@ -282,7 +282,7 @@ export default function HookReportPage() {
                     Ask {clinic !== "your clinic" ? <span className="text-[#7EB8FF]">{clinic}</span> : "your doctor"} about the full RecognAIze screening.
                   </p>
                   <p className="mt-1.5 text-[14px] text-blue-200">
-                    10 minutes. No preparation needed.
+                    10 minutes · Non-invasive · Available at this clinic
                   </p>
                 </div>
                 <p className="mt-4 text-[11px] leading-normal text-[#999] md:text-[12px]">
