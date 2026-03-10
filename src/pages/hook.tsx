@@ -47,15 +47,25 @@ export default function HookEntry() {
         </h1>
 
         <p className="text-base text-gray-600 sm:text-lg max-w-md mx-auto leading-relaxed">
-          Play a <strong>1-minute game</strong>. Get a real cognitive score — benchmarked against your age group.
+          Cognitive changes can be subtle — and start earlier than most people think.
+          This <strong>1-minute game</strong> checks your processing speed and compares it to your age group.
         </p>
+
+        <div className="text-left max-w-xs mx-auto">
+          <p className="text-sm font-semibold text-[#002D7C]">Worth checking if you've noticed:</p>
+          <ul className="mt-2 space-y-1 text-sm text-gray-500">
+            <li>• Feeling mentally slower or more fatigued</li>
+            <li>• Difficulty concentrating or staying focused</li>
+            <li>• Taking longer to process new information</li>
+          </ul>
+        </div>
 
         <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
           <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <circle cx="12" cy="12" r="10" />
             <path d="M12 6v6l4 2" />
           </svg>
-          <span>Just 2 minutes — including the tutorial</span>
+          <span>Free · Anonymous · 2 minutes</span>
         </div>
       </div>
 
@@ -65,7 +75,7 @@ export default function HookEntry() {
             Provided by <strong className="text-[#002D7C]">{clinic}</strong>
           </p>
         )}
-        <Button onClick={handleStart}>Play Now</Button>
+        <Button onClick={handleStart}>Play Now — It's Free</Button>
       </div>
     </Background>
   );
