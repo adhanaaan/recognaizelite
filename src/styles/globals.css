@@ -55,7 +55,7 @@ p {
 html,
 body,
 #__next {
-  @apply w-full min-h-[100dvh];
+  @apply overflow-y-auto full;
 }
 
 body {
