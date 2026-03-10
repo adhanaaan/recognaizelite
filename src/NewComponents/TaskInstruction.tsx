@@ -47,7 +47,7 @@ export function TaskInstruction() {
   if (activeTask === "task4") return null;
 
   return (
-    <Background className="justify-between section-padding-large" gradient={activeTask}>
+    <Background className="justify-center gap-6 section-padding-large" gradient={activeTask}>
       <div className="justify-between w-full mx-auto f">
         <BackButton backUrl={isShortAssessment() ? "/landing" : "/about"} />
         <TimeRemainingCard time={task?.seconds} color={task?.color} disabled />

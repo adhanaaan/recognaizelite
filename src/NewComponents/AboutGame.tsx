@@ -28,7 +28,7 @@ export function AboutGame() {
   return (
     <>
       <div className="lg:hidden">
-        <Background className="justify-between section-padding-large" gradient={activeTask}>
+        <Background className="justify-center gap-6 section-padding-large" gradient={activeTask}>
           <div className="w-full mx-auto">{/* <BackButton /> */}</div>
 
           <div className="w-full mx-auto text-center cc">

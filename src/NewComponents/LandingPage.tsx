@@ -36,7 +36,7 @@ export function LandingPage() {
   };
 
   return (
-    <Background className="justify-between section-padding-large">
+    <Background className="justify-center gap-6 section-padding-large">
       <div className="space-y-5 sm:space-y-7">
         <div className={`${styles.container} max-w-screen-md`}>
           <img src="/logo.png" alt="Gray Matter Logo" className={styles.logo} />
