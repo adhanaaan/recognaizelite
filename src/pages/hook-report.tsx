@@ -277,6 +277,32 @@ export default function HookReportPage() {
                 <p className="mt-4 text-[15px] leading-relaxed text-[#555] md:text-[17px]">
                   {CTA_COPY[report.severity].body}
                 </p>
+
+                {/* Brain areas unlock grid */}
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                  {/* Unlocked: Processing Speed */}
+                  <div className="relative rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity!.color, backgroundColor: severity!.softColor }}>
+                    <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity!.color }}>
+                      &#10003; Checked
+                    </div>
+                    <div className="mt-1 text-[14px] font-bold text-[#20223A]">Processing Speed</div>
+                    <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity!.color }}>{severity!.label}</div>
+                  </div>
+                  {/* Locked areas */}
+                  {["Memory", "Attention", "Executive Function"].map((area) => (
+                    <div key={area} className="relative rounded-xl border-2 border-gray-200 bg-gray-50 px-4 py-4 text-center">
+                      <div className="text-[16px] text-gray-300">
+                        <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <rect x="3" y="11" width="18" height="11" rx="2" />
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                      </div>
+                      <div className="mt-1 text-[14px] font-bold text-gray-300">{area}</div>
+                      <div className="mt-0.5 text-[12px] font-semibold text-gray-300">Not tested</div>
+                    </div>
+                  ))}
+                </div>
+
                 <div className="mt-6 rounded-2xl bg-[#002D7C] px-5 py-5 text-center">
                   <p className="text-[18px] font-bold leading-snug text-white md:text-[20px]">
                     Ask {clinic !== "your clinic" ? <span className="text-[#7EB8FF]">{clinic}</span> : "your doctor"} about the full RecognAIze screening.
