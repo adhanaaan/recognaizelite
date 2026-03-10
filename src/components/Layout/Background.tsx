@@ -19,7 +19,7 @@ export function Background({
 }: React.HTMLAttributes<HTMLDivElement> & { gradient?: string; desktopFrame?: boolean; fluid?: boolean }) {
   const content = (
     <div
-      className={"full min-h-screen overflow-x-hidden overflow-y-auto fc"}
+      className={"w-full min-h-[100dvh] overflow-x-hidden fc"}
       style={{
         background: gradients[gradient],
       }}
