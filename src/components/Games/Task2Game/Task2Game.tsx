@@ -113,7 +113,7 @@ export const Task2Game: React.FC<{
 
   return (
     <div
-      className="items-center h-full fc section-padding justify-between gap-2.5"
+      className="items-center h-full fc px-6 py-4 tall:py-6 justify-between gap-1 tall:gap-2.5"
       style={{ background: "radial-gradient(#E4E3FF78, #D68DE878)" }}
     >
       <ResultOverlay result={result} />
@@ -123,7 +123,7 @@ export const Task2Game: React.FC<{
       <div
         id="sb-main-icon"
         className={[
-          "relative size-28 md:scale-125 lg:scale-150",
+          "relative size-20 tall:size-28 md:scale-125 lg:scale-150",
           result === "success" ? "text-emerald-500" : result === "error" ? "text-red-500" : "",
         ].join(" ")}
         style={{ background: "radial-gradient(circle 60px, white, transparent)" }}

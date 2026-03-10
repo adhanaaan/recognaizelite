@@ -32,7 +32,7 @@ export function NumberPad({ isTour, randomList, activeElement, onTourComplete, s
         "c-shadow",
         desktopDemo
           ? "w-[411.66px] h-[459px] rounded-[48.15px] border-[1.2px] border-white/50 px-[52.96px] py-[28.89px]"
-          : "px-5 py-3 w-full tall-lg:py-5 mx-auto rounded-[40px]",
+          : "px-5 py-2 tall:py-3 w-full tall-lg:py-5 mx-auto rounded-[40px]",
       ].join(" ")}
       style={{
         background:
@@ -43,7 +43,7 @@ export function NumberPad({ isTour, randomList, activeElement, onTourComplete, s
         className={
           desktopDemo
             ? "grid w-[296.10px] h-[401.22px] content-start items-start justify-items-center grid-cols-3 gap-[19.26px]"
-            : "grid flex-wrap items-start grid-cols-3 gap-3 mx-auto w-fit"
+            : "grid flex-wrap items-start grid-cols-3 gap-2 tall:gap-3 mx-auto w-fit"
         }
       >
         {[...Array(10)].map((_, idx) => {
