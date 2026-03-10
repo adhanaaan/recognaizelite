@@ -53,9 +53,8 @@ p {
 }
 
 html,
-body,
-#__next {
-  @apply overflow-y-auto full;
+body {
+  @apply w-full;
 }
 
 body {
@@ -63,7 +62,7 @@ body {
 }
 
 #__next {
-  @apply relative overflow-x-hidden bg-white;
+  @apply relative w-full overflow-x-hidden bg-white;
 }
 
 .scroll-hidden::-webkit-scrollbar {
