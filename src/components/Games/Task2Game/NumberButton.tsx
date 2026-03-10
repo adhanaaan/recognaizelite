@@ -25,7 +25,7 @@ export function NumberButton({ onClick, className, children, id, desktopDemo = f
         "bg-gradient-to-b font-extrabold text-white rounded-full shadow-md shadow-gray-400 c last:col-span-3 last:mx-auto",
         desktopDemo
           ? "w-[85.86px] h-[85.86px] text-[48px] leading-none"
-          : "size-11 tall:h-14 tall:w-14 tall-lg:size-16 text-[24px] tall:text-[32px] leading-[32px] tall:leading-[40px]",
+          : "h-14 w-14 tall:size-16 text-[32px] leading-[40px]",
         className,
       ].join(" ")}
       onClick={() =>
