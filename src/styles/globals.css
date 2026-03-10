@@ -62,7 +62,7 @@ body {
 }
 
 #__next {
-  @apply relative w-full overflow-x-hidden bg-white;
+  @apply relative w-full h-[100dvh] overflow-hidden bg-white;
 }
 
 .scroll-hidden::-webkit-scrollbar {
