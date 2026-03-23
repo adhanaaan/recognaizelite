@@ -6,7 +6,7 @@ import { Task2Game } from "src/components/Games/Task2Game";
 import { CountDownScreen } from "src/components/Screens/CountDownScreen";
 import { GameCompleteScreen } from "src/components/Screens/GameCompleteScreen";
 import { Score } from "src/components/Score";
-import { task2Levels } from "src/constants/game-levels";
+import { task2Levels, task2LevelsShort } from "src/constants/game-levels";
 import IMAGES from "src/constants/IMAGES.json";
 import { task2 } from "src/constants/tasks";
 import { useForceUpdate } from "src/hooks/useForceUpdate";
@@ -20,7 +20,9 @@ import { getTimeLap } from "src/utils/helpers";
 import { verifyCompletedTasks } from "src/utils/task-verif";
 
 function Task2({ currLevel }: { currLevel: number }) {
-  const { tiles, time } = task2Levels[currLevel];
+  const ikigaiMode = isIkigaiMode();
+  const levels = ikigaiMode ? task2LevelsShort : task2Levels;
+  const { tiles, time } = levels[currLevel];
   const res = useRef({ correct: 0, errors: 0, rounds: [] as any[] });
   const lap = useCallback(getTimeLap(), [currLevel]);
   const ikigai = isIkigaiMode();

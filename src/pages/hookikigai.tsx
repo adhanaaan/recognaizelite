@@ -72,7 +72,7 @@ export default function HookIkigaiEntry() {
           onClick={() => Router.push("/instruction")}
           className="w-full max-w-[280px] rounded-full bg-[#5CE0D8] px-8 py-4 text-[16px] font-bold text-[#0B0F1A] tracking-wide transition-all active:bg-[#4BC8C0] shadow-[0_0_30px_rgba(92,224,216,0.25)]"
         >
-          Take the 60-Second Test
+          Take the 20-Second Test
         </button>
 
         {/* Trust signals */}

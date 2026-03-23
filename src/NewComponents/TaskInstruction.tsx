@@ -65,12 +65,14 @@ export function TaskInstruction() {
               </svg>
               {t.GENERAL.Back}
             </button>
-            <TimeRemainingCard time={task?.seconds} color="#5CE0D8" disabled />
+            <TimeRemainingCard time={20} color="#5CE0D8" disabled />
           </div>
 
           <div className="w-full mx-auto text-center cc grow">
             <h1 style={{ color: "#5CE0D8", fontFamily: "Georgia, 'Times New Roman', serif" }}>{task.name}</h1>
-            <p className="text-sm font-medium sm:text-lg text-gray-300">{task.instruction}</p>
+            <p className="text-sm font-medium sm:text-lg text-gray-300">
+              {activeTask === "task2" ? "Match as many symbols to their numbers as possible within 20 seconds." : task.instruction}
+            </p>
 
             <DemoGIFContainer name={task.name} className="h-full scale-90 min-h-80 max-h-[520px]" />
           </div>
