@@ -107,18 +107,24 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
 
 const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
   Low: {
-    headline: "Your brain is asking for attention.",
-    body: "Processing speed is 1 of 4 cognitive pillars. Memory, attention, and executive function matter just as much \u2014 and they don\u2019t always decline together. A full 10-minute screening gives you the complete picture.",
+    headline: "You\u2019ve only seen 25% of the picture.",
+    body: "Processing speed flagged a concern \u2014 but that\u2019s just one of four cognitive pillars. Memory, attention, and executive function could be compensating or declining silently. Without the full screening, you\u2019re guessing.",
   },
   Medium: {
-    headline: "Not bad. But that\u2019s only 25%.",
-    body: "You\u2019ve tested processing speed. But what about memory under pressure? Sustained attention? Decision-making speed? The full screening covers all four in 10 minutes.",
+    headline: "You\u2019ve only seen 25% of the picture.",
+    body: "Processing speed looks adequate \u2014 but that tells you nothing about how your memory holds under pressure, how long your focus lasts, or how sharp your decisions are. One pillar doesn\u2019t define your brain.",
   },
   High: {
-    headline: "Fast. But is the rest keeping up?",
-    body: "Processing speed is strong \u2014 but it\u2019s just one dimension. High performers track all four cognitive pillars. The full screening takes 10 minutes and gives you a complete baseline.",
+    headline: "You\u2019ve only seen 25% of the picture.",
+    body: "Processing speed is strong \u2014 but high performers know that speed without memory, focus, and decision-making is incomplete. The full screening reveals what\u2019s really driving your performance.",
   },
 };
+
+const LOCKED_AREAS = [
+  { name: "Memory", skill: "Recall & retention under pressure" },
+  { name: "Attention", skill: "Sustained focus & multitasking" },
+  { name: "Executive Function", skill: "Decision-making & planning" },
+];
 
 export default function HookIkigaiReportPage() {
   const { result } = useResultStore();
@@ -273,37 +279,59 @@ export default function HookIkigaiReportPage() {
             {CTA_COPY[report.severity].body}
           </p>
 
+          {/* Progress indicator */}
+          <div className="mt-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[12px] font-bold uppercase tracking-wider text-gray-500">Your screening progress</span>
+              <span className="text-[13px] font-bold" style={{ color: "#5CE0D8" }}>1 of 4</span>
+            </div>
+            <div className="h-1.5 rounded-full bg-gray-800 overflow-hidden">
+              <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#5CE0D8" }} />
+            </div>
+          </div>
+
           {/* Brain areas grid */}
-          <div className="mt-6 grid grid-cols-2 gap-3">
+          <div className="mt-5 grid grid-cols-2 gap-3">
             <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
               <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
-                &#10003; Checked
+                &#10003; Complete
               </div>
               <div className="mt-1 text-[14px] font-bold text-white">Processing Speed</div>
               <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
             </div>
-            {["Memory", "Attention", "Executive Function"].map((area) => (
-              <div key={area} className="rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-4 text-center">
+            {LOCKED_AREAS.map((area) => (
+              <div key={area.name} className="rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-4 text-center relative overflow-hidden">
                 <div className="text-gray-600">
                   <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
                 </div>
-                <div className="mt-1 text-[14px] font-bold text-gray-500">{area}</div>
-                <div className="mt-0.5 text-[12px] font-semibold text-gray-600">Not tested</div>
+                <div className="mt-1 text-[14px] font-bold text-gray-400">{area.name}</div>
+                <div className="mt-0.5 text-[11px] text-gray-600">{area.skill}</div>
               </div>
             ))}
           </div>
 
           {/* CTA Banner */}
-          <div className="mt-6 rounded-2xl px-5 py-5 text-center" style={{ backgroundColor: "#5CE0D8" }}>
-            <p className="text-[17px] sm:text-[19px] font-bold leading-snug text-[#0B0F1A]">
-              Get your full cognitive baseline at Ikigai.
+          <div className="mt-6 rounded-2xl px-5 py-6 text-center" style={{ background: "linear-gradient(135deg, #5CE0D8 0%, #3BB8B0 100%)" }}>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[#0B0F1A]/60 mb-2">
+              Ikigai Medical
             </p>
-            <p className="mt-1.5 text-[13px] text-[#0B0F1A]/70">
-              10 minutes · Non-invasive · Part of your longevity check-up
+            <p
+              className="text-[19px] sm:text-[22px] font-bold leading-snug text-[#0B0F1A]"
+              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+            >
+              Unlock your complete cognitive baseline.
             </p>
+            <p className="mt-2 text-[13px] text-[#0B0F1A]/70 leading-relaxed">
+              Part of Ikigai&apos;s longevity &amp; performance health check-up.
+              <br />
+              10 minutes · Non-invasive · Science-backed
+            </p>
+            <div className="mt-4 inline-block rounded-full bg-[#0B0F1A] px-8 py-3 cursor-pointer hover:bg-[#1a2332] transition-colors">
+              <span className="text-[14px] font-bold text-white">Book Your Full Screening</span>
+            </div>
           </div>
 
           <p className="mt-4 text-[11px] leading-normal text-gray-600">
