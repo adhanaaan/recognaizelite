@@ -127,6 +127,28 @@ export default function HookIkigaiReportPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    document.documentElement.style.overflow = "auto";
+    document.documentElement.style.height = "auto";
+    document.body.style.overflow = "auto";
+    document.body.style.height = "auto";
+    const next = document.getElementById("__next");
+    if (next) {
+      next.style.overflow = "auto";
+      next.style.height = "auto";
+    }
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.documentElement.style.height = "";
+      document.body.style.overflow = "";
+      document.body.style.height = "";
+      if (next) {
+        next.style.overflow = "";
+        next.style.height = "";
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     async function fetchReport() {
       if (!result || Object.keys(result).length === 0) { setLoading(false); return; }
       const task2Score = Array.isArray(result.task2) ? result.task2[0]?.score : result.task2?.score;
