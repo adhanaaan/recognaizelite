@@ -20,9 +20,9 @@ export const CountDownScreen: React.FC<CountDownScreenProps> = ({ time = 3, chil
             {[...new Array(time)].map((_, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-full w-9 h-9"
+                className="rounded-full w-9 h-9"
                 style={{
-                  backgroundColor: idx <= time - countDown ? color : undefined,
+                  backgroundColor: idx <= time - countDown ? color : "rgba(255,255,255,0.3)",
                 }}
               />
             ))}
