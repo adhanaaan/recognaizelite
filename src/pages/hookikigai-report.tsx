@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import { DomainReport, Severity } from "src/types/report";
@@ -191,12 +192,17 @@ export default function HookIkigaiReportPage() {
   };
 
   const page = (children: React.ReactNode) => (
+    <>
+    <Head>
+      <meta name="theme-color" content="#0B0F1A" />
+    </Head>
     <div
       className="min-h-[100dvh] w-full px-5 py-10 sm:px-8 overflow-y-auto"
       style={{ background: "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)" }}
     >
       <div className="max-w-2xl mx-auto space-y-6">{children}</div>
     </div>
+    </>
   );
 
   if (loading) {
