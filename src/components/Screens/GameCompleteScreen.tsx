@@ -9,7 +9,7 @@ import { Button } from "src/NewComponents/Button";
 import { saveResult, useResultStore } from "src/stores/useResultStore";
 import { saveProgress, useTaskProgress } from "src/stores/useTaskProgress";
 import { ResultType } from "src/types";
-import { getAssessmentMode, isHookMode, isShortAssessment } from "src/utils/assessment";
+import { getAssessmentMode, getHookReportPath, isHookMode, isShortAssessment } from "src/utils/assessment";
 
 export interface GameCompleteScreenProps extends React.PropsWithChildren {
   result: ResultType;
@@ -68,7 +68,7 @@ export function GameCompleteScreen({
   useEffect(() => {
     if (skip || !result) return;
     if (shortAssessment && task === "task2" && !resultSubmitting && !taskSubmitting && !resultError && !taskError) {
-      router.replace(isHookMode() ? "/hook-report" : "/report");
+      router.replace(isHookMode() ? getHookReportPath() : "/report");
       return;
     }
     if (assessmentMode === "full" && !nextTask && !resultSubmitting && !taskSubmitting && !resultError && !taskError) {
@@ -126,7 +126,7 @@ export function GameCompleteScreen({
         </div>
         <div className="h-16 tall:h-20" />
         <div className="mx-auto w-84">
-          <Button onClick={() => Router.push(isHookMode() ? "/hook-report" : "/report")}>View report</Button>
+          <Button onClick={() => Router.push(isHookMode() ? getHookReportPath() : "/report")}>View report</Button>
         </div>
       </div>
     );

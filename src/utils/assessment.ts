@@ -75,4 +75,19 @@ export function isHookMode(): boolean {
 export function clearHookClinic() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(HOOK_CLINIC_KEY);
+  localStorage.removeItem(HOOK_REPORT_PATH_KEY);
+}
+
+// --- Hook report path (per-clinic custom report pages) ---
+
+const HOOK_REPORT_PATH_KEY = "recognaize-hook-report-path";
+
+export function setHookReportPath(path: string) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(HOOK_REPORT_PATH_KEY, path);
+}
+
+export function getHookReportPath(): string {
+  if (typeof window === "undefined") return "/hook-report";
+  return localStorage.getItem(HOOK_REPORT_PATH_KEY) || "/hook-report";
 }
