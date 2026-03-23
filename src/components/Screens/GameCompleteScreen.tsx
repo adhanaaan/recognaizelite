@@ -9,7 +9,7 @@ import { Button } from "src/NewComponents/Button";
 import { saveResult, useResultStore } from "src/stores/useResultStore";
 import { saveProgress, useTaskProgress } from "src/stores/useTaskProgress";
 import { ResultType } from "src/types";
-import { getAssessmentMode, getHookReportPath, isHookMode, isShortAssessment } from "src/utils/assessment";
+import { getAssessmentMode, getHookReportPath, isHookMode, isIkigaiMode, isShortAssessment } from "src/utils/assessment";
 
 export interface GameCompleteScreenProps extends React.PropsWithChildren {
   result: ResultType;
@@ -76,36 +76,71 @@ export function GameCompleteScreen({
     }
   }, [assessmentMode, nextTask, result, resultError, resultSubmitting, shortAssessment, task, taskError, taskSubmitting]);
 
+  const ikigai = isIkigaiMode();
+
   if (!result) return children;
 
   let content;
   if (resultSubmitting && taskSubmitting) {
     content = (
       <div className="space-y-16 text-center md:scale-125 lg:scale-150 cc">
-        <PiSpinnerBold size={72} className="animate-spin" />
-        <p className="text-lg">Saving your result, please wait.</p>
+        <PiSpinnerBold size={72} className={`animate-spin ${ikigai ? "text-[#5CE0D8]" : ""}`} />
+        <p className={`text-lg ${ikigai ? "text-gray-300" : ""}`}>Saving your result, please wait.</p>
       </div>
     );
   } else if (resultError || taskError) {
     content = (
       <div className="space-y-16 text-center md:scale-125 lg:scale-150 cc">
-        <p className="text-lg">Error saving your result.</p>
-        <p className="text-lg w-80">Please check your internet connection and try again.</p>
-        {/* <p className="text-red-500 text-md">{resultError}</p> */}
-        <Button
-          btn={task}
-          className="w-84"
-          onClick={() => {
-            saveResult();
-            saveProgress();
-          }}
-        >
-          RETRY
-        </Button>
+        <p className={`text-lg ${ikigai ? "text-gray-300" : ""}`}>Error saving your result.</p>
+        <p className={`text-lg w-80 ${ikigai ? "text-gray-400" : ""}`}>Please check your internet connection and try again.</p>
+        {ikigai ? (
+          <button
+            className="w-84 rounded-full bg-[#5CE0D8] px-5 py-3 text-lg font-semibold text-[#0B0F1A]"
+            onClick={() => { saveResult(); saveProgress(); }}
+          >
+            RETRY
+          </button>
+        ) : (
+          <Button
+            btn={task}
+            className="w-84"
+            onClick={() => { saveResult(); saveProgress(); }}
+          >
+            RETRY
+          </Button>
+        )}
       </div>
     );
   } else if (!nextTask) {
-    content = (
+    content = ikigai ? (
+      <div className="space-y-8 text-center text-white md:scale-125 lg:scale-150">
+        <div className="h-16 tall:h-20" />
+        <div
+          className="mx-auto rounded-full c size-24"
+          style={{
+            background: "linear-gradient(to bottom, #1a2332, #111827)",
+            boxShadow: "0 0 30px rgba(92,224,216,0.2)",
+          }}
+        >
+          <FaCheck className="mx-auto size-14" style={{ color: "#5CE0D8" }} />
+        </div>
+        <div>
+          <h2 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>Assessment Complete</h2>
+          <p className="mt-6 text-sm font-medium w-84 text-gray-400">
+            Your report is ready to view.
+          </p>
+        </div>
+        <div className="h-16 tall:h-20" />
+        <div className="mx-auto w-84">
+          <button
+            className="w-full rounded-full bg-[#5CE0D8] px-5 py-3 text-lg font-semibold text-[#0B0F1A]"
+            onClick={() => Router.push(getHookReportPath())}
+          >
+            View report
+          </button>
+        </div>
+      </div>
+    ) : (
       <div className="space-y-8 text-center text-gray-900 md:scale-125 lg:scale-150">
         <div className="h-16 tall:h-20" />
         <div
@@ -159,6 +194,9 @@ export function GameCompleteScreen({
       </div>
     );
   }
+
+  const darkBg = "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)";
+
   return (
     <PcScreen>
       {!result ? (
@@ -167,12 +205,14 @@ export function GameCompleteScreen({
         <div
           className="c z-[1000] h-full section-padding-large"
           style={{
-            background: showBackground
-              ? nextTask
-                ? TASK_TO_GRADIENT[task]
-                : "radial-gradient(108.21% 50% at 50% 50%, rgba(228, 227, 255, 0.4) 0%, rgba(141, 231, 244, 0.4) 100%), #FFFFFF"
-              : undefined,
-            color,
+            background: ikigai
+              ? darkBg
+              : showBackground
+                ? nextTask
+                  ? TASK_TO_GRADIENT[task]
+                  : "radial-gradient(108.21% 50% at 50% 50%, rgba(228, 227, 255, 0.4) 0%, rgba(141, 231, 244, 0.4) 100%), #FFFFFF"
+                : undefined,
+            color: ikigai ? "#fff" : color,
           }}
         >
           {content}

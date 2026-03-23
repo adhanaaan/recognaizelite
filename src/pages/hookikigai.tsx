@@ -15,11 +15,11 @@ export default function HookIkigaiEntry() {
 
   return (
     <div
-      className="min-h-[100dvh] w-full flex flex-col items-center justify-center px-6 py-12"
+      className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden"
       style={{ background: "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)" }}
     >
       {/* Ikigai branding */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-10">
         <h2
           className="text-white text-[18px] font-light"
           style={{ letterSpacing: "0.35em", fontFamily: "Georgia, 'Times New Roman', serif" }}
@@ -38,30 +38,30 @@ export default function HookIkigaiEntry() {
           className="text-white text-[42px] sm:text-[52px] leading-[1.1] font-normal"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
-          Are you sleeping{" "}
-          <em className="text-[#5CE0D8]">enough?</em>
+          How sharp is your{" "}
+          <em className="text-[#5CE0D8]">brain?</em>
         </h1>
-        <p className="mt-5 text-gray-400 text-[16px] sm:text-[18px] leading-relaxed">
-          Your brain needs rest to stay sharp.
+        <p className="mt-5 text-gray-400 text-[15px] leading-relaxed">
+          Complimentary cognitive screening.
           <br />
-          Find out how yours is doing.
+          Takes 60 seconds.
         </p>
       </div>
 
       {/* CTA */}
       <button
         onClick={() => Router.push("/instruction")}
-        className="w-full max-w-xs rounded-full border-2 border-[#5CE0D8] bg-transparent px-8 py-4 text-[16px] font-semibold text-[#5CE0D8] transition-all hover:bg-[#5CE0D8] hover:text-[#0B0F1A] active:bg-[#4BC8C0] active:text-[#0B0F1A]"
+        className="w-full max-w-[260px] rounded-full bg-[#5CE0D8] px-8 py-4 text-[15px] font-bold text-[#0B0F1A] tracking-wide transition-all active:bg-[#4BC8C0]"
       >
-        Take the 60-Second Test
+        Test Your Brain
       </button>
 
       {/* Footer */}
-      <div className="mt-10 text-center space-y-2">
-        <p className="text-gray-500 text-[12px]">
-          Free · Anonymous · 60 seconds
+      <div className="mt-8 text-center space-y-1.5">
+        <p className="text-gray-500 text-[11px]">
+          Free · Anonymous · No signup required
         </p>
-        <p className="text-gray-600 text-[11px]">
+        <p className="text-gray-600 text-[10px]">
           Powered by RecognAIze
         </p>
       </div>

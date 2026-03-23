@@ -72,6 +72,10 @@ export function isHookMode(): boolean {
   return getHookClinic() !== null;
 }
 
+export function isIkigaiMode(): boolean {
+  return getHookClinic() === "Ikigai Medical";
+}
+
 export function clearHookClinic() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(HOOK_CLINIC_KEY);

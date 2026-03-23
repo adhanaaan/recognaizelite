@@ -15,6 +15,7 @@ import { TimeRemainingCard } from "src/NewComponents/TimeRemainingCard";
 import Error403 from "src/pages/403";
 import { updateResult } from "src/stores/useResultStore";
 import { updateTaskProgress, useTaskProgress } from "src/stores/useTaskProgress";
+import { isIkigaiMode } from "src/utils/assessment";
 import { getTimeLap } from "src/utils/helpers";
 import { verifyCompletedTasks } from "src/utils/task-verif";
 
@@ -22,6 +23,7 @@ function Task2({ currLevel }: { currLevel: number }) {
   const { tiles, time } = task2Levels[currLevel];
   const res = useRef({ correct: 0, errors: 0, rounds: [] as any[] });
   const lap = useCallback(getTimeLap(), [currLevel]);
+  const ikigai = isIkigaiMode();
 
   const update = useForceUpdate();
   const { result, setResult } = useResult();
@@ -61,11 +63,11 @@ function Task2({ currLevel }: { currLevel: number }) {
             score={score}
             className={isDesktop
               ? "[font-family:Avenir] [font-weight:800] text-[26.51px] leading-[26.51px] align-middle"
-              : "text-2xl font-bold leading-6 text-task2"
+              : `text-2xl font-bold leading-6 ${ikigai ? "" : "text-task2"}`
             }
-            style={isDesktop ? { color: "#630092" } : undefined}
+            style={isDesktop ? { color: ikigai ? "#5CE0D8" : "#630092" } : ikigai ? { color: "#5CE0D8" } : undefined}
           />
-          <TimeRemainingCard time={time} callback={updateTask} showSeconds={false} />
+          <TimeRemainingCard time={time} callback={updateTask} showSeconds={false} color={ikigai ? "#5CE0D8" : "#3A3A3A"} />
         </div>
       </Task2Game>
     </GameCompleteScreen>
@@ -75,6 +77,7 @@ function Task2({ currLevel }: { currLevel: number }) {
 const Task2Wrapper = () => {
   const { currLevel, totalLevel } = useTaskProgress.getState().taskProgress.task2;
   var allow = verifyCompletedTasks("task2");
+  const ikigai = isIkigaiMode();
 
   return (
     <>
@@ -83,13 +86,16 @@ const Task2Wrapper = () => {
       ) : (
         <>
           <Head>
-            <meta name="theme-color" content={task2.color} />
+            <meta name="theme-color" content={ikigai ? "#0B0F1A" : task2.color} />
           </Head>
           {currLevel === totalLevel ? (
             <Celebrations />
           ) : (
             <AssetsLoading assets={IMAGES["task-2"]} prefix="/images/task-2">
-              <CountDownScreen color={task2.color} backgroundColor={task2.color + "11"}>
+              <CountDownScreen
+                color={ikigai ? "#5CE0D8" : task2.color}
+                backgroundColor={ikigai ? "#0B0F1A" : task2.color + "11"}
+              >
                 <Task2 currLevel={currLevel} />
               </CountDownScreen>
             </AssetsLoading>
