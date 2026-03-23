@@ -1,7 +1,5 @@
 import Router from "next/router";
 import { useEffect } from "react";
-import { Background } from "src/components/Layout/Background";
-import { Button } from "src/NewComponents/Button";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
@@ -15,59 +13,58 @@ export default function HookIkigaiEntry() {
     resetResults();
   }, []);
 
-  const handleStart = () => {
-    Router.push("/instruction");
-  };
-
   return (
-    <Background className="justify-center gap-10 section-padding-large">
-      <div className="space-y-4 sm:space-y-6">
-        <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Gray Matter Logo" className="size-12 sm:size-14" />
-          <div>
-            <div className="text-lg font-bold text-[#002D7C] sm:text-xl">Gray Matter Solutions</div>
-            <div className="text-xs text-gray-500">A spin-off from NTU, Singapore</div>
-          </div>
-        </div>
+    <div
+      className="min-h-[100dvh] w-full flex flex-col items-center justify-center px-6 py-12"
+      style={{ background: "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)" }}
+    >
+      {/* Ikigai branding */}
+      <div className="text-center mb-12">
+        <h2
+          className="text-white text-[18px] font-light"
+          style={{ letterSpacing: "0.35em", fontFamily: "Georgia, 'Times New Roman', serif" }}
+        >
+          I K I G A I
+        </h2>
+        <div className="w-12 h-px bg-gray-600 mx-auto mt-2 mb-1.5" />
+        <p className="text-gray-400 text-[10px] uppercase" style={{ letterSpacing: "0.25em" }}>
+          Wellness Clinic
+        </p>
       </div>
 
-      <div className="w-full text-center space-y-5">
-        <h1 className="text-3xl font-bold text-[#002D7C] sm:text-4xl leading-tight">
-          Still Sharp Enough
-          <br />
-          <span className="text-[#630092]">Under Pressure?</span>
+      {/* Headline */}
+      <div className="text-center max-w-sm mx-auto mb-8">
+        <h1
+          className="text-white text-[42px] sm:text-[52px] leading-[1.1] font-normal"
+          style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+        >
+          Are you sleeping{" "}
+          <em className="text-[#5CE0D8]">enough?</em>
         </h1>
-
-        <p className="text-base text-gray-600 sm:text-lg max-w-md mx-auto leading-relaxed">
-          You're in back-to-back meetings. Making fast calls all day.
-          But lately — <strong>something feels off</strong>.
-          This 1-minute game measures how fast your brain actually processes information.
+        <p className="mt-5 text-gray-400 text-[16px] sm:text-[18px] leading-relaxed">
+          Your brain needs rest to stay sharp.
+          <br />
+          Find out how yours is doing.
         </p>
-
-        <div className="text-left max-w-xs mx-auto">
-          <p className="text-sm font-semibold text-[#002D7C]">Sound familiar?</p>
-          <ul className="mt-2 space-y-1 text-sm text-gray-500">
-            <li>• Slower to react in conversations or decisions</li>
-            <li>• Mental fog that kicks in by 3pm</li>
-            <li>• Reading the same paragraph twice</li>
-          </ul>
-        </div>
-
-        <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-          <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 6v6l4 2" />
-          </svg>
-          <span>Free · Anonymous · 1 minute</span>
-        </div>
       </div>
 
-      <div className="w-full space-y-3">
-        <p className="text-center text-sm text-gray-500">
-          Provided by <strong className="text-[#002D7C]">Ikigai Medical</strong>
+      {/* CTA */}
+      <button
+        onClick={() => Router.push("/instruction")}
+        className="w-full max-w-xs rounded-full border-2 border-[#5CE0D8] bg-transparent px-8 py-4 text-[16px] font-semibold text-[#5CE0D8] transition-all hover:bg-[#5CE0D8] hover:text-[#0B0F1A] active:bg-[#4BC8C0] active:text-[#0B0F1A]"
+      >
+        Take the 60-Second Test
+      </button>
+
+      {/* Footer */}
+      <div className="mt-10 text-center space-y-2">
+        <p className="text-gray-500 text-[12px]">
+          Free · Anonymous · 60 seconds
         </p>
-        <Button onClick={handleStart}>Find Out In 60 Seconds</Button>
+        <p className="text-gray-600 text-[11px]">
+          Powered by RecognAIze
+        </p>
       </div>
-    </Background>
+    </div>
   );
 }

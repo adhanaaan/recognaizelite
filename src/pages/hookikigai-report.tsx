@@ -1,8 +1,5 @@
 import Router from "next/router";
 import { useEffect, useState } from "react";
-import { HeaderWrapper } from "src/components/Layout/Header";
-import MainLayout from "src/NewComponents/MainLayout";
-import { Button } from "src/NewComponents/Button";
 import { DomainReport, Severity } from "src/types/report";
 import { useResultStore } from "src/stores/useResultStore";
 import { clearHookClinic, clearAssessmentMode } from "src/utils/assessment";
@@ -12,24 +9,19 @@ import { resetTaskProgress } from "src/stores/useTaskProgress";
 type SeverityVisual = {
   label: "WEAK" | "ADEQUATE" | "STRONG";
   color: string;
-  softColor: string;
+  softBg: string;
 };
 
 const severityVisuals: Record<Severity, SeverityVisual> = {
-  Low: { label: "WEAK", color: "#D6453D", softColor: "#F6D1CE" },
-  Medium: { label: "ADEQUATE", color: "#1E7AB8", softColor: "#D4E5F2" },
-  High: { label: "STRONG", color: "#1BAA63", softColor: "#D8EFE4" },
+  Low: { label: "WEAK", color: "#EF4444", softBg: "rgba(239,68,68,0.15)" },
+  Medium: { label: "ADEQUATE", color: "#5CE0D8", softBg: "rgba(92,224,216,0.12)" },
+  High: { label: "STRONG", color: "#34D399", softBg: "rgba(52,211,153,0.15)" },
 };
 
-const BELL_CURVE_WIDTH = 500;
-const BELL_CURVE_HEIGHT = 260;
-const BELL_CURVE_PADDING = 20;
-const BELL_CURVE_LABEL_SPACE = 40;
-const BELL_CURVE_POINTS = 1000;
-const BELL_CURVE_RANGE = { min: -4, max: 4 };
-const BELL_CURVE_PDF_MAX = 1 / Math.sqrt(2 * Math.PI);
-const BELL_CURVE_BG = "#F1F0F0";
-const BELL_CURVE_AREA = "#BBCDDE";
+// --- Bell Curve (dark-themed) ---
+const BC_W = 500, BC_H = 260, BC_P = 20, BC_LS = 40, BC_N = 1000;
+const BC_RANGE = { min: -4, max: 4 };
+const BC_PDF_MAX = 1 / Math.sqrt(2 * Math.PI);
 
 function inverseNormCdf(p: number) {
   if (p <= 0) return -Infinity;
@@ -55,76 +47,59 @@ function inverseNormCdf(p: number) {
   return (((((a1 * r + a2) * r + a3) * r + a4) * r + a5) * r + a6) * q / (((((b1 * r + b2) * r + b3) * r + b4) * r + b5) * r + 1);
 }
 
-function normPdf(x: number) {
-  return Math.exp(-0.5 * x * x) * BELL_CURVE_PDF_MAX;
-}
+function normPdf(x: number) { return Math.exp(-0.5 * x * x) * BC_PDF_MAX; }
 
-function buildBellCurvePath() {
-  const chartHeight = BELL_CURVE_HEIGHT - BELL_CURVE_LABEL_SPACE;
-  const innerWidth = BELL_CURVE_WIDTH - BELL_CURVE_PADDING * 2;
-  const innerHeight = chartHeight - BELL_CURVE_PADDING * 2;
+function buildCurvePath() {
+  const ch = BC_H - BC_LS, iw = BC_W - BC_P * 2, ih = ch - BC_P * 2;
   let path = "";
-  for (let i = 0; i <= BELL_CURVE_POINTS; i++) {
-    const t = i / BELL_CURVE_POINTS;
-    const x = BELL_CURVE_RANGE.min + (BELL_CURVE_RANGE.max - BELL_CURVE_RANGE.min) * t;
-    const y = normPdf(x) / BELL_CURVE_PDF_MAX;
-    const xPos = BELL_CURVE_PADDING + t * innerWidth;
-    const yPos = BELL_CURVE_PADDING + (1 - y) * innerHeight;
-    path += `${i === 0 ? "M" : "L"}${xPos.toFixed(2)} ${yPos.toFixed(2)} `;
+  for (let i = 0; i <= BC_N; i++) {
+    const t = i / BC_N;
+    const x = BC_RANGE.min + (BC_RANGE.max - BC_RANGE.min) * t;
+    const y = normPdf(x) / BC_PDF_MAX;
+    path += `${i === 0 ? "M" : "L"}${(BC_P + t * iw).toFixed(2)} ${(BC_P + (1 - y) * ih).toFixed(2)} `;
   }
   return path.trim();
 }
 
-function buildBellCurveAreaPath() {
-  const chartHeight = BELL_CURVE_HEIGHT - BELL_CURVE_LABEL_SPACE;
-  const innerWidth = BELL_CURVE_WIDTH - BELL_CURVE_PADDING * 2;
-  const innerHeight = chartHeight - BELL_CURVE_PADDING * 2;
-  const span = BELL_CURVE_RANGE.max - BELL_CURVE_RANGE.min;
-  const baselineY = BELL_CURVE_PADDING + innerHeight;
-  const start = BELL_CURVE_RANGE.min, end = BELL_CURVE_RANGE.max;
-  let path = `M ${BELL_CURVE_PADDING + ((start - BELL_CURVE_RANGE.min) / span) * innerWidth} ${baselineY} `;
-  for (let i = 0; i <= BELL_CURVE_POINTS; i++) {
-    const t = i / BELL_CURVE_POINTS;
-    const x = start + (end - start) * t;
-    const y = normPdf(x) / BELL_CURVE_PDF_MAX;
-    const xPos = BELL_CURVE_PADDING + ((x - BELL_CURVE_RANGE.min) / span) * innerWidth;
-    const yPos = BELL_CURVE_PADDING + (1 - y) * innerHeight;
-    path += `L ${xPos.toFixed(2)} ${yPos.toFixed(2)} `;
+function buildAreaPath() {
+  const ch = BC_H - BC_LS, iw = BC_W - BC_P * 2, ih = ch - BC_P * 2;
+  const span = BC_RANGE.max - BC_RANGE.min;
+  const baseY = BC_P + ih;
+  let path = `M ${BC_P} ${baseY} `;
+  for (let i = 0; i <= BC_N; i++) {
+    const t = i / BC_N;
+    const x = BC_RANGE.min + (BC_RANGE.max - BC_RANGE.min) * t;
+    const y = normPdf(x) / BC_PDF_MAX;
+    path += `L ${(BC_P + ((x - BC_RANGE.min) / span) * iw).toFixed(2)} ${(BC_P + (1 - y) * ih).toFixed(2)} `;
   }
-  path += `L ${BELL_CURVE_PADDING + ((end - BELL_CURVE_RANGE.min) / span) * innerWidth} ${baselineY} Z`;
+  path += `L ${BC_P + iw} ${baseY} Z`;
   return path;
 }
 
 function BellCurve({ percentile, severity }: { percentile: number; severity: SeverityVisual }) {
-  const chartHeight = BELL_CURVE_HEIGHT - BELL_CURVE_LABEL_SPACE;
-  const innerWidth = BELL_CURVE_WIDTH - BELL_CURVE_PADDING * 2;
-  const innerHeight = chartHeight - BELL_CURVE_PADDING * 2;
-  const baselineY = BELL_CURVE_PADDING + innerHeight;
-  const span = BELL_CURVE_RANGE.max - BELL_CURVE_RANGE.min;
-
+  const ch = BC_H - BC_LS, iw = BC_W - BC_P * 2, ih = ch - BC_P * 2;
+  const baseY = BC_P + ih, span = BC_RANGE.max - BC_RANGE.min;
   const p = Math.min(0.9999, Math.max(0.0001, percentile / 100));
-  const z = Math.max(BELL_CURVE_RANGE.min, Math.min(BELL_CURVE_RANGE.max, inverseNormCdf(p)));
-  const markerX = BELL_CURVE_PADDING + ((z - BELL_CURVE_RANGE.min) / span) * innerWidth;
-  const markerY = BELL_CURVE_PADDING + (1 - normPdf(z) / BELL_CURVE_PDF_MAX) * innerHeight;
+  const z = Math.max(BC_RANGE.min, Math.min(BC_RANGE.max, inverseNormCdf(p)));
+  const mx = BC_P + ((z - BC_RANGE.min) / span) * iw;
+  const my = BC_P + (1 - normPdf(z) / BC_PDF_MAX) * ih;
   const labelText = `${Math.round(percentile)}%`;
-  const labelWidth = Math.max(72, labelText.length * 12 + 24);
-  const labelHeight = 36;
-  const labelX = markerX - labelWidth / 2;
-  const labelY = baselineY + 4;
+  const lw = Math.max(72, labelText.length * 12 + 24), lh = 36;
+  const lx = mx - lw / 2, ly = baseY + 4;
 
   return (
-    <div className="overflow-hidden rounded-[16px] bg-[#EDEDED] p-4 text-center md:p-5">
-      <svg className="mx-auto block w-full h-auto" viewBox={`0 0 ${BELL_CURVE_WIDTH} ${BELL_CURVE_HEIGHT}`} preserveAspectRatio="xMidYMid meet">
-        <rect width={BELL_CURVE_WIDTH} height={BELL_CURVE_HEIGHT} fill={BELL_CURVE_BG} rx="8" />
-        <path d={buildBellCurveAreaPath()} fill={BELL_CURVE_AREA} fillOpacity="0.85" />
-        <path d={buildBellCurvePath()} fill="none" stroke="#ffffff" strokeWidth="3" strokeOpacity="0.9" />
-        <line x1={markerX} y1={BELL_CURVE_PADDING} x2={markerX} y2={baselineY} stroke={severity.color} strokeWidth="2" strokeDasharray="6 6" />
-        <circle cx={markerX} cy={markerY} r="6" fill="#ffffff" stroke={severity.color} strokeWidth="2" />
-        <rect x={labelX} y={labelY} width={labelWidth} height={labelHeight} rx="10" fill={severity.color} />
-        <text x={markerX} y={labelY + labelHeight / 2 + 6} textAnchor="middle" fontSize="20" fontWeight="700" fill="#ffffff">{labelText}</text>
-        <text x={BELL_CURVE_PADDING} y={BELL_CURVE_HEIGHT - 8} fill="#6B7280" fontSize="11" fontWeight="700" letterSpacing="1">WEAK</text>
-        <text x={BELL_CURVE_WIDTH / 2} y={BELL_CURVE_HEIGHT - 8} textAnchor="middle" fill="#6B7280" fontSize="11" fontWeight="700" letterSpacing="1">ADEQUATE</text>
-        <text x={BELL_CURVE_WIDTH - BELL_CURVE_PADDING} y={BELL_CURVE_HEIGHT - 8} textAnchor="end" fill="#6B7280" fontSize="11" fontWeight="700" letterSpacing="1">STRONG</text>
+    <div className="overflow-hidden rounded-2xl p-4" style={{ backgroundColor: "#141925" }}>
+      <svg className="mx-auto block w-full h-auto" viewBox={`0 0 ${BC_W} ${BC_H}`} preserveAspectRatio="xMidYMid meet">
+        <rect width={BC_W} height={BC_H} fill="#141925" rx="8" />
+        <path d={buildAreaPath()} fill="rgba(92,224,216,0.15)" />
+        <path d={buildCurvePath()} fill="none" stroke="#5CE0D8" strokeWidth="2.5" strokeOpacity="0.8" />
+        <line x1={mx} y1={BC_P} x2={mx} y2={baseY} stroke={severity.color} strokeWidth="2" strokeDasharray="6 6" />
+        <circle cx={mx} cy={my} r="6" fill="#141925" stroke={severity.color} strokeWidth="2.5" />
+        <rect x={lx} y={ly} width={lw} height={lh} rx="10" fill={severity.color} />
+        <text x={mx} y={ly + lh / 2 + 6} textAnchor="middle" fontSize="20" fontWeight="700" fill="#ffffff">{labelText}</text>
+        <text x={BC_P} y={BC_H - 8} fill="#6B7280" fontSize="11" fontWeight="700" letterSpacing="1">WEAK</text>
+        <text x={BC_W / 2} y={BC_H - 8} textAnchor="middle" fill="#6B7280" fontSize="11" fontWeight="700" letterSpacing="1">ADEQUATE</text>
+        <text x={BC_W - BC_P} y={BC_H - 8} textAnchor="end" fill="#6B7280" fontSize="11" fontWeight="700" letterSpacing="1">STRONG</text>
       </svg>
     </div>
   );
@@ -153,28 +128,22 @@ export default function HookIkigaiReportPage() {
 
   useEffect(() => {
     async function fetchReport() {
-      if (!result || Object.keys(result).length === 0) {
-        setLoading(false);
-        return;
-      }
+      if (!result || Object.keys(result).length === 0) { setLoading(false); return; }
       const task2Score = Array.isArray(result.task2) ? result.task2[0]?.score : result.task2?.score;
-      if (typeof task2Score !== "number") {
-        setLoading(false);
-        return;
-      }
+      if (typeof task2Score !== "number") { setLoading(false); return; }
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch("/api/generate-report", {
+        const res = await fetch("/api/generate-report", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ result }),
         });
-        if (!response.ok) {
-          const payload = await response.json().catch(() => null);
+        if (!res.ok) {
+          const payload = await res.json().catch(() => null);
           throw new Error(payload?.details || payload?.error || "Failed to generate report");
         }
-        const data = await response.json();
+        const data = await res.json();
         setReport(data.shortReport ?? null);
       } catch (err) {
         setError((err as Error).message || "Failed to generate report.");
@@ -193,140 +162,147 @@ export default function HookIkigaiReportPage() {
     Router.push("/hookikigai");
   };
 
+  const page = (children: React.ReactNode) => (
+    <div
+      className="min-h-[100dvh] w-full px-5 py-10 sm:px-8 overflow-y-auto"
+      style={{ background: "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)" }}
+    >
+      <div className="max-w-2xl mx-auto space-y-6">{children}</div>
+    </div>
+  );
+
   if (loading) {
-    return (
-      <HeaderWrapper title="Your Results" className="!max-w-none" isHideBack>
-        <MainLayout className="items-center gap-6 justify-center">
-          <div className="rounded-xl bg-white p-8 text-center text-gray-500 shadow-lg">
-            Generating your results...
-          </div>
-        </MainLayout>
-      </HeaderWrapper>
+    return page(
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-gray-400 text-lg">Generating your results...</p>
+      </div>
     );
   }
 
   if (error) {
-    return (
-      <HeaderWrapper title="Your Results" className="!max-w-none" isHideBack>
-        <MainLayout className="items-center gap-6 justify-center">
-          <div className="rounded-xl border border-red-300 bg-white p-8 text-center text-red-600 shadow-lg">
-            {error}
-          </div>
-        </MainLayout>
-      </HeaderWrapper>
+    return page(
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="rounded-2xl border border-red-800 bg-red-900/30 p-8 text-center text-red-300">{error}</div>
+      </div>
     );
   }
 
   const severity = report ? severityVisuals[report.severity] : null;
 
-  return (
-    <HeaderWrapper title="Your Results" className="!max-w-none" isHideBack>
-      <MainLayout className="items-center gap-6 justify-start pt-[80px] pb-10 md:pt-[100px] md:pb-14 lg:pt-[80px] lg:pb-10">
-        {report && severity ? (
-          <>
-            {/* Result Card */}
-            <div className="w-full max-w-2xl mx-auto">
-              <section
-                className="relative overflow-hidden rounded-[22px] bg-[#F4F4F4] p-5 shadow-[0_10px_26px_rgba(17,24,39,0.08)] md:p-7"
-                style={{ fontFamily: "Avenir, sans-serif" }}
-              >
-                <div className="rounded-[20px] bg-[#F1F1F1] p-5 md:p-6">
-                  <p className="text-[14px] font-bold uppercase tracking-tight text-[#8E8E8E] md:text-[18px]">
-                    YOUR COGNITIVE SCREENING
-                  </p>
-                  <div className="mt-1.5 flex flex-wrap items-center justify-between gap-3">
-                    <h2 className="text-[26px] font-bold uppercase leading-tight tracking-tight text-[#20223A] md:text-[36px]">
-                      {report.title}
-                    </h2>
-                    <span
-                      className="rounded-full px-5 py-2 text-[16px] font-bold uppercase leading-none text-white md:text-[20px]"
-                      style={{ backgroundColor: severity.color }}
-                    >
-                      {severity.label}
-                    </span>
-                  </div>
+  return page(
+    report && severity ? (
+      <>
+        {/* Ikigai branding */}
+        <div className="text-center pt-2 pb-4">
+          <h2
+            className="text-white text-[14px] font-light"
+            style={{ letterSpacing: "0.35em", fontFamily: "Georgia, 'Times New Roman', serif" }}
+          >
+            I K I G A I
+          </h2>
+          <p className="text-gray-500 text-[9px] uppercase mt-1" style={{ letterSpacing: "0.2em" }}>
+            Your Results
+          </p>
+        </div>
 
-                  <div className="mt-4">
-                    <BellCurve percentile={Math.round(report.percentile)} severity={severity} />
-                  </div>
-
-                  <div className="mt-4 rounded-[16px] bg-[#EAEAEA] p-4">
-                    <p className="text-[15px] font-bold uppercase tracking-tight text-[#333] md:text-[18px]">
-                      What is {report.title}?
-                    </p>
-                    <p className="mt-2 text-[14px] leading-relaxed text-[#666] md:text-[17px]">
-                      {report.definition}
-                    </p>
-                  </div>
-                </div>
-              </section>
-            </div>
-
-            {/* Hook CTA */}
-            <div className="w-full max-w-2xl mx-auto">
-              <div className="rounded-[22px] bg-white p-6 shadow-[0_10px_26px_rgba(17,24,39,0.08)] md:p-8" style={{ fontFamily: "Avenir, sans-serif" }}>
-                <h3 className="text-[20px] font-bold leading-snug text-[#20223A] md:text-[24px]">
-                  {CTA_COPY[report.severity].headline}
-                </h3>
-                <p className="mt-4 text-[15px] leading-relaxed text-[#555] md:text-[17px]">
-                  {CTA_COPY[report.severity].body}
-                </p>
-
-                {/* Brain areas unlock grid */}
-                <div className="mt-6 grid grid-cols-2 gap-3">
-                  {/* Unlocked: Processing Speed */}
-                  <div className="relative rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity!.color, backgroundColor: severity!.softColor }}>
-                    <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity!.color }}>
-                      &#10003; Checked
-                    </div>
-                    <div className="mt-1 text-[14px] font-bold text-[#20223A]">Processing Speed</div>
-                    <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity!.color }}>{severity!.label}</div>
-                  </div>
-                  {/* Locked areas */}
-                  {["Memory", "Attention", "Executive Function"].map((area) => (
-                    <div key={area} className="relative rounded-xl border-2 border-gray-200 bg-gray-50 px-4 py-4 text-center">
-                      <div className="text-[16px] text-gray-300">
-                        <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                          <rect x="3" y="11" width="18" height="11" rx="2" />
-                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                        </svg>
-                      </div>
-                      <div className="mt-1 text-[14px] font-bold text-gray-300">{area}</div>
-                      <div className="mt-0.5 text-[12px] font-semibold text-gray-300">Not tested</div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-6 rounded-2xl bg-[#002D7C] px-5 py-5 text-center">
-                  <p className="text-[18px] font-bold leading-snug text-white md:text-[20px]">
-                    Get your full cognitive baseline at <span className="text-[#7EB8FF]">Ikigai Medical</span>.
-                  </p>
-                  <p className="mt-1.5 text-[14px] text-blue-200">
-                    10 minutes · Non-invasive · Part of your longevity check-up
-                  </p>
-                </div>
-                <p className="mt-4 text-[11px] leading-normal text-[#999] md:text-[12px]">
-                  This screening is not a diagnostic tool. Results are for informational purposes only and should be discussed with a healthcare professional.
-                </p>
-              </div>
-            </div>
-
-            {/* Retake */}
-            <div className="w-full max-w-2xl mx-auto">
-              <button
-                onClick={handleRetake}
-                className="w-full rounded-full border-2 border-gray-200 py-3 text-center text-[14px] font-medium text-gray-400 transition-colors hover:bg-gray-50"
-              >
-                Retake
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="w-full max-w-2xl mx-auto rounded-xl border border-gray-300 bg-white p-6 text-center text-sm text-gray-500 shadow-lg">
-            Complete the screening game to see your results.
+        {/* Result Card */}
+        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#111827", border: "1px solid #1F2937" }}>
+          <p className="text-[12px] font-bold uppercase tracking-wider text-gray-500">
+            Cognitive Screening
+          </p>
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+            <h2
+              className="text-[24px] sm:text-[30px] font-bold uppercase leading-tight text-white"
+              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+            >
+              {report.title}
+            </h2>
+            <span
+              className="rounded-full px-4 py-1.5 text-[13px] font-bold uppercase leading-none text-white"
+              style={{ backgroundColor: severity.color }}
+            >
+              {severity.label}
+            </span>
           </div>
-        )}
-      </MainLayout>
-    </HeaderWrapper>
+
+          <div className="mt-4">
+            <BellCurve percentile={Math.round(report.percentile)} severity={severity} />
+          </div>
+
+          <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#1A2035" }}>
+            <p className="text-[13px] font-bold uppercase tracking-wider text-gray-400">
+              What is {report.title}?
+            </p>
+            <p className="mt-2 text-[14px] leading-relaxed text-gray-300">
+              {report.definition}
+            </p>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#111827", border: "1px solid #1F2937" }}>
+          <h3
+            className="text-[20px] sm:text-[24px] font-bold leading-snug text-white"
+            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+          >
+            {CTA_COPY[report.severity].headline}
+          </h3>
+          <p className="mt-4 text-[14px] leading-relaxed text-gray-400">
+            {CTA_COPY[report.severity].body}
+          </p>
+
+          {/* Brain areas grid */}
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
+              <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
+                &#10003; Checked
+              </div>
+              <div className="mt-1 text-[14px] font-bold text-white">Processing Speed</div>
+              <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
+            </div>
+            {["Memory", "Attention", "Executive Function"].map((area) => (
+              <div key={area} className="rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-4 text-center">
+                <div className="text-gray-600">
+                  <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </div>
+                <div className="mt-1 text-[14px] font-bold text-gray-500">{area}</div>
+                <div className="mt-0.5 text-[12px] font-semibold text-gray-600">Not tested</div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Banner */}
+          <div className="mt-6 rounded-2xl px-5 py-5 text-center" style={{ backgroundColor: "#5CE0D8" }}>
+            <p className="text-[17px] sm:text-[19px] font-bold leading-snug text-[#0B0F1A]">
+              Get your full cognitive baseline at Ikigai.
+            </p>
+            <p className="mt-1.5 text-[13px] text-[#0B0F1A]/70">
+              10 minutes · Non-invasive · Part of your longevity check-up
+            </p>
+          </div>
+
+          <p className="mt-4 text-[11px] leading-normal text-gray-600">
+            This screening is not a diagnostic tool. Results are for informational purposes only and should be discussed with a healthcare professional.
+          </p>
+        </section>
+
+        {/* Retake */}
+        <button
+          onClick={handleRetake}
+          className="w-full rounded-full border border-gray-700 py-3 text-center text-[14px] font-medium text-gray-500 transition-colors hover:border-gray-500 hover:text-gray-300"
+        >
+          Retake
+        </button>
+      </>
+    ) : (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="rounded-2xl border border-gray-700 bg-gray-800/50 p-6 text-center text-sm text-gray-400">
+          Complete the screening game to see your results.
+        </div>
+      </div>
+    )
   );
 }
