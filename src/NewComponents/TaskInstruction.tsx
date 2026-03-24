@@ -6,7 +6,7 @@ import { task2, task3, task4, task5 } from "src/constants/tasks";
 import { preloadImages } from "src/lib/image-cache";
 import { t } from "src/lib/translations";
 import { useTaskProgress } from "src/stores/useTaskProgress";
-import { isDarkHookMode, getHookClinic, isShortAssessment } from "src/utils/assessment";
+import { isDarkHookMode, getHookClinic, isPrologueMode, isShortAssessment } from "src/utils/assessment";
 import { getTaskStatus } from "src/utils/task-verif";
 import { Background } from "../components/Layout/Background";
 import { BackButton } from "./BackButton";
@@ -92,16 +92,23 @@ export function TaskInstruction() {
     );
   }
 
+  const prologue = isPrologueMode();
+  const defaultBackUrl = prologue ? "/prologue" : isShortAssessment() ? "/landing" : "/about";
+  const displayTime = prologue ? 20 : task?.seconds;
+  const displayInstruction = prologue && activeTask === "task2"
+    ? "Match as many symbols to their numbers as possible within 20 seconds."
+    : task.instruction;
+
   return (
     <Background className="justify-center gap-6 section-padding-large" gradient={activeTask}>
       <div className="justify-between w-full mx-auto f">
-        <BackButton backUrl={isShortAssessment() ? "/landing" : "/about"} />
-        <TimeRemainingCard time={task?.seconds} color={task?.color} disabled />
+        <BackButton backUrl={defaultBackUrl} />
+        <TimeRemainingCard time={displayTime} color={task?.color} disabled />
       </div>
 
       <div className="w-full mx-auto text-center cc grow">
         <h1 style={{ color: task.color }}>{task.name}</h1>
-        <p className="text-sm font-medium sm:text-lg">{task.instruction}</p>
+        <p className="text-sm font-medium sm:text-lg">{displayInstruction}</p>
 
         <DemoGIFContainer name={task.name} className="h-full scale-90 min-h-80 max-h-[520px]" />
       </div>

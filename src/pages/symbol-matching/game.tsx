@@ -15,13 +15,13 @@ import { TimeRemainingCard } from "src/NewComponents/TimeRemainingCard";
 import Error403 from "src/pages/403";
 import { updateResult } from "src/stores/useResultStore";
 import { updateTaskProgress, useTaskProgress } from "src/stores/useTaskProgress";
-import { isDarkHookMode } from "src/utils/assessment";
+import { isDarkHookMode, isShortAssessment } from "src/utils/assessment";
 import { getTimeLap } from "src/utils/helpers";
 import { verifyCompletedTasks } from "src/utils/task-verif";
 
 function Task2({ currLevel }: { currLevel: number }) {
-  const ikigaiMode = isDarkHookMode();
-  const levels = ikigaiMode ? task2LevelsShort : task2Levels;
+  const shortMode = isShortAssessment();
+  const levels = shortMode ? task2LevelsShort : task2Levels;
   const { tiles, time } = levels[currLevel];
   const res = useRef({ correct: 0, errors: 0, rounds: [] as any[] });
   const lap = useCallback(getTimeLap(), [currLevel]);
