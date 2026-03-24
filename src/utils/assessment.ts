@@ -76,6 +76,15 @@ export function isIkigaiMode(): boolean {
   return getHookClinic() === "Ikigai Medical";
 }
 
+export function isPrologueMode(): boolean {
+  return getHookClinic() === "Prologue Clinic";
+}
+
+/** Returns true for any clinic that uses dark-themed game UI (Ikigai, Prologue, etc.) */
+export function isDarkHookMode(): boolean {
+  return isIkigaiMode() || isPrologueMode();
+}
+
 export function clearHookClinic() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(HOOK_CLINIC_KEY);

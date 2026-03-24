@@ -9,7 +9,7 @@ import { Button } from "src/NewComponents/Button";
 import { saveResult, useResultStore } from "src/stores/useResultStore";
 import { saveProgress, useTaskProgress } from "src/stores/useTaskProgress";
 import { ResultType } from "src/types";
-import { getAssessmentMode, getHookReportPath, isHookMode, isIkigaiMode, isShortAssessment } from "src/utils/assessment";
+import { getAssessmentMode, getHookReportPath, isHookMode, isDarkHookMode, isShortAssessment } from "src/utils/assessment";
 
 export interface GameCompleteScreenProps extends React.PropsWithChildren {
   result: ResultType;
@@ -76,7 +76,7 @@ export function GameCompleteScreen({
     }
   }, [assessmentMode, nextTask, result, resultError, resultSubmitting, shortAssessment, task, taskError, taskSubmitting]);
 
-  const ikigai = isIkigaiMode();
+  const ikigai = isDarkHookMode();
 
   if (!result) return children;
 

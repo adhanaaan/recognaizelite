@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ResultOverlay } from "src/components/ResultOverlay";
 import { useDemoReset } from "src/hooks/useDemoReset";
 import { useResult } from "src/hooks/useResult";
-import { isIkigaiMode } from "src/utils/assessment";
+import { isDarkHookMode } from "src/utils/assessment";
 import { isDemoPage } from "src/utils/helpers";
 import { NumberPad } from "./NumberPad";
 import { ReferenceIcons } from "./ReferenceIcons";
@@ -22,7 +22,7 @@ export const Task2Game: React.FC<{
   const [activeEle, setActiveEle] = useState(7);
   const { result, setResult, resetResult } = useResult();
   const showDesktopDemoLayout = desktopDemo;
-  const ikigai = isIkigaiMode();
+  const ikigai = isDarkHookMode();
 
   const randomList = useMemo(() => genRandomIconList(tiles), [tiles, refreshKey]);
 

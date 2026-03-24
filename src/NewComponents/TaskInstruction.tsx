@@ -6,7 +6,7 @@ import { task2, task3, task4, task5 } from "src/constants/tasks";
 import { preloadImages } from "src/lib/image-cache";
 import { t } from "src/lib/translations";
 import { useTaskProgress } from "src/stores/useTaskProgress";
-import { isIkigaiMode, isShortAssessment } from "src/utils/assessment";
+import { isDarkHookMode, getHookClinic, isShortAssessment } from "src/utils/assessment";
 import { getTaskStatus } from "src/utils/task-verif";
 import { Background } from "../components/Layout/Background";
 import { BackButton } from "./BackButton";
@@ -46,9 +46,11 @@ export function TaskInstruction() {
   // Don't render anything while redirecting for Airplane Game
   if (activeTask === "task4") return null;
 
-  const ikigai = isIkigaiMode();
+  const darkHook = isDarkHookMode();
+  const clinic = getHookClinic();
+  const backUrl = clinic === "Ikigai Medical" ? "/hookikigai" : clinic === "Prologue Clinic" ? "/prologue" : "/landing";
 
-  if (ikigai) {
+  if (darkHook) {
     return (
       <div
         className="w-full h-[100dvh] overflow-x-hidden overflow-y-auto fc"
@@ -58,7 +60,7 @@ export function TaskInstruction() {
           <div className="justify-between w-full mx-auto f">
             <button
               className="items-center justify-center px-3 py-1.5 rounded-full f font-semibold text-gray-300 border border-gray-600"
-              onClick={() => Router.replace("/hookikigai")}
+              onClick={() => Router.replace(backUrl)}
             >
               <svg className="mr-2 size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M19 12H5M12 19l-7-7 7-7" />
