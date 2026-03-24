@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { isIkigaiMode } from "src/utils/assessment";
+import { isDarkHookMode } from "src/utils/assessment";
 
 interface Props extends React.PropsWithChildren {
   active?: boolean;
@@ -13,7 +13,7 @@ const InitialBgColor = "linear-gradient(180deg, #8735AC 0%, #250037 100%)";
 const IkigaiBgColor = "linear-gradient(180deg, #1a7a74 0%, #0d3d3a 100%)";
 
 export function NumberButton({ onClick, className, children, id, desktopDemo = false }: Props) {
-  const ikigai = isIkigaiMode();
+  const ikigai = isDarkHookMode();
   const defaultBg = ikigai ? IkigaiBgColor : InitialBgColor;
   const [background, setBackground] = useState(defaultBg);
 

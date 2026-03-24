@@ -15,17 +15,17 @@ import { TimeRemainingCard } from "src/NewComponents/TimeRemainingCard";
 import Error403 from "src/pages/403";
 import { updateResult } from "src/stores/useResultStore";
 import { updateTaskProgress, useTaskProgress } from "src/stores/useTaskProgress";
-import { isIkigaiMode } from "src/utils/assessment";
+import { isDarkHookMode } from "src/utils/assessment";
 import { getTimeLap } from "src/utils/helpers";
 import { verifyCompletedTasks } from "src/utils/task-verif";
 
 function Task2({ currLevel }: { currLevel: number }) {
-  const ikigaiMode = isIkigaiMode();
+  const ikigaiMode = isDarkHookMode();
   const levels = ikigaiMode ? task2LevelsShort : task2Levels;
   const { tiles, time } = levels[currLevel];
   const res = useRef({ correct: 0, errors: 0, rounds: [] as any[] });
   const lap = useCallback(getTimeLap(), [currLevel]);
-  const ikigai = isIkigaiMode();
+  const ikigai = isDarkHookMode();
 
   const update = useForceUpdate();
   const { result, setResult } = useResult();
@@ -79,7 +79,7 @@ function Task2({ currLevel }: { currLevel: number }) {
 const Task2Wrapper = () => {
   const { currLevel, totalLevel } = useTaskProgress.getState().taskProgress.task2;
   var allow = verifyCompletedTasks("task2");
-  const ikigai = isIkigaiMode();
+  const ikigai = isDarkHookMode();
 
   return (
     <>

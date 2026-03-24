@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { isIkigaiMode } from "src/utils/assessment";
+import { isDarkHookMode } from "src/utils/assessment";
 import { IconList } from "./utils";
 
 export function ReferenceIcons({ randomList, desktopDemo = false }: { randomList: number[]; desktopDemo?: boolean }) {
-  const ikigai = isIkigaiMode();
+  const ikigai = isDarkHookMode();
   const darkGlass =
     "linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 50.99%, rgba(255, 255, 255, 0.02) 100%)";
   const lightGlass =
