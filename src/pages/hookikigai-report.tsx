@@ -139,8 +139,8 @@ export default function HookIkigaiReportPage() {
   const [emailError, setEmailError] = useState("");
 
   useEffect(() => {
-    const stored = localStorage.getItem(LEAD_EMAIL_KEY);
-    if (stored) setEmailSubmitted(true);
+    // Email gate: always show form on page load.
+    // localStorage is only used within the same session after submit.
   }, []);
 
   const handleEmailSubmit = (e: React.FormEvent) => {
@@ -261,9 +261,20 @@ export default function HookIkigaiReportPage() {
   return page(
     report && severity ? (
       <>
-        {/* GMS branding */}
+        {/* Ikigai branding */}
         <div className="text-center pt-2 pb-4">
-          <img src="/logo.png" alt="GMS Logo" className="mx-auto w-[100px]" />
+          <h2
+            className="text-white text-[16px] font-light uppercase"
+            style={{ letterSpacing: "0.35em", fontFamily: "'Century Gothic', CenturyGothic, AppleGothic, Futura, sans-serif" }}
+          >
+            Ikigai
+          </h2>
+          <p
+            className="text-gray-400 text-[9px] uppercase mt-1"
+            style={{ letterSpacing: "0.2em", fontFamily: "'Hero', Avenir, 'Helvetica Neue', sans-serif" }}
+          >
+            Medical Clinic
+          </p>
           <p className="text-gray-500 text-[9px] uppercase mt-2" style={{ letterSpacing: "0.2em" }}>
             Your Results
           </p>
