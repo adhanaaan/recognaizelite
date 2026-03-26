@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { list } from '@vercel/blob';
+import { get as getBlob } from '@vercel/blob';
 
 const BLOB_NAME = 'leads.json';
 
@@ -13,16 +13,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { blobs } = await list({ prefix: BLOB_NAME });
-    const blob = blobs.find(b => b.pathname === BLOB_NAME);
-    if (!blob) {
-      return res.status(200).json({ leads: [] });
-    }
-    const response = await fetch(blob.url);
-    const leads = await response.json();
+    const result = await getBlob(BLOB_NAME, { access: 'private' });
+    if (!result || result.statusCode === 304) return res.status(200).json({ leads: [] });
+    const text = await new Response(result.stream).text();
+    const leads = JSON.parse(text);
     return res.status(200).json({ leads });
-  } catch (error) {
-    console.error('Error fetching leads:', error);
-    return res.status(500).json({ error: 'Failed to fetch leads' });
+  } catch {
+    return res.status(200).json({ leads: [] });
   }
 }
