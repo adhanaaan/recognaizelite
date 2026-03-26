@@ -264,14 +264,15 @@ export default function HookIkigaiReportPage() {
         {/* Ikigai branding */}
         <div className="text-center pt-2 pb-4">
           <h2
-            className="text-white text-[16px] font-light uppercase"
-            style={{ letterSpacing: "0.35em", fontFamily: "'Century Gothic', CenturyGothic, AppleGothic, Futura, sans-serif" }}
+            className="text-white text-[14px] font-light"
+            style={{ letterSpacing: "0.45em", fontFamily: "'Century Gothic', CenturyGothic, AppleGothic, Futura, sans-serif" }}
           >
-            Ikigai
+            I K I G A I
           </h2>
+          <div className="w-20 h-px bg-gray-500 mx-auto mt-2 mb-2" />
           <p
-            className="text-gray-400 text-[9px] uppercase mt-1"
-            style={{ letterSpacing: "0.2em", fontFamily: "'Hero', Avenir, 'Helvetica Neue', sans-serif" }}
+            className="text-gray-400 text-[9px] uppercase"
+            style={{ letterSpacing: "0.3em", fontFamily: "'Hero', Avenir, 'Helvetica Neue', sans-serif" }}
           >
             Medical Clinic
           </p>
