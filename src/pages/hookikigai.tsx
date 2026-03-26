@@ -23,18 +23,9 @@ export default function HookIkigaiEntry() {
         className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden"
         style={{ background: "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)" }}
       >
-        {/* Ikigai branding */}
+        {/* GMS branding */}
         <div className="text-center mb-8">
-          <h2
-            className="text-white text-[18px] font-light"
-            style={{ letterSpacing: "0.35em", fontFamily: "Georgia, 'Times New Roman', serif" }}
-          >
-            I K I G A I
-          </h2>
-          <div className="w-12 h-px bg-gray-600 mx-auto mt-2 mb-1.5" />
-          <p className="text-gray-400 text-[10px] uppercase" style={{ letterSpacing: "0.25em" }}>
-            Wellness Clinic
-          </p>
+          <img src="/logo.png" alt="GMS Logo" className="mx-auto w-[120px]" />
         </div>
 
         {/* Headline */}
