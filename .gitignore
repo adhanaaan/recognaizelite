@@ -6,7 +6,3 @@ out/
 .env
 .env.local
 .env.*.local
-
-# Lead data (contains PII)
-data/leads.json
-data/leads.json.tmp

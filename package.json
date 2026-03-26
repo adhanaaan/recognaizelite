@@ -17,6 +17,7 @@
     "@iconify/icons-mingcute": "^1.2.9",
     "@iconify/react": "^6.0.2",
     "@next/third-parties": "^14.2.3",
+    "@vercel/blob": "^2.3.1",
     "axios": "^1.7.7",
     "firebase": "^10.12.2",
     "framer-motion": "^11.0.25",

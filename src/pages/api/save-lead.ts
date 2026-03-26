@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import fs from 'fs';
-import path from 'path';
+import { put, list } from '@vercel/blob';
 
 interface Lead {
   email: string;
@@ -9,15 +8,18 @@ interface Lead {
   savedAt: string;
 }
 
-const LEADS_FILE = path.join(process.cwd(), 'data', 'leads.json');
-const LEADS_TMP = LEADS_FILE + '.tmp';
+const BLOB_NAME = 'leads.json';
 
-// In-process mutex to serialize read-modify-write operations
-let writeLock: Promise<unknown> = Promise.resolve();
-function withLock<T>(fn: () => Promise<T>): Promise<T> {
-  const result = writeLock.then(fn, fn) as Promise<T>;
-  writeLock = result;
-  return result;
+async function getLeads(): Promise<Lead[]> {
+  try {
+    const { blobs } = await list({ prefix: BLOB_NAME });
+    const blob = blobs.find(b => b.pathname === BLOB_NAME);
+    if (!blob) return [];
+    const res = await fetch(blob.url);
+    return await res.json();
+  } catch {
+    return [];
+  }
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -47,35 +49,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const result = await withLock(async () => {
-      let leads: Lead[] = [];
-      try {
-        const raw = await fs.promises.readFile(LEADS_FILE, 'utf-8');
-        leads = JSON.parse(raw);
-      } catch {
-        leads = [];
-      }
+    const leads = await getLeads();
 
-      const normalizedEmail = email.trim().toLowerCase();
-      if (leads.some(l => l.email.toLowerCase() === normalizedEmail)) {
-        return { duplicate: true };
-      }
+    const normalizedEmail = email.trim().toLowerCase();
+    if (leads.some(l => l.email.toLowerCase() === normalizedEmail)) {
+      return res.status(200).json({ success: true, duplicate: true });
+    }
 
-      leads.push({
-        email: email.trim(),
-        clinic,
-        timestamp,
-        savedAt: new Date().toISOString(),
-      });
-
-      await fs.promises.mkdir(path.dirname(LEADS_FILE), { recursive: true });
-      await fs.promises.writeFile(LEADS_TMP, JSON.stringify(leads, null, 2), 'utf-8');
-      await fs.promises.rename(LEADS_TMP, LEADS_FILE);
-
-      return { duplicate: false };
+    leads.push({
+      email: email.trim(),
+      clinic,
+      timestamp,
+      savedAt: new Date().toISOString(),
     });
 
-    return res.status(200).json({ success: true, duplicate: result.duplicate });
+    await put(BLOB_NAME, JSON.stringify(leads, null, 2), {
+      access: 'public',
+      addRandomSuffix: false,
+    });
+
+    return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Error saving lead:', error);
     return res.status(500).json({ error: 'Failed to save lead' });
