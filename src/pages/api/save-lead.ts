@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { put, list } from '@vercel/blob';
+import { put, get as getBlob } from '@vercel/blob';
 
 interface Lead {
   email: string;
@@ -12,11 +12,10 @@ const BLOB_NAME = 'leads.json';
 
 async function getLeads(): Promise<Lead[]> {
   try {
-    const { blobs } = await list({ prefix: BLOB_NAME });
-    const blob = blobs.find(b => b.pathname === BLOB_NAME);
-    if (!blob) return [];
-    const res = await fetch(blob.url);
-    return await res.json();
+    const result = await getBlob(BLOB_NAME, { access: 'private' });
+    if (!result || result.statusCode === 304 || !result.stream) throw new Error('empty');
+    const text = await new Response(result.stream).text();
+    return JSON.parse(text);
   } catch {
     return [];
   }
@@ -64,7 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     await put(BLOB_NAME, JSON.stringify(leads, null, 2), {
-      access: 'public',
+      access: 'private',
       addRandomSuffix: false,
     });
 
