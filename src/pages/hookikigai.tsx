@@ -23,9 +23,20 @@ export default function HookIkigaiEntry() {
         className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden"
         style={{ background: "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)" }}
       >
-        {/* GMS branding */}
+        {/* Ikigai branding */}
         <div className="text-center mb-8">
-          <img src="/logo.png" alt="GMS Logo" className="mx-auto w-[120px]" />
+          <h2
+            className="text-white text-[22px] font-light uppercase"
+            style={{ letterSpacing: "0.35em", fontFamily: "'Century Gothic', CenturyGothic, AppleGothic, Futura, sans-serif" }}
+          >
+            Ikigai
+          </h2>
+          <p
+            className="text-gray-400 text-[10px] uppercase mt-1.5"
+            style={{ letterSpacing: "0.2em", fontFamily: "'Hero', Avenir, 'Helvetica Neue', sans-serif" }}
+          >
+            Medical Clinic
+          </p>
         </div>
 
         {/* Headline */}
