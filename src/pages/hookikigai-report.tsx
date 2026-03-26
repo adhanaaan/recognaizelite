@@ -438,9 +438,14 @@ export default function HookIkigaiReportPage() {
                   <br />
                   10 minutes · Non-invasive · Science-backed
                 </p>
-                <div className="mt-4 inline-block rounded-full bg-[#0B0F1A] px-8 py-3 cursor-pointer hover:bg-[#1a2332] transition-colors">
+                <a
+                  href="https://wa.me/6581385516?text=Hi%2C%20I%20completed%20the%20ReCOGnAIze%20cognitive%20screening%20demo%20and%20would%20like%20to%20book%20the%20full%20ReCOGnAIze%20assessment.%20Could%20you%20share%20the%20details%20on%20availability%20and%20pricing%3F"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-block rounded-full bg-[#0B0F1A] px-8 py-3 cursor-pointer hover:bg-[#1a2332] transition-colors"
+                >
                   <span className="text-[14px] font-bold text-white">Book Your Full Screening</span>
-                </div>
+                </a>
               </div>
 
               <p className="mt-4 text-[11px] leading-normal text-gray-600">
