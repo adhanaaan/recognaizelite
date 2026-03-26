@@ -26,14 +26,15 @@ export default function HookIkigaiEntry() {
         {/* Ikigai branding */}
         <div className="text-center mb-8">
           <h2
-            className="text-white text-[22px] font-light uppercase"
-            style={{ letterSpacing: "0.35em", fontFamily: "'Century Gothic', CenturyGothic, AppleGothic, Futura, sans-serif" }}
+            className="text-white text-[20px] font-light"
+            style={{ letterSpacing: "0.45em", fontFamily: "'Century Gothic', CenturyGothic, AppleGothic, Futura, sans-serif" }}
           >
-            Ikigai
+            I K I G A I
           </h2>
+          <div className="w-28 h-px bg-gray-500 mx-auto mt-2.5 mb-2.5" />
           <p
-            className="text-gray-400 text-[10px] uppercase mt-1.5"
-            style={{ letterSpacing: "0.2em", fontFamily: "'Hero', Avenir, 'Helvetica Neue', sans-serif" }}
+            className="text-gray-400 text-[10px] uppercase"
+            style={{ letterSpacing: "0.3em", fontFamily: "'Hero', Avenir, 'Helvetica Neue', sans-serif" }}
           >
             Medical Clinic
           </p>
