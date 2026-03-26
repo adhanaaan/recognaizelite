@@ -1,4 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { put, list } from '@vercel/blob';
+
+interface Lead {
+  email: string;
+  clinic: string;
+  timestamp: string;
+  savedAt: string;
+}
+
+const BLOB_NAME = 'leads.json';
+
+async function getLeads(): Promise<Lead[]> {
+  try {
+    const { blobs } = await list({ prefix: BLOB_NAME });
+    const blob = blobs.find(b => b.pathname === BLOB_NAME);
+    if (!blob) return [];
+    const res = await fetch(blob.url);
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -26,29 +48,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'Invalid timestamp' });
   }
 
-  const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
-  if (!webhookUrl) {
-    console.error('GOOGLE_SHEETS_WEBHOOK_URL is not configured');
-    return res.status(500).json({ error: 'Lead storage not configured' });
-  }
-
   try {
-    const payload = {
+    const leads = await getLeads();
+
+    const normalizedEmail = email.trim().toLowerCase();
+    if (leads.some(l => l.email.toLowerCase() === normalizedEmail)) {
+      return res.status(200).json({ success: true, duplicate: true });
+    }
+
+    leads.push({
       email: email.trim(),
       clinic,
       timestamp,
       savedAt: new Date().toISOString(),
-    };
-
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
     });
 
-    if (!response.ok) {
-      throw new Error(`Google Sheets webhook returned ${response.status}`);
-    }
+    await put(BLOB_NAME, JSON.stringify(leads, null, 2), {
+      access: 'public',
+      addRandomSuffix: false,
+    });
 
     return res.status(200).json({ success: true });
   } catch (error) {
