@@ -153,6 +153,19 @@ export default function HookIkigaiReportPage() {
     localStorage.setItem(LEAD_EMAIL_KEY, trimmed);
     setEmailSubmitted(true);
     setEmailError("");
+
+    // Fire-and-forget: persist lead to server
+    fetch("/api/save-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: trimmed,
+        clinic: "hookikigai",
+        timestamp: new Date().toISOString(),
+      }),
+    }).catch(() => {
+      // Silently ignore — localStorage is the primary gate
+    });
   };
 
   useEffect(() => {
