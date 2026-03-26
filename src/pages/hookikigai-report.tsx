@@ -127,11 +127,33 @@ const LOCKED_AREAS = [
   { name: "Executive Function", skill: "Decision-making & planning" },
 ];
 
+const LEAD_EMAIL_KEY = "recognaize-lead-email";
+
 export default function HookIkigaiReportPage() {
   const { result } = useResultStore();
   const [report, setReport] = useState<DomainReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  useEffect(() => {
+    const stored = localStorage.getItem(LEAD_EMAIL_KEY);
+    if (stored) setEmailSubmitted(true);
+  }, []);
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = emailInput.trim();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+    localStorage.setItem(LEAD_EMAIL_KEY, trimmed);
+    setEmailSubmitted(true);
+    setEmailError("");
+  };
 
   useEffect(() => {
     document.documentElement.style.overflow = "auto";
@@ -226,20 +248,15 @@ export default function HookIkigaiReportPage() {
   return page(
     report && severity ? (
       <>
-        {/* Ikigai branding */}
+        {/* GMS branding */}
         <div className="text-center pt-2 pb-4">
-          <h2
-            className="text-white text-[14px] font-light"
-            style={{ letterSpacing: "0.35em", fontFamily: "Georgia, 'Times New Roman', serif" }}
-          >
-            I K I G A I
-          </h2>
-          <p className="text-gray-500 text-[9px] uppercase mt-1" style={{ letterSpacing: "0.2em" }}>
+          <img src="/logo.png" alt="GMS Logo" className="mx-auto w-[100px]" />
+          <p className="text-gray-500 text-[9px] uppercase mt-2" style={{ letterSpacing: "0.2em" }}>
             Your Results
           </p>
         </div>
 
-        {/* Result Card */}
+        {/* Result Card — teaser always visible */}
         <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#111827", border: "1px solid #1F2937" }}>
           <p className="text-[12px] font-bold uppercase tracking-wider text-gray-500">
             Cognitive Screening
@@ -259,91 +276,154 @@ export default function HookIkigaiReportPage() {
             </span>
           </div>
 
-          <div className="mt-4">
-            <BellCurve percentile={Math.round(report.percentile)} severity={severity} />
-          </div>
-
-          <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#1A2035" }}>
-            <p className="text-[13px] font-bold uppercase tracking-wider text-gray-400">
-              What is {report.title}?
-            </p>
-            <p className="mt-2 text-[14px] leading-relaxed text-gray-300">
-              {report.definition}
-            </p>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#111827", border: "1px solid #1F2937" }}>
-          <h3
-            className="text-[20px] sm:text-[24px] font-bold leading-snug text-white"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-          >
-            {CTA_COPY[report.severity].headline}
-          </h3>
-          <p className="mt-4 text-[14px] leading-relaxed text-gray-400">
-            {CTA_COPY[report.severity].body}
-          </p>
-
-          {/* Progress indicator */}
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[12px] font-bold uppercase tracking-wider text-gray-500">Your screening progress</span>
-              <span className="text-[13px] font-bold" style={{ color: "#5CE0D8" }}>1 of 4</span>
+          {/* Bell curve — blurred if email not submitted */}
+          <div className="mt-4 relative">
+            <div style={!emailSubmitted ? { filter: "blur(12px)", pointerEvents: "none" } : undefined}>
+              <BellCurve percentile={Math.round(report.percentile)} severity={severity} />
             </div>
-            <div className="h-1.5 rounded-full bg-gray-800 overflow-hidden">
-              <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#5CE0D8" }} />
-            </div>
-          </div>
-
-          {/* Brain areas grid */}
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
-              <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
-                &#10003; Complete
-              </div>
-              <div className="mt-1 text-[14px] font-bold text-white">Processing Speed</div>
-              <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
-            </div>
-            {LOCKED_AREAS.map((area) => (
-              <div key={area.name} className="rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-4 text-center relative overflow-hidden">
-                <div className="text-gray-600">
-                  <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            {!emailSubmitted && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="rounded-xl px-5 py-3 text-center" style={{ backgroundColor: "rgba(17,24,39,0.85)" }}>
+                  <svg className="mx-auto size-5 text-gray-400 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
+                  <p className="text-[13px] font-semibold text-gray-300">Enter your email to reveal your score</p>
                 </div>
-                <div className="mt-1 text-[14px] font-bold text-gray-400">{area.name}</div>
-                <div className="mt-0.5 text-[11px] text-gray-600">{area.skill}</div>
               </div>
-            ))}
+            )}
           </div>
 
-          {/* CTA Banner */}
-          <div className="mt-6 rounded-2xl px-5 py-6 text-center" style={{ background: "linear-gradient(135deg, #5CE0D8 0%, #3BB8B0 100%)" }}>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-[#0B0F1A]/60 mb-2">
-              Ikigai Medical
-            </p>
-            <p
-              className="text-[19px] sm:text-[22px] font-bold leading-snug text-[#0B0F1A]"
+          {/* Definition — only shown after email */}
+          {emailSubmitted && (
+            <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#1A2035" }}>
+              <p className="text-[13px] font-bold uppercase tracking-wider text-gray-400">
+                What is {report.title}?
+              </p>
+              <p className="mt-2 text-[14px] leading-relaxed text-gray-300">
+                {report.definition}
+              </p>
+            </div>
+          )}
+        </section>
+
+        {/* Email capture form — shown when email not yet submitted */}
+        {!emailSubmitted && (
+          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#111827", border: "1px solid #1F2937" }}>
+            <h3
+              className="text-[20px] sm:text-[24px] font-bold leading-snug text-white text-center"
               style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
             >
-              Unlock your complete cognitive baseline.
+              Want to see your full results?
+            </h3>
+            <p className="mt-3 text-[14px] leading-relaxed text-gray-400 text-center">
+              Enter your email to unlock your detailed percentile score, learn what it means, and get tips to improve.
             </p>
-            <p className="mt-2 text-[13px] text-[#0B0F1A]/70 leading-relaxed">
-              Part of Ikigai&apos;s longevity &amp; performance health check-up.
-              <br />
-              10 minutes · Non-invasive · Science-backed
+            <form onSubmit={handleEmailSubmit} className="mt-5 space-y-3">
+              <input
+                type="email"
+                placeholder="your@email.com"
+                value={emailInput}
+                onChange={(e) => { setEmailInput(e.target.value); setEmailError(""); }}
+                className="w-full rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-3.5 text-[15px] text-white placeholder-gray-500 outline-none focus:border-[#5CE0D8] transition-colors"
+              />
+              {emailError && (
+                <p className="text-red-400 text-[12px]">{emailError}</p>
+              )}
+              <button
+                type="submit"
+                className="w-full rounded-full px-8 py-4 text-[16px] font-bold tracking-wide transition-all active:opacity-90"
+                style={{
+                  backgroundColor: "#5CE0D8",
+                  color: "#0B0F1A",
+                  boxShadow: "0 0 30px rgba(92,224,216,0.25)",
+                }}
+              >
+                Get My Results
+              </button>
+            </form>
+            <p className="mt-3 text-[11px] text-gray-600 text-center">
+              We&apos;ll send you insights about your cognitive health. No spam.
             </p>
-            <div className="mt-4 inline-block rounded-full bg-[#0B0F1A] px-8 py-3 cursor-pointer hover:bg-[#1a2332] transition-colors">
-              <span className="text-[14px] font-bold text-white">Book Your Full Screening</span>
-            </div>
-          </div>
+          </section>
+        )}
 
-          <p className="mt-4 text-[11px] leading-normal text-gray-600">
-            This screening is not a diagnostic tool. Results are for informational purposes only and should be discussed with a healthcare professional.
-          </p>
-        </section>
+        {/* Full report — only shown after email */}
+        {emailSubmitted && (
+          <>
+            {/* CTA Section */}
+            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#111827", border: "1px solid #1F2937" }}>
+              <h3
+                className="text-[20px] sm:text-[24px] font-bold leading-snug text-white"
+                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              >
+                {CTA_COPY[report.severity].headline}
+              </h3>
+              <p className="mt-4 text-[14px] leading-relaxed text-gray-400">
+                {CTA_COPY[report.severity].body}
+              </p>
+
+              {/* Progress indicator */}
+              <div className="mt-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[12px] font-bold uppercase tracking-wider text-gray-500">Your screening progress</span>
+                  <span className="text-[13px] font-bold" style={{ color: "#5CE0D8" }}>1 of 4</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-gray-800 overflow-hidden">
+                  <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#5CE0D8" }} />
+                </div>
+              </div>
+
+              {/* Brain areas grid */}
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
+                  <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
+                    &#10003; Complete
+                  </div>
+                  <div className="mt-1 text-[14px] font-bold text-white">Processing Speed</div>
+                  <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
+                </div>
+                {LOCKED_AREAS.map((area) => (
+                  <div key={area.name} className="rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-4 text-center relative overflow-hidden">
+                    <div className="text-gray-600">
+                      <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <rect x="3" y="11" width="18" height="11" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                    </div>
+                    <div className="mt-1 text-[14px] font-bold text-gray-400">{area.name}</div>
+                    <div className="mt-0.5 text-[11px] text-gray-600">{area.skill}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA Banner */}
+              <div className="mt-6 rounded-2xl px-5 py-6 text-center" style={{ background: "linear-gradient(135deg, #5CE0D8 0%, #3BB8B0 100%)" }}>
+                <p className="text-[11px] font-bold uppercase tracking-widest text-[#0B0F1A]/60 mb-2">
+                  RecognAIze
+                </p>
+                <p
+                  className="text-[19px] sm:text-[22px] font-bold leading-snug text-[#0B0F1A]"
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                >
+                  Unlock your complete cognitive baseline.
+                </p>
+                <p className="mt-2 text-[13px] text-[#0B0F1A]/70 leading-relaxed">
+                  A comprehensive cognitive health check-up.
+                  <br />
+                  10 minutes · Non-invasive · Science-backed
+                </p>
+                <div className="mt-4 inline-block rounded-full bg-[#0B0F1A] px-8 py-3 cursor-pointer hover:bg-[#1a2332] transition-colors">
+                  <span className="text-[14px] font-bold text-white">Book Your Full Screening</span>
+                </div>
+              </div>
+
+              <p className="mt-4 text-[11px] leading-normal text-gray-600">
+                This screening is not a diagnostic tool. Results are for informational purposes only and should be discussed with a healthcare professional.
+              </p>
+            </section>
+          </>
+        )}
 
         {/* Retake */}
         <button
