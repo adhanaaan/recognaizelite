@@ -1,24 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import fs from 'fs';
-import path from 'path';
-
-interface Lead {
-  email: string;
-  clinic: string;
-  timestamp: string;
-  savedAt: string;
-}
-
-const LEADS_FILE = path.join(process.cwd(), 'data', 'leads.json');
-const LEADS_TMP = LEADS_FILE + '.tmp';
-
-// In-process mutex to serialize read-modify-write operations
-let writeLock: Promise<unknown> = Promise.resolve();
-function withLock<T>(fn: () => Promise<T>): Promise<T> {
-  const result = writeLock.then(fn, fn) as Promise<T>;
-  writeLock = result;
-  return result;
-}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -46,36 +26,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'Invalid timestamp' });
   }
 
+  const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+  if (!webhookUrl) {
+    console.error('GOOGLE_SHEETS_WEBHOOK_URL is not configured');
+    return res.status(500).json({ error: 'Lead storage not configured' });
+  }
+
   try {
-    const result = await withLock(async () => {
-      let leads: Lead[] = [];
-      try {
-        const raw = await fs.promises.readFile(LEADS_FILE, 'utf-8');
-        leads = JSON.parse(raw);
-      } catch {
-        leads = [];
-      }
+    const payload = {
+      email: email.trim(),
+      clinic,
+      timestamp,
+      savedAt: new Date().toISOString(),
+    };
 
-      const normalizedEmail = email.trim().toLowerCase();
-      if (leads.some(l => l.email.toLowerCase() === normalizedEmail)) {
-        return { duplicate: true };
-      }
-
-      leads.push({
-        email: email.trim(),
-        clinic,
-        timestamp,
-        savedAt: new Date().toISOString(),
-      });
-
-      await fs.promises.mkdir(path.dirname(LEADS_FILE), { recursive: true });
-      await fs.promises.writeFile(LEADS_TMP, JSON.stringify(leads, null, 2), 'utf-8');
-      await fs.promises.rename(LEADS_TMP, LEADS_FILE);
-
-      return { duplicate: false };
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     });
 
-    return res.status(200).json({ success: true, duplicate: result.duplicate });
+    if (!response.ok) {
+      throw new Error(`Google Sheets webhook returned ${response.status}`);
+    }
+
+    return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Error saving lead:', error);
     return res.status(500).json({ error: 'Failed to save lead' });
