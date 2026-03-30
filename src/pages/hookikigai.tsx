@@ -34,7 +34,7 @@ export default function HookIkigaiEntry() {
       >
         {/* Ikigai branding */}
         <div className="text-center mb-8">
-          <img src="/ikigai-logo.jpeg" alt="Ikigai" className="mx-auto w-[140px]" style={{ filter: "invert(1) brightness(2)" }} />
+          <img src="/ikigai-logo.png" alt="Ikigai" className="mx-auto w-[140px]" style={{ filter: "invert(1) brightness(2)" }} />
         </div>
 
         {/* Headline */}

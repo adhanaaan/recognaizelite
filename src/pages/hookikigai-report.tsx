@@ -263,7 +263,7 @@ export default function HookIkigaiReportPage() {
       <>
         {/* Ikigai branding */}
         <div className="text-center pt-2 pb-4">
-          <img src="/ikigai-logo.jpeg" alt="Ikigai" className="mx-auto w-[100px]" style={{ filter: "invert(1) brightness(2)" }} />
+          <img src="/ikigai-logo.png" alt="Ikigai" className="mx-auto w-[100px]" style={{ filter: "invert(1) brightness(2)" }} />
           <p className="text-gray-500 text-[9px] uppercase mt-3" style={{ letterSpacing: "0.2em" }}>
             Your Results
           </p>
