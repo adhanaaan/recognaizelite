@@ -128,6 +128,7 @@ const LOCKED_AREAS = [
 ];
 
 const LEAD_EMAIL_KEY = "recognaize-lead-email";
+const SHARE_URL = "https://recognaizelite.vercel.app/sjmc";
 
 export default function SjmcReportPage() {
   const { result } = useResultStore();
@@ -137,6 +138,7 @@ export default function SjmcReportPage() {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [shared, setShared] = useState(false);
 
   useEffect(() => {
     // Email gate: always show form on page load.
@@ -358,55 +360,119 @@ export default function SjmcReportPage() {
 
         {/* Full report — only shown after email */}
         {emailSubmitted && (
-          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
-            <h3
-              className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937]"
-              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-            >
-              {CTA_COPY[report.severity].headline}
-            </h3>
-            <p className="mt-4 text-[14px] leading-relaxed text-[#6B7280]">
-              {CTA_COPY[report.severity].body}
-            </p>
+          <>
+            {/* The bigger picture */}
+            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
+              <h3
+                className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937]"
+                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              >
+                {CTA_COPY[report.severity].headline}
+              </h3>
+              <p className="mt-4 text-[14px] leading-relaxed text-[#6B7280]">
+                {CTA_COPY[report.severity].body}
+              </p>
 
-            {/* Progress indicator */}
-            <div className="mt-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">Your screening progress</span>
-                <span className="text-[13px] font-bold" style={{ color: "#E8793B" }}>1 of 4</span>
-              </div>
-              <div className="h-1.5 rounded-full bg-[#F0E0D4] overflow-hidden">
-                <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#E8793B" }} />
-              </div>
-            </div>
-
-            {/* Brain areas grid */}
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
-                <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
-                  &#10003; Complete
+              {/* Progress indicator */}
+              <div className="mt-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">Your screening progress</span>
+                  <span className="text-[13px] font-bold" style={{ color: "#E8793B" }}>1 of 4</span>
                 </div>
-                <div className="mt-1 text-[14px] font-bold text-[#1F2937]">Processing Speed</div>
-                <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
+                <div className="h-1.5 rounded-full bg-[#F0E0D4] overflow-hidden">
+                  <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#E8793B" }} />
+                </div>
               </div>
-              {LOCKED_AREAS.map((area) => (
-                <div key={area.name} className="rounded-xl border border-[#E5D5CA] bg-[#FFF7F2] px-4 py-4 text-center relative overflow-hidden">
-                  <div className="text-[#C4B5A8]">
-                    <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <rect x="3" y="11" width="18" height="11" rx="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
+
+              {/* Brain areas grid */}
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
+                  <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
+                    &#10003; Complete
                   </div>
-                  <div className="mt-1 text-[14px] font-bold text-[#6B7280]">{area.name}</div>
-                  <div className="mt-0.5 text-[11px] text-[#9CA3AF]">{area.skill}</div>
+                  <div className="mt-1 text-[14px] font-bold text-[#1F2937]">Processing Speed</div>
+                  <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
                 </div>
-              ))}
-            </div>
+                {LOCKED_AREAS.map((area) => (
+                  <div key={area.name} className="rounded-xl border border-[#E5D5CA] bg-[#FFF7F2] px-4 py-4 text-center relative overflow-hidden">
+                    <div className="text-[#C4B5A8]">
+                      <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <rect x="3" y="11" width="18" height="11" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                    </div>
+                    <div className="mt-1 text-[14px] font-bold text-[#6B7280]">{area.name}</div>
+                    <div className="mt-0.5 text-[11px] text-[#9CA3AF]">{area.skill}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-            <p className="mt-6 text-[11px] leading-normal text-[#9CA3AF]">
+            {/* Waitlist / Early Access CTA */}
+            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ background: "linear-gradient(135deg, #E8793B 0%, #D4693A 100%)" }}>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-2">
+                Coming Soon
+              </p>
+              <h3
+                className="text-[20px] sm:text-[22px] font-bold leading-snug text-white"
+                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              >
+                The full ReCOGnAIze assessment is launching soon.
+              </h3>
+              <p className="mt-3 text-[13px] text-white/80 leading-relaxed">
+                4 cognitive pillars &middot; 10 minutes &middot; Science-backed
+                <br />
+                Memory &middot; Attention &middot; Processing Speed &middot; Executive Function
+              </p>
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2">
+                <svg className="size-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-[13px] font-semibold text-white">
+                  You&apos;re on the early access list
+                </span>
+              </div>
+              <p className="mt-3 text-[11px] text-white/50">
+                We&apos;ll notify you when the full assessment launches.
+              </p>
+            </section>
+
+            {/* Challenge a friend */}
+            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
+              <h3 className="text-[18px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                Think you&apos;re fast? Prove it.
+              </h3>
+              <p className="mt-2 text-[13px] text-[#6B7280]">
+                Challenge a friend to beat your score.
+              </p>
+              <button
+                onClick={async () => {
+                  const text = `I just tested my brain speed at the SJMC World Health Day event — can you beat my score? Try it: ${SHARE_URL}`;
+                  if (navigator.share) {
+                    try {
+                      await navigator.share({ title: "Brain Speed Challenge", text, url: SHARE_URL });
+                      setShared(true);
+                    } catch { /* cancelled */ }
+                  } else {
+                    await navigator.clipboard.writeText(text);
+                    setShared(true);
+                    setTimeout(() => setShared(false), 3000);
+                  }
+                }}
+                className="mt-4 w-full rounded-full px-6 py-3 text-[15px] font-bold transition-all active:scale-[0.97]"
+                style={{
+                  backgroundColor: shared ? "#34D399" : "#1F2937",
+                  color: "#ffffff",
+                }}
+              >
+                {shared ? "Link copied!" : "Share Challenge"}
+              </button>
+            </section>
+
+            <p className="text-[11px] leading-normal text-[#9CA3AF] text-center px-2">
               This screening is not a diagnostic tool. Results are for informational purposes only and should be discussed with a healthcare professional.
             </p>
-          </section>
+          </>
         )}
 
         {/* Retake */}
