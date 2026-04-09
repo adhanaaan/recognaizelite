@@ -48,7 +48,7 @@ export function TaskInstruction() {
 
   const darkHook = isDarkHookMode();
   const clinic = getHookClinic();
-  const backUrl = clinic === "Ikigai Medical" ? "/hookikigai" : clinic === "Prologue Clinic" ? "/prologue" : "/landing";
+  const backUrl = clinic === "Ikigai Medical" ? "/hookikigai" : clinic === "Prologue Clinic" ? "/prologue" : clinic === "SJMC" ? "/sjmc" : "/landing";
 
   if (darkHook) {
     return (
