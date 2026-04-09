@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ResultOverlay } from "src/components/ResultOverlay";
 import { useDemoReset } from "src/hooks/useDemoReset";
 import { useResult } from "src/hooks/useResult";
-import { isDarkHookMode } from "src/utils/assessment";
+import { isDarkHookMode, isSjmcMode } from "src/utils/assessment";
 import { isDemoPage } from "src/utils/helpers";
 import { NumberPad } from "./NumberPad";
 import { ReferenceIcons } from "./ReferenceIcons";
@@ -23,6 +23,7 @@ export const Task2Game: React.FC<{
   const { result, setResult, resetResult } = useResult();
   const showDesktopDemoLayout = desktopDemo;
   const ikigai = isDarkHookMode();
+  const sjmc = isSjmcMode();
 
   const randomList = useMemo(() => genRandomIconList(tiles), [tiles, refreshKey]);
 
@@ -58,7 +59,7 @@ export const Task2Game: React.FC<{
     return (
       <div
         className="w-full h-dvh overflow-hidden flex items-center justify-center"
-        style={{ background: ikigai ? "radial-gradient(#0B0F1A, #101828)" : "radial-gradient(#E4E3FF78, #D68DE878)" }}
+        style={{ background: ikigai ? "radial-gradient(#0B0F1A, #101828)" : sjmc ? "radial-gradient(#FAEEE6, #F0D4BE)" : "radial-gradient(#E4E3FF78, #D68DE878)" }}
       >
         <div
           className="fc items-center justify-start"
@@ -82,7 +83,7 @@ export const Task2Game: React.FC<{
                   "relative w-[248px] h-[199px] mb-[56px]",
                   result === "success" ? "text-emerald-500" : result === "error" ? "text-red-500" : "",
                 ].join(" ")}
-                style={{ background: ikigai ? "radial-gradient(circle 120px, rgba(92,224,216,0.1), transparent)" : "radial-gradient(circle 120px, white, transparent)" }}
+                style={{ background: ikigai ? "radial-gradient(circle 120px, rgba(92,224,216,0.1), transparent)" : sjmc ? "radial-gradient(circle 120px, rgba(232,121,59,0.08), transparent)" : "radial-gradient(circle 120px, white, transparent)" }}
               >
                 <AnimatePresence>
                   <motion.img
@@ -116,7 +117,7 @@ export const Task2Game: React.FC<{
   return (
     <div
       className="items-center max-h-dvh h-full fc px-6 py-3 justify-between gap-1"
-      style={{ background: ikigai ? "radial-gradient(#0B0F1A, #101828)" : "radial-gradient(#E4E3FF78, #D68DE878)" }}
+      style={{ background: ikigai ? "radial-gradient(#0B0F1A, #101828)" : sjmc ? "radial-gradient(#FAEEE6, #F0D4BE)" : "radial-gradient(#E4E3FF78, #D68DE878)" }}
     >
       <ResultOverlay result={result} />
 
@@ -128,7 +129,7 @@ export const Task2Game: React.FC<{
           "relative shrink min-h-0 aspect-square w-20 md:scale-125 lg:scale-150",
           result === "success" ? "text-emerald-500" : result === "error" ? "text-red-500" : "",
         ].join(" ")}
-        style={{ background: ikigai ? "radial-gradient(circle 60px, rgba(92,224,216,0.1), transparent)" : "radial-gradient(circle 60px, white, transparent)" }}
+        style={{ background: ikigai ? "radial-gradient(circle 60px, rgba(92,224,216,0.1), transparent)" : sjmc ? "radial-gradient(circle 60px, rgba(232,121,59,0.08), transparent)" : "radial-gradient(circle 60px, white, transparent)" }}
       >
         <AnimatePresence>
           <motion.img

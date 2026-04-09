@@ -6,7 +6,7 @@ import { task2, task3, task4, task5 } from "src/constants/tasks";
 import { preloadImages } from "src/lib/image-cache";
 import { t } from "src/lib/translations";
 import { useTaskProgress } from "src/stores/useTaskProgress";
-import { isDarkHookMode, getHookClinic, isPrologueMode, isShortAssessment } from "src/utils/assessment";
+import { isDarkHookMode, getHookClinic, isPrologueMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
 import { getTaskStatus } from "src/utils/task-verif";
 import { Background } from "../components/Layout/Background";
 import { BackButton } from "./BackButton";
@@ -83,6 +83,51 @@ export function TaskInstruction() {
             <button
               onClick={() => activeTask && Router.push(`/${task.name.replaceAll(" ", "-").toLowerCase()}/demo`)}
               className="w-full rounded-full bg-[#5CE0D8] px-5 py-3 text-lg font-semibold text-[#0B0F1A] transition-all active:bg-[#4BC8C0]"
+            >
+              {t.GENERAL["Start tutorial"]}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const sjmc = isSjmcMode();
+
+  if (sjmc) {
+    return (
+      <div
+        className="w-full h-[100dvh] overflow-x-hidden overflow-y-auto fc"
+        style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
+      >
+        <div className="flex-1 fc max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto justify-center gap-6 section-padding-large">
+          <div className="justify-between w-full mx-auto f">
+            <button
+              className="items-center justify-center px-3 py-1.5 rounded-full f font-semibold text-[#4B5563] border border-[#D1C4B8]"
+              onClick={() => Router.replace("/sjmc")}
+            >
+              <svg className="mr-2 size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+              {t.GENERAL.Back}
+            </button>
+            <TimeRemainingCard time={20} color="#E8793B" disabled />
+          </div>
+
+          <div className="w-full mx-auto text-center cc grow">
+            <h1 style={{ color: "#E8793B", fontFamily: "Georgia, 'Times New Roman', serif" }}>{task.name}</h1>
+            <p className="text-sm font-medium sm:text-lg text-[#4B5563]">
+              Match as many symbols to their numbers as possible within 20 seconds.
+            </p>
+
+            <DemoGIFContainer name={task.name} className="h-full scale-90 min-h-80 max-h-[520px]" />
+          </div>
+
+          <div className="w-full mx-auto">
+            <button
+              onClick={() => activeTask && Router.push(`/${task.name.replaceAll(" ", "-").toLowerCase()}/demo`)}
+              className="w-full rounded-full px-5 py-3 text-lg font-semibold text-white transition-all active:opacity-90"
+              style={{ backgroundColor: "#E8793B" }}
             >
               {t.GENERAL["Start tutorial"]}
             </button>

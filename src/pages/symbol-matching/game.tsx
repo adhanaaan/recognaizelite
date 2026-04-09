@@ -15,7 +15,7 @@ import { TimeRemainingCard } from "src/NewComponents/TimeRemainingCard";
 import Error403 from "src/pages/403";
 import { updateResult } from "src/stores/useResultStore";
 import { updateTaskProgress, useTaskProgress } from "src/stores/useTaskProgress";
-import { isDarkHookMode, isShortAssessment } from "src/utils/assessment";
+import { isDarkHookMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
 import { getTimeLap } from "src/utils/helpers";
 import { verifyCompletedTasks } from "src/utils/task-verif";
 
@@ -26,6 +26,7 @@ function Task2({ currLevel }: { currLevel: number }) {
   const res = useRef({ correct: 0, errors: 0, rounds: [] as any[] });
   const lap = useCallback(getTimeLap(), [currLevel]);
   const ikigai = isDarkHookMode();
+  const sjmc = isSjmcMode();
 
   const update = useForceUpdate();
   const { result, setResult } = useResult();
@@ -65,11 +66,11 @@ function Task2({ currLevel }: { currLevel: number }) {
             score={score}
             className={isDesktop
               ? "[font-family:Avenir] [font-weight:800] text-[26.51px] leading-[26.51px] align-middle"
-              : `text-2xl font-bold leading-6 ${ikigai ? "" : "text-task2"}`
+              : `text-2xl font-bold leading-6 ${ikigai || sjmc ? "" : "text-task2"}`
             }
-            style={isDesktop ? { color: ikigai ? "#5CE0D8" : "#630092" } : ikigai ? { color: "#5CE0D8" } : undefined}
+            style={isDesktop ? { color: ikigai ? "#5CE0D8" : sjmc ? "#E8793B" : "#630092" } : ikigai ? { color: "#5CE0D8" } : sjmc ? { color: "#E8793B" } : undefined}
           />
-          <TimeRemainingCard time={time} callback={updateTask} showSeconds={false} color={ikigai ? "#5CE0D8" : "#3A3A3A"} />
+          <TimeRemainingCard time={time} callback={updateTask} showSeconds={false} color={ikigai ? "#5CE0D8" : sjmc ? "#E8793B" : "#3A3A3A"} />
         </div>
       </Task2Game>
     </GameCompleteScreen>
@@ -80,6 +81,7 @@ const Task2Wrapper = () => {
   const { currLevel, totalLevel } = useTaskProgress.getState().taskProgress.task2;
   var allow = verifyCompletedTasks("task2");
   const ikigai = isDarkHookMode();
+  const sjmcW = isSjmcMode();
 
   return (
     <>
@@ -88,15 +90,15 @@ const Task2Wrapper = () => {
       ) : (
         <>
           <Head>
-            <meta name="theme-color" content={ikigai ? "#0B0F1A" : task2.color} />
+            <meta name="theme-color" content={ikigai ? "#0B0F1A" : sjmcW ? "#FAEEE6" : task2.color} />
           </Head>
           {currLevel === totalLevel ? (
             <Celebrations />
           ) : (
             <AssetsLoading assets={IMAGES["task-2"]} prefix="/images/task-2">
               <CountDownScreen
-                color={ikigai ? "#5CE0D8" : task2.color}
-                backgroundColor={ikigai ? "#0B0F1A" : task2.color + "11"}
+                color={ikigai ? "#5CE0D8" : sjmcW ? "#E8793B" : task2.color}
+                backgroundColor={ikigai ? "#0B0F1A" : sjmcW ? "#FAEEE6" : task2.color + "11"}
               >
                 <Task2 currLevel={currLevel} />
               </CountDownScreen>
