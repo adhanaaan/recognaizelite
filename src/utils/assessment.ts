@@ -80,6 +80,10 @@ export function isPrologueMode(): boolean {
   return getHookClinic() === "Prologue Clinic";
 }
 
+export function isSjmcMode(): boolean {
+  return getHookClinic() === "SJMC";
+}
+
 /** Returns true for any clinic that uses dark-themed game UI (Ikigai only) */
 export function isDarkHookMode(): boolean {
   return isIkigaiMode();
