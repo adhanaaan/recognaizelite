@@ -42,7 +42,7 @@ export default function handler(_req: NextRequest) {
 
         {/* Subtitle */}
         <div style={{ color: '#4B5563', fontSize: '22px', marginTop: '28px' }}>
-          Free 20-second brain speed test — instant results
+          Free 60-second brain speed test — instant results
         </div>
 
         {/* Footer */}

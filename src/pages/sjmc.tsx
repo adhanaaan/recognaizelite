@@ -46,12 +46,12 @@ export default function SjmcEntry() {
         <meta name="theme-color" content="#FAEEE6" />
         <title>Brain Health Screening | World Health Day @ SJMC</title>
         <meta property="og:title" content="You train your body. Have you trained your brain?" />
-        <meta property="og:description" content="Free 20-second brain speed test at SJMC World Health Day. No app needed — instant results." />
+        <meta property="og:description" content="Free 60-second brain speed test at SJMC World Health Day. No app needed — instant results." />
         <meta property="og:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="You train your body. Have you trained your brain?" />
-        <meta name="twitter:description" content="Free 20-second brain speed test at SJMC World Health Day." />
+        <meta name="twitter:description" content="Free 60-second brain speed test at SJMC World Health Day." />
         <meta name="twitter:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
       </Head>
       <div
@@ -105,13 +105,13 @@ export default function SjmcEntry() {
           className="w-full max-w-[300px] rounded-full px-8 py-4 text-[17px] font-bold text-white tracking-wide transition-all active:scale-[0.97]"
           style={{ backgroundColor: "#E8793B", boxShadow: "0 4px 24px rgba(232,121,59,0.35)" }}
         >
-          Test My Brain — 20 Seconds
+          Test My Brain — 60 Seconds
         </button>
 
         {/* Trust signals */}
         <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
           {[
-            { icon: "\u26A1", label: "20 seconds" },
+            { icon: "\u26A1", label: "60 seconds" },
             { icon: "\uD83D\uDCF1", label: "No app needed" },
             { icon: "\uD83D\uDCCA", label: "Instant results" },
           ].map((item) => (
