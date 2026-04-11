@@ -1,113 +1,312 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import Router from "next/router";
+import { GetServerSideProps } from "next";
+import { useEffect, useMemo, useState } from "react";
+import { verifyAdminCookie } from "src/utils/adminAuth";
+import { AGE_RANGES, GENDERS, LeadRow } from "src/utils/supabase";
 
-interface Lead {
-  email: string;
-  clinic: string;
-  timestamp: string;
-  savedAt: string;
+interface Stats {
+  total: number;
+  today: number;
+  avgScore: number | null;
+  byGender: Record<string, number>;
+  byAgeRange: Record<string, number>;
+}
+
+interface LeadsResponse {
+  leads: LeadRow[];
+  stats: Stats;
+}
+
+const GENDER_LABELS: Record<string, string> = {
+  male: "Male",
+  female: "Female",
+  prefer_not_to_say: "Prefer not to say",
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  if (!verifyAdminCookie(req)) {
+    return {
+      redirect: { destination: "/admin/login", permanent: false },
+    };
+  }
+  return { props: {} };
+};
+
+function csvEscape(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  const s = String(value);
+  if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
 }
 
 export default function AdminLeadsPage() {
-  const [leads, setLeads] = useState<Lead[]>([]);
+  const [leads, setLeads] = useState<LeadRow[]>([]);
+  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Filters
+  const [search, setSearch] = useState("");
+  const [genderFilter, setGenderFilter] = useState<string>("");
+  const [ageFilter, setAgeFilter] = useState<string>("");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
+
   useEffect(() => {
     fetch("/api/leads")
-      .then(res => res.json())
-      .then(data => setLeads(data.leads ?? []))
+      .then(async (res) => {
+        if (res.status === 401) {
+          Router.replace("/admin/login");
+          return null;
+        }
+        if (!res.ok) throw new Error("Failed to load leads");
+        return (await res.json()) as LeadsResponse;
+      })
+      .then((data) => {
+        if (!data) return;
+        setLeads(data.leads ?? []);
+        setStats(data.stats ?? null);
+      })
       .catch(() => setError("Failed to load leads"))
       .finally(() => setLoading(false));
   }, []);
 
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const fromMs = dateFrom ? new Date(dateFrom + "T00:00:00").getTime() : null;
+    const toMs = dateTo ? new Date(dateTo + "T23:59:59").getTime() : null;
+
+    return leads.filter((lead) => {
+      if (q && !lead.email.toLowerCase().includes(q)) return false;
+      if (genderFilter && lead.gender !== genderFilter) return false;
+      if (ageFilter && lead.age_range !== ageFilter) return false;
+      if (fromMs || toMs) {
+        const ms = new Date(lead.created_at).getTime();
+        if (fromMs && ms < fromMs) return false;
+        if (toMs && ms > toMs) return false;
+      }
+      return true;
+    });
+  }, [leads, search, genderFilter, ageFilter, dateFrom, dateTo]);
+
   const downloadCSV = () => {
-    const header = "Email,Clinic,Submitted At,Saved At";
-    const rows = leads.map(l =>
-      `"${l.email}","${l.clinic}","${l.timestamp}","${l.savedAt}"`
+    const header = [
+      "Email",
+      "Clinic",
+      "Age",
+      "Gender",
+      "Score",
+      "Percentile",
+      "Severity",
+      "UTM Source",
+      "UTM Medium",
+      "UTM Campaign",
+      "Referrer",
+      "Region",
+      "Created",
+    ];
+    const rows = filtered.map((l) =>
+      [
+        l.email,
+        l.clinic,
+        l.age_range,
+        l.gender,
+        l.score,
+        l.percentile,
+        l.severity,
+        l.utm_source,
+        l.utm_medium,
+        l.utm_campaign,
+        l.referrer,
+        l.ip_region,
+        l.created_at,
+      ]
+        .map(csvEscape)
+        .join(",")
     );
-    const csv = [header, ...rows].join("\n");
+    const csv = [header.join(","), ...rows].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `sjmc-leads-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
+  const logout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" });
+    Router.replace("/admin/login");
+  };
+
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleString("en-GB", {
+      day: "numeric",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
   return (
     <>
       <Head>
-        <title>Leads - Admin</title>
+        <title>Leads — Admin</title>
         <meta name="theme-color" content="#0B0F1A" />
+        <meta name="robots" content="noindex,nofollow" />
       </Head>
       <div
-        className="min-h-screen w-full px-5 py-10 sm:px-8"
+        className="min-h-screen w-full px-4 py-8 sm:px-8"
         style={{ background: "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)" }}
       >
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-white text-[24px] font-bold">Collected Leads</h1>
+              <h1 className="text-white text-[24px] font-bold">SJMC Leads</h1>
               <p className="text-gray-500 text-[13px] mt-1">
-                {leads.length} email{leads.length !== 1 ? "s" : ""} collected
+                {filtered.length} of {leads.length} shown
               </p>
             </div>
-            {leads.length > 0 && (
+            <div className="flex gap-2">
+              {filtered.length > 0 && (
+                <button
+                  onClick={downloadCSV}
+                  className="rounded-full px-4 py-2 text-[12px] font-bold text-[#0B0F1A]"
+                  style={{ backgroundColor: "#5CE0D8" }}
+                >
+                  Export CSV
+                </button>
+              )}
               <button
-                onClick={downloadCSV}
-                className="rounded-full px-5 py-2.5 text-[13px] font-bold transition-all active:opacity-90"
-                style={{ backgroundColor: "#5CE0D8", color: "#0B0F1A" }}
+                onClick={logout}
+                className="rounded-full px-4 py-2 text-[12px] font-semibold text-gray-300 border border-gray-700"
               >
-                Download CSV
+                Log out
               </button>
-            )}
+            </div>
           </div>
 
-          {loading && (
-            <p className="text-gray-400 text-center py-20">Loading...</p>
+          {/* Stats */}
+          {stats && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+              <StatCard label="Total leads" value={stats.total} />
+              <StatCard label="Today" value={stats.today} />
+              <StatCard
+                label="Avg score"
+                value={stats.avgScore !== null ? stats.avgScore : "—"}
+              />
+              <StatCard
+                label="Top age"
+                value={topKey(stats.byAgeRange) ?? "—"}
+              />
+            </div>
           )}
 
+          {/* Breakdown bars */}
+          {stats && (stats.total > 0) && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+              <BreakdownCard title="By gender" data={stats.byGender} labels={GENDER_LABELS} total={stats.total} />
+              <BreakdownCard title="By age range" data={stats.byAgeRange} total={stats.total} />
+            </div>
+          )}
+
+          {/* Filters */}
+          <div className="rounded-xl border border-gray-800 bg-[#0D1320] p-3 sm:p-4 mb-4 grid grid-cols-1 sm:grid-cols-5 gap-2">
+            <input
+              type="text"
+              placeholder="Search email…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="sm:col-span-2 rounded-lg bg-[#111827] border border-gray-800 px-3 py-2 text-[13px] text-white placeholder-gray-500 outline-none focus:border-[#5CE0D8]"
+            />
+            <select
+              value={genderFilter}
+              onChange={(e) => setGenderFilter(e.target.value)}
+              className="rounded-lg bg-[#111827] border border-gray-800 px-3 py-2 text-[13px] text-white outline-none focus:border-[#5CE0D8]"
+            >
+              <option value="">All genders</option>
+              {GENDERS.map((g) => (
+                <option key={g} value={g}>
+                  {GENDER_LABELS[g]}
+                </option>
+              ))}
+            </select>
+            <select
+              value={ageFilter}
+              onChange={(e) => setAgeFilter(e.target.value)}
+              className="rounded-lg bg-[#111827] border border-gray-800 px-3 py-2 text-[13px] text-white outline-none focus:border-[#5CE0D8]"
+            >
+              <option value="">All ages</option>
+              {AGE_RANGES.map((a) => (
+                <option key={a} value={a}>
+                  {a}
+                </option>
+              ))}
+            </select>
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="rounded-lg bg-[#111827] border border-gray-800 px-2 py-2 text-[12px] text-white outline-none focus:border-[#5CE0D8]"
+              />
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="rounded-lg bg-[#111827] border border-gray-800 px-2 py-2 text-[12px] text-white outline-none focus:border-[#5CE0D8]"
+              />
+            </div>
+          </div>
+
+          {loading && <p className="text-gray-400 text-center py-20">Loading…</p>}
           {error && (
             <div className="rounded-2xl border border-red-800 bg-red-900/30 p-6 text-center text-red-300">
               {error}
             </div>
           )}
 
-          {!loading && !error && leads.length === 0 && (
-            <div className="rounded-2xl border border-gray-700 bg-gray-800/50 p-8 text-center text-gray-400">
-              No leads collected yet.
+          {!loading && !error && filtered.length === 0 && (
+            <div className="rounded-2xl border border-gray-800 bg-gray-900/40 p-8 text-center text-gray-400">
+              No leads match the current filters.
             </div>
           )}
 
-          {!loading && !error && leads.length > 0 && (
-            <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #1F2937" }}>
+          {!loading && !error && filtered.length > 0 && (
+            <div className="rounded-2xl overflow-x-auto" style={{ border: "1px solid #1F2937" }}>
               <table className="w-full text-left">
                 <thead>
                   <tr style={{ backgroundColor: "#111827" }}>
-                    <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-500">#</th>
-                    <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-500">Email</th>
-                    <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-500 hidden sm:table-cell">Source</th>
-                    <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-500">Date</th>
+                    <Th>#</Th>
+                    <Th>Email</Th>
+                    <Th>Age</Th>
+                    <Th>Gender</Th>
+                    <Th>Score</Th>
+                    <Th>Severity</Th>
+                    <Th>Source</Th>
+                    <Th>Created</Th>
                   </tr>
                 </thead>
                 <tbody>
-                  {leads.map((lead, i) => (
+                  {filtered.map((lead, i) => (
                     <tr
-                      key={lead.email + lead.savedAt}
-                      style={{ backgroundColor: i % 2 === 0 ? "#0D1320" : "#111827", borderTop: "1px solid #1F2937" }}
+                      key={lead.id}
+                      style={{
+                        backgroundColor: i % 2 === 0 ? "#0D1320" : "#111827",
+                        borderTop: "1px solid #1F2937",
+                      }}
                     >
-                      <td className="px-4 py-3 text-[13px] text-gray-600">{i + 1}</td>
-                      <td className="px-4 py-3 text-[14px] text-white font-medium">{lead.email}</td>
-                      <td className="px-4 py-3 text-[13px] text-gray-400 hidden sm:table-cell">{lead.clinic}</td>
-                      <td className="px-4 py-3 text-[13px] text-gray-400">
-                        {new Date(lead.timestamp).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </td>
+                      <Td className="text-gray-600">{i + 1}</Td>
+                      <Td className="text-white font-medium">{lead.email}</Td>
+                      <Td className="text-gray-300">{lead.age_range ?? "—"}</Td>
+                      <Td className="text-gray-300">
+                        {lead.gender ? GENDER_LABELS[lead.gender] ?? lead.gender : "—"}
+                      </Td>
+                      <Td className="text-gray-300">{lead.score ?? "—"}</Td>
+                      <Td className="text-gray-300 capitalize">{lead.severity ?? "—"}</Td>
+                      <Td className="text-gray-400">{lead.utm_source ?? "—"}</Td>
+                      <Td className="text-gray-400">{formatDate(lead.created_at)}</Td>
                     </tr>
                   ))}
                 </tbody>
@@ -118,4 +317,81 @@ export default function AdminLeadsPage() {
       </div>
     </>
   );
+}
+
+function StatCard({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-xl border border-gray-800 bg-[#0D1320] p-4">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500">{label}</div>
+      <div className="mt-1 text-[22px] font-bold text-white">{value}</div>
+    </div>
+  );
+}
+
+function BreakdownCard({
+  title,
+  data,
+  total,
+  labels,
+}: {
+  title: string;
+  data: Record<string, number>;
+  total: number;
+  labels?: Record<string, string>;
+}) {
+  const entries = Object.entries(data).sort((a, b) => b[1] - a[1]);
+  return (
+    <div className="rounded-xl border border-gray-800 bg-[#0D1320] p-4">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-3">{title}</div>
+      {entries.length === 0 ? (
+        <div className="text-[13px] text-gray-500">No data yet</div>
+      ) : (
+        <div className="space-y-2">
+          {entries.map(([key, count]) => {
+            const pct = total > 0 ? (count / total) * 100 : 0;
+            return (
+              <div key={key}>
+                <div className="flex justify-between text-[12px] text-gray-400 mb-0.5">
+                  <span>{labels?.[key] ?? key}</span>
+                  <span>{count} ({pct.toFixed(0)}%)</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-[#1F2937] overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${pct}%`, backgroundColor: "#5CE0D8" }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Th({ children }: { children: React.ReactNode }) {
+  return (
+    <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+      {children}
+    </th>
+  );
+}
+
+function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <td className={`px-4 py-3 text-[13px] whitespace-nowrap ${className}`}>{children}</td>
+  );
+}
+
+function topKey(data: Record<string, number>): string | null {
+  let best: string | null = null;
+  let bestCount = -1;
+  for (const [k, v] of Object.entries(data)) {
+    if (v > bestCount) {
+      best = k;
+      bestCount = v;
+    }
+  }
+  return best;
 }
