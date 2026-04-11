@@ -111,13 +111,13 @@ export function TaskInstruction() {
               </svg>
               {t.GENERAL.Back}
             </button>
-            <TimeRemainingCard time={20} color="#E8793B" disabled />
+            <TimeRemainingCard time={60} color="#E8793B" disabled />
           </div>
 
           <div className="w-full mx-auto text-center cc grow">
             <h1 style={{ color: "#E8793B", fontFamily: "Georgia, 'Times New Roman', serif" }}>{task.name}</h1>
             <p className="text-sm font-medium sm:text-lg text-[#4B5563]">
-              Match as many symbols to their numbers as possible within 20 seconds.
+              Match as many symbols to their numbers as possible within 60 seconds.
             </p>
 
             <DemoGIFContainer name={task.name} className="h-full scale-90 min-h-80 max-h-[520px]" />
