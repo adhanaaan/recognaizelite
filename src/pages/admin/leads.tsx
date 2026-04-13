@@ -40,11 +40,18 @@ function csvEscape(value: unknown): string {
   return s;
 }
 
+const CLINIC_OPTIONS: { value: string; label: string }[] = [
+  { value: "", label: "All" },
+  { value: "sjmc", label: "SJMC" },
+  { value: "hookikigai", label: "Hookikigai" },
+];
+
 export default function AdminLeadsPage() {
   const [leads, setLeads] = useState<LeadRow[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [clinic, setClinic] = useState("");
 
   // Filters
   const [search, setSearch] = useState("");
@@ -53,8 +60,28 @@ export default function AdminLeadsPage() {
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
 
+  // Scroll fix
   useEffect(() => {
-    fetch("/api/leads")
+    document.documentElement.style.overflow = "auto";
+    document.documentElement.style.height = "auto";
+    document.body.style.overflow = "auto";
+    document.body.style.height = "auto";
+    const next = document.getElementById("__next");
+    if (next) { next.style.overflow = "auto"; next.style.height = "auto"; }
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.documentElement.style.height = "";
+      document.body.style.overflow = "";
+      document.body.style.height = "";
+      if (next) { next.style.overflow = ""; next.style.height = ""; }
+    };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    const url = clinic ? `/api/leads?clinic=${clinic}` : "/api/leads";
+    fetch(url)
       .then(async (res) => {
         if (res.status === 401) {
           Router.replace("/admin/login");
@@ -70,7 +97,7 @@ export default function AdminLeadsPage() {
       })
       .catch(() => setError("Failed to load leads"))
       .finally(() => setLoading(false));
-  }, []);
+  }, [clinic]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -130,7 +157,7 @@ export default function AdminLeadsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `sjmc-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `${clinic || "all"}-leads-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -163,7 +190,9 @@ export default function AdminLeadsPage() {
           {/* Header */}
           <div className="flex items-start justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-white text-[24px] font-bold">SJMC Leads</h1>
+              <h1 className="text-white text-[24px] font-bold">
+                {clinic ? CLINIC_OPTIONS.find((c) => c.value === clinic)!.label : "All"} Leads
+              </h1>
               <p className="text-gray-500 text-[13px] mt-1">
                 {filtered.length} of {leads.length} shown
               </p>
@@ -185,6 +214,24 @@ export default function AdminLeadsPage() {
                 Log out
               </button>
             </div>
+          </div>
+
+          {/* Clinic toggle */}
+          <div className="flex gap-2 mb-6">
+            {CLINIC_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setClinic(opt.value)}
+                className="rounded-full px-4 py-2 text-[12px] font-bold transition-colors"
+                style={
+                  clinic === opt.value
+                    ? { backgroundColor: "#5CE0D8", color: "#0B0F1A" }
+                    : { backgroundColor: "#111827", color: "#9CA3AF", border: "1px solid #1F2937" }
+                }
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
 
           {/* Stats */}
@@ -280,6 +327,7 @@ export default function AdminLeadsPage() {
                   <tr style={{ backgroundColor: "#111827" }}>
                     <Th>#</Th>
                     <Th>Email</Th>
+                    {!clinic && <Th>Clinic</Th>}
                     <Th>Age</Th>
                     <Th>Gender</Th>
                     <Th>Score</Th>
@@ -299,6 +347,7 @@ export default function AdminLeadsPage() {
                     >
                       <Td className="text-gray-600">{i + 1}</Td>
                       <Td className="text-white font-medium">{lead.email}</Td>
+                      {!clinic && <Td className="text-gray-300 capitalize">{lead.clinic ?? "—"}</Td>}
                       <Td className="text-gray-300">{lead.age_range ?? "—"}</Td>
                       <Td className="text-gray-300">
                         {lead.gender ? GENDER_LABELS[lead.gender] ?? lead.gender : "—"}
