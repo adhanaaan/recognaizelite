@@ -1,36 +1,18 @@
 import Head from "next/head";
 import Router from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useCumulativeCounter } from "src/hooks/useCumulativeCounter";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
 
-function useLiveCounter() {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    // Simulate realistic event-day counter based on time
-    // Event starts 8am MYT (UTC+8), ramps up through the morning
-    const update = () => {
-      const now = new Date();
-      const myt = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kuala_Lumpur" }));
-      const hour = myt.getHours();
-      const mins = myt.getMinutes();
-      const minsSince8am = Math.max(0, (hour - 8) * 60 + mins);
-      // Ramp: slow start, peaks mid-morning, tapers
-      const base = 38;
-      const rate = minsSince8am < 60 ? 0.5 : minsSince8am < 180 ? 1.2 : 0.6;
-      const jitter = Math.floor(Math.sin(minsSince8am * 0.7) * 3);
-      setCount(base + Math.floor(minsSince8am * rate) + jitter);
-    };
-    update();
-    const id = setInterval(update, 30000);
-    return () => clearInterval(id);
-  }, []);
-  return count;
-}
-
 export default function SjmcEntry() {
-  const liveCount = useLiveCounter();
+  const liveCount = useCumulativeCounter({
+    anchorDate: "2026-04-01",
+    baseCount: 40,
+    dailyMin: 20,
+    dailyMax: 45,
+  });
 
   useEffect(() => {
     setHookClinic("SJMC");
