@@ -106,6 +106,21 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
   );
 }
 
+const EMAIL_GATE_COPY: Record<Severity, { headline: string; body: string }> = {
+  Low: {
+    headline: "Find out why your score is weak.",
+    body: "Enter your email to unlock your percentile score, learn what it means, and get tips to improve.",
+  },
+  Medium: {
+    headline: "Find out what your score means.",
+    body: "Enter your email to unlock your percentile breakdown and see how you compare.",
+  },
+  High: {
+    headline: "See the details behind your strong score.",
+    body: "Enter your email to unlock your full percentile breakdown and what it means for your brain health.",
+  },
+};
+
 const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
   Low: {
     headline: "You\u2019ve only seen 25% of the picture.",
@@ -327,14 +342,15 @@ export default function HookIkigaiReportPage() {
               className="text-[20px] sm:text-[24px] font-bold leading-snug text-white text-center"
               style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
             >
-              Want to see your full results?
+              {EMAIL_GATE_COPY[report.severity].headline}
             </h3>
             <p className="mt-3 text-[14px] leading-relaxed text-gray-400 text-center">
-              Enter your email to unlock your detailed percentile score, learn what it means, and get tips to improve.
+              {EMAIL_GATE_COPY[report.severity].body}
             </p>
             <form onSubmit={handleEmailSubmit} className="mt-5 space-y-3">
               <input
                 type="email"
+                required
                 placeholder="your@email.com"
                 value={emailInput}
                 onChange={(e) => { setEmailInput(e.target.value); setEmailError(""); }}
