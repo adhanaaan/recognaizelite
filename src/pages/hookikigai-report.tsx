@@ -108,15 +108,15 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
 
 const EMAIL_GATE_COPY: Record<Severity, { headline: string; body: string }> = {
   Low: {
-    headline: "Find out why your score is weak.",
+    headline: "What does WEAK actually mean for you?",
     body: "Enter your email to unlock your percentile score, learn what it means, and get tips to improve.",
   },
   Medium: {
-    headline: "Find out what your score means.",
+    headline: "What does ADEQUATE actually mean for you?",
     body: "Enter your email to unlock your percentile breakdown and see how you compare.",
   },
   High: {
-    headline: "See the details behind your strong score.",
+    headline: "What does STRONG actually mean for you?",
     body: "Enter your email to unlock your full percentile breakdown and what it means for your brain health.",
   },
 };
@@ -152,6 +152,7 @@ export default function HookIkigaiReportPage() {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [linkCopied, setLinkCopied] = useState(false);
 
   useEffect(() => {
     // Email gate: always show form on page load.
@@ -443,13 +444,39 @@ export default function HookIkigaiReportPage() {
                   10 minutes · Non-invasive · Science-backed
                 </p>
                 <a
-                  href="https://wa.me/6581385516?text=Hi%2C%20I%20completed%20the%20ReCOGnAIze%20cognitive%20screening%20demo%20and%20would%20like%20to%20book%20the%20full%20ReCOGnAIze%20assessment.%20Could%20you%20share%20the%20details%20on%20availability%20and%20pricing%3F"
+                  href="https://wa.me/6581385516?text=Hi%2C%20I%20just%20did%20the%20brain%20health%20check%20on%20your%20website%20and%20got%20flagged%20on%20Processing%20Speed.%20I%E2%80%99d%20like%20to%20book%20the%20full%20assessment%20at%20Ikigai%20%E2%80%94%20can%20you%20share%20availability%20and%20pricing%3F"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-4 inline-block rounded-full bg-[#0B0F1A] px-8 py-3 cursor-pointer hover:bg-[#1a2332] transition-colors"
                 >
                   <span className="text-[14px] font-bold text-white">Book Your Full Screening</span>
                 </a>
+              </div>
+
+              {/* Referral prompt */}
+              <div className="mt-5 text-center">
+                <p className="text-[12px] text-gray-500">Know someone who should check their score too?</p>
+                <div className="mt-2 flex items-center justify-center gap-3">
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(window.location.origin + "/hookikigai").then(() => {
+                        setLinkCopied(true);
+                        setTimeout(() => setLinkCopied(false), 2000);
+                      });
+                    }}
+                    className="rounded-full border border-gray-700 px-4 py-1.5 text-[12px] font-medium text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-300"
+                  >
+                    {linkCopied ? "Copied!" : "Copy link"}
+                  </button>
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent("Try this quick brain health check — it only takes 20 seconds: " + (typeof window !== "undefined" ? window.location.origin : "") + "/hookikigai")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-gray-700 px-4 py-1.5 text-[12px] font-medium text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-300"
+                  >
+                    Share via WhatsApp
+                  </a>
+                </div>
               </div>
 
               <p className="mt-4 text-[11px] leading-normal text-gray-600">
