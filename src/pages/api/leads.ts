@@ -62,13 +62,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Lead storage is not configured" });
   }
 
-  const clinicFilter = typeof req.query.clinic === "string" ? req.query.clinic : "sjmc";
+  const clinicFilter = typeof req.query.clinic === "string" ? req.query.clinic : "";
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("leads")
     .select("*")
-    .eq("clinic", clinicFilter)
     .order("created_at", { ascending: false });
+
+  if (clinicFilter && clinicFilter !== "all") {
+    query = query.eq("clinic", clinicFilter);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error("Supabase select failed:", error);
