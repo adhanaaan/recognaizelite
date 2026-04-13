@@ -1,11 +1,19 @@
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
+import { useCumulativeCounter } from "src/hooks/useCumulativeCounter";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
 
 export default function HookIkigaiEntry() {
+  const testedCount = useCumulativeCounter({
+    anchorDate: "2025-10-01",
+    baseCount: 2400,
+    dailyMin: 15,
+    dailyMax: 30,
+  });
+
   useEffect(() => {
     setHookClinic("Ikigai Medical");
     setHookReportPath("/hookikigai-report");
@@ -63,7 +71,7 @@ export default function HookIkigaiEntry() {
             ))}
           </div>
           <p className="text-gray-500 text-[12px]">
-            <span className="text-gray-300 font-semibold">2,847</span> tested this week
+            <span className="text-gray-300 font-semibold">{testedCount.toLocaleString()}</span> tested so far
           </p>
         </div>
 
