@@ -144,6 +144,14 @@ const LOCKED_AREAS = [
 
 const LEAD_EMAIL_KEY = "recognaize-lead-email";
 
+const AGE_OPTIONS = ["18-25", "26-35", "36-45", "46-55", "56-65", "66+"] as const;
+const GENDER_OPTIONS = [
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+  { value: "prefer_not_to_say", label: "Prefer not to say" },
+] as const;
+const SEVERITY_TO_KEY: Record<Severity, string> = { Low: "low", Medium: "moderate", High: "high" };
+
 export default function HookIkigaiReportPage() {
   const { result } = useResultStore();
   const [report, setReport] = useState<DomainReport | null>(null);
@@ -151,37 +159,73 @@ export default function HookIkigaiReportPage() {
   const [error, setError] = useState<string | null>(null);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailInput, setEmailInput] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [ageInput, setAgeInput] = useState("");
+  const [genderInput, setGenderInput] = useState("");
+  const [formError, setFormError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
-  useEffect(() => {
-    // Email gate: always show form on page load.
-    // localStorage is only used within the same session after submit.
-  }, []);
-
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+
     const trimmed = emailInput.trim();
     if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setEmailError("Please enter a valid email address.");
+      setFormError("Please enter a valid email address.");
       return;
     }
-    localStorage.setItem(LEAD_EMAIL_KEY, trimmed);
-    setEmailSubmitted(true);
-    setEmailError("");
+    if (!ageInput) {
+      setFormError("Please select your age range.");
+      return;
+    }
+    if (!genderInput) {
+      setFormError("Please select an option for gender.");
+      return;
+    }
 
-    // Fire-and-forget: persist lead to server
-    fetch("/api/save-lead", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: trimmed,
-        clinic: "hookikigai",
-        timestamp: new Date().toISOString(),
-      }),
-    }).catch(() => {
-      // Silently ignore — localStorage is the primary gate
-    });
+    setSubmitting(true);
+    setFormError("");
+
+    const task2Score = Array.isArray(result?.task2)
+      ? result?.task2?.[0]?.score
+      : (result as any)?.task2?.score;
+    const params = new URLSearchParams(
+      typeof window !== "undefined" ? window.location.search : ""
+    );
+    const utm = {
+      source: params.get("utm_source"),
+      medium: params.get("utm_medium"),
+      campaign: params.get("utm_campaign"),
+    };
+    const referrer = typeof document !== "undefined" ? document.referrer || null : null;
+
+    try {
+      const res = await fetch("/api/save-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: trimmed,
+          clinic: "hookikigai",
+          ageRange: ageInput,
+          gender: genderInput,
+          score: typeof task2Score === "number" ? task2Score : null,
+          percentile: report ? Math.round(report.percentile) : null,
+          severity: report ? SEVERITY_TO_KEY[report.severity] : null,
+          utm,
+          referrer,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Failed to save. Please try again.");
+      }
+      localStorage.setItem(LEAD_EMAIL_KEY, trimmed);
+      setEmailSubmitted(true);
+    } catch (err) {
+      setFormError((err as Error).message || "Failed to save. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -348,28 +392,70 @@ export default function HookIkigaiReportPage() {
             <p className="mt-3 text-[14px] leading-relaxed text-gray-400 text-center">
               {EMAIL_GATE_COPY[report.severity].body}
             </p>
-            <form onSubmit={handleEmailSubmit} className="mt-5 space-y-3">
+            <form onSubmit={handleEmailSubmit} className="mt-5 space-y-4">
               <input
                 type="email"
                 required
                 placeholder="your@email.com"
                 value={emailInput}
-                onChange={(e) => { setEmailInput(e.target.value); setEmailError(""); }}
+                onChange={(e) => { setEmailInput(e.target.value); setFormError(""); }}
                 className="w-full rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-3.5 text-[15px] text-white placeholder-gray-500 outline-none focus:border-[#5CE0D8] transition-colors"
               />
-              {emailError && (
-                <p className="text-red-400 text-[12px]">{emailError}</p>
+
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-2">Age</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {AGE_OPTIONS.map((age) => (
+                    <button
+                      key={age}
+                      type="button"
+                      onClick={() => { setAgeInput(age); setFormError(""); }}
+                      className="rounded-xl border px-3 py-2.5 text-[13px] font-medium transition-colors"
+                      style={ageInput === age
+                        ? { borderColor: "#5CE0D8", backgroundColor: "rgba(92,224,216,0.12)", color: "#5CE0D8" }
+                        : { borderColor: "#374151", backgroundColor: "transparent", color: "#9CA3AF" }
+                      }
+                    >
+                      {age}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-2">Gender</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {GENDER_OPTIONS.map((g) => (
+                    <button
+                      key={g.value}
+                      type="button"
+                      onClick={() => { setGenderInput(g.value); setFormError(""); }}
+                      className="rounded-xl border px-3 py-2.5 text-[13px] font-medium transition-colors"
+                      style={genderInput === g.value
+                        ? { borderColor: "#5CE0D8", backgroundColor: "rgba(92,224,216,0.12)", color: "#5CE0D8" }
+                        : { borderColor: "#374151", backgroundColor: "transparent", color: "#9CA3AF" }
+                      }
+                    >
+                      {g.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {formError && (
+                <p className="text-red-400 text-[12px]">{formError}</p>
               )}
               <button
                 type="submit"
-                className="w-full rounded-full px-8 py-4 text-[16px] font-bold tracking-wide transition-all active:opacity-90"
+                disabled={submitting}
+                className="w-full rounded-full px-8 py-4 text-[16px] font-bold tracking-wide transition-all active:opacity-90 disabled:opacity-60"
                 style={{
                   backgroundColor: "#5CE0D8",
                   color: "#0B0F1A",
                   boxShadow: "0 0 30px rgba(92,224,216,0.25)",
                 }}
               >
-                Get My Results
+                {submitting ? "Saving..." : "Get My Results"}
               </button>
             </form>
             <p className="mt-3 text-[11px] text-gray-600 text-center">
