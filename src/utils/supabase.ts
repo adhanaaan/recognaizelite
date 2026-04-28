@@ -40,6 +40,8 @@ export interface LeadRow {
   referrer: string | null;
   user_agent: string | null;
   ip_region: string | null;
+  health_goal: string | null;
+  takes_supplements: string | null;
   created_at: string;
 }
 

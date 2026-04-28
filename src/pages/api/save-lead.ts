@@ -69,6 +69,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const utm_medium = str(utm.medium);
   const utm_campaign = str(utm.campaign);
 
+  const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
+  const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;
+
+  const healthGoalRaw = str(body.healthGoal);
+  if (healthGoalRaw && !(HEALTH_GOALS as readonly string[]).includes(healthGoalRaw)) {
+    return res.status(400).json({ error: "Invalid health goal" });
+  }
+
+  const takesSupplementsRaw = str(body.takesSupplements);
+  if (takesSupplementsRaw && !(SUPPLEMENT_OPTIONS as readonly string[]).includes(takesSupplementsRaw)) {
+    return res.status(400).json({ error: "Invalid supplements option" });
+  }
+
   const referrer = str(body.referrer);
   const user_agent = str(req.headers["user-agent"]);
   const ip_region =
@@ -97,6 +110,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     referrer,
     user_agent,
     ip_region,
+    health_goal: healthGoalRaw,
+    takes_supplements: takesSupplementsRaw,
   });
 
   if (error) {

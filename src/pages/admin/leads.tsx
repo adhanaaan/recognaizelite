@@ -24,6 +24,20 @@ const GENDER_LABELS: Record<string, string> = {
   prefer_not_to_say: "Prefer not to say",
 };
 
+const HEALTH_GOAL_LABELS: Record<string, string> = {
+  stay_sharp: "Stay sharp",
+  improve_focus: "Focus & memory",
+  prevent_decline: "Prevent decline",
+  longevity: "Longevity",
+};
+
+const SUPPLEMENT_LABELS: Record<string, string> = {
+  yes_regularly: "Yes, regularly",
+  occasionally: "Occasionally",
+  no_but_interested: "No, interested",
+  no: "No",
+};
+
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   if (!verifyAdminCookie(req)) {
     return {
@@ -126,6 +140,8 @@ export default function AdminLeadsPage() {
       "Score",
       "Percentile",
       "Severity",
+      "Health Goal",
+      "Supplements",
       "UTM Source",
       "UTM Medium",
       "UTM Campaign",
@@ -142,6 +158,8 @@ export default function AdminLeadsPage() {
         l.score,
         l.percentile,
         l.severity,
+        l.health_goal,
+        l.takes_supplements,
         l.utm_source,
         l.utm_medium,
         l.utm_campaign,
@@ -332,6 +350,8 @@ export default function AdminLeadsPage() {
                     <Th>Gender</Th>
                     <Th>Score</Th>
                     <Th>Severity</Th>
+                    <Th>Goal</Th>
+                    <Th>Supplements</Th>
                     <Th>Source</Th>
                     <Th>Created</Th>
                   </tr>
@@ -354,6 +374,8 @@ export default function AdminLeadsPage() {
                       </Td>
                       <Td className="text-gray-300">{lead.score ?? "—"}</Td>
                       <Td className="text-gray-300 capitalize">{lead.severity ?? "—"}</Td>
+                      <Td className="text-gray-300">{lead.health_goal ? HEALTH_GOAL_LABELS[lead.health_goal] ?? lead.health_goal : "—"}</Td>
+                      <Td className="text-gray-300">{lead.takes_supplements ? SUPPLEMENT_LABELS[lead.takes_supplements] ?? lead.takes_supplements : "—"}</Td>
                       <Td className="text-gray-400">{lead.utm_source ?? "—"}</Td>
                       <Td className="text-gray-400">{formatDate(lead.created_at)}</Td>
                     </tr>

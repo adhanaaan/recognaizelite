@@ -152,6 +152,20 @@ const GENDER_OPTIONS = [
 ] as const;
 const SEVERITY_TO_KEY: Record<Severity, string> = { Low: "low", Medium: "moderate", High: "high" };
 
+const HEALTH_GOAL_OPTIONS = [
+  { value: "stay_sharp", label: "Stay sharp as I age" },
+  { value: "improve_focus", label: "Improve focus & memory" },
+  { value: "prevent_decline", label: "Prevent cognitive decline" },
+  { value: "longevity", label: "Support overall longevity" },
+] as const;
+
+const SUPPLEMENT_OPTIONS = [
+  { value: "yes_regularly", label: "Yes, regularly" },
+  { value: "occasionally", label: "Occasionally" },
+  { value: "no_but_interested", label: "No, but interested" },
+  { value: "no", label: "No" },
+] as const;
+
 export default function HookIkigaiReportPage() {
   const { result } = useResultStore();
   const [report, setReport] = useState<DomainReport | null>(null);
@@ -161,6 +175,8 @@ export default function HookIkigaiReportPage() {
   const [emailInput, setEmailInput] = useState("");
   const [ageInput, setAgeInput] = useState("");
   const [genderInput, setGenderInput] = useState("");
+  const [healthGoal, setHealthGoal] = useState("");
+  const [takesSupplements, setTakesSupplements] = useState("");
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -180,6 +196,14 @@ export default function HookIkigaiReportPage() {
     }
     if (!genderInput) {
       setFormError("Please select an option for gender.");
+      return;
+    }
+    if (!healthGoal) {
+      setFormError("Please select your brain health goal.");
+      return;
+    }
+    if (!takesSupplements) {
+      setFormError("Please select a supplements option.");
       return;
     }
 
@@ -211,6 +235,8 @@ export default function HookIkigaiReportPage() {
           score: typeof task2Score === "number" ? task2Score : null,
           percentile: report ? Math.round(report.percentile) : null,
           severity: report ? SEVERITY_TO_KEY[report.severity] : null,
+          healthGoal: healthGoal,
+          takesSupplements: takesSupplements,
           utm,
           referrer,
         }),
@@ -442,6 +468,46 @@ export default function HookIkigaiReportPage() {
                 </div>
               </div>
 
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-2">What&apos;s your main brain health goal?</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {HEALTH_GOAL_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => { setHealthGoal(opt.value); setFormError(""); }}
+                      className="rounded-xl border px-3 py-2.5 text-[13px] font-medium transition-colors text-left"
+                      style={healthGoal === opt.value
+                        ? { borderColor: "#5CE0D8", backgroundColor: "rgba(92,224,216,0.12)", color: "#5CE0D8" }
+                        : { borderColor: "#374151", backgroundColor: "transparent", color: "#9CA3AF" }
+                      }
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-2">Do you take supplements for brain health?</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {SUPPLEMENT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => { setTakesSupplements(opt.value); setFormError(""); }}
+                      className="rounded-xl border px-3 py-2.5 text-[13px] font-medium transition-colors text-left"
+                      style={takesSupplements === opt.value
+                        ? { borderColor: "#5CE0D8", backgroundColor: "rgba(92,224,216,0.12)", color: "#5CE0D8" }
+                        : { borderColor: "#374151", backgroundColor: "transparent", color: "#9CA3AF" }
+                      }
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {formError && (
                 <p className="text-red-400 text-[12px]">{formError}</p>
               )}
@@ -540,9 +606,10 @@ export default function HookIkigaiReportPage() {
               </div>
 
               {/* Referral prompt */}
-              <div className="mt-5 text-center">
-                <p className="text-[12px] text-gray-500">Know someone who should check their score too?</p>
-                <div className="mt-2 flex items-center justify-center gap-3">
+              <div className="mt-6 rounded-2xl p-5 text-center" style={{ backgroundColor: "rgba(92,224,216,0.06)", border: "1px solid rgba(92,224,216,0.15)" }}>
+                <p className="text-[14px] font-semibold text-gray-300">Know someone who should check their score too?</p>
+                <p className="mt-1 text-[12px] text-gray-500">Share the test — it only takes 30 seconds.</p>
+                <div className="mt-3 flex items-center justify-center gap-3">
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(window.location.origin + "/hookikigai").then(() => {
@@ -550,15 +617,17 @@ export default function HookIkigaiReportPage() {
                         setTimeout(() => setLinkCopied(false), 2000);
                       });
                     }}
-                    className="rounded-full border border-gray-700 px-4 py-1.5 text-[12px] font-medium text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-300"
+                    className="rounded-full px-5 py-2 text-[13px] font-semibold transition-colors"
+                    style={{ backgroundColor: "rgba(92,224,216,0.12)", color: "#5CE0D8", border: "1px solid rgba(92,224,216,0.25)" }}
                   >
                     {linkCopied ? "Copied!" : "Copy link"}
                   </button>
                   <a
-                    href={`https://wa.me/?text=${encodeURIComponent("Try this quick brain health check — it only takes 30 seconds:" + (typeof window !== "undefined" ? window.location.origin : "") + "/hookikigai")}`}
+                    href={`https://wa.me/?text=${encodeURIComponent("Try this quick brain health check — it only takes 30 seconds: " + (typeof window !== "undefined" ? window.location.origin : "") + "/hookikigai")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-full border border-gray-700 px-4 py-1.5 text-[12px] font-medium text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-300"
+                    className="rounded-full px-5 py-2 text-[13px] font-semibold transition-colors"
+                    style={{ backgroundColor: "rgba(92,224,216,0.12)", color: "#5CE0D8", border: "1px solid rgba(92,224,216,0.25)" }}
                   >
                     Share via WhatsApp
                   </a>
