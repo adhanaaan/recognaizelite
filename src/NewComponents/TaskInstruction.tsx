@@ -67,13 +67,13 @@ export function TaskInstruction() {
               </svg>
               {t.GENERAL.Back}
             </button>
-            <TimeRemainingCard time={20} color="#5CE0D8" disabled />
+            <TimeRemainingCard time={30} color="#5CE0D8" disabled />
           </div>
 
           <div className="w-full mx-auto text-center cc grow">
             <h1 style={{ color: "#5CE0D8", fontFamily: "Georgia, 'Times New Roman', serif" }}>{task.name}</h1>
             <p className="text-sm font-medium sm:text-lg text-gray-300">
-              {activeTask === "task2" ? "Match as many symbols to their numbers as possible within 20 seconds." : task.instruction}
+              {activeTask === "task2" ? "Match as many symbols to their numbers as possible within 30 seconds." : task.instruction}
             </p>
 
             <DemoGIFContainer name={task.name} className="h-full scale-90 min-h-80 max-h-[520px]" />
@@ -139,9 +139,9 @@ export function TaskInstruction() {
 
   const prologue = isPrologueMode();
   const defaultBackUrl = prologue ? "/prologue" : isShortAssessment() ? "/landing" : "/about";
-  const displayTime = prologue ? 20 : task?.seconds;
+  const displayTime = prologue ? 30 : task?.seconds;
   const displayInstruction = prologue && activeTask === "task2"
-    ? "Match as many symbols to their numbers as possible within 20 seconds."
+    ? "Match as many symbols to their numbers as possible within 30 seconds."
     : task.instruction;
 
   return (

@@ -1,7 +1,7 @@
 export const task1Levels = [{}];
 
 export const task2Levels = [{ tiles: 10, time: 60 }];
-export const task2LevelsShort = [{ tiles: 10, time: 20 }];
+export const task2LevelsShort = [{ tiles: 10, time: 30 }];
 
 export const task3Levels = [{ points: 20, time: 180 }];
 

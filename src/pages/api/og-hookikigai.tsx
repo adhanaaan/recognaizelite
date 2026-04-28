@@ -43,7 +43,7 @@ export default function handler(_req: NextRequest) {
 
         {/* Subtitle */}
         <div style={{ color: '#9CA3AF', fontSize: '20px', marginTop: '30px' }}>
-          Take the 20-Second Cognitive Screening
+          Take the 30-Second Cognitive Screening
         </div>
 
         {/* Footer */}

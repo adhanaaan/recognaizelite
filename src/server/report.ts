@@ -18,6 +18,11 @@ const SCORE_STATS = {
   task5: { mean: 11.942, stdDev: 6.147 },
 };
 
+// Short assessment (30s) stats — scaled from 60s norms
+const SHORT_SCORE_STATS = {
+  task2: { mean: 8.861, stdDev: 2.37 },
+};
+
 function erf(x: number) {
   const sign = x >= 0 ? 1 : -1;
   const absX = Math.abs(x);
@@ -138,7 +143,7 @@ function buildDomainReport(title: string, percentile: number, severity: Severity
 export function buildShortReport(result: ResultDataType) {
   const score = getTask2Score(result.task2);
   if (score === null) return null;
-  const stats = SCORE_STATS.task2;
+  const stats = SHORT_SCORE_STATS.task2;
   const percentile = calculatePercentile(score, stats.mean, stats.stdDev);
   const severity = calculateSeverity(score, stats.mean, stats.stdDev);
   return buildDomainReport("Processing Speed", percentile, severity);

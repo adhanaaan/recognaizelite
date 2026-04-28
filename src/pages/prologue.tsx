@@ -80,7 +80,7 @@ export default function PrologueEntry() {
             boxShadow: "0 0 30px rgba(232,160,176,0.25)",
           }}
         >
-          Take the 20-Second Test
+          Take the 30-Second Test
         </button>
 
         {/* Trust signals */}
