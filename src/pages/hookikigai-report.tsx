@@ -555,7 +555,7 @@ export default function HookIkigaiReportPage() {
                     {linkCopied ? "Copied!" : "Copy link"}
                   </button>
                   <a
-                    href={`https://wa.me/?text=${encodeURIComponent("Try this quick brain health check — it only takes 20 seconds: " + (typeof window !== "undefined" ? window.location.origin : "") + "/hookikigai")}`}
+                    href={`https://wa.me/?text=${encodeURIComponent("Try this quick brain health check — it only takes 30 seconds:" + (typeof window !== "undefined" ? window.location.origin : "") + "/hookikigai")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-full border border-gray-700 px-4 py-1.5 text-[12px] font-medium text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-300"

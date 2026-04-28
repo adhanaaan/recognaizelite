@@ -28,7 +28,7 @@ export default function HookIkigaiEntry() {
         <meta name="theme-color" content="#0B0F1A" />
         <title>ReCOGnAIze Cognitive Screening</title>
         <meta property="og:title" content="ReCOGnAIze Cognitive Screening" />
-        <meta property="og:description" content="A quick brain health check — powered by Ikigai Medical Clinic. Take the 20-second test." />
+        <meta property="og:description" content="A quick brain health check — powered by Ikigai Medical Clinic. Take the 30-second test." />
         <meta property="og:image" content="https://recognaizelite.vercel.app/api/og-hookikigai" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -80,17 +80,15 @@ export default function HookIkigaiEntry() {
           onClick={() => Router.push("/instruction")}
           className="w-full max-w-[280px] rounded-full bg-[#5CE0D8] px-8 py-4 text-[16px] font-bold text-[#0B0F1A] tracking-wide transition-all active:bg-[#4BC8C0] shadow-[0_0_30px_rgba(92,224,216,0.25)]"
         >
-          Take the 20-Second Test
+          Take the 30-Second Test
         </button>
 
         {/* Trust signals */}
         <div className="mt-6 text-center space-y-2">
-          <div className="flex items-center justify-center gap-4 text-gray-500 text-[11px]">
-            <span>Free</span>
-            <span className="size-1 rounded-full bg-gray-700" />
-            <span>No signup</span>
-            <span className="size-1 rounded-full bg-gray-700" />
-            <span>Instant results</span>
+          <div className="flex items-center justify-center gap-3 text-gray-400 text-[12px]">
+            <span className="rounded-full px-3 py-1" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>Free</span>
+            <span className="rounded-full px-3 py-1" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>No signup</span>
+            <span className="rounded-full px-3 py-1" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>Instant results</span>
           </div>
           <p className="text-gray-600 text-[10px]">
             Powered by RecognAIze
