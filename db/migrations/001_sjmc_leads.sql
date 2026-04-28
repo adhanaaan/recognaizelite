@@ -18,6 +18,8 @@ create table if not exists public.leads (
   referrer      text,
   user_agent    text,
   ip_region     text,
+  health_goal   text,              -- "stay_sharp", "improve_focus", "prevent_decline", "longevity"
+  takes_supplements text,          -- "yes_regularly", "occasionally", "no_but_interested", "no"
   created_at    timestamptz not null default now()
 );
 
