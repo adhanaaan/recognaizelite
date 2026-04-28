@@ -159,12 +159,6 @@ const HEALTH_GOAL_OPTIONS = [
   { value: "longevity", label: "Support overall longevity" },
 ] as const;
 
-const SUPPLEMENT_OPTIONS = [
-  { value: "yes_regularly", label: "Yes, regularly" },
-  { value: "occasionally", label: "Occasionally" },
-  { value: "no_but_interested", label: "No, but interested" },
-  { value: "no", label: "No" },
-] as const;
 
 export default function HookIkigaiReportPage() {
   const { result } = useResultStore();
@@ -176,7 +170,6 @@ export default function HookIkigaiReportPage() {
   const [ageInput, setAgeInput] = useState("");
   const [genderInput, setGenderInput] = useState("");
   const [healthGoal, setHealthGoal] = useState("");
-  const [takesSupplements, setTakesSupplements] = useState("");
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -200,10 +193,6 @@ export default function HookIkigaiReportPage() {
     }
     if (!healthGoal) {
       setFormError("Please select your brain health goal.");
-      return;
-    }
-    if (!takesSupplements) {
-      setFormError("Please select a supplements option.");
       return;
     }
 
@@ -236,7 +225,6 @@ export default function HookIkigaiReportPage() {
           percentile: report ? Math.round(report.percentile) : null,
           severity: report ? SEVERITY_TO_KEY[report.severity] : null,
           healthGoal: healthGoal,
-          takesSupplements: takesSupplements,
           utm,
           referrer,
         }),
@@ -478,26 +466,6 @@ export default function HookIkigaiReportPage() {
                       onClick={() => { setHealthGoal(opt.value); setFormError(""); }}
                       className="rounded-xl border px-3 py-2.5 text-[13px] font-medium transition-colors text-left"
                       style={healthGoal === opt.value
-                        ? { borderColor: "#5CE0D8", backgroundColor: "rgba(92,224,216,0.12)", color: "#5CE0D8" }
-                        : { borderColor: "#374151", backgroundColor: "transparent", color: "#9CA3AF" }
-                      }
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-2">Do you take supplements for brain health?</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {SUPPLEMENT_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => { setTakesSupplements(opt.value); setFormError(""); }}
-                      className="rounded-xl border px-3 py-2.5 text-[13px] font-medium transition-colors text-left"
-                      style={takesSupplements === opt.value
                         ? { borderColor: "#5CE0D8", backgroundColor: "rgba(92,224,216,0.12)", color: "#5CE0D8" }
                         : { borderColor: "#374151", backgroundColor: "transparent", color: "#9CA3AF" }
                       }
