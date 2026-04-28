@@ -120,7 +120,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(200).json({ success: true, duplicate: true });
     }
     console.error("Supabase insert failed:", error);
-    return res.status(500).json({ error: "Failed to save lead" });
+    return res.status(500).json({ error: "Failed to save lead", detail: error.message });
   }
 
   return res.status(200).json({ success: true });
