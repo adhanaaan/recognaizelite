@@ -231,7 +231,7 @@ export default function HookIkigaiReportPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error || "Failed to save. Please try again.");
+        throw new Error(data?.detail || data?.error || "Failed to save. Please try again.");
       }
       localStorage.setItem(LEAD_EMAIL_KEY, trimmed);
       setEmailSubmitted(true);
