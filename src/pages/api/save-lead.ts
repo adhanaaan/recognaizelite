@@ -96,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Lead storage is not configured" });
   }
 
-  const { error } = await supabase.from("leads").insert({
+  const baseRow = {
     email: emailRaw,
     clinic,
     age_range: ageRangeRaw,
@@ -110,9 +110,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     referrer,
     user_agent,
     ip_region,
+  };
+
+  let { error } = await supabase.from("leads").insert({
+    ...baseRow,
     health_goal: healthGoalRaw,
     takes_supplements: takesSupplementsRaw,
   });
+
+  // If the new columns don't exist yet, retry without them
+  if (error && error.message?.includes("schema cache")) {
+    const retry = await supabase.from("leads").insert(baseRow);
+    error = retry.error;
+  }
 
   if (error) {
     // Unique violation (clinic + email_lower) → treat as duplicate, not an error.
