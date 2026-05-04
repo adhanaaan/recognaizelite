@@ -148,7 +148,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Build the source list based on the requested clinic.
   // Legacy `leads` still holds historical hookikigai rows (kept for safety after the
   // 003_hookikigai_leads.sql backfill copy), so the hookikigai filter unions both.
-  const sources: Promise<LeadRow[]>[] = [];
+  const sources: PromiseLike<LeadRow[]>[] = [];
 
   if (!clinicFilter || clinicFilter === "all") {
     sources.push(
