@@ -21,6 +21,7 @@ const ORG_TYPE_OPTIONS = [
 ] as const;
 
 const ORGANIZATION_MAX_LEN = 200;
+const COGNITIVE_INTEREST_MAX_LEN = 1000;
 
 function str(value: unknown): string | null {
   if (typeof value !== "string") return null;
@@ -118,11 +119,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: "Invalid organization type" });
     }
 
+    const cognitiveInterest = str(body.cognitiveInterest);
+    if (cognitiveInterest && cognitiveInterest.length > COGNITIVE_INTEREST_MAX_LEN) {
+      return res.status(400).json({ error: "Cognitive interest note too long" });
+    }
+
     const { error } = await supabase.from("demo_leads").insert({
       ...sharedRow,
       role,
       organization,
       organization_type: organizationType,
+      cognitive_interest: cognitiveInterest,
     });
 
     if (error) {

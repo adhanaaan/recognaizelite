@@ -163,6 +163,7 @@ export default function AdminLeadsPage() {
       "Role",
       "Organization",
       "Org Type",
+      "Cognitive Interest",
       "Score",
       "Percentile",
       "Severity",
@@ -184,6 +185,7 @@ export default function AdminLeadsPage() {
         l.role,
         l.organization,
         l.organization_type,
+        l.cognitive_interest,
         l.score,
         l.percentile,
         l.severity,
@@ -380,6 +382,7 @@ export default function AdminLeadsPage() {
                         <Th>Role</Th>
                         <Th>Organization</Th>
                         <Th>Org Type</Th>
+                        <Th>Interest</Th>
                       </>
                     ) : (
                       <>
@@ -416,6 +419,9 @@ export default function AdminLeadsPage() {
                           <Td className="text-gray-300">{lead.role ? ROLE_LABELS[lead.role] ?? lead.role : "—"}</Td>
                           <Td className="text-gray-300">{lead.organization ?? "—"}</Td>
                           <Td className="text-gray-300">{lead.organization_type ? ORG_TYPE_LABELS[lead.organization_type] ?? lead.organization_type : "—"}</Td>
+                          <Td className="text-gray-300 max-w-[280px] truncate" title={lead.cognitive_interest ?? undefined}>
+                            {lead.cognitive_interest ?? "—"}
+                          </Td>
                         </>
                       ) : (
                         <>

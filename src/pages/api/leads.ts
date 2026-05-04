@@ -67,6 +67,7 @@ function normalizeLegacyLeadsRow(row: any): LeadRow {
     role: null,
     organization: null,
     organization_type: null,
+    cognitive_interest: null,
     created_at: row.created_at,
   };
 }
@@ -93,6 +94,7 @@ function normalizeHookikigaiRow(row: any): LeadRow {
     role: null,
     organization: null,
     organization_type: null,
+    cognitive_interest: null,
     created_at: row.created_at,
   };
 }
@@ -119,6 +121,7 @@ function normalizeDemoRow(row: any): LeadRow {
     role: row.role ?? null,
     organization: row.organization ?? null,
     organization_type: row.organization_type ?? null,
+    cognitive_interest: row.cognitive_interest ?? null,
     created_at: row.created_at,
   };
 }

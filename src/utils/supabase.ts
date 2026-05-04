@@ -46,6 +46,7 @@ export interface LeadRow {
   role: string | null;
   organization: string | null;
   organization_type: string | null;
+  cognitive_interest: string | null;
   created_at: string;
 }
 
