@@ -512,9 +512,19 @@ function Th({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function Td({
+  children,
+  className = "",
+  title,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  title?: string;
+}) {
   return (
-    <td className={`px-4 py-3 text-[13px] whitespace-nowrap ${className}`}>{children}</td>
+    <td className={`px-4 py-3 text-[13px] whitespace-nowrap ${className}`} title={title}>
+      {children}
+    </td>
   );
 }
 
