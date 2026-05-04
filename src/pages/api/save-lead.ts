@@ -2,9 +2,25 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { AGE_RANGES, GENDERS, getSupabaseAdmin } from "src/utils/supabase";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// SJMC is the primary funnel. `hookikigai` stays on the allowlist so the
-// existing Ikigai capture keeps working against the unified Supabase table.
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai"]);
+
+// Each clinic has its own table. The dispatcher routes by `clinic` value.
+//   sjmc        → public.leads             (existing, with (clinic, email_lower) unique constraint)
+//   hookikigai  → public.hookikigai_leads  (new, no dedup)
+//   healthtechx → public.demo_leads        (new, B2B columns, no dedup)
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx"]);
+
+const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
+const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;
+const ROLE_OPTIONS = [
+  "clinician", "executive", "investor", "pharma",
+  "vendor", "researcher", "press", "other",
+] as const;
+const ORG_TYPE_OPTIONS = [
+  "hospital", "clinic", "payer", "pharma",
+  "startup", "academic", "government", "other",
+] as const;
+
+const ORGANIZATION_MAX_LEN = 200;
 
 function str(value: unknown): string | null {
   if (typeof value !== "string") return null;
@@ -37,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const body = (req.body ?? {}) as Record<string, unknown>;
 
-  // --- Required fields ---
+  // --- Required: email + clinic ---
   const emailRaw = str(body.email);
   if (!emailRaw || !EMAIL_RE.test(emailRaw)) {
     return res.status(400).json({ error: "Invalid email address" });
@@ -48,17 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: "Unsupported clinic" });
   }
 
-  // --- Optional but validated ---
-  const ageRangeRaw = str(body.ageRange);
-  if (ageRangeRaw && !(AGE_RANGES as readonly string[]).includes(ageRangeRaw)) {
-    return res.status(400).json({ error: "Invalid age range" });
-  }
-
-  const genderRaw = str(body.gender);
-  if (genderRaw && !(GENDERS as readonly string[]).includes(genderRaw)) {
-    return res.status(400).json({ error: "Invalid gender" });
-  }
-
+  // --- Shared scoring/attribution fields ---
   const score = num(body.score);
   const percentile = num(body.percentile);
   const severity = str(body.severity);
@@ -69,25 +75,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const utm_medium = str(utm.medium);
   const utm_campaign = str(utm.campaign);
 
-  const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
-  const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;
-
-  const healthGoalRaw = str(body.healthGoal);
-  if (healthGoalRaw && !(HEALTH_GOALS as readonly string[]).includes(healthGoalRaw)) {
-    return res.status(400).json({ error: "Invalid health goal" });
-  }
-
-  const takesSupplementsRaw = str(body.takesSupplements);
-  if (takesSupplementsRaw && !(SUPPLEMENT_OPTIONS as readonly string[]).includes(takesSupplementsRaw)) {
-    return res.status(400).json({ error: "Invalid supplements option" });
-  }
-
   const referrer = str(body.referrer);
   const user_agent = str(req.headers["user-agent"]);
   const ip_region =
     str(req.headers["x-vercel-ip-country"]) || str(req.headers["x-vercel-ip-country-region"]);
 
-  // --- Insert ---
   let supabase;
   try {
     supabase = getSupabaseAdmin();
@@ -96,11 +88,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Lead storage is not configured" });
   }
 
-  const baseRow = {
+  const sharedRow = {
     email: emailRaw,
-    clinic,
-    age_range: ageRangeRaw,
-    gender: genderRaw,
     score,
     percentile,
     severity,
@@ -112,24 +101,101 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ip_region,
   };
 
+  if (clinic === "healthtechx") {
+    // B2B funnel — role + organization required-shape (validated client-side too).
+    const role = str(body.role);
+    if (role && !(ROLE_OPTIONS as readonly string[]).includes(role)) {
+      return res.status(400).json({ error: "Invalid role" });
+    }
+
+    const organization = str(body.organization);
+    if (organization && organization.length > ORGANIZATION_MAX_LEN) {
+      return res.status(400).json({ error: "Organization too long" });
+    }
+
+    const organizationType = str(body.organizationType);
+    if (organizationType && !(ORG_TYPE_OPTIONS as readonly string[]).includes(organizationType)) {
+      return res.status(400).json({ error: "Invalid organization type" });
+    }
+
+    const { error } = await supabase.from("demo_leads").insert({
+      ...sharedRow,
+      role,
+      organization,
+      organization_type: organizationType,
+    });
+
+    if (error) {
+      console.error("Supabase insert (demo_leads) failed:", error);
+      return res.status(500).json({ error: "Failed to save lead", detail: error.message });
+    }
+
+    return res.status(200).json({ success: true });
+  }
+
+  // sjmc + hookikigai both capture consumer demographics.
+  const ageRangeRaw = str(body.ageRange);
+  if (ageRangeRaw && !(AGE_RANGES as readonly string[]).includes(ageRangeRaw)) {
+    return res.status(400).json({ error: "Invalid age range" });
+  }
+
+  const genderRaw = str(body.gender);
+  if (genderRaw && !(GENDERS as readonly string[]).includes(genderRaw)) {
+    return res.status(400).json({ error: "Invalid gender" });
+  }
+
+  const healthGoalRaw = str(body.healthGoal);
+  if (healthGoalRaw && !(HEALTH_GOALS as readonly string[]).includes(healthGoalRaw)) {
+    return res.status(400).json({ error: "Invalid health goal" });
+  }
+
+  if (clinic === "hookikigai") {
+    const { error } = await supabase.from("hookikigai_leads").insert({
+      ...sharedRow,
+      age_range: ageRangeRaw,
+      gender: genderRaw,
+      health_goal: healthGoalRaw,
+    });
+
+    if (error) {
+      console.error("Supabase insert (hookikigai_leads) failed:", error);
+      return res.status(500).json({ error: "Failed to save lead", detail: error.message });
+    }
+
+    return res.status(200).json({ success: true });
+  }
+
+  // sjmc — legacy `leads` table still has the (clinic, email_lower) unique constraint
+  // and the takes_supplements column.
+  const takesSupplementsRaw = str(body.takesSupplements);
+  if (takesSupplementsRaw && !(SUPPLEMENT_OPTIONS as readonly string[]).includes(takesSupplementsRaw)) {
+    return res.status(400).json({ error: "Invalid supplements option" });
+  }
+
+  const sjmcBaseRow = {
+    ...sharedRow,
+    clinic,
+    age_range: ageRangeRaw,
+    gender: genderRaw,
+  };
+
   let { error } = await supabase.from("leads").insert({
-    ...baseRow,
+    ...sjmcBaseRow,
     health_goal: healthGoalRaw,
     takes_supplements: takesSupplementsRaw,
   });
 
-  // If the new columns don't exist yet, retry without them
+  // Schema-cache fallback for older deploys that pre-date health_goal/takes_supplements.
   if (error && error.message?.includes("schema cache")) {
-    const retry = await supabase.from("leads").insert(baseRow);
+    const retry = await supabase.from("leads").insert(sjmcBaseRow);
     error = retry.error;
   }
 
   if (error) {
-    // Unique violation (clinic + email_lower) → treat as duplicate, not an error.
     if (error.code === "23505") {
       return res.status(200).json({ success: true, duplicate: true });
     }
-    console.error("Supabase insert failed:", error);
+    console.error("Supabase insert (leads) failed:", error);
     return res.status(500).json({ error: "Failed to save lead", detail: error.message });
   }
 

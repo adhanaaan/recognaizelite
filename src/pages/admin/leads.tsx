@@ -58,7 +58,30 @@ const CLINIC_OPTIONS: { value: string; label: string }[] = [
   { value: "", label: "All" },
   { value: "sjmc", label: "SJMC" },
   { value: "hookikigai", label: "Hookikigai" },
+  { value: "healthtechx", label: "HealthTechX" },
 ];
+
+const ROLE_LABELS: Record<string, string> = {
+  clinician: "Clinician",
+  executive: "Executive",
+  investor: "Investor",
+  pharma: "Pharma",
+  vendor: "Vendor",
+  researcher: "Researcher",
+  press: "Press",
+  other: "Other",
+};
+
+const ORG_TYPE_LABELS: Record<string, string> = {
+  hospital: "Hospital",
+  clinic: "Clinic",
+  payer: "Payer",
+  pharma: "Pharma",
+  startup: "Startup",
+  academic: "Academic",
+  government: "Government",
+  other: "Other",
+};
 
 export default function AdminLeadsPage() {
   const [leads, setLeads] = useState<LeadRow[]>([]);
@@ -137,6 +160,9 @@ export default function AdminLeadsPage() {
       "Clinic",
       "Age",
       "Gender",
+      "Role",
+      "Organization",
+      "Org Type",
       "Score",
       "Percentile",
       "Severity",
@@ -155,6 +181,9 @@ export default function AdminLeadsPage() {
         l.clinic,
         l.age_range,
         l.gender,
+        l.role,
+        l.organization,
+        l.organization_type,
         l.score,
         l.percentile,
         l.severity,
@@ -346,12 +375,26 @@ export default function AdminLeadsPage() {
                     <Th>#</Th>
                     <Th>Email</Th>
                     {!clinic && <Th>Clinic</Th>}
-                    <Th>Age</Th>
-                    <Th>Gender</Th>
+                    {clinic === "healthtechx" ? (
+                      <>
+                        <Th>Role</Th>
+                        <Th>Organization</Th>
+                        <Th>Org Type</Th>
+                      </>
+                    ) : (
+                      <>
+                        <Th>Age</Th>
+                        <Th>Gender</Th>
+                      </>
+                    )}
                     <Th>Score</Th>
                     <Th>Severity</Th>
-                    <Th>Goal</Th>
-                    <Th>Supplements</Th>
+                    {clinic !== "healthtechx" && (
+                      <>
+                        <Th>Goal</Th>
+                        <Th>Supplements</Th>
+                      </>
+                    )}
                     <Th>Source</Th>
                     <Th>Created</Th>
                   </tr>
@@ -368,14 +411,28 @@ export default function AdminLeadsPage() {
                       <Td className="text-gray-600">{i + 1}</Td>
                       <Td className="text-white font-medium">{lead.email}</Td>
                       {!clinic && <Td className="text-gray-300 capitalize">{lead.clinic ?? "—"}</Td>}
-                      <Td className="text-gray-300">{lead.age_range ?? "—"}</Td>
-                      <Td className="text-gray-300">
-                        {lead.gender ? GENDER_LABELS[lead.gender] ?? lead.gender : "—"}
-                      </Td>
+                      {clinic === "healthtechx" ? (
+                        <>
+                          <Td className="text-gray-300">{lead.role ? ROLE_LABELS[lead.role] ?? lead.role : "—"}</Td>
+                          <Td className="text-gray-300">{lead.organization ?? "—"}</Td>
+                          <Td className="text-gray-300">{lead.organization_type ? ORG_TYPE_LABELS[lead.organization_type] ?? lead.organization_type : "—"}</Td>
+                        </>
+                      ) : (
+                        <>
+                          <Td className="text-gray-300">{lead.age_range ?? "—"}</Td>
+                          <Td className="text-gray-300">
+                            {lead.gender ? GENDER_LABELS[lead.gender] ?? lead.gender : "—"}
+                          </Td>
+                        </>
+                      )}
                       <Td className="text-gray-300">{lead.score ?? "—"}</Td>
                       <Td className="text-gray-300 capitalize">{lead.severity ?? "—"}</Td>
-                      <Td className="text-gray-300">{lead.health_goal ? HEALTH_GOAL_LABELS[lead.health_goal] ?? lead.health_goal : "—"}</Td>
-                      <Td className="text-gray-300">{lead.takes_supplements ? SUPPLEMENT_LABELS[lead.takes_supplements] ?? lead.takes_supplements : "—"}</Td>
+                      {clinic !== "healthtechx" && (
+                        <>
+                          <Td className="text-gray-300">{lead.health_goal ? HEALTH_GOAL_LABELS[lead.health_goal] ?? lead.health_goal : "—"}</Td>
+                          <Td className="text-gray-300">{lead.takes_supplements ? SUPPLEMENT_LABELS[lead.takes_supplements] ?? lead.takes_supplements : "—"}</Td>
+                        </>
+                      )}
                       <Td className="text-gray-400">{lead.utm_source ?? "—"}</Td>
                       <Td className="text-gray-400">{formatDate(lead.created_at)}</Td>
                     </tr>

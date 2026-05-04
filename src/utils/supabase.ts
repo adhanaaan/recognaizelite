@@ -42,6 +42,10 @@ export interface LeadRow {
   ip_region: string | null;
   health_goal: string | null;
   takes_supplements: string | null;
+  // HealthTechX (`demo_leads`) qualifier fields. Null for sjmc/hookikigai rows.
+  role: string | null;
+  organization: string | null;
+  organization_type: string | null;
   created_at: string;
 }
 
