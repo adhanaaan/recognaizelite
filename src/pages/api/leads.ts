@@ -42,6 +42,87 @@ function computeStats(leads: LeadRow[]): Stats {
   };
 }
 
+// Normalizers map per-clinic table rows to the unified LeadRow shape so
+// the admin UI can render them uniformly.
+
+function normalizeLegacyLeadsRow(row: any): LeadRow {
+  return {
+    id: row.id,
+    email: row.email,
+    email_lower: row.email_lower,
+    clinic: row.clinic,
+    age_range: row.age_range ?? null,
+    gender: row.gender ?? null,
+    score: row.score ?? null,
+    percentile: row.percentile ?? null,
+    severity: row.severity ?? null,
+    utm_source: row.utm_source ?? null,
+    utm_medium: row.utm_medium ?? null,
+    utm_campaign: row.utm_campaign ?? null,
+    referrer: row.referrer ?? null,
+    user_agent: row.user_agent ?? null,
+    ip_region: row.ip_region ?? null,
+    health_goal: row.health_goal ?? null,
+    takes_supplements: row.takes_supplements ?? null,
+    role: null,
+    organization: null,
+    organization_type: null,
+    created_at: row.created_at,
+  };
+}
+
+function normalizeHookikigaiRow(row: any): LeadRow {
+  return {
+    id: row.id,
+    email: row.email,
+    email_lower: row.email_lower,
+    clinic: "hookikigai",
+    age_range: row.age_range ?? null,
+    gender: row.gender ?? null,
+    score: row.score ?? null,
+    percentile: row.percentile ?? null,
+    severity: row.severity ?? null,
+    utm_source: row.utm_source ?? null,
+    utm_medium: row.utm_medium ?? null,
+    utm_campaign: row.utm_campaign ?? null,
+    referrer: row.referrer ?? null,
+    user_agent: row.user_agent ?? null,
+    ip_region: row.ip_region ?? null,
+    health_goal: row.health_goal ?? null,
+    takes_supplements: null,
+    role: null,
+    organization: null,
+    organization_type: null,
+    created_at: row.created_at,
+  };
+}
+
+function normalizeDemoRow(row: any): LeadRow {
+  return {
+    id: row.id,
+    email: row.email,
+    email_lower: row.email_lower,
+    clinic: "healthtechx",
+    age_range: null,
+    gender: null,
+    score: row.score ?? null,
+    percentile: row.percentile ?? null,
+    severity: row.severity ?? null,
+    utm_source: row.utm_source ?? null,
+    utm_medium: row.utm_medium ?? null,
+    utm_campaign: row.utm_campaign ?? null,
+    referrer: row.referrer ?? null,
+    user_agent: row.user_agent ?? null,
+    ip_region: row.ip_region ?? null,
+    health_goal: null,
+    takes_supplements: null,
+    role: row.role ?? null,
+    organization: row.organization ?? null,
+    organization_type: row.organization_type ?? null,
+    created_at: row.created_at,
+  };
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
@@ -64,22 +145,65 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const clinicFilter = typeof req.query.clinic === "string" ? req.query.clinic : "";
 
-  let query = supabase
-    .from("leads")
-    .select("*")
-    .order("created_at", { ascending: false });
+  // Build the source list based on the requested clinic.
+  // Legacy `leads` still holds historical hookikigai rows (kept for safety after the
+  // 003_hookikigai_leads.sql backfill copy), so the hookikigai filter unions both.
+  const sources: Promise<LeadRow[]>[] = [];
 
-  if (clinicFilter && clinicFilter !== "all") {
-    query = query.eq("clinic", clinicFilter);
+  if (!clinicFilter || clinicFilter === "all") {
+    sources.push(
+      supabase.from("leads").select("*").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeLegacyLeadsRow);
+      }),
+      supabase.from("hookikigai_leads").select("*").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeHookikigaiRow);
+      }),
+      supabase.from("demo_leads").select("*").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeDemoRow);
+      }),
+    );
+  } else if (clinicFilter === "sjmc") {
+    sources.push(
+      supabase.from("leads").select("*").eq("clinic", "sjmc").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeLegacyLeadsRow);
+      }),
+    );
+  } else if (clinicFilter === "hookikigai") {
+    sources.push(
+      supabase.from("leads").select("*").eq("clinic", "hookikigai").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeLegacyLeadsRow);
+      }),
+      supabase.from("hookikigai_leads").select("*").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeHookikigaiRow);
+      }),
+    );
+  } else if (clinicFilter === "healthtechx") {
+    sources.push(
+      supabase.from("demo_leads").select("*").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeDemoRow);
+      }),
+    );
+  } else {
+    // Unknown clinic — return empty rather than 400, mirrors prior permissive behavior.
+    return res.status(200).json({ leads: [], stats: computeStats([]) });
   }
 
-  const { data, error } = await query;
-
-  if (error) {
-    console.error("Supabase select failed:", error);
+  let leads: LeadRow[];
+  try {
+    const buckets = await Promise.all(sources);
+    leads = buckets.flat();
+    leads.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  } catch (err) {
+    console.error("Supabase select failed:", err);
     return res.status(500).json({ error: "Failed to load leads" });
   }
 
-  const leads = (data ?? []) as LeadRow[];
   return res.status(200).json({ leads, stats: computeStats(leads) });
 }
