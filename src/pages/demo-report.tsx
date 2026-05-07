@@ -290,7 +290,7 @@ export default function DemoReportPage() {
         const res = await fetch("/api/generate-report", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ result }),
+          body: JSON.stringify({ result, clinic: "healthtechx" }),
         });
         if (!res.ok) {
           const payload = await res.json().catch(() => null);
