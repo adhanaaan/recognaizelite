@@ -25,22 +25,28 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({ error: 'Content-Type must be application/json' });
   }
 
-  const { result } = req.body;
+  const { result, clinic } = req.body;
 
   // Check if result data exists
   if (!result) {
     return res.status(400).json({ error: 'Missing result data' });
   }
 
+  // Allowlist clinic to known values; anything else is dropped silently so
+  // the request still succeeds (falls back to default 30s norms).
+  const ALLOWED_CLINICS = new Set(['sjmc', 'hookikigai', 'healthtechx']);
+  const safeClinic =
+    typeof clinic === 'string' && ALLOWED_CLINICS.has(clinic) ? clinic : undefined;
+
   try {
     // Validate the result data structure and values
     validateResultData(result);
-    
+
     // Sanitize the data to remove any extra fields
     const sanitizedResult = sanitizeResultData(result);
 
     // Generate reports using server-only algorithms
-    const shortReport = buildShortReport(sanitizedResult);
+    const shortReport = buildShortReport(sanitizedResult, safeClinic);
     const fullReport = buildFullReport(sanitizedResult);
 
     // Check if reports were successfully generated

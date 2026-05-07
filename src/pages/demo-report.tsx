@@ -143,17 +143,6 @@ const ROLE_OPTIONS = [
   { value: "other", label: "Other" },
 ] as const;
 
-const ORG_TYPE_OPTIONS = [
-  { value: "hospital", label: "Hospital" },
-  { value: "clinic", label: "Clinic" },
-  { value: "payer", label: "Payer" },
-  { value: "pharma", label: "Pharma" },
-  { value: "startup", label: "Startup" },
-  { value: "academic", label: "Academic" },
-  { value: "government", label: "Government" },
-  { value: "other", label: "Other" },
-] as const;
-
 const SEVERITY_TO_KEY: Record<Severity, string> = {
   Low: "low",
   Medium: "moderate",
@@ -169,10 +158,12 @@ export default function DemoReportPage() {
   const [emailInput, setEmailInput] = useState("");
   const [roleInput, setRoleInput] = useState<string>("");
   const [organizationInput, setOrganizationInput] = useState<string>("");
-  const [orgTypeInput, setOrgTypeInput] = useState<string>("");
+  const [cognitiveInterestInput, setCognitiveInterestInput] = useState<string>("");
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [shared, setShared] = useState(false);
+
+  const COGNITIVE_INTEREST_MAX = 1000;
 
   const handleKioskReset = () => {
     clearHookClinic();
@@ -212,8 +203,9 @@ export default function DemoReportPage() {
       setFormError("Organization name is too long.");
       return;
     }
-    if (!orgTypeInput) {
-      setFormError("Please select your organization type.");
+    const trimmedInterest = cognitiveInterestInput.trim();
+    if (trimmedInterest.length > COGNITIVE_INTEREST_MAX) {
+      setFormError("Please keep your interest note under 1000 characters.");
       return;
     }
 
@@ -238,7 +230,7 @@ export default function DemoReportPage() {
       clinic: "healthtechx",
       role: roleInput,
       organization: trimmedOrg,
-      organizationType: orgTypeInput,
+      cognitiveInterest: trimmedInterest || null,
       score: typeof task2Score === "number" ? task2Score : null,
       percentile: report ? Math.round(report.percentile) : null,
       severity: report ? SEVERITY_TO_KEY[report.severity] : null,
@@ -298,7 +290,7 @@ export default function DemoReportPage() {
         const res = await fetch("/api/generate-report", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ result }),
+          body: JSON.stringify({ result, clinic: "healthtechx" }),
         });
         if (!res.ok) {
           const payload = await res.json().catch(() => null);
@@ -433,26 +425,23 @@ export default function DemoReportPage() {
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
                   Your role
                 </label>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {ROLE_OPTIONS.map((r) => {
-                    const active = roleInput === r.value;
-                    return (
-                      <button
-                        key={r.value}
-                        type="button"
-                        onClick={() => { setRoleInput(r.value); setFormError(""); }}
-                        className="rounded-lg py-2 text-[12px] font-semibold transition-all leading-tight"
-                        style={{
-                          backgroundColor: active ? "#E8793B" : "#FFF7F2",
-                          color: active ? "#ffffff" : "#4B5563",
-                          border: `1px solid ${active ? "#E8793B" : "#D1C4B8"}`,
-                        }}
-                      >
-                        {r.label}
-                      </button>
-                    );
-                  })}
-                </div>
+                <select
+                  value={roleInput}
+                  onChange={(e) => { setRoleInput(e.target.value); setFormError(""); }}
+                  className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3 text-[15px] text-[#1F2937] outline-none focus:border-[#E8793B] transition-colors appearance-none"
+                  style={{
+                    backgroundImage:
+                      "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%239CA3AF' d='M6 8L0 0h12z'/></svg>\")",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 1rem center",
+                    paddingRight: "2.5rem",
+                  }}
+                >
+                  <option value="" disabled>Select your role</option>
+                  {ROLE_OPTIONS.map((r) => (
+                    <option key={r.value} value={r.value}>{r.label}</option>
+                  ))}
+                </select>
               </div>
 
               {/* Organization */}
@@ -470,31 +459,19 @@ export default function DemoReportPage() {
                 />
               </div>
 
-              {/* Organization type */}
+              {/* Cognitive health interest (optional, free text) */}
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
-                  Organization type
+                  Interest in cognitive health <span className="text-[#C4B5A8] font-normal normal-case tracking-normal">(optional)</span>
                 </label>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {ORG_TYPE_OPTIONS.map((o) => {
-                    const active = orgTypeInput === o.value;
-                    return (
-                      <button
-                        key={o.value}
-                        type="button"
-                        onClick={() => { setOrgTypeInput(o.value); setFormError(""); }}
-                        className="rounded-lg py-2 text-[12px] font-semibold transition-all leading-tight"
-                        style={{
-                          backgroundColor: active ? "#E8793B" : "#FFF7F2",
-                          color: active ? "#ffffff" : "#4B5563",
-                          border: `1px solid ${active ? "#E8793B" : "#D1C4B8"}`,
-                        }}
-                      >
-                        {o.label}
-                      </button>
-                    );
-                  })}
-                </div>
+                <textarea
+                  placeholder="What draws you to cognitive health? (research, partnership, deploying for patients, personal, etc.)"
+                  maxLength={COGNITIVE_INTEREST_MAX}
+                  rows={3}
+                  value={cognitiveInterestInput}
+                  onChange={(e) => { setCognitiveInterestInput(e.target.value); setFormError(""); }}
+                  className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3 text-[14px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors resize-none"
+                />
               </div>
 
               {formError && (

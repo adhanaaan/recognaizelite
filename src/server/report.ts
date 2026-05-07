@@ -18,9 +18,18 @@ const SCORE_STATS = {
   task5: { mean: 11.942, stdDev: 6.147 },
 };
 
-// Short assessment (30s) stats — scaled from 60s norms
+// Short assessment (30s) stats — scaled from 60s norms.
+// Used by /hookikigai and /sjmc.
 const SHORT_SCORE_STATS = {
   task2: { mean: 8.861, stdDev: 2.37 },
+};
+
+// 60s short assessment stats — used by /demo (HealthTechX).
+// Same dataset historically used by `buildFullReport` for task2:
+// the symbol matching game runs the full 60 seconds and is scored
+// against the time-matched population norms, not the 30s norms.
+const LONG_SHORT_SCORE_STATS = {
+  task2: { mean: 17.722, stdDev: 4.74 },
 };
 
 function erf(x: number) {
@@ -140,10 +149,11 @@ function buildDomainReport(title: string, percentile: number, severity: Severity
   } as DomainReport;
 }
 
-export function buildShortReport(result: ResultDataType) {
+export function buildShortReport(result: ResultDataType, clinic?: string) {
   const score = getTask2Score(result.task2);
   if (score === null) return null;
-  const stats = SHORT_SCORE_STATS.task2;
+  const stats =
+    clinic === "healthtechx" ? LONG_SHORT_SCORE_STATS.task2 : SHORT_SCORE_STATS.task2;
   const percentile = calculatePercentile(score, stats.mean, stats.stdDev);
   const severity = calculateSeverity(score, stats.mean, stats.stdDev);
   return buildDomainReport("Processing Speed", percentile, severity);
