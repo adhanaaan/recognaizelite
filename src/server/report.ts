@@ -24,13 +24,18 @@ const SHORT_SCORE_STATS = {
   task2: { mean: 8.861, stdDev: 2.37 },
 };
 
-// 60s short assessment stats — used by /demo (HealthTechX).
+// 60s short assessment stats — used by /demo (HealthTechX) and /tcmbrain.
 // Same dataset historically used by `buildFullReport` for task2:
 // the symbol matching game runs the full 60 seconds and is scored
 // against the time-matched population norms, not the 30s norms.
 const LONG_SHORT_SCORE_STATS = {
   task2: { mean: 17.722, stdDev: 4.74 },
 };
+
+// Clinics whose Symbol Matching game runs for the full 60 seconds.
+// They share the same scoring algorithm as the 30s funnels; only the
+// norm dataset differs.
+const LONG_SHORT_CLINICS = new Set(["healthtechx", "tcmbrain"]);
 
 function erf(x: number) {
   const sign = x >= 0 ? 1 : -1;
@@ -153,7 +158,9 @@ export function buildShortReport(result: ResultDataType, clinic?: string) {
   const score = getTask2Score(result.task2);
   if (score === null) return null;
   const stats =
-    clinic === "healthtechx" ? LONG_SHORT_SCORE_STATS.task2 : SHORT_SCORE_STATS.task2;
+    clinic && LONG_SHORT_CLINICS.has(clinic)
+      ? LONG_SHORT_SCORE_STATS.task2
+      : SHORT_SCORE_STATS.task2;
   const percentile = calculatePercentile(score, stats.mean, stats.stdDev);
   const severity = calculateSeverity(score, stats.mean, stats.stdDev);
   return buildDomainReport("Processing Speed", percentile, severity);
