@@ -109,15 +109,15 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
 const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
   Low: {
     headline: "You’ve only seen 25% of the picture.",
-    body: "Processing speed flagged a concern — and TCM is great at telling you why your body might be slowing your mind. Pair this with a full screening to know which cognitive pillars are compensating, and which need attention.",
+    body: "Your processing speed flagged a concern today — but speed is one piece of cognition, and cognition is one piece of your constitution. The full screening adds memory, attention, and executive function — completing the cognitive side of your mind-body picture.",
   },
   Medium: {
     headline: "You’ve only seen 25% of the picture.",
-    body: "Processing speed looks adequate — but TCM teaches that balance is the goal. Memory, focus, and decision-making each tell their own story. The full screening reveals what your brain is really doing under the surface.",
+    body: "Your processing speed looks adequate today. That’s one piece of cognition, and cognition is one piece of your constitution. The full screening reveals how memory, attention, and decision-making are holding up — the rest of the cognitive picture.",
   },
   High: {
     headline: "You’ve only seen 25% of the picture.",
-    body: "Processing speed is strong — your qi is flowing well in this domain. But peak performers know speed without memory, focus, and clear decision-making is incomplete. The full screening shows what’s really driving your edge.",
+    body: "Your processing speed is strong today. That’s one piece of cognition, and cognition is one piece of your constitution. The full screening rounds out the picture: memory, attention, and decision-making — to see if your edge is balanced or one-sided.",
   },
 };
 
@@ -330,7 +330,7 @@ export default function TcmBrainReportPage() {
         <div className="text-center pt-2 pb-4">
           <img src="/logo.png" alt="ReCOGnAIze" className="mx-auto w-[60px]" />
           <p className="text-[#9CA3AF] text-[9px] uppercase mt-3" style={{ letterSpacing: "0.2em" }}>
-            TCM × ReCOGnAIze — Your Results
+            Mind-Body Cognitive Screening — Your Results
           </p>
         </div>
 
@@ -460,12 +460,13 @@ export default function TcmBrainReportPage() {
 
               {/* Dampness Index slider */}
               <div>
-                <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center justify-between mb-1">
                   <label className="text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF]">
                     Dampness index
                   </label>
                   <span className="text-[14px] font-bold text-[#388E6B]">{dampness} / 10</span>
                 </div>
+                <p className="text-[12px] text-[#9CA3AF] mb-1.5">How heavy or foggy do you feel today?</p>
                 <input
                   type="range"
                   min={1}
@@ -483,12 +484,13 @@ export default function TcmBrainReportPage() {
 
               {/* Blood Stasis Index slider */}
               <div>
-                <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center justify-between mb-1">
                   <label className="text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF]">
                     Blood stasis index
                   </label>
                   <span className="text-[14px] font-bold text-[#388E6B]">{bloodStasis} / 10</span>
                 </div>
+                <p className="text-[12px] text-[#9CA3AF] mb-1.5">How stagnant or stuck does your circulation feel today?</p>
                 <input
                   type="range"
                   min={1}
@@ -609,7 +611,7 @@ export default function TcmBrainReportPage() {
               </p>
               <button
                 onClick={async () => {
-                  const text = `I just tested my brain speed at the TCM × ReCOGnAIze screening — can you beat my score? Try it: ${SHARE_URL}`;
+                  const text = `I just took a 60-second cognitive screening as part of a mind-body health check — can you beat my score? Try it: ${SHARE_URL}`;
                   if (navigator.share) {
                     try {
                       await navigator.share({ title: "Brain Speed Challenge", text, url: SHARE_URL });
@@ -632,7 +634,7 @@ export default function TcmBrainReportPage() {
             </section>
 
             <p className="text-[11px] leading-normal text-[#9CA3AF] text-center px-2">
-              This screening is not a diagnostic tool. Results are for informational purposes only and should be discussed with a healthcare professional.
+              This screening is not a diagnostic tool. Discuss results with your TCM practitioner or healthcare professional alongside your full constitutional reading.
             </p>
           </>
         )}
