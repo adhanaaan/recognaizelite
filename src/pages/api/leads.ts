@@ -68,6 +68,8 @@ function normalizeLegacyLeadsRow(row: any): LeadRow {
     organization: null,
     organization_type: null,
     cognitive_interest: null,
+    dampness_index: null,
+    blood_stasis_index: null,
     created_at: row.created_at,
   };
 }
@@ -95,6 +97,8 @@ function normalizeHookikigaiRow(row: any): LeadRow {
     organization: null,
     organization_type: null,
     cognitive_interest: null,
+    dampness_index: null,
+    blood_stasis_index: null,
     created_at: row.created_at,
   };
 }
@@ -122,6 +126,37 @@ function normalizeDemoRow(row: any): LeadRow {
     organization: row.organization ?? null,
     organization_type: row.organization_type ?? null,
     cognitive_interest: row.cognitive_interest ?? null,
+    dampness_index: null,
+    blood_stasis_index: null,
+    created_at: row.created_at,
+  };
+}
+
+function normalizeTcmbrainRow(row: any): LeadRow {
+  return {
+    id: row.id,
+    email: row.email,
+    email_lower: row.email_lower,
+    clinic: "tcmbrain",
+    age_range: row.age_range ?? null,
+    gender: row.gender ?? null,
+    score: row.score ?? null,
+    percentile: row.percentile ?? null,
+    severity: row.severity ?? null,
+    utm_source: row.utm_source ?? null,
+    utm_medium: row.utm_medium ?? null,
+    utm_campaign: row.utm_campaign ?? null,
+    referrer: row.referrer ?? null,
+    user_agent: row.user_agent ?? null,
+    ip_region: row.ip_region ?? null,
+    health_goal: null,
+    takes_supplements: null,
+    role: null,
+    organization: null,
+    organization_type: null,
+    cognitive_interest: null,
+    dampness_index: row.dampness_index ?? null,
+    blood_stasis_index: row.blood_stasis_index ?? null,
     created_at: row.created_at,
   };
 }
@@ -167,6 +202,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (error) throw error;
         return (data ?? []).map(normalizeDemoRow);
       }),
+      supabase.from("tcmbrain_leads").select("*").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeTcmbrainRow);
+      }),
     );
   } else if (clinicFilter === "sjmc") {
     sources.push(
@@ -191,6 +230,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       supabase.from("demo_leads").select("*").then(({ data, error }) => {
         if (error) throw error;
         return (data ?? []).map(normalizeDemoRow);
+      }),
+    );
+  } else if (clinicFilter === "tcmbrain") {
+    sources.push(
+      supabase.from("tcmbrain_leads").select("*").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeTcmbrainRow);
       }),
     );
   } else {

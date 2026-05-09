@@ -7,7 +7,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 //   sjmc        → public.leads             (existing, with (clinic, email_lower) unique constraint)
 //   hookikigai  → public.hookikigai_leads  (new, no dedup)
 //   healthtechx → public.demo_leads        (new, B2B columns, no dedup)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx"]);
+//   tcmbrain    → public.tcmbrain_leads    (new, B2C + TCM indices, no dedup)
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain"]);
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;
@@ -166,6 +167,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (error) {
       console.error("Supabase insert (hookikigai_leads) failed:", error);
+      return res.status(500).json({ error: "Failed to save lead", detail: error.message });
+    }
+
+    return res.status(200).json({ success: true });
+  }
+
+  if (clinic === "tcmbrain") {
+    // TCM-specific indices, both 1-10 inclusive integers.
+    const dampnessIndex = num(body.dampnessIndex);
+    if (dampnessIndex !== null && (!Number.isInteger(dampnessIndex) || dampnessIndex < 1 || dampnessIndex > 10)) {
+      return res.status(400).json({ error: "Invalid dampness index (must be 1-10)" });
+    }
+
+    const bloodStasisIndex = num(body.bloodStasisIndex);
+    if (bloodStasisIndex !== null && (!Number.isInteger(bloodStasisIndex) || bloodStasisIndex < 1 || bloodStasisIndex > 10)) {
+      return res.status(400).json({ error: "Invalid blood stasis index (must be 1-10)" });
+    }
+
+    const { error } = await supabase.from("tcmbrain_leads").insert({
+      ...sharedRow,
+      age_range: ageRangeRaw,
+      gender: genderRaw,
+      dampness_index: dampnessIndex,
+      blood_stasis_index: bloodStasisIndex,
+    });
+
+    if (error) {
+      console.error("Supabase insert (tcmbrain_leads) failed:", error);
       return res.status(500).json({ error: "Failed to save lead", detail: error.message });
     }
 

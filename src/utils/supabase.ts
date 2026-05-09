@@ -47,6 +47,9 @@ export interface LeadRow {
   organization: string | null;
   organization_type: string | null;
   cognitive_interest: string | null;
+  // TCM Brain (`tcmbrain_leads`) indices. 1-10. Null for non-tcmbrain rows.
+  dampness_index: number | null;
+  blood_stasis_index: number | null;
   created_at: string;
 }
 

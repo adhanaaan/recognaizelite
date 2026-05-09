@@ -59,6 +59,7 @@ const CLINIC_OPTIONS: { value: string; label: string }[] = [
   { value: "sjmc", label: "SJMC" },
   { value: "hookikigai", label: "Hookikigai" },
   { value: "healthtechx", label: "HealthTechX" },
+  { value: "tcmbrain", label: "TCM Brain" },
 ];
 
 const ROLE_LABELS: Record<string, string> = {
@@ -164,6 +165,8 @@ export default function AdminLeadsPage() {
       "Organization",
       "Org Type",
       "Cognitive Interest",
+      "Dampness Index",
+      "Blood Stasis Index",
       "Score",
       "Percentile",
       "Severity",
@@ -186,6 +189,8 @@ export default function AdminLeadsPage() {
         l.organization,
         l.organization_type,
         l.cognitive_interest,
+        l.dampness_index,
+        l.blood_stasis_index,
         l.score,
         l.percentile,
         l.severity,
@@ -390,9 +395,15 @@ export default function AdminLeadsPage() {
                         <Th>Gender</Th>
                       </>
                     )}
+                    {clinic === "tcmbrain" && (
+                      <>
+                        <Th>Dampness</Th>
+                        <Th>Blood Stasis</Th>
+                      </>
+                    )}
                     <Th>Score</Th>
                     <Th>Severity</Th>
-                    {clinic !== "healthtechx" && (
+                    {clinic !== "healthtechx" && clinic !== "tcmbrain" && (
                       <>
                         <Th>Goal</Th>
                         <Th>Supplements</Th>
@@ -431,9 +442,15 @@ export default function AdminLeadsPage() {
                           </Td>
                         </>
                       )}
+                      {clinic === "tcmbrain" && (
+                        <>
+                          <Td className="text-gray-300">{lead.dampness_index ?? "—"}</Td>
+                          <Td className="text-gray-300">{lead.blood_stasis_index ?? "—"}</Td>
+                        </>
+                      )}
                       <Td className="text-gray-300">{lead.score ?? "—"}</Td>
                       <Td className="text-gray-300 capitalize">{lead.severity ?? "—"}</Td>
-                      {clinic !== "healthtechx" && (
+                      {clinic !== "healthtechx" && clinic !== "tcmbrain" && (
                         <>
                           <Td className="text-gray-300">{lead.health_goal ? HEALTH_GOAL_LABELS[lead.health_goal] ?? lead.health_goal : "—"}</Td>
                           <Td className="text-gray-300">{lead.takes_supplements ? SUPPLEMENT_LABELS[lead.takes_supplements] ?? lead.takes_supplements : "—"}</Td>
