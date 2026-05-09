@@ -29,14 +29,14 @@ export default function TcmBrainEntry() {
     <>
       <Head>
         <meta name="theme-color" content="#F2F7F1" />
-        <title>TCM Brain Health Screening | ReCOGnAIze</title>
-        <meta property="og:title" content="Your brain in 60 seconds — through a TCM lens." />
-        <meta property="og:description" content="Free 60-second brain speed test. Pair your TCM constitution check with a Western cognitive screen." />
+        <title>Holistic Brain Health Screening | ReCOGnAIze</title>
+        <meta property="og:title" content="Where the body finds balance, the mind finds clarity." />
+        <meta property="og:description" content="A 60-second cognitive screening that complements your TCM consultation. Free, no app needed." />
         <meta property="og:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="TCM Brain Health Screening" />
-        <meta name="twitter:description" content="Free 60-second brain speed test, paired with your TCM indices." />
+        <meta name="twitter:title" content="Holistic Brain Health Screening" />
+        <meta name="twitter:description" content="A 60-second cognitive screening that complements your TCM consultation." />
         <meta name="twitter:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
       </Head>
       <div
@@ -50,7 +50,7 @@ export default function TcmBrainEntry() {
             style={{ backgroundColor: "rgba(56,142,107,0.12)", border: "1px solid rgba(56,142,107,0.25)" }}
           >
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#388E6B]">
-              TCM × ReCOGnAIze
+              Mind-Body Cognitive Screening
             </span>
           </div>
         </div>
@@ -61,15 +61,15 @@ export default function TcmBrainEntry() {
             className="text-[#1F2937] text-[36px] sm:text-[44px] leading-[1.08] font-normal"
             style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
           >
-            Your TCM body type knows.
+            When the body is in{" "}
+            <em className="text-[#388E6B]">harmony,</em>
             <br />
-            Does your{" "}
-            <em className="text-[#388E6B]">brain?</em>
+            the mind follows.
           </h1>
           <p className="mt-4 text-[#4B5563] text-[15px] leading-relaxed">
-            You&apos;ve checked your dampness and blood stasis.
+            Clear thinking flows from balanced qi and blood — TCM has held this for centuries.
             <br />
-            <span className="font-semibold text-[#1F2937]">Now measure the cognition that ties it all together.</span>
+            <span className="font-semibold text-[#1F2937]">Take 60 seconds to measure where your cognition stands today.</span>
           </p>
         </div>
 
@@ -90,7 +90,7 @@ export default function TcmBrainEntry() {
           className="w-full max-w-[300px] rounded-full px-8 py-4 text-[17px] font-bold text-white tracking-wide transition-all active:scale-[0.97]"
           style={{ backgroundColor: "#388E6B", boxShadow: "0 4px 24px rgba(56,142,107,0.35)" }}
         >
-          Test My Brain — 60 Seconds
+          Begin Screening — 60 Seconds
         </button>
 
         {/* Trust signals */}
