@@ -154,11 +154,12 @@ const MEMBERSHIP = {
       "Members-exclusive event invites",
     ],
     paynow: {
-      // Shantal to upload the actual QR (with $12 amount + AI Wellness UEN
-      // baked in) to public/aiwellness-paynow.png before the booth opens.
-      qrSrc: "/aiwellness-paynow.png",
-      headline: "Scan to pay $12 via PayNow",
-      note: "Instant transfer to AI Wellness · Singapore",
+      // PayNow QR for AI Wellness DBS account (UEN 202521095H). The QR
+      // identifies the recipient only — visitors enter $12 themselves
+      // in their banking app, hence the explicit caption below.
+      qrSrc: "/aiwellness-paynow.jpg",
+      headline: "Scan & pay $12 via PayNow",
+      note: "Enter $12 in your banking app — instant transfer to AI Wellness",
     },
     practitionerNote: "Or speak to a practitioner at the booth.",
   },
@@ -700,8 +701,9 @@ export default function TcmBrainReportPage() {
                   ))}
                 </ul>
 
-                {/* PayNow QR — primary booth-floor close. Shantal uploads
-                    the QR with $12 + AI Wellness UEN baked in. */}
+                {/* PayNow QR — primary booth-floor close. Image bundles the
+                    AI Wellness DBS UEN + a "PAY NOW" mark; visitor enters the
+                    $12 amount in their own banking app. */}
                 <div className="mt-6 flex flex-col items-center">
                   <div
                     className="rounded-2xl bg-white p-3 sm:p-4"
@@ -712,10 +714,8 @@ export default function TcmBrainReportPage() {
                   >
                     <img
                       src={MEMBERSHIP.lite.paynow.qrSrc}
-                      alt="PayNow QR — pay $12 to AI Wellness"
-                      width={220}
-                      height={220}
-                      className="block size-[200px] sm:size-[220px] mx-auto"
+                      alt="PayNow QR — pay $12 to AI Wellness (DBS UEN 202521095H)"
+                      className="block w-[220px] sm:w-[240px] h-auto mx-auto"
                     />
                   </div>
                   <p className="mt-3 text-[15px] font-bold text-[#2C4A3F]">
