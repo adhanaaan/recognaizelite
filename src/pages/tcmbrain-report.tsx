@@ -15,7 +15,7 @@ type SeverityVisual = {
 
 const severityVisuals: Record<Severity, SeverityVisual> = {
   Low: { label: "WEAK", color: "#EF4444", softBg: "rgba(239,68,68,0.10)" },
-  Medium: { label: "ADEQUATE", color: "#388E6B", softBg: "rgba(56,142,107,0.10)" },
+  Medium: { label: "ADEQUATE", color: "#7AB5A7", softBg: "rgba(122,181,167,0.10)" },
   High: { label: "STRONG", color: "#34D399", softBg: "rgba(52,211,153,0.10)" },
 };
 
@@ -89,13 +89,13 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
   const lx = mx - lw / 2, ly = baseY + 4;
 
   return (
-    <div className="overflow-hidden rounded-2xl p-4" style={{ backgroundColor: "#F2F7F1" }}>
+    <div className="overflow-hidden rounded-2xl p-4" style={{ backgroundColor: "#F5F9F3" }}>
       <svg className="mx-auto block w-full h-auto" viewBox={`0 0 ${BC_W} ${BC_H}`} preserveAspectRatio="xMidYMid meet">
-        <rect width={BC_W} height={BC_H} fill="#F2F7F1" rx="8" />
-        <path d={buildAreaPath()} fill="rgba(56,142,107,0.12)" />
-        <path d={buildCurvePath()} fill="none" stroke="#388E6B" strokeWidth="2.5" strokeOpacity="0.8" />
+        <rect width={BC_W} height={BC_H} fill="#F5F9F3" rx="8" />
+        <path d={buildAreaPath()} fill="rgba(122,181,167,0.12)" />
+        <path d={buildCurvePath()} fill="none" stroke="#7AB5A7" strokeWidth="2.5" strokeOpacity="0.8" />
         <line x1={mx} y1={BC_P} x2={mx} y2={baseY} stroke={severity.color} strokeWidth="2" strokeDasharray="6 6" />
-        <circle cx={mx} cy={my} r="6" fill="#F2F7F1" stroke={severity.color} strokeWidth="2.5" />
+        <circle cx={mx} cy={my} r="6" fill="#F5F9F3" stroke={severity.color} strokeWidth="2.5" />
         <rect x={lx} y={ly} width={lw} height={lh} rx="10" fill={severity.color} />
         <text x={mx} y={ly + lh / 2 + 6} textAnchor="middle" fontSize="20" fontWeight="700" fill="#ffffff">{labelText}</text>
         <text x={BC_P} y={BC_H - 8} fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">WEAK</text>
@@ -129,6 +129,26 @@ const LOCKED_AREAS = [
 
 const LEAD_EMAIL_KEY = "recognaize-lead-email";
 const SHARE_URL = "https://recognaizelite.vercel.app/tcmbrain";
+
+// TODO: Update once Shantal confirms final membership tiers, copy, and signup URL.
+// Booth-conversion hook shown after the visitor's email is captured. Coral
+// pill draws the eye; CTA opens AI Wellness in a new tab so the practitioner
+// can walk the visitor through pricing right at the booth.
+const MEMBERSHIP = {
+  pillLabel: "AT THE BOOTH",
+  headline: "Want the full picture?",
+  body:
+    "AI Wellness members get the complete cognitive assessment, your TCM constitution mapping, and a longevity protocol designed around your dampness, blood stasis, and cognitive profile.",
+  perks: [
+    "Full ReCOGnAIze assessment — Memory, Attention, Executive Function",
+    "TCM constitution consultation",
+    "Personalised longevity protocol",
+    "Quarterly re-screening to track progress",
+  ],
+  ctaLabel: "Become a Member",
+  ctaUrl: "https://www.asiaintegratedwellness.com/",
+  boothNote: "Speak to the practitioner at the booth to sign up today.",
+};
 
 const AGE_OPTIONS = ["18-25", "26-35", "36-45", "46-55", "56-65", "66+"] as const;
 const GENDER_OPTIONS = [
@@ -294,11 +314,11 @@ export default function TcmBrainReportPage() {
   const page = (children: React.ReactNode) => (
     <>
     <Head>
-      <meta name="theme-color" content="#F2F7F1" />
+      <meta name="theme-color" content="#F5F9F3" />
     </Head>
     <div
       className="min-h-[100dvh] w-full px-5 py-10 sm:px-8 overflow-y-auto"
-      style={{ background: "linear-gradient(180deg, #F2F7F1 0%, #D7E8D4 50%, #F2F7F1 100%)" }}
+      style={{ background: "linear-gradient(180deg, #F5F9F3 0%, #DCEAD7 50%, #F5F9F3 100%)" }}
     >
       <div className="max-w-2xl mx-auto space-y-6">{children}</div>
     </div>
@@ -329,13 +349,19 @@ export default function TcmBrainReportPage() {
         {/* Branding */}
         <div className="text-center pt-2 pb-4">
           <img src="/logo.png" alt="ReCOGnAIze" className="mx-auto w-[60px]" />
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#9CA3AF]">
+              In partnership with
+            </span>
+            <img src="/aiwellness-logo.jpeg" alt="AI Wellness" className="h-[24px] rounded" />
+          </div>
           <p className="text-[#9CA3AF] text-[9px] uppercase mt-3" style={{ letterSpacing: "0.2em" }}>
             Mind-Body Cognitive Screening — Your Results
           </p>
         </div>
 
         {/* Result Card */}
-        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #CFE0CB" }}>
+        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #D6E4D2" }}>
           <p className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">
             Cognitive Screening
           </p>
@@ -372,7 +398,7 @@ export default function TcmBrainReportPage() {
           </div>
 
           {emailSubmitted && (
-            <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#F2F7F1" }}>
+            <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#F5F9F3" }}>
               <p className="text-[13px] font-bold uppercase tracking-wider text-[#9CA3AF]">
                 What is {report.title}?
               </p>
@@ -385,7 +411,7 @@ export default function TcmBrainReportPage() {
 
         {/* Form — shown when email not yet submitted */}
         {!emailSubmitted && (
-          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #CFE0CB" }}>
+          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #D6E4D2" }}>
             <h3
               className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937] text-center"
               style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
@@ -401,7 +427,7 @@ export default function TcmBrainReportPage() {
                 placeholder="your@email.com"
                 value={emailInput}
                 onChange={(e) => { setEmailInput(e.target.value); setFormError(""); }}
-                className="w-full rounded-xl border border-[#CFE0CB] bg-[#F2F7F1] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#388E6B] transition-colors"
+                className="w-full rounded-xl border border-[#D6E4D2] bg-[#F5F9F3] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#7AB5A7] transition-colors"
               />
 
               {/* Age */}
@@ -419,9 +445,9 @@ export default function TcmBrainReportPage() {
                         onClick={() => { setAgeInput(age); setFormError(""); }}
                         className="rounded-lg py-2 text-[13px] font-semibold transition-all"
                         style={{
-                          backgroundColor: active ? "#388E6B" : "#F2F7F1",
+                          backgroundColor: active ? "#7AB5A7" : "#F5F9F3",
                           color: active ? "#ffffff" : "#4B5563",
-                          border: `1px solid ${active ? "#388E6B" : "#CFE0CB"}`,
+                          border: `1px solid ${active ? "#7AB5A7" : "#D6E4D2"}`,
                         }}
                       >
                         {age}
@@ -446,9 +472,9 @@ export default function TcmBrainReportPage() {
                         onClick={() => { setGenderInput(g.value); setFormError(""); }}
                         className="rounded-lg py-2 text-[12px] font-semibold transition-all leading-tight"
                         style={{
-                          backgroundColor: active ? "#388E6B" : "#F2F7F1",
+                          backgroundColor: active ? "#7AB5A7" : "#F5F9F3",
                           color: active ? "#ffffff" : "#4B5563",
-                          border: `1px solid ${active ? "#388E6B" : "#CFE0CB"}`,
+                          border: `1px solid ${active ? "#7AB5A7" : "#D6E4D2"}`,
                         }}
                       >
                         {g.label}
@@ -464,7 +490,7 @@ export default function TcmBrainReportPage() {
                   <label className="text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF]">
                     Dampness index
                   </label>
-                  <span className="text-[14px] font-bold text-[#388E6B]">{dampness} / 10</span>
+                  <span className="text-[14px] font-bold text-[#7AB5A7]">{dampness} / 10</span>
                 </div>
                 <p className="text-[12px] text-[#9CA3AF] mb-1.5">How heavy or foggy do you feel today?</p>
                 <input
@@ -474,7 +500,7 @@ export default function TcmBrainReportPage() {
                   step={1}
                   value={dampness}
                   onChange={(e) => { setDampness(Number(e.target.value)); setFormError(""); }}
-                  className="w-full accent-[#388E6B]"
+                  className="w-full accent-[#7AB5A7]"
                 />
                 <div className="flex justify-between text-[10px] text-[#9CA3AF] mt-0.5">
                   <span>1 — minimal</span>
@@ -488,7 +514,7 @@ export default function TcmBrainReportPage() {
                   <label className="text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF]">
                     Blood stasis index
                   </label>
-                  <span className="text-[14px] font-bold text-[#388E6B]">{bloodStasis} / 10</span>
+                  <span className="text-[14px] font-bold text-[#7AB5A7]">{bloodStasis} / 10</span>
                 </div>
                 <p className="text-[12px] text-[#9CA3AF] mb-1.5">How stagnant or stuck does your circulation feel today?</p>
                 <input
@@ -498,7 +524,7 @@ export default function TcmBrainReportPage() {
                   step={1}
                   value={bloodStasis}
                   onChange={(e) => { setBloodStasis(Number(e.target.value)); setFormError(""); }}
-                  className="w-full accent-[#388E6B]"
+                  className="w-full accent-[#7AB5A7]"
                 />
                 <div className="flex justify-between text-[10px] text-[#9CA3AF] mt-0.5">
                   <span>1 — minimal</span>
@@ -514,8 +540,8 @@ export default function TcmBrainReportPage() {
                 disabled={submitting}
                 className="w-full rounded-full px-8 py-4 text-[16px] font-bold tracking-wide text-white transition-all active:opacity-90 disabled:opacity-60"
                 style={{
-                  backgroundColor: "#388E6B",
-                  boxShadow: "0 0 30px rgba(56,142,107,0.25)",
+                  backgroundColor: "#7AB5A7",
+                  boxShadow: "0 0 30px rgba(122,181,167,0.25)",
                 }}
               >
                 {submitting ? "Saving…" : "Get My Results"}
@@ -530,7 +556,7 @@ export default function TcmBrainReportPage() {
         {/* Full report */}
         {emailSubmitted && (
           <>
-            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #CFE0CB" }}>
+            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #D6E4D2" }}>
               <h3
                 className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937]"
                 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
@@ -544,10 +570,10 @@ export default function TcmBrainReportPage() {
               <div className="mt-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">Your screening progress</span>
-                  <span className="text-[13px] font-bold" style={{ color: "#388E6B" }}>1 of 4</span>
+                  <span className="text-[13px] font-bold" style={{ color: "#7AB5A7" }}>1 of 4</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-[#D7E8D4] overflow-hidden">
-                  <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#388E6B" }} />
+                <div className="h-1.5 rounded-full bg-[#DCEAD7] overflow-hidden">
+                  <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#7AB5A7" }} />
                 </div>
               </div>
 
@@ -560,8 +586,8 @@ export default function TcmBrainReportPage() {
                   <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
                 </div>
                 {LOCKED_AREAS.map((area) => (
-                  <div key={area.name} className="rounded-xl border border-[#CFE0CB] bg-[#F2F7F1] px-4 py-4 text-center relative overflow-hidden">
-                    <div className="text-[#A4BDA1]">
+                  <div key={area.name} className="rounded-xl border border-[#D6E4D2] bg-[#F5F9F3] px-4 py-4 text-center relative overflow-hidden">
+                    <div className="text-[#B4C9B0]">
                       <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <rect x="3" y="11" width="18" height="11" rx="2" />
                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -574,35 +600,58 @@ export default function TcmBrainReportPage() {
               </div>
             </section>
 
-            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ background: "linear-gradient(135deg, #388E6B 0%, #2C7553 100%)" }}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-2">
-                Coming Soon
-              </p>
+            {/* Booth-conversion hook — membership CTA. Edit MEMBERSHIP constants
+                at top of file once Shantal confirms final wording / signup URL. */}
+            <section
+              className="rounded-2xl p-5 sm:p-6 text-center"
+              style={{ background: "linear-gradient(135deg, #7AB5A7 0%, #5A9582 100%)" }}
+            >
+              <span
+                className="inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-3 text-white"
+                style={{ backgroundColor: "rgba(232,150,113,0.95)" }}
+              >
+                {MEMBERSHIP.pillLabel}
+              </span>
               <h3
                 className="text-[20px] sm:text-[22px] font-bold leading-snug text-white"
                 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
               >
-                The full ReCOGnAIze assessment is launching soon.
+                {MEMBERSHIP.headline}
               </h3>
-              <p className="mt-3 text-[13px] text-white/80 leading-relaxed">
-                4 cognitive pillars &middot; 10 minutes &middot; Science-backed
-                <br />
-                Memory &middot; Attention &middot; Processing Speed &middot; Executive Function
+              <p className="mt-3 text-[13px] text-white/85 leading-relaxed">
+                {MEMBERSHIP.body}
               </p>
-              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2">
-                <svg className="size-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-[13px] font-semibold text-white">
-                  You&apos;re on the early access list
-                </span>
-              </div>
-              <p className="mt-3 text-[11px] text-white/50">
-                We&apos;ll notify you when the full assessment launches.
+              <ul className="mt-4 space-y-1.5 text-left max-w-sm mx-auto">
+                {MEMBERSHIP.perks.map((perk) => (
+                  <li key={perk} className="flex items-start gap-2 text-[13px] text-white/90">
+                    <svg
+                      className="size-4 mt-0.5 flex-shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{perk}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={MEMBERSHIP.ctaUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex w-full sm:w-auto items-center justify-center rounded-full px-8 py-3 text-[15px] font-bold tracking-wide transition-all active:scale-[0.97]"
+                style={{ backgroundColor: "#ffffff", color: "#5A9582" }}
+              >
+                {MEMBERSHIP.ctaLabel} →
+              </a>
+              <p className="mt-3 text-[11px] text-white/70">
+                {MEMBERSHIP.boothNote}
               </p>
             </section>
 
-            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #CFE0CB" }}>
+            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #D6E4D2" }}>
               <h3 className="text-[18px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
                 Think you&apos;re fast? Prove it.
               </h3>
@@ -641,14 +690,14 @@ export default function TcmBrainReportPage() {
 
         <button
           onClick={handleRetake}
-          className="w-full rounded-full border border-[#CFE0CB] py-3 text-center text-[14px] font-medium text-[#9CA3AF] transition-colors hover:border-[#388E6B] hover:text-[#388E6B]"
+          className="w-full rounded-full border border-[#D6E4D2] py-3 text-center text-[14px] font-medium text-[#9CA3AF] transition-colors hover:border-[#7AB5A7] hover:text-[#7AB5A7]"
         >
           Retake
         </button>
       </>
     ) : (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="rounded-2xl border border-[#CFE0CB] bg-white p-6 text-center text-sm text-[#6B7280]">
+        <div className="rounded-2xl border border-[#D6E4D2] bg-white p-6 text-center text-sm text-[#6B7280]">
           Complete the screening game to see your results.
         </div>
       </div>

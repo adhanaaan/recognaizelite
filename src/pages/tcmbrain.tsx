@@ -41,18 +41,18 @@ export default function TcmBrainEntry() {
       </Head>
       <div
         className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden relative"
-        style={{ background: "linear-gradient(180deg, #F2F7F1 0%, #D7E8D4 50%, #F2F7F1 100%)" }}
+        style={{ background: "linear-gradient(180deg, #F5F9F3 0%, #DCEAD7 50%, #F5F9F3 100%)" }}
       >
-        {/* Event badge */}
-        <div className="mb-5">
-          <div
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5"
-            style={{ backgroundColor: "rgba(56,142,107,0.12)", border: "1px solid rgba(56,142,107,0.25)" }}
-          >
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#388E6B]">
-              Mind-Body Cognitive Screening
-            </span>
-          </div>
+        {/* Co-brand: small label + AI Wellness logo */}
+        <div className="text-center mb-5">
+          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#9CA3AF] mb-2">
+            In partnership with
+          </p>
+          <img
+            src="/aiwellness-logo.jpeg"
+            alt="Asia Integrated Wellness"
+            className="mx-auto w-[240px] rounded-lg"
+          />
         </div>
 
         {/* Headline */}
@@ -62,7 +62,7 @@ export default function TcmBrainEntry() {
             style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
           >
             When the body is in{" "}
-            <em className="text-[#388E6B]">harmony,</em>
+            <em className="text-[#7AB5A7]">harmony,</em>
             <br />
             the mind follows.
           </h1>
@@ -76,8 +76,8 @@ export default function TcmBrainEntry() {
         {/* Live counter */}
         <div className="flex items-center gap-2 mb-6">
           <span className="relative flex size-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#388E6B] opacity-60" />
-            <span className="relative inline-flex size-2.5 rounded-full bg-[#388E6B]" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#7AB5A7] opacity-60" />
+            <span className="relative inline-flex size-2.5 rounded-full bg-[#7AB5A7]" />
           </span>
           <p className="text-[13px] text-[#4B5563]">
             <span className="font-bold text-[#1F2937]">{liveCount}</span> screened so far
@@ -88,7 +88,7 @@ export default function TcmBrainEntry() {
         <button
           onClick={() => Router.push("/instruction")}
           className="w-full max-w-[300px] rounded-full px-8 py-4 text-[17px] font-bold text-white tracking-wide transition-all active:scale-[0.97]"
-          style={{ backgroundColor: "#388E6B", boxShadow: "0 4px 24px rgba(56,142,107,0.35)" }}
+          style={{ backgroundColor: "#7AB5A7", boxShadow: "0 4px 24px rgba(122,181,167,0.35)" }}
         >
           Begin Screening — 60 Seconds
         </button>
@@ -118,7 +118,7 @@ export default function TcmBrainEntry() {
             <span className="text-[11px] font-medium text-[#9CA3AF]">ReCOGnAIze</span>
           </div>
           <p className="text-[9px] text-[#B0A296]">
-            Digital Cognitive Screening by Gray Matter Solutions
+            In partnership with AI Wellness — Embracing Longevity
           </p>
         </div>
       </div>
