@@ -128,7 +128,7 @@ const LOCKED_AREAS = [
 ];
 
 const LEAD_EMAIL_KEY = "recognaize-lead-email";
-const SHARE_URL = "https://recognaizelite.vercel.app/tcmbrain";
+const SHARE_URL = "https://recognaizelite.vercel.app/tcmbrainQR";
 
 // Real AI Wellness membership content — sourced from Shantal's 2026-05-10 flyer.
 // Edit here to update everywhere it's rendered on the report page.
@@ -153,7 +153,14 @@ const MEMBERSHIP = {
       "Member pricing on products & services",
       "Members-exclusive event invites",
     ],
-    ctaLabel: "Speak to a practitioner to join",
+    paynow: {
+      // Shantal to upload the actual QR (with $12 amount + AI Wellness UEN
+      // baked in) to public/aiwellness-paynow.png before the booth opens.
+      qrSrc: "/aiwellness-paynow.png",
+      headline: "Scan to pay $12 via PayNow",
+      note: "Instant transfer to AI Wellness · Singapore",
+    },
+    practitionerNote: "Or speak to a practitioner at the booth.",
   },
   gold: {
     label: "GOLD",
@@ -183,7 +190,7 @@ const SEVERITY_TO_KEY: Record<Severity, string> = {
   High: "high",
 };
 
-export default function TcmBrainReportPage() {
+export default function TcmBrainQRReportPage() {
   const { result } = useResultStore();
   const [report, setReport] = useState<DomainReport | null>(null);
   const [loading, setLoading] = useState(true);
@@ -328,7 +335,7 @@ export default function TcmBrainReportPage() {
     clearAssessmentMode();
     resetResults();
     resetTaskProgress();
-    Router.push("/tcmbrain");
+    Router.push("/tcmbrainQR");
   };
 
   const page = (children: React.ReactNode) => (
@@ -693,15 +700,37 @@ export default function TcmBrainReportPage() {
                   ))}
                 </ul>
 
-                <div
-                  className="mt-6 w-full text-center rounded-full px-6 py-3.5 text-[15px] font-bold tracking-wide text-white"
-                  style={{
-                    background: "linear-gradient(135deg, #E89671 0%, #D5704D 100%)",
-                    boxShadow: "0 4px 20px rgba(213,112,77,0.35)",
-                  }}
-                >
-                  {MEMBERSHIP.lite.ctaLabel} →
+                {/* PayNow QR — primary booth-floor close. Shantal uploads the
+                    QR (with $12 + AI Wellness UEN baked in) to
+                    public/aiwellness-paynow.png. */}
+                <div className="mt-6 flex flex-col items-center">
+                  <div
+                    className="rounded-2xl bg-white p-3 sm:p-4"
+                    style={{
+                      border: "1px solid #B8D2C7",
+                      boxShadow: "0 4px 16px rgba(38,69,57,0.08)",
+                    }}
+                  >
+                    <img
+                      src={MEMBERSHIP.lite.paynow.qrSrc}
+                      alt="PayNow QR — pay $12 to AI Wellness"
+                      width={220}
+                      height={220}
+                      className="block size-[200px] sm:size-[220px] mx-auto"
+                    />
+                  </div>
+                  <p className="mt-3 text-[15px] font-bold text-[#2C4A3F]">
+                    {MEMBERSHIP.lite.paynow.headline}
+                  </p>
+                  <p className="text-[11px] text-[#6B7280] mt-0.5">
+                    {MEMBERSHIP.lite.paynow.note}
+                  </p>
                 </div>
+
+                {/* Secondary: practitioner option, demoted */}
+                <p className="mt-4 text-center text-[12px] text-[#6B7280]">
+                  {MEMBERSHIP.lite.practitionerNote}
+                </p>
               </div>
 
               {/* Gold tier — distinct cream/amber strip, premium feel. */}
