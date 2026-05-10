@@ -153,8 +153,7 @@ const MEMBERSHIP = {
       "Member pricing on products & services",
       "Members-exclusive event invites",
     ],
-    ctaLabel: "Join for $12 — At the Booth",
-    ctaUrl: "https://www.aiwellnessvip.com/",
+    ctaLabel: "Speak to a practitioner to join",
   },
   gold: {
     label: "GOLD",
@@ -339,7 +338,7 @@ export default function TcmBrainReportPage() {
     </Head>
     <div
       className="min-h-[100dvh] w-full px-5 py-10 sm:px-8 overflow-y-auto"
-      style={{ background: "linear-gradient(180deg, #F5F9F3 0%, #DCEAD7 50%, #F5F9F3 100%)" }}
+      style={{ background: "linear-gradient(180deg, #FBF8F3 0%, #F2EBDF 50%, #FBF8F3 100%)" }}
     >
       <div className="max-w-2xl mx-auto space-y-6">{children}</div>
     </div>
@@ -382,8 +381,8 @@ export default function TcmBrainReportPage() {
         </div>
 
         {/* Result Card */}
-        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #D6E4D2" }}>
-          <p className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #B8D2C7" }}>
+          <p className="text-[12px] font-bold uppercase tracking-wider text-[#5A9582]">
             Cognitive Screening
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
@@ -420,7 +419,7 @@ export default function TcmBrainReportPage() {
 
           {emailSubmitted && (
             <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#F5F9F3" }}>
-              <p className="text-[13px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+              <p className="text-[13px] font-bold uppercase tracking-wider text-[#5A9582]">
                 What is {report.title}?
               </p>
               <p className="mt-2 text-[14px] leading-relaxed text-[#4B5563]">
@@ -432,14 +431,14 @@ export default function TcmBrainReportPage() {
 
         {/* Form — shown when email not yet submitted */}
         {!emailSubmitted && (
-          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #D6E4D2" }}>
+          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #B8D2C7" }}>
             <h3
               className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937] text-center"
               style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
             >
               Want to see your full results?
             </h3>
-            <p className="mt-3 text-[14px] leading-relaxed text-[#6B7280] text-center">
+            <p className="mt-3 text-[14px] leading-relaxed text-[#4B5563] text-center">
               Tell us a bit about you — including your TCM constitution today.
             </p>
             <form onSubmit={handleEmailSubmit} className="mt-5 space-y-3">
@@ -448,12 +447,12 @@ export default function TcmBrainReportPage() {
                 placeholder="your@email.com"
                 value={emailInput}
                 onChange={(e) => { setEmailInput(e.target.value); setFormError(""); }}
-                className="w-full rounded-xl border border-[#D6E4D2] bg-[#F5F9F3] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#7AB5A7] transition-colors"
+                className="w-full rounded-xl border border-[#B8D2C7] bg-[#F5F9F3] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#7AB5A7] transition-colors"
               />
 
               {/* Age */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#5A9582] mb-1.5">
                   Age
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -468,7 +467,7 @@ export default function TcmBrainReportPage() {
                         style={{
                           backgroundColor: active ? "#7AB5A7" : "#F5F9F3",
                           color: active ? "#ffffff" : "#4B5563",
-                          border: `1px solid ${active ? "#7AB5A7" : "#D6E4D2"}`,
+                          border: `1px solid ${active ? "#7AB5A7" : "#B8D2C7"}`,
                         }}
                       >
                         {age}
@@ -480,7 +479,7 @@ export default function TcmBrainReportPage() {
 
               {/* Gender */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#5A9582] mb-1.5">
                   Gender
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -495,7 +494,7 @@ export default function TcmBrainReportPage() {
                         style={{
                           backgroundColor: active ? "#7AB5A7" : "#F5F9F3",
                           color: active ? "#ffffff" : "#4B5563",
-                          border: `1px solid ${active ? "#7AB5A7" : "#D6E4D2"}`,
+                          border: `1px solid ${active ? "#7AB5A7" : "#B8D2C7"}`,
                         }}
                       >
                         {g.label}
@@ -508,10 +507,10 @@ export default function TcmBrainReportPage() {
               {/* Dampness Index slider */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-[#5A9582]">
                     Dampness index
                   </label>
-                  <span className="text-[14px] font-bold text-[#7AB5A7]">{dampness} / 10</span>
+                  <span className="text-[14px] font-bold text-[#388E6B]">{dampness} / 10</span>
                 </div>
                 <p className="text-[12px] text-[#9CA3AF] mb-1.5">How heavy or foggy do you feel today?</p>
                 <input
@@ -521,7 +520,7 @@ export default function TcmBrainReportPage() {
                   step={1}
                   value={dampness}
                   onChange={(e) => { setDampness(Number(e.target.value)); setFormError(""); }}
-                  className="w-full accent-[#7AB5A7]"
+                  className="w-full accent-[#388E6B]"
                 />
                 <div className="flex justify-between text-[10px] text-[#9CA3AF] mt-0.5">
                   <span>1 — minimal</span>
@@ -532,10 +531,10 @@ export default function TcmBrainReportPage() {
               {/* Blood Stasis Index slider */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-[#5A9582]">
                     Blood stasis index
                   </label>
-                  <span className="text-[14px] font-bold text-[#7AB5A7]">{bloodStasis} / 10</span>
+                  <span className="text-[14px] font-bold text-[#388E6B]">{bloodStasis} / 10</span>
                 </div>
                 <p className="text-[12px] text-[#9CA3AF] mb-1.5">How stagnant or stuck does your circulation feel today?</p>
                 <input
@@ -545,7 +544,7 @@ export default function TcmBrainReportPage() {
                   step={1}
                   value={bloodStasis}
                   onChange={(e) => { setBloodStasis(Number(e.target.value)); setFormError(""); }}
-                  className="w-full accent-[#7AB5A7]"
+                  className="w-full accent-[#388E6B]"
                 />
                 <div className="flex justify-between text-[10px] text-[#9CA3AF] mt-0.5">
                   <span>1 — minimal</span>
@@ -561,8 +560,8 @@ export default function TcmBrainReportPage() {
                 disabled={submitting}
                 className="w-full rounded-full px-8 py-4 text-[16px] font-bold tracking-wide text-white transition-all active:opacity-90 disabled:opacity-60"
                 style={{
-                  backgroundColor: "#7AB5A7",
-                  boxShadow: "0 0 30px rgba(122,181,167,0.25)",
+                  background: "linear-gradient(135deg, #E89671 0%, #D5704D 100%)",
+                  boxShadow: "0 4px 24px rgba(213,112,77,0.35)",
                 }}
               >
                 {submitting ? "Saving…" : "Get My Results"}
@@ -577,7 +576,7 @@ export default function TcmBrainReportPage() {
         {/* Full report */}
         {emailSubmitted && (
           <>
-            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #D6E4D2" }}>
+            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #B8D2C7" }}>
               <h3
                 className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937]"
                 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
@@ -590,7 +589,7 @@ export default function TcmBrainReportPage() {
 
               <div className="mt-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">Your screening progress</span>
+                  <span className="text-[12px] font-bold uppercase tracking-wider text-[#5A9582]">Your screening progress</span>
                   <span className="text-[13px] font-bold" style={{ color: "#7AB5A7" }}>1 of 4</span>
                 </div>
                 <div className="h-1.5 rounded-full bg-[#DCEAD7] overflow-hidden">
@@ -607,7 +606,7 @@ export default function TcmBrainReportPage() {
                   <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
                 </div>
                 {LOCKED_AREAS.map((area) => (
-                  <div key={area.name} className="rounded-xl border border-[#D6E4D2] bg-[#F5F9F3] px-4 py-4 text-center relative overflow-hidden">
+                  <div key={area.name} className="rounded-xl border border-[#B8D2C7] bg-[#F5F9F3] px-4 py-4 text-center relative overflow-hidden">
                     <div className="text-[#B4C9B0]">
                       <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <rect x="3" y="11" width="18" height="11" rx="2" />
@@ -694,21 +693,15 @@ export default function TcmBrainReportPage() {
                   ))}
                 </ul>
 
-                <a
-                  href={MEMBERSHIP.lite.ctaUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 block w-full text-center rounded-full px-6 py-3.5 text-[15px] font-bold tracking-wide text-white transition-all active:scale-[0.98]"
+                <div
+                  className="mt-6 w-full text-center rounded-full px-6 py-3.5 text-[15px] font-bold tracking-wide text-white"
                   style={{
                     background: "linear-gradient(135deg, #E89671 0%, #D5704D 100%)",
                     boxShadow: "0 4px 20px rgba(213,112,77,0.35)",
                   }}
                 >
                   {MEMBERSHIP.lite.ctaLabel} →
-                </a>
-                <p className="mt-2 text-center text-[11px] text-[#9CA3AF]">
-                  Tap to sign up, or speak to the practitioner at the booth.
-                </p>
+                </div>
               </div>
 
               {/* Gold tier — distinct cream/amber strip, premium feel. */}
@@ -755,7 +748,7 @@ export default function TcmBrainReportPage() {
               </div>
             </section>
 
-            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #D6E4D2" }}>
+            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #B8D2C7" }}>
               <h3 className="text-[18px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
                 Think you&apos;re fast? Prove it.
               </h3>
@@ -794,14 +787,14 @@ export default function TcmBrainReportPage() {
 
         <button
           onClick={handleRetake}
-          className="w-full rounded-full border border-[#D6E4D2] py-3 text-center text-[14px] font-medium text-[#9CA3AF] transition-colors hover:border-[#7AB5A7] hover:text-[#7AB5A7]"
+          className="w-full rounded-full border border-[#B8D2C7] py-3 text-center text-[14px] font-medium text-[#9CA3AF] transition-colors hover:border-[#7AB5A7] hover:text-[#7AB5A7]"
         >
           Retake
         </button>
       </>
     ) : (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="rounded-2xl border border-[#D6E4D2] bg-white p-6 text-center text-sm text-[#6B7280]">
+        <div className="rounded-2xl border border-[#B8D2C7] bg-white p-6 text-center text-sm text-[#6B7280]">
           Complete the screening game to see your results.
         </div>
       </div>
