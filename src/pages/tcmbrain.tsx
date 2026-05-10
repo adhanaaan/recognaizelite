@@ -41,7 +41,7 @@ export default function TcmBrainEntry() {
       </Head>
       <div
         className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden relative"
-        style={{ background: "linear-gradient(180deg, #F5F9F3 0%, #DCEAD7 50%, #F5F9F3 100%)" }}
+        style={{ background: "linear-gradient(180deg, #FBF8F3 0%, #F2EBDF 50%, #FBF8F3 100%)" }}
       >
         {/* Co-brand: small label + AI Wellness logo */}
         <div className="text-center mb-5">
@@ -88,7 +88,10 @@ export default function TcmBrainEntry() {
         <button
           onClick={() => Router.push("/instruction")}
           className="w-full max-w-[300px] rounded-full px-8 py-4 text-[17px] font-bold text-white tracking-wide transition-all active:scale-[0.97]"
-          style={{ backgroundColor: "#7AB5A7", boxShadow: "0 4px 24px rgba(122,181,167,0.35)" }}
+          style={{
+            background: "linear-gradient(135deg, #E89671 0%, #D5704D 100%)",
+            boxShadow: "0 4px 24px rgba(213,112,77,0.35)",
+          }}
         >
           Begin Screening — 60 Seconds
         </button>
