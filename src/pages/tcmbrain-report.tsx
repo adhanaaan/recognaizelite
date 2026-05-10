@@ -130,24 +130,41 @@ const LOCKED_AREAS = [
 const LEAD_EMAIL_KEY = "recognaize-lead-email";
 const SHARE_URL = "https://recognaizelite.vercel.app/tcmbrain";
 
-// TODO: Update once Shantal confirms final membership tiers, copy, and signup URL.
-// Booth-conversion hook shown after the visitor's email is captured. Coral
-// pill draws the eye; CTA opens AI Wellness in a new tab so the practitioner
-// can walk the visitor through pricing right at the booth.
+// Real AI Wellness membership content — sourced from Shantal's 2026-05-10 flyer.
+// Edit here to update everywhere it's rendered on the report page.
 const MEMBERSHIP = {
   pillLabel: "AT THE BOOTH",
-  headline: "Want the full picture?",
-  body:
-    "AI Wellness members get the complete cognitive assessment, your TCM constitution mapping, and a longevity protocol designed around your dampness, blood stasis, and cognitive profile.",
-  perks: [
-    "Full ReCOGnAIze assessment — Memory, Attention, Executive Function",
-    "TCM constitution consultation",
-    "Personalised longevity protocol",
-    "Quarterly re-screening to track progress",
-  ],
-  ctaLabel: "Become a Member",
-  ctaUrl: "https://www.asiaintegratedwellness.com/",
-  boothNote: "Speak to the practitioner at the booth to sign up today.",
+  headline: "Continue with AI Wellness.",
+  subhead: "Embracing Longevity — Adding life to your years.",
+  // Soft fusion: rendered with the visitor's index values interpolated.
+  // No medical interpretation — just describes what they entered + the
+  // tracking benefit of joining.
+  fusionTemplate:
+    "You rated your dampness {dampness}/10 and blood stasis {bloodStasis}/10 today. AI Wellness members get those tracked alongside blood pressure, body composition, and cognitive screening — so you can see how the patterns shift over time.",
+  lite: {
+    label: "LITE",
+    price: "$12",
+    priceSuffix: "one-time · lifetime membership",
+    perks: [
+      "12× Blood Pressure tracking (Year 1)",
+      "12× Body Composition tracking (Year 1)",
+      "12× AI-Generated Personal Health Report",
+      "Member pricing on products & services",
+    ],
+    ctaLabel: "Join for $12 — At the Booth",
+    ctaUrl: "https://www.aiwellnessvip.com/",
+  },
+  gold: {
+    label: "GOLD",
+    teaser:
+      "Want the full programme? Gold includes the Longevity Wellness 360, supplements & herbs, hybrid clinician consultations, and a 5D4N Nanjing wellness retreat.",
+    ctaLabel: "Ask the practitioner about Gold",
+  },
+  contact: {
+    email: "members@aiwellnessvip.com",
+    phones: "9023 5677  ·  8666 8087",
+    site: "www.aiwellnessvip.com",
+  },
 };
 
 const AGE_OPTIONS = ["18-25", "26-35", "36-45", "46-55", "56-65", "66+"] as const;
@@ -600,55 +617,96 @@ export default function TcmBrainReportPage() {
               </div>
             </section>
 
-            {/* Booth-conversion hook — membership CTA. Edit MEMBERSHIP constants
-                at top of file once Shantal confirms final wording / signup URL. */}
+            {/* Booth-conversion hook — Lite tier as primary CTA, Gold as upsell.
+                Edit MEMBERSHIP at top of file to update copy, perks, prices, URLs. */}
             <section
-              className="rounded-2xl p-5 sm:p-6 text-center"
+              className="rounded-2xl overflow-hidden"
               style={{ background: "linear-gradient(135deg, #7AB5A7 0%, #5A9582 100%)" }}
             >
-              <span
-                className="inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-3 text-white"
-                style={{ backgroundColor: "rgba(232,150,113,0.95)" }}
-              >
-                {MEMBERSHIP.pillLabel}
-              </span>
-              <h3
-                className="text-[20px] sm:text-[22px] font-bold leading-snug text-white"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-              >
-                {MEMBERSHIP.headline}
-              </h3>
-              <p className="mt-3 text-[13px] text-white/85 leading-relaxed">
-                {MEMBERSHIP.body}
-              </p>
-              <ul className="mt-4 space-y-1.5 text-left max-w-sm mx-auto">
-                {MEMBERSHIP.perks.map((perk) => (
-                  <li key={perk} className="flex items-start gap-2 text-[13px] text-white/90">
-                    <svg
-                      className="size-4 mt-0.5 flex-shrink-0"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                    >
-                      <path d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>{perk}</span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href={MEMBERSHIP.ctaUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 inline-flex w-full sm:w-auto items-center justify-center rounded-full px-8 py-3 text-[15px] font-bold tracking-wide transition-all active:scale-[0.97]"
-                style={{ backgroundColor: "#ffffff", color: "#5A9582" }}
-              >
-                {MEMBERSHIP.ctaLabel} →
-              </a>
-              <p className="mt-3 text-[11px] text-white/70">
-                {MEMBERSHIP.boothNote}
-              </p>
+              {/* Header */}
+              <div className="p-5 sm:p-6 text-center">
+                <span
+                  className="inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-3 text-white"
+                  style={{ backgroundColor: "rgba(232,150,113,0.95)" }}
+                >
+                  {MEMBERSHIP.pillLabel}
+                </span>
+                <h3
+                  className="text-[20px] sm:text-[22px] font-bold leading-snug text-white"
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                >
+                  {MEMBERSHIP.headline}
+                </h3>
+                <p className="mt-1 text-[12px] uppercase tracking-[0.2em] text-white/70">
+                  {MEMBERSHIP.subhead}
+                </p>
+                <p className="mt-3 text-[13px] text-white/85 leading-relaxed max-w-md mx-auto">
+                  {MEMBERSHIP.fusionTemplate
+                    .replace("{dampness}", String(dampness))
+                    .replace("{bloodStasis}", String(bloodStasis))}
+                </p>
+              </div>
+
+              {/* Lite tier — the booth-floor close */}
+              <div className="bg-white/10 backdrop-blur-sm px-5 sm:px-6 py-5 border-t border-white/10">
+                <div className="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-white/70">
+                    {MEMBERSHIP.lite.label}
+                  </span>
+                  <span className="text-white">
+                    <span className="text-[24px] font-bold">{MEMBERSHIP.lite.price}</span>
+                    <span className="text-[11px] ml-1 opacity-70">{MEMBERSHIP.lite.priceSuffix}</span>
+                  </span>
+                </div>
+                <ul className="space-y-1.5 mb-4">
+                  {MEMBERSHIP.lite.perks.map((perk) => (
+                    <li key={perk} className="flex items-start gap-2 text-[13px] text-white/90">
+                      <svg
+                        className="size-4 mt-0.5 flex-shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                      >
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>{perk}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={MEMBERSHIP.lite.ctaUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center rounded-full px-6 py-3 text-[15px] font-bold tracking-wide transition-all active:scale-[0.97]"
+                  style={{ backgroundColor: "#ffffff", color: "#5A9582" }}
+                >
+                  {MEMBERSHIP.lite.ctaLabel} →
+                </a>
+              </div>
+
+              {/* Gold tier — upsell strip */}
+              <div className="px-5 sm:px-6 py-4 border-t border-white/10 text-center">
+                <p className="text-[12px] text-white/85 leading-relaxed">
+                  <span className="inline-block rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest mr-1.5 align-middle">
+                    {MEMBERSHIP.gold.label}
+                  </span>
+                  {MEMBERSHIP.gold.teaser}
+                </p>
+                <p className="mt-2 text-[11px] text-white/60 italic">
+                  {MEMBERSHIP.gold.ctaLabel}
+                </p>
+              </div>
+
+              {/* Contact footer */}
+              <div className="px-5 sm:px-6 py-3 bg-black/15 text-center">
+                <p className="text-[11px] text-white/75 leading-relaxed">
+                  {MEMBERSHIP.contact.email} · {MEMBERSHIP.contact.phones}
+                </p>
+                <p className="text-[10px] text-white/50">
+                  {MEMBERSHIP.contact.site}
+                </p>
+              </div>
             </section>
 
             <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #D6E4D2" }}>
