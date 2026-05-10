@@ -153,8 +153,7 @@ const MEMBERSHIP = {
       "Member pricing on products & services",
       "Members-exclusive event invites",
     ],
-    ctaLabel: "Join for $12 — At the Booth",
-    ctaUrl: "https://www.aiwellnessvip.com/",
+    ctaLabel: "Speak to a practitioner to join",
   },
   gold: {
     label: "GOLD",
@@ -694,21 +693,15 @@ export default function TcmBrainReportPage() {
                   ))}
                 </ul>
 
-                <a
-                  href={MEMBERSHIP.lite.ctaUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 block w-full text-center rounded-full px-6 py-3.5 text-[15px] font-bold tracking-wide text-white transition-all active:scale-[0.98]"
+                <div
+                  className="mt-6 w-full text-center rounded-full px-6 py-3.5 text-[15px] font-bold tracking-wide text-white"
                   style={{
                     background: "linear-gradient(135deg, #E89671 0%, #D5704D 100%)",
                     boxShadow: "0 4px 20px rgba(213,112,77,0.35)",
                   }}
                 >
                   {MEMBERSHIP.lite.ctaLabel} →
-                </a>
-                <p className="mt-2 text-center text-[11px] text-[#9CA3AF]">
-                  Tap to sign up, or speak to the practitioner at the booth.
-                </p>
+                </div>
               </div>
 
               {/* Gold tier — distinct cream/amber strip, premium feel. */}
