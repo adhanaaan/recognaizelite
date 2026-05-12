@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { getSupabaseAdmin, LeadRow, PartnerShareLinkRow } from "src/utils/supabase";
 import { fetchClinicLeads, KNOWN_CLINICS, LeadStats } from "src/server/leadAggregation";
 
@@ -299,6 +299,27 @@ function RevokedOrNotFound({ status }: { status: "revoked" | "not_found" }) {
 }
 
 export default function PartnerSharePage({ status, clinic, label, leads, stats, loadedAt }: PageProps) {
+  // Override the global html/body/__next overflow:hidden lock (set by
+  // styles/globals.css so the game pages can keep the viewport pinned).
+  // All five other long-content report pages use this same pattern.
+  useEffect(() => {
+    document.documentElement.style.overflow = "auto";
+    document.documentElement.style.height = "auto";
+    document.body.style.overflow = "auto";
+    document.body.style.height = "auto";
+    const next = document.getElementById("__next");
+    if (next) { next.style.overflow = "auto"; next.style.height = "auto"; }
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.documentElement.style.height = "";
+      document.body.style.overflow = "";
+      document.body.style.height = "";
+      if (next) { next.style.overflow = ""; next.style.height = ""; }
+    };
+  }, []);
+
+  const topAge = useMemo(() => topKey(stats.byAgeRange) ?? "—", [stats.byAgeRange]);
+
   if (status !== "active") {
     return <RevokedOrNotFound status={status} />;
   }
@@ -307,8 +328,6 @@ export default function PartnerSharePage({ status, clinic, label, leads, stats, 
   const isHealthtechx = clinic === "healthtechx";
   const isTcm = clinic === "tcmbrain";
   const isB2C = clinic === "sjmc" || clinic === "hookikigai" || clinic === "tcmbrain";
-
-  const topAge = useMemo(() => topKey(stats.byAgeRange) ?? "—", [stats.byAgeRange]);
 
   return (
     <>
