@@ -156,6 +156,7 @@ export default function DemoReportPage() {
   const [error, setError] = useState<string | null>(null);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailInput, setEmailInput] = useState("");
+  const [whatsappInput, setWhatsappInput] = useState("");
   const [roleInput, setRoleInput] = useState<string>("");
   const [organizationInput, setOrganizationInput] = useState<string>("");
   const [cognitiveInterestInput, setCognitiveInterestInput] = useState<string>("");
@@ -230,6 +231,7 @@ export default function DemoReportPage() {
       clinic: "healthtechx",
       role: roleInput,
       organization: trimmedOrg,
+      whatsapp: whatsappInput.trim() || null,
       cognitiveInterest: trimmedInterest || null,
       score: typeof task2Score === "number" ? task2Score : null,
       percentile: report ? Math.round(report.percentile) : null,
@@ -419,6 +421,19 @@ export default function DemoReportPage() {
                 onChange={(e) => { setEmailInput(e.target.value); setFormError(""); }}
                 className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors"
               />
+
+              <div>
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="WhatsApp (e.g. +65 9123 4567)"
+                  value={whatsappInput}
+                  onChange={(e) => { setWhatsappInput(e.target.value); setFormError(""); }}
+                  className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors"
+                />
+                <p className="mt-1 text-[11px] text-[#9CA3AF]">Optional — for follow-up.</p>
+              </div>
 
               {/* Role */}
               <div>

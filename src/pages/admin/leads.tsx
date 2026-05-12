@@ -158,6 +158,7 @@ export default function AdminLeadsPage() {
   const downloadCSV = () => {
     const header = [
       "Email",
+      "WhatsApp",
       "Clinic",
       "Age",
       "Gender",
@@ -182,6 +183,7 @@ export default function AdminLeadsPage() {
     const rows = filtered.map((l) =>
       [
         l.email,
+        l.whatsapp,
         l.clinic,
         l.age_range,
         l.gender,
@@ -387,6 +389,7 @@ export default function AdminLeadsPage() {
                   <tr style={{ backgroundColor: "#111827" }}>
                     <Th>#</Th>
                     <Th>Email</Th>
+                    <Th>WhatsApp</Th>
                     {!clinic && <Th>Clinic</Th>}
                     {clinic === "healthtechx" ? (
                       <>
@@ -430,6 +433,20 @@ export default function AdminLeadsPage() {
                     >
                       <Td className="text-gray-600">{i + 1}</Td>
                       <Td className="text-white font-medium">{lead.email}</Td>
+                      <Td className="text-gray-300">
+                        {lead.whatsapp ? (
+                          <a
+                            href={`https://wa.me/${lead.whatsapp.replace(/^\+/, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-[#5CE0D8]"
+                          >
+                            {lead.whatsapp}
+                          </a>
+                        ) : (
+                          "—"
+                        )}
+                      </Td>
                       {!clinic && <Td className="text-gray-300 capitalize">{lead.clinic ?? "—"}</Td>}
                       {clinic === "healthtechx" ? (
                         <>

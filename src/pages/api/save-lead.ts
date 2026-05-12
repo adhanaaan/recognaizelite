@@ -82,6 +82,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const ip_region =
     str(req.headers["x-vercel-ip-country"]) || str(req.headers["x-vercel-ip-country-region"]);
 
+  // Optional WhatsApp follow-up channel. Free text in; normalised to
+  // "+digits" (single leading + allowed) and validated to 8-16 digits.
+  const whatsappRaw = str(body.whatsapp);
+  let whatsapp: string | null = null;
+  if (whatsappRaw) {
+    const cleaned = whatsappRaw
+      .replace(/[^\d+]/g, "")
+      .replace(/(?!^)\+/g, "");
+    const digits = cleaned.replace(/^\+/, "");
+    if (digits.length < 8 || digits.length > 16) {
+      return res.status(400).json({ error: "Invalid WhatsApp number" });
+    }
+    whatsapp = cleaned;
+  }
+
   let supabase;
   try {
     supabase = getSupabaseAdmin();
@@ -92,6 +107,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const sharedRow = {
     email: emailRaw,
+    whatsapp,
     score,
     percentile,
     severity,
@@ -221,9 +237,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     takes_supplements: takesSupplementsRaw,
   });
 
-  // Schema-cache fallback for older deploys that pre-date health_goal/takes_supplements.
+  // Schema-cache fallback for older deploys that pre-date health_goal /
+  // takes_supplements / whatsapp. Each retry sheds the most-recently-added
+  // columns until the insert succeeds against whatever schema is live.
   if (error && error.message?.includes("schema cache")) {
     const retry = await supabase.from("leads").insert(sjmcBaseRow);
+    error = retry.error;
+  }
+  if (error && error.message?.includes("schema cache")) {
+    const { whatsapp: _drop, ...withoutWhatsapp } = sjmcBaseRow;
+    void _drop;
+    const retry = await supabase.from("leads").insert(withoutWhatsapp);
     error = retry.error;
   }
 

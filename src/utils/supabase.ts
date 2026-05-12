@@ -31,6 +31,7 @@ export interface LeadRow {
   clinic: string;
   age_range: string | null;
   gender: string | null;
+  whatsapp: string | null;
   score: number | null;
   percentile: number | null;
   severity: string | null;

@@ -198,6 +198,7 @@ export default function TcmBrainReportPage() {
   const [error, setError] = useState<string | null>(null);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailInput, setEmailInput] = useState("");
+  const [whatsappInput, setWhatsappInput] = useState("");
   const [ageInput, setAgeInput] = useState<string>("");
   const [genderInput, setGenderInput] = useState<string>("");
   const [dampness, setDampness] = useState<number>(5);
@@ -253,6 +254,7 @@ export default function TcmBrainReportPage() {
       clinic: "tcmbrain",
       ageRange: ageInput,
       gender: genderInput,
+      whatsapp: whatsappInput.trim() || null,
       dampnessIndex: dampness,
       bloodStasisIndex: bloodStasis,
       score: typeof task2Score === "number" ? task2Score : null,
@@ -457,6 +459,19 @@ export default function TcmBrainReportPage() {
                 onChange={(e) => { setEmailInput(e.target.value); setFormError(""); }}
                 className="w-full rounded-xl border border-[#B8D2C7] bg-[#F5F9F3] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#7AB5A7] transition-colors"
               />
+
+              <div>
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="WhatsApp (e.g. +65 9123 4567)"
+                  value={whatsappInput}
+                  onChange={(e) => { setWhatsappInput(e.target.value); setFormError(""); }}
+                  className="w-full rounded-xl border border-[#B8D2C7] bg-[#F5F9F3] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#7AB5A7] transition-colors"
+                />
+                <p className="mt-1 text-[11px] text-[#9CA3AF]">Optional — for follow-up.</p>
+              </div>
 
               {/* Age */}
               <div>
