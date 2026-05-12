@@ -167,6 +167,7 @@ export default function HookIkigaiReportPage() {
   const [error, setError] = useState<string | null>(null);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailInput, setEmailInput] = useState("");
+  const [whatsappInput, setWhatsappInput] = useState("");
   const [ageInput, setAgeInput] = useState("");
   const [genderInput, setGenderInput] = useState("");
   const [healthGoal, setHealthGoal] = useState("");
@@ -221,6 +222,7 @@ export default function HookIkigaiReportPage() {
           clinic: "hookikigai",
           ageRange: ageInput,
           gender: genderInput,
+          whatsapp: whatsappInput.trim() || null,
           score: typeof task2Score === "number" ? task2Score : null,
           percentile: report ? Math.round(report.percentile) : null,
           severity: report ? SEVERITY_TO_KEY[report.severity] : null,
@@ -415,6 +417,19 @@ export default function HookIkigaiReportPage() {
                 onChange={(e) => { setEmailInput(e.target.value); setFormError(""); }}
                 className="w-full rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-3.5 text-[15px] text-white placeholder-gray-500 outline-none focus:border-[#5CE0D8] transition-colors"
               />
+
+              <div>
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="WhatsApp (e.g. +65 9123 4567)"
+                  value={whatsappInput}
+                  onChange={(e) => { setWhatsappInput(e.target.value); setFormError(""); }}
+                  className="w-full rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-3.5 text-[15px] text-white placeholder-gray-500 outline-none focus:border-[#5CE0D8] transition-colors"
+                />
+                <p className="mt-1 text-[11px] text-gray-500">Optional — for follow-up.</p>
+              </div>
 
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-2">Age</p>

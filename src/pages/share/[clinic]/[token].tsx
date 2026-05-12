@@ -432,6 +432,7 @@ export default function PartnerSharePage({ status, clinic, label, leads, stats, 
                   <tr style={{ backgroundColor: theme.pillBg }}>
                     <th className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap" style={{ color: theme.pillText }}>#</th>
                     <th className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap" style={{ color: theme.pillText }}>Email</th>
+                    <th className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap" style={{ color: theme.pillText }}>WhatsApp</th>
                     {isHealthtechx ? (
                       <>
                         <th className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap" style={{ color: theme.pillText }}>Role</th>
@@ -469,6 +470,20 @@ export default function PartnerSharePage({ status, clinic, label, leads, stats, 
                     >
                       <td className="px-3 py-2 text-[12px] whitespace-nowrap" style={{ color: theme.textMuted }}>{i + 1}</td>
                       <td className="px-3 py-2 text-[13px] font-medium whitespace-nowrap" style={{ color: theme.textPrimary }}>{lead.email}</td>
+                      <td className="px-3 py-2 text-[12.5px] whitespace-nowrap" style={{ color: theme.textPrimary }}>
+                        {lead.whatsapp ? (
+                          <a
+                            href={`https://wa.me/${lead.whatsapp.replace(/^\+/, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: theme.accentDark }}
+                          >
+                            {lead.whatsapp}
+                          </a>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
                       {isHealthtechx ? (
                         <>
                           <td className="px-3 py-2 text-[12.5px] whitespace-nowrap" style={{ color: theme.textPrimary }}>
