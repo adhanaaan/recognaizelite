@@ -53,6 +53,19 @@ export interface LeadRow {
   created_at: string;
 }
 
+// `partner_share_links` row. Token-in-URL bearer credential for the
+// partner-facing /share/[clinic]/[token] page. Plaintext token is fine
+// at this scale; admin can revoke individual rows via `revoked_at`.
+export interface PartnerShareLinkRow {
+  id: string;
+  clinic: string;
+  token: string;
+  label: string | null;
+  created_at: string;
+  last_accessed_at: string | null;
+  revoked_at: string | null;
+}
+
 export const AGE_RANGES = ["18-25", "26-35", "36-45", "46-55", "56-65", "66+"] as const;
 export const GENDERS = ["male", "female", "prefer_not_to_say"] as const;
 
