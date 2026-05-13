@@ -14,9 +14,9 @@ type SeverityVisual = {
 };
 
 const severityVisuals: Record<Severity, SeverityVisual> = {
-  Low: { label: "WEAK", color: "#EF4444", softBg: "rgba(239,68,68,0.10)" },
-  Medium: { label: "ADEQUATE", color: "#7AB5A7", softBg: "rgba(122,181,167,0.10)" },
-  High: { label: "STRONG", color: "#34D399", softBg: "rgba(52,211,153,0.10)" },
+  Low:    { label: "WEAK",     color: "#B91C1C", softBg: "rgba(185,28,28,0.12)"   },
+  Medium: { label: "ADEQUATE", color: "#E89671", softBg: "rgba(232,150,113,0.14)" },
+  High:   { label: "STRONG",   color: "#34D399", softBg: "rgba(52,211,153,0.10)"  },
 };
 
 // --- Bell Curve (light-themed, jade accent) ---
@@ -175,98 +175,126 @@ const MEMBERSHIP = {
 // index and a single combined functional pattern from the 2×2 matrix.
 type DampnessBucket = "optimal" | "mild" | "moderate" | "significant";
 type StasisBucket = "optimal" | "mild" | "moderate" | "significant";
-type MatrixPattern = "balanced" | "metabolic" | "stasis" | "combined";
+type MatrixPattern = "balanced" | "metabolic" | "stasis" | "combined" | "cognitive_priority";
 
+// Colors are tuned to feel like escalating urgency: Mild already reads amber
+// (you're drifting), Moderate is red (you need to act), Significant is deep
+// red (active intervention). Optimal stays green. Edit dotColor to retune.
 const DAMPNESS_BUCKETS: Record<
   DampnessBucket,
-  { label: string; range: string; interpretation: string; dotColor: string }
+  { label: string; range: string; interpretation: string; dotColor: string; softBg: string }
 > = {
   optimal: {
     label: "Optimal Functional State",
     range: "1–3",
     interpretation: "Good mental clarity, efficient energy regulation, healthy recovery.",
     dotColor: "#34D399",
+    softBg: "rgba(52,211,153,0.10)",
   },
   mild: {
     label: "Mild Functional Imbalance",
     range: "4–6",
     interpretation: "Occasional fatigue, intermittent brain fog, inconsistent recovery.",
-    dotColor: "#7AB5A7",
+    dotColor: "#E89671",
+    softBg: "rgba(232,150,113,0.14)",
   },
   moderate: {
     label: "Moderate Functional Burden",
     range: "7–8",
     interpretation: "Persistent heaviness, reduced cognitive sharpness, poor metabolic resilience.",
-    dotColor: "#E89671",
+    dotColor: "#D9534F",
+    softBg: "rgba(217,83,79,0.14)",
   },
   significant: {
     label: "Significant Functional Dysregulation",
     range: "9–10",
     interpretation: "Marked fatigue and cognitive dullness, chronic strain, reduced adaptive capacity.",
-    dotColor: "#EF4444",
+    dotColor: "#B91C1C",
+    softBg: "rgba(185,28,28,0.14)",
   },
 };
 
 const STASIS_BUCKETS: Record<
   StasisBucket,
-  { label: string; range: string; interpretation: string; dotColor: string }
+  { label: string; range: string; interpretation: string; dotColor: string; softBg: string }
 > = {
   optimal: {
     label: "Healthy Circulatory Function",
     range: "1–3",
     interpretation: "Efficient recovery, healthy circulation, stable cognitive endurance.",
     dotColor: "#34D399",
+    softBg: "rgba(52,211,153,0.10)",
   },
   mild: {
     label: "Mild Circulatory Strain",
     range: "4–6",
     interpretation: "Occasional tension, stress-related headaches, intermittent sleep disruption.",
-    dotColor: "#7AB5A7",
+    dotColor: "#E89671",
+    softBg: "rgba(232,150,113,0.14)",
   },
   moderate: {
     label: "Moderate Functional Restriction",
     range: "7–8",
     interpretation: "Persistent muscular tension, cognitive fatigue, reduced recovery efficiency.",
-    dotColor: "#E89671",
+    dotColor: "#D9534F",
+    softBg: "rgba(217,83,79,0.14)",
   },
   significant: {
     label: "Significant Functional Burden",
     range: "9–10",
     interpretation: "Chronic tension and fatigue, impaired recovery, elevated vascular risk profile.",
-    dotColor: "#EF4444",
+    dotColor: "#B91C1C",
+    softBg: "rgba(185,28,28,0.14)",
   },
 };
 
+// Patterns are read in priority order: cognitive_priority overrides the 2×2
+// whenever processing speed comes back WEAK (cognitive performance is the
+// headline of this report, so a WEAK cognitive score cannot quietly hide
+// behind balanced TCM readings). Otherwise the dampness × blood stasis cut
+// produces one of four named patterns.
 const MATRIX_CELLS: Record<
   MatrixPattern,
-  { title: string; oneLiner: string; whatThisMeans: string }
+  { title: string; oneLiner: string; whatThisMeans: string; tone: "alarm" | "warning" | "neutral" }
 > = {
-  balanced: {
-    title: "Good cognitive resilience and recovery",
-    oneLiner: "Your dampness and circulation patterns are both in a workable range today.",
+  cognitive_priority: {
+    title: "Cognitive performance is the priority today",
+    oneLiner:
+      "Your processing speed scored in the low percentile band — that signal takes precedence over your TCM indices.",
     whatThisMeans:
-      "Maintain the lifestyle anchors below — sleep, movement, stress regulation — and re-screen in 3 months to track drift.",
+      "Cognition responds to sleep, circulation, metabolic load and stress regulation — exactly the levers below. Start with the recommendations, retest in 4–6 weeks, and book a TCM consultation to identify the underlying driver.",
+    tone: "alarm",
+  },
+  balanced: {
+    title: "Balanced functional patterns today",
+    oneLiner: "Your dampness and circulation indices are both in a workable range right now.",
+    whatThisMeans:
+      "Use this as a baseline. Maintain the lifestyle anchors below — sleep, movement, stress regulation — and re-screen in 3 months to track drift. Most people lose ground without a system.",
+    tone: "neutral",
   },
   metabolic: {
     title: "Metabolic fatigue dominant pattern",
     oneLiner:
-      "Elevated dampness suggests metabolic/inflammatory burden weighing on mental clarity and energy.",
+      "Elevated dampness suggests metabolic / inflammatory burden weighing on mental clarity and energy.",
     whatThisMeans:
-      "Focus first on the dampness lifestyle levers (nutrition, post-meal walking, sleep efficiency). TCM support like acupuncture and constitution regulation can accelerate.",
+      "Focus first on the dampness lifestyle levers (nutrition, post-meal walking, sleep efficiency). TCM support like acupuncture and constitution regulation can accelerate. Left unaddressed this pattern compounds.",
+    tone: "warning",
   },
   stasis: {
     title: "Stress-circulatory dominant pattern",
     oneLiner:
-      "Elevated blood stasis suggests reduced circulation efficiency and tension patterns affecting recovery.",
+      "Elevated blood stasis suggests reduced circulation efficiency and tension patterns are eroding recovery.",
     whatThisMeans:
-      "Prioritise movement breaks, posture work, and stress regulation. Tuina and circulation-focused TCM strategies pair well.",
+      "Prioritise movement breaks, posture work, and stress regulation. Tuina and circulation-focused TCM strategies pair well. Vascular risk accumulates silently — act before symptoms force you to.",
+    tone: "warning",
   },
   combined: {
     title: "Combined metabolic and circulatory burden affecting cognitive performance",
     oneLiner:
       "Both dampness and stasis sit at the high end — compounded effect on cognitive performance and recovery.",
     whatThisMeans:
-      "Address both axes in parallel. A multi-disciplinary screening + TCM consultation is the highest-leverage next step.",
+      "Address both axes in parallel. A multi-disciplinary screening + TCM consultation is the highest-leverage next step. This pattern is the most predictive of long-term cognitive decline if left unmanaged.",
+    tone: "alarm",
   },
 };
 
@@ -336,10 +364,15 @@ function stasisBucket(score: number): StasisBucket {
   return "significant";
 }
 
-// 6+ on either index counts as the "high" side of the 2×2 matrix; both <6 lands
-// in the balanced cell. Picked over a 5th "moderate" cell because mid-range
-// sliders are common and a 5-state matrix is hard to read at a glance.
-function matrixPattern(d: number, b: number): MatrixPattern {
+// Cognitive Low (WEAK) overrides the 2×2 regardless of TCM scores — a weak
+// processing-speed result can't quietly sit behind balanced TCM. Otherwise
+// 6+ on either index counts as the "high" side; both <6 lands in balanced.
+function matrixPattern(
+  d: number,
+  b: number,
+  cognitiveSeverity: Severity,
+): MatrixPattern {
+  if (cognitiveSeverity === "Low") return "cognitive_priority";
   const dHigh = d >= 6;
   const bHigh = b >= 6;
   if (!dHigh && !bHigh) return "balanced";
@@ -807,22 +840,22 @@ export default function TcmBrainReportPage() {
                           {severity.label}
                         </div>
                       </div>
-                      <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: dampInfo.dotColor, backgroundColor: "#F5F9F3" }}>
+                      <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: dampInfo.dotColor, backgroundColor: dampInfo.softBg }}>
                         <div className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">Dampness</div>
                         <div className="mt-1 text-[20px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
                           {dampness}<span className="text-[12px] font-semibold text-[#6B7280] align-baseline">/10</span>
                         </div>
-                        <div className="mt-1 inline-flex items-center gap-1.5 text-[11px] font-semibold leading-tight" style={{ color: dampInfo.dotColor }}>
+                        <div className="mt-1 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider leading-tight" style={{ color: dampInfo.dotColor }}>
                           <span className="inline-block size-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: dampInfo.dotColor }} />
                           <span className="text-left">{dampInfo.label}</span>
                         </div>
                       </div>
-                      <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: stasisInfo.dotColor, backgroundColor: "#F5F9F3" }}>
+                      <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: stasisInfo.dotColor, backgroundColor: stasisInfo.softBg }}>
                         <div className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">Blood Stasis</div>
                         <div className="mt-1 text-[20px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
                           {bloodStasis}<span className="text-[12px] font-semibold text-[#6B7280] align-baseline">/10</span>
                         </div>
-                        <div className="mt-1 inline-flex items-center gap-1.5 text-[11px] font-semibold leading-tight" style={{ color: stasisInfo.dotColor }}>
+                        <div className="mt-1 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider leading-tight" style={{ color: stasisInfo.dotColor }}>
                           <span className="inline-block size-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: stasisInfo.dotColor }} />
                           <span className="text-left">{stasisInfo.label}</span>
                         </div>
@@ -832,13 +865,21 @@ export default function TcmBrainReportPage() {
                 })()}
               </div>
 
-              {/* Matrix pattern hero card */}
+              {/* Matrix pattern hero card. Tone drives the surface color:
+                  alarm → red, warning → amber, neutral → cream. Cognitive
+                  Low always lands in cognitive_priority (alarm). */}
               {(() => {
-                const cell = MATRIX_CELLS[matrixPattern(dampness, bloodStasis)];
+                const cell = MATRIX_CELLS[matrixPattern(dampness, bloodStasis, report.severity)];
+                const toneStyle: Record<typeof cell.tone, { bg: string; border: string; eyebrow: string }> = {
+                  alarm:   { bg: "rgba(185,28,28,0.06)",   border: "#B91C1C", eyebrow: "#B91C1C" },
+                  warning: { bg: "rgba(232,150,113,0.10)", border: "#E89671", eyebrow: "#A07040" },
+                  neutral: { bg: "#F5F9F3",                border: "#B8D2C7", eyebrow: "#5A9582" },
+                };
+                const t = toneStyle[cell.tone];
                 return (
-                  <div className="mt-5 rounded-xl px-5 py-5" style={{ backgroundColor: "#F5F9F3", border: "1px solid #B8D2C7" }}>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5A9582]">
-                      Combined functional pattern
+                  <div className="mt-5 rounded-xl px-5 py-5" style={{ backgroundColor: t.bg, border: `1px solid ${t.border}` }}>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: t.eyebrow }}>
+                      {cell.tone === "alarm" ? "⚠ Priority pattern" : "Combined functional pattern"}
                     </p>
                     <h4
                       className="mt-1 text-[18px] sm:text-[20px] font-bold leading-snug text-[#1F362D]"
