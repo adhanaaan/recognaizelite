@@ -6,6 +6,7 @@ import { useResultStore } from "src/stores/useResultStore";
 import { clearHookClinic, clearAssessmentMode } from "src/utils/assessment";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
+import { CLINICAL_DISCLAIMER } from "src/utils/disclaimers";
 
 type SeverityVisual = {
   label: "WEAK" | "ADEQUATE" | "STRONG";
@@ -617,8 +618,8 @@ export default function HookIkigaiReportPage() {
                 </div>
               </div>
 
-              <p className="mt-4 text-[11px] leading-normal text-gray-600">
-                This screening is not a diagnostic tool. Results are for informational purposes only and should be discussed with a healthcare professional.
+              <p className="mt-4 text-[11px] italic leading-normal text-gray-600">
+                {CLINICAL_DISCLAIMER}
               </p>
             </section>
           </>

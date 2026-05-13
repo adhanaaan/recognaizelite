@@ -6,6 +6,7 @@ import { useResultStore } from "src/stores/useResultStore";
 import { clearHookClinic, clearAssessmentMode } from "src/utils/assessment";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
+import { CLINICAL_DISCLAIMER } from "src/utils/disclaimers";
 
 type SeverityVisual = {
   label: "WEAK" | "ADEQUATE" | "STRONG";
@@ -248,55 +249,95 @@ const STASIS_BUCKETS: Record<
   },
 };
 
-// Patterns are read in priority order: cognitive_priority overrides the 2×2
-// whenever processing speed comes back WEAK (cognitive performance is the
-// headline of this report, so a WEAK cognitive score cannot quietly hide
-// behind balanced TCM readings). Otherwise the dampness × blood stasis cut
-// produces one of four named patterns.
-const MATRIX_CELLS: Record<
-  MatrixPattern,
-  { title: string; oneLiner: string; whatThisMeans: string; tone: "alarm" | "warning" | "neutral" }
-> = {
-  cognitive_priority: {
-    title: "Cognitive performance is the priority today",
-    oneLiner:
-      "Your processing speed scored in the low percentile band — that signal takes precedence over your TCM indices.",
-    whatThisMeans:
-      "Cognition responds to sleep, circulation, metabolic load and stress regulation — exactly the levers below. Start with the recommendations, retest in 4–6 weeks, and book a TCM consultation to identify the underlying driver.",
-    tone: "alarm",
-  },
-  balanced: {
-    title: "Balanced functional patterns today",
-    oneLiner: "Your dampness and circulation indices are both in a workable range right now.",
-    whatThisMeans:
-      "Use this as a baseline. Maintain the lifestyle anchors below — sleep, movement, stress regulation — and re-screen in 3 months to track drift. Most people lose ground without a system.",
-    tone: "neutral",
-  },
-  metabolic: {
-    title: "Metabolic fatigue dominant pattern",
-    oneLiner:
-      "Elevated dampness suggests metabolic / inflammatory burden weighing on mental clarity and energy.",
-    whatThisMeans:
-      "Focus first on the dampness lifestyle levers (nutrition, post-meal walking, sleep efficiency). TCM support like acupuncture and constitution regulation can accelerate. Left unaddressed this pattern compounds.",
-    tone: "warning",
-  },
-  stasis: {
-    title: "Stress-circulatory dominant pattern",
-    oneLiner:
-      "Elevated blood stasis suggests reduced circulation efficiency and tension patterns are eroding recovery.",
-    whatThisMeans:
-      "Prioritise movement breaks, posture work, and stress regulation. Tuina and circulation-focused TCM strategies pair well. Vascular risk accumulates silently — act before symptoms force you to.",
-    tone: "warning",
-  },
-  combined: {
-    title: "Combined metabolic and circulatory burden affecting cognitive performance",
-    oneLiner:
-      "Both dampness and stasis sit at the high end — compounded effect on cognitive performance and recovery.",
-    whatThisMeans:
-      "Address both axes in parallel. A multi-disciplinary screening + TCM consultation is the highest-leverage next step. This pattern is the most predictive of long-term cognitive decline if left unmanaged.",
-    tone: "alarm",
-  },
+// Fused-narrative builder. Replaces the previous static MATRIX_CELLS lookup
+// so every rendered paragraph names all three signals (cognitive percentile,
+// dampness, blood stasis) and ties them together with one through-line.
+// The pattern picked by matrixPattern() drives the headline + tone + focus;
+// the body weaves in the actual values so the visitor sees fusion, not three
+// independent reports stapled together.
+type ReportTone = "alarm" | "warning" | "neutral";
+type FusedNarrative = {
+  eyebrow: string;
+  title: string;
+  body: string;
+  whatThisMeans: string;
+  tone: ReportTone;
 };
+
+function buildFusedNarrative(args: {
+  cognitiveSeverity: Severity;
+  cognitivePercentile: number;
+  dampness: number;
+  bloodStasis: number;
+}): FusedNarrative {
+  const { cognitiveSeverity, cognitivePercentile, dampness, bloodStasis } = args;
+  const cogLabel = severityVisuals[cognitiveSeverity].label;
+  const dBucket = dampnessBucket(dampness);
+  const sBucket = stasisBucket(bloodStasis);
+  const dBucketLabel = DAMPNESS_BUCKETS[dBucket].label.toLowerCase();
+  const sBucketLabel = STASIS_BUCKETS[sBucket].label.toLowerCase();
+  const pattern = matrixPattern(dampness, bloodStasis, cognitiveSeverity);
+
+  switch (pattern) {
+    case "cognitive_priority": {
+      const tcmDescriptor =
+        dBucket === "optimal" && sBucket === "optimal"
+          ? `your dampness (${dampness}/10) and blood stasis (${bloodStasis}/10) are both in healthy range — protective, but not enough on their own to mask the cognitive signal`
+          : dBucket !== "optimal" && sBucket !== "optimal"
+            ? `your dampness (${dampness}/10, ${dBucketLabel}) and blood stasis (${bloodStasis}/10, ${sBucketLabel}) are both adding load — they're amplifying the cognitive drop, not insulating against it`
+            : dBucket !== "optimal"
+              ? `your dampness (${dampness}/10, ${dBucketLabel}) is contributing — metabolic burden often surfaces as brain fog first`
+              : `your blood stasis (${bloodStasis}/10, ${sBucketLabel}) is contributing — reduced circulation often surfaces as cognitive sluggishness first`;
+      return {
+        eyebrow: "⚠ PRIORITY PATTERN",
+        title: "Cognitive performance is the priority today",
+        body: `Your processing speed scored at ${cognitivePercentile}%ile — the WEAK band of the population norm, and the loudest signal in this screening. Meanwhile, ${tcmDescriptor}.`,
+        whatThisMeans:
+          "Cognition responds to sleep, circulation, metabolic load and stress regulation — exactly the levers below. Start with the recommendations, retest in 4–6 weeks, and book a TCM consultation to identify the underlying driver.",
+        tone: "alarm",
+      };
+    }
+    case "combined":
+      return {
+        eyebrow: "⚠ PRIORITY PATTERN",
+        title: "Combined metabolic and circulatory burden",
+        body: `Cognition holds at ${cognitivePercentile}%ile (${cogLabel}) today, but your dampness (${dampness}/10, ${dBucketLabel}) and blood stasis (${bloodStasis}/10, ${sBucketLabel}) both sit at the high end. These two patterns compound — they're not independent — and they're the same upstream drivers that erode cognitive performance over time.`,
+        whatThisMeans:
+          "Address both axes in parallel. A multi-disciplinary screening + TCM consultation is the highest-leverage next step. This pattern is the most predictive of long-term cognitive decline if left unmanaged.",
+        tone: "alarm",
+      };
+    case "metabolic":
+      return {
+        eyebrow: "FUSED PATTERN",
+        title: "Metabolic fatigue dominant pattern",
+        body: `Cognition holds at ${cognitivePercentile}%ile (${cogLabel}) today and blood stasis (${bloodStasis}/10, ${sBucketLabel}) is the protective side — but elevated dampness (${dampness}/10, ${dBucketLabel}) is the lead signal: metabolic and inflammatory burden weighing on your engine. Leave it long enough and cognition follows.`,
+        whatThisMeans:
+          "Focus first on the dampness lifestyle levers (nutrition, post-meal walking, sleep efficiency). TCM support like acupuncture and constitution regulation can accelerate. Left unaddressed this pattern compounds.",
+        tone: "warning",
+      };
+    case "stasis":
+      return {
+        eyebrow: "FUSED PATTERN",
+        title: "Stress-circulatory dominant pattern",
+        body: `Cognition holds at ${cognitivePercentile}%ile (${cogLabel}) today and dampness (${dampness}/10, ${dBucketLabel}) is the protective side — but elevated blood stasis (${bloodStasis}/10, ${sBucketLabel}) is the lead signal: circulation and tension patterns are eroding recovery. Reduced circulation is also a precursor to slower processing speed.`,
+        whatThisMeans:
+          "Prioritise movement breaks, posture work, and stress regulation. Tuina and circulation-focused TCM strategies pair well. Vascular risk accumulates silently — act before symptoms force you to.",
+        tone: "warning",
+      };
+    case "balanced":
+      return {
+        eyebrow: "FUSED PATTERN",
+        title:
+          cognitiveSeverity === "High"
+            ? "Three signals working with you today"
+            : "Balanced functional patterns today",
+        body: `Cognition at ${cognitivePercentile}%ile (${cogLabel}), dampness ${dampness}/10 (${dBucketLabel}), blood stasis ${bloodStasis}/10 (${sBucketLabel}). All three signals sit in a workable range right now — that's not the population default, and it doesn't stay that way without effort.`,
+        whatThisMeans:
+          "Use this as a baseline. Maintain the lifestyle anchors below — sleep, movement, stress regulation — and re-screen in 3 months to track drift. Most people lose ground without a system.",
+        tone: "neutral",
+      };
+  }
+}
 
 const RECOMMENDATIONS = {
   dampness: {
@@ -346,9 +387,6 @@ const RECOMMENDATIONS = {
     ],
   },
 } as const;
-
-const CLINICAL_DISCLAIMER =
-  "This report is intended for wellness screening and educational purposes only. It does not diagnose medical disease or replace professional medical evaluation. Findings should be interpreted together with clinical consultation, lifestyle assessment, and where appropriate, biomedical evaluation.";
 
 function dampnessBucket(score: number): DampnessBucket {
   if (score <= 3) return "optimal";
@@ -865,34 +903,40 @@ export default function TcmBrainReportPage() {
                 })()}
               </div>
 
-              {/* Matrix pattern hero card. Tone drives the surface color:
-                  alarm → red, warning → amber, neutral → cream. Cognitive
-                  Low always lands in cognitive_priority (alarm). */}
+              {/* Fused matrix narrative. Weaves cognitive percentile +
+                  dampness + blood stasis into a single paragraph. Tone
+                  drives surface color: alarm → red, warning → amber,
+                  neutral → cream. See buildFusedNarrative() for copy. */}
               {(() => {
-                const cell = MATRIX_CELLS[matrixPattern(dampness, bloodStasis, report.severity)];
-                const toneStyle: Record<typeof cell.tone, { bg: string; border: string; eyebrow: string }> = {
+                const narrative = buildFusedNarrative({
+                  cognitiveSeverity: report.severity,
+                  cognitivePercentile: Math.round(report.percentile),
+                  dampness,
+                  bloodStasis,
+                });
+                const toneStyle: Record<ReportTone, { bg: string; border: string; eyebrow: string }> = {
                   alarm:   { bg: "rgba(185,28,28,0.06)",   border: "#B91C1C", eyebrow: "#B91C1C" },
                   warning: { bg: "rgba(232,150,113,0.10)", border: "#E89671", eyebrow: "#A07040" },
                   neutral: { bg: "#F5F9F3",                border: "#B8D2C7", eyebrow: "#5A9582" },
                 };
-                const t = toneStyle[cell.tone];
+                const t = toneStyle[narrative.tone];
                 return (
                   <div className="mt-5 rounded-xl px-5 py-5" style={{ backgroundColor: t.bg, border: `1px solid ${t.border}` }}>
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: t.eyebrow }}>
-                      {cell.tone === "alarm" ? "⚠ Priority pattern" : "Combined functional pattern"}
+                      {narrative.eyebrow}
                     </p>
                     <h4
                       className="mt-1 text-[18px] sm:text-[20px] font-bold leading-snug text-[#1F362D]"
                       style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
                     >
-                      {cell.title}
+                      {narrative.title}
                     </h4>
                     <p className="mt-2 text-[13.5px] leading-relaxed text-[#374151]">
-                      {cell.oneLiner}
+                      {narrative.body}
                     </p>
                     <p className="mt-3 text-[12.5px] leading-relaxed text-[#6B7280]">
                       <span className="font-semibold text-[#1F362D]">What this means for you:</span>{" "}
-                      {cell.whatThisMeans}
+                      {narrative.whatThisMeans}
                     </p>
                   </div>
                 );
@@ -980,10 +1024,6 @@ export default function TcmBrainReportPage() {
                   </div>
                 );
               })()}
-
-              <p className="mt-5 text-[11px] italic leading-normal text-[#9CA3AF]">
-                {CLINICAL_DISCLAIMER}
-              </p>
             </section>
 
             {/* Booth-conversion offer card. Forest header → white Lite pricing
@@ -1191,8 +1231,8 @@ export default function TcmBrainReportPage() {
               </button>
             </section>
 
-            <p className="text-[11px] leading-normal text-[#9CA3AF] text-center px-2">
-              This screening is not a diagnostic tool. Discuss results with your TCM practitioner or healthcare professional alongside your full constitutional reading.
+            <p className="text-[11px] italic leading-normal text-[#9CA3AF] text-center px-2">
+              {CLINICAL_DISCLAIMER}
             </p>
           </>
         )}
