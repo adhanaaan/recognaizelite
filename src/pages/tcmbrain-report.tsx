@@ -106,27 +106,6 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
   );
 }
 
-const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
-  Low: {
-    headline: "You’ve only seen 25% of the picture.",
-    body: "Your processing speed flagged a concern today — but speed is one piece of cognition, and cognition is one piece of your constitution. The full screening adds memory, attention, and executive function — completing the cognitive side of your mind-body picture.",
-  },
-  Medium: {
-    headline: "You’ve only seen 25% of the picture.",
-    body: "Your processing speed looks adequate today. That’s one piece of cognition, and cognition is one piece of your constitution. The full screening reveals how memory, attention, and decision-making are holding up — the rest of the cognitive picture.",
-  },
-  High: {
-    headline: "You’ve only seen 25% of the picture.",
-    body: "Your processing speed is strong today. That’s one piece of cognition, and cognition is one piece of your constitution. The full screening rounds out the picture: memory, attention, and decision-making — to see if your edge is balanced or one-sided.",
-  },
-};
-
-const LOCKED_AREAS = [
-  { name: "Memory", skill: "Recall & retention under pressure" },
-  { name: "Attention", skill: "Sustained focus & multitasking" },
-  { name: "Executive Function", skill: "Decision-making & planning" },
-];
-
 const LEAD_EMAIL_KEY = "recognaize-lead-email";
 const SHARE_URL = "https://recognaizelite.vercel.app/tcmbrain";
 
@@ -146,13 +125,25 @@ const MEMBERSHIP = {
     tagline: "LIFETIME MEMBERSHIP",
     price: "$12",
     priceUnit: "one-time payment",
-    perks: [
-      "12× Blood Pressure tracking (Year 1)",
-      "12× Body Composition tracking (Year 1)",
-      "12× AI-Generated Personal Health Report",
-      "Member pricing on products & services",
-      "Members-exclusive event invites",
+    // Perks paired with first-draft dollar anchors so the $12 reads as the
+    // no-brainer. Numbers are honest sums (BP & body comp visits priced at
+    // typical AI Wellness non-member rates; reports + member pricing + invites
+    // valued conservatively). Edit here, total updates manually below.
+    perksValued: [
+      { perk: "12× Blood Pressure tracking (Year 1)",    valued: "$96"  },
+      { perk: "12× Body Composition tracking (Year 1)",  valued: "$120" },
+      { perk: "12× AI-Generated Personal Health Report", valued: "$180" },
+      { perk: "Member pricing on products & services",   valued: "$80+" },
+      { perk: "Members-exclusive event invites",         valued: "$60+" },
     ],
+    totalValueLine: {
+      lhs: "Total value",
+      lhsAmount: "$536+",
+      rhsLabel: "Today, one-time",
+      rhsAmount: "$12 lifetime",
+    },
+    // Booth-only urgency. Edit copy or delete the line entirely after the event.
+    boothUrgency: "Booth-only offer. After this event, Lite returns to $99.",
     paynow: {
       // PayNow QR for AI Wellness DBS account (UEN 202521095H). The QR
       // identifies the recipient only — visitors enter $12 themselves
@@ -177,6 +168,191 @@ const MEMBERSHIP = {
     site: "www.aiwellnessvip.com",
   },
 };
+
+// Integrated TCM Functional Index — content sourced from AI Wellness's
+// "Cognitive Brain Health Report" clinical PDF (Shantal, 2026-05-13). The
+// helpers below map the visitor's slider readings to a severity bucket per
+// index and a single combined functional pattern from the 2×2 matrix.
+type DampnessBucket = "optimal" | "mild" | "moderate" | "significant";
+type StasisBucket = "optimal" | "mild" | "moderate" | "significant";
+type MatrixPattern = "balanced" | "metabolic" | "stasis" | "combined";
+
+const DAMPNESS_BUCKETS: Record<
+  DampnessBucket,
+  { label: string; range: string; interpretation: string; dotColor: string }
+> = {
+  optimal: {
+    label: "Optimal Functional State",
+    range: "1–3",
+    interpretation: "Good mental clarity, efficient energy regulation, healthy recovery.",
+    dotColor: "#34D399",
+  },
+  mild: {
+    label: "Mild Functional Imbalance",
+    range: "4–6",
+    interpretation: "Occasional fatigue, intermittent brain fog, inconsistent recovery.",
+    dotColor: "#7AB5A7",
+  },
+  moderate: {
+    label: "Moderate Functional Burden",
+    range: "7–8",
+    interpretation: "Persistent heaviness, reduced cognitive sharpness, poor metabolic resilience.",
+    dotColor: "#E89671",
+  },
+  significant: {
+    label: "Significant Functional Dysregulation",
+    range: "9–10",
+    interpretation: "Marked fatigue and cognitive dullness, chronic strain, reduced adaptive capacity.",
+    dotColor: "#EF4444",
+  },
+};
+
+const STASIS_BUCKETS: Record<
+  StasisBucket,
+  { label: string; range: string; interpretation: string; dotColor: string }
+> = {
+  optimal: {
+    label: "Healthy Circulatory Function",
+    range: "1–3",
+    interpretation: "Efficient recovery, healthy circulation, stable cognitive endurance.",
+    dotColor: "#34D399",
+  },
+  mild: {
+    label: "Mild Circulatory Strain",
+    range: "4–6",
+    interpretation: "Occasional tension, stress-related headaches, intermittent sleep disruption.",
+    dotColor: "#7AB5A7",
+  },
+  moderate: {
+    label: "Moderate Functional Restriction",
+    range: "7–8",
+    interpretation: "Persistent muscular tension, cognitive fatigue, reduced recovery efficiency.",
+    dotColor: "#E89671",
+  },
+  significant: {
+    label: "Significant Functional Burden",
+    range: "9–10",
+    interpretation: "Chronic tension and fatigue, impaired recovery, elevated vascular risk profile.",
+    dotColor: "#EF4444",
+  },
+};
+
+const MATRIX_CELLS: Record<
+  MatrixPattern,
+  { title: string; oneLiner: string; whatThisMeans: string }
+> = {
+  balanced: {
+    title: "Good cognitive resilience and recovery",
+    oneLiner: "Your dampness and circulation patterns are both in a workable range today.",
+    whatThisMeans:
+      "Maintain the lifestyle anchors below — sleep, movement, stress regulation — and re-screen in 3 months to track drift.",
+  },
+  metabolic: {
+    title: "Metabolic fatigue dominant pattern",
+    oneLiner:
+      "Elevated dampness suggests metabolic/inflammatory burden weighing on mental clarity and energy.",
+    whatThisMeans:
+      "Focus first on the dampness lifestyle levers (nutrition, post-meal walking, sleep efficiency). TCM support like acupuncture and constitution regulation can accelerate.",
+  },
+  stasis: {
+    title: "Stress-circulatory dominant pattern",
+    oneLiner:
+      "Elevated blood stasis suggests reduced circulation efficiency and tension patterns affecting recovery.",
+    whatThisMeans:
+      "Prioritise movement breaks, posture work, and stress regulation. Tuina and circulation-focused TCM strategies pair well.",
+  },
+  combined: {
+    title: "Combined metabolic and circulatory burden affecting cognitive performance",
+    oneLiner:
+      "Both dampness and stasis sit at the high end — compounded effect on cognitive performance and recovery.",
+    whatThisMeans:
+      "Address both axes in parallel. A multi-disciplinary screening + TCM consultation is the highest-leverage next step.",
+  },
+};
+
+const RECOMMENDATIONS = {
+  dampness: {
+    nutrition: [
+      "Lower ultra-processed food intake",
+      "Reduce excessive refined sugars",
+      "Improve protein and fibre intake",
+      "Stabilize post-prandial glucose",
+    ],
+    activity: [
+      "Resistance training",
+      "Post-meal walking",
+      "Aerobic conditioning",
+      "≥150 minutes weekly moderate activity",
+    ],
+    sleep: [
+      "Regular sleep timing",
+      "Improve sleep efficiency",
+      "Reduce nighttime overstimulation",
+    ],
+    tcm: ["Acupuncture", "Body constitution regulation", "Herbal therapy", "Moxibustion"],
+  },
+  stasis: {
+    movement: [
+      "Regular movement breaks",
+      "Posture correction",
+      "Aerobic exercise",
+      "Mobility and stretching",
+    ],
+    stress: [
+      "Breathing exercises",
+      "Mindfulness practices",
+      "Restorative sleep strategies",
+      "Parasympathetic activation",
+    ],
+    brain: [
+      "Cognitive engagement",
+      "Social interaction",
+      "Adequate hydration",
+      "Cardiovascular conditioning",
+    ],
+    tcm: [
+      "Acupuncture",
+      "Tuina / manual therapy",
+      "Circulation-focused herbal strategies",
+      "Meridian therapy",
+    ],
+  },
+} as const;
+
+const CLINICAL_DISCLAIMER =
+  "This report is intended for wellness screening and educational purposes only. It does not diagnose medical disease or replace professional medical evaluation. Findings should be interpreted together with clinical consultation, lifestyle assessment, and where appropriate, biomedical evaluation.";
+
+function dampnessBucket(score: number): DampnessBucket {
+  if (score <= 3) return "optimal";
+  if (score <= 6) return "mild";
+  if (score <= 8) return "moderate";
+  return "significant";
+}
+
+function stasisBucket(score: number): StasisBucket {
+  if (score <= 3) return "optimal";
+  if (score <= 6) return "mild";
+  if (score <= 8) return "moderate";
+  return "significant";
+}
+
+// 6+ on either index counts as the "high" side of the 2×2 matrix; both <6 lands
+// in the balanced cell. Picked over a 5th "moderate" cell because mid-range
+// sliders are common and a 5-state matrix is hard to read at a glance.
+function matrixPattern(d: number, b: number): MatrixPattern {
+  const dHigh = d >= 6;
+  const bHigh = b >= 6;
+  if (!dHigh && !bHigh) return "balanced";
+  if (dHigh && !bHigh) return "metabolic";
+  if (!dHigh && bHigh) return "stasis";
+  return "combined";
+}
+
+function dominantSide(d: number, b: number): "dampness" | "stasis" | null {
+  if (d > b) return "dampness";
+  if (b > d) return "stasis";
+  return null;
+}
 
 const AGE_OPTIONS = ["18-25", "26-35", "36-45", "46-55", "56-65", "66+"] as const;
 const GENDER_OPTIONS = [
@@ -599,48 +775,174 @@ export default function TcmBrainReportPage() {
         {/* Full report */}
         {emailSubmitted && (
           <>
+            {/* Integrated TCM Functional Index — three score badges, the 2×2
+                matrix pattern, two-column lifestyle recommendations, and the
+                clinical disclaimer. Content sourced from AI Wellness's PDF;
+                edit the const blocks at top of file to update copy. */}
             <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #B8D2C7" }}>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7AB5A7]">
+                Integrated TCM Functional Index
+              </p>
               <h3
-                className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937]"
+                className="mt-1 text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937]"
                 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
               >
-                {CTA_COPY[report.severity].headline}
+                Your Cognitive Brain Health Report
               </h3>
-              <p className="mt-4 text-[14px] leading-relaxed text-[#6B7280]">
-                {CTA_COPY[report.severity].body}
-              </p>
 
-              <div className="mt-6">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[12px] font-bold uppercase tracking-wider text-[#5A9582]">Your screening progress</span>
-                  <span className="text-[13px] font-bold" style={{ color: "#7AB5A7" }}>1 of 4</span>
-                </div>
-                <div className="h-1.5 rounded-full bg-[#DCEAD7] overflow-hidden">
-                  <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#7AB5A7" }} />
-                </div>
+              {/* Three score badges */}
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {(() => {
+                  const dampInfo = DAMPNESS_BUCKETS[dampnessBucket(dampness)];
+                  const stasisInfo = STASIS_BUCKETS[stasisBucket(bloodStasis)];
+                  return (
+                    <>
+                      <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">Cognitive</div>
+                        <div className="mt-1 text-[20px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                          {Math.round(report.percentile)}<span className="text-[12px] font-semibold text-[#6B7280] align-baseline">%ile</span>
+                        </div>
+                        <div className="mt-1 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
+                          <span className="inline-block size-1.5 rounded-full" style={{ backgroundColor: severity.color }} />
+                          {severity.label}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: dampInfo.dotColor, backgroundColor: "#F5F9F3" }}>
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">Dampness</div>
+                        <div className="mt-1 text-[20px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                          {dampness}<span className="text-[12px] font-semibold text-[#6B7280] align-baseline">/10</span>
+                        </div>
+                        <div className="mt-1 inline-flex items-center gap-1.5 text-[11px] font-semibold leading-tight" style={{ color: dampInfo.dotColor }}>
+                          <span className="inline-block size-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: dampInfo.dotColor }} />
+                          <span className="text-left">{dampInfo.label}</span>
+                        </div>
+                      </div>
+                      <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: stasisInfo.dotColor, backgroundColor: "#F5F9F3" }}>
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">Blood Stasis</div>
+                        <div className="mt-1 text-[20px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                          {bloodStasis}<span className="text-[12px] font-semibold text-[#6B7280] align-baseline">/10</span>
+                        </div>
+                        <div className="mt-1 inline-flex items-center gap-1.5 text-[11px] font-semibold leading-tight" style={{ color: stasisInfo.dotColor }}>
+                          <span className="inline-block size-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: stasisInfo.dotColor }} />
+                          <span className="text-left">{stasisInfo.label}</span>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
 
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
-                  <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
-                    &#10003; Complete
+              {/* Matrix pattern hero card */}
+              {(() => {
+                const cell = MATRIX_CELLS[matrixPattern(dampness, bloodStasis)];
+                return (
+                  <div className="mt-5 rounded-xl px-5 py-5" style={{ backgroundColor: "#F5F9F3", border: "1px solid #B8D2C7" }}>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#5A9582]">
+                      Combined functional pattern
+                    </p>
+                    <h4
+                      className="mt-1 text-[18px] sm:text-[20px] font-bold leading-snug text-[#1F362D]"
+                      style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                    >
+                      {cell.title}
+                    </h4>
+                    <p className="mt-2 text-[13.5px] leading-relaxed text-[#374151]">
+                      {cell.oneLiner}
+                    </p>
+                    <p className="mt-3 text-[12.5px] leading-relaxed text-[#6B7280]">
+                      <span className="font-semibold text-[#1F362D]">What this means for you:</span>{" "}
+                      {cell.whatThisMeans}
+                    </p>
                   </div>
-                  <div className="mt-1 text-[14px] font-bold text-[#1F2937]">Processing Speed</div>
-                  <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
-                </div>
-                {LOCKED_AREAS.map((area) => (
-                  <div key={area.name} className="rounded-xl border border-[#B8D2C7] bg-[#F5F9F3] px-4 py-4 text-center relative overflow-hidden">
-                    <div className="text-[#B4C9B0]">
-                      <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <rect x="3" y="11" width="18" height="11" rx="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
+                );
+              })()}
+
+              {/* Two-column recommendations. Dominant side (higher slider value)
+                  gets a thicker sage border + ★ Priority focus pill. */}
+              {(() => {
+                const dom = dominantSide(dampness, bloodStasis);
+                const columnClass = (isDom: boolean) =>
+                  `rounded-xl px-4 py-4 bg-white ${isDom ? "border-2" : "border"}`;
+                const columnStyle = (isDom: boolean) => ({
+                  borderColor: isDom ? "#7AB5A7" : "#B8D2C7",
+                });
+                return (
+                  <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className={columnClass(dom === "dampness")} style={columnStyle(dom === "dampness")}>
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <h5 className="text-[13px] font-bold text-[#1F362D]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                          Dampness — Lifestyle Levers
+                        </h5>
+                        {dom === "dampness" && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider rounded-full px-2 py-0.5" style={{ backgroundColor: "rgba(122,181,167,0.18)", color: "#388E6B" }}>
+                            ★ Priority focus
+                          </span>
+                        )}
+                      </div>
+                      {[
+                        { heading: "Nutrition", items: RECOMMENDATIONS.dampness.nutrition },
+                        { heading: "Physical Activity", items: RECOMMENDATIONS.dampness.activity },
+                        { heading: "Sleep & Recovery", items: RECOMMENDATIONS.dampness.sleep },
+                        { heading: "TCM Support", items: RECOMMENDATIONS.dampness.tcm },
+                      ].map((group) => (
+                        <div key={group.heading} className="mt-2">
+                          <p className="text-[11px] font-bold uppercase tracking-wider text-[#5A9582]">{group.heading}</p>
+                          <ul className="mt-1 space-y-1">
+                            {group.items.map((item) => (
+                              <li key={item} className="flex items-start gap-2 text-[12.5px] text-[#374151]">
+                                <span className="flex-shrink-0 mt-0.5 inline-flex items-center justify-center size-3.5 rounded-full" style={{ backgroundColor: "rgba(122,181,167,0.18)" }}>
+                                  <svg className="size-2 text-[#388E6B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                                    <path d="M5 13l4 4L19 7" />
+                                  </svg>
+                                </span>
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
                     </div>
-                    <div className="mt-1 text-[14px] font-bold text-[#6B7280]">{area.name}</div>
-                    <div className="mt-0.5 text-[11px] text-[#9CA3AF]">{area.skill}</div>
+                    <div className={columnClass(dom === "stasis")} style={columnStyle(dom === "stasis")}>
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <h5 className="text-[13px] font-bold text-[#1F362D]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                          Blood Stasis — Lifestyle Levers
+                        </h5>
+                        {dom === "stasis" && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider rounded-full px-2 py-0.5" style={{ backgroundColor: "rgba(122,181,167,0.18)", color: "#388E6B" }}>
+                            ★ Priority focus
+                          </span>
+                        )}
+                      </div>
+                      {[
+                        { heading: "Movement", items: RECOMMENDATIONS.stasis.movement },
+                        { heading: "Stress Regulation", items: RECOMMENDATIONS.stasis.stress },
+                        { heading: "Brain Health", items: RECOMMENDATIONS.stasis.brain },
+                        { heading: "TCM Support", items: RECOMMENDATIONS.stasis.tcm },
+                      ].map((group) => (
+                        <div key={group.heading} className="mt-2">
+                          <p className="text-[11px] font-bold uppercase tracking-wider text-[#5A9582]">{group.heading}</p>
+                          <ul className="mt-1 space-y-1">
+                            {group.items.map((item) => (
+                              <li key={item} className="flex items-start gap-2 text-[12.5px] text-[#374151]">
+                                <span className="flex-shrink-0 mt-0.5 inline-flex items-center justify-center size-3.5 rounded-full" style={{ backgroundColor: "rgba(122,181,167,0.18)" }}>
+                                  <svg className="size-2 text-[#388E6B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                                    <path d="M5 13l4 4L19 7" />
+                                  </svg>
+                                </span>
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                ))}
-              </div>
+                );
+              })()}
+
+              <p className="mt-5 text-[11px] italic leading-normal text-[#9CA3AF]">
+                {CLINICAL_DISCLAIMER}
+              </p>
             </section>
 
             {/* Booth-conversion offer card. Forest header → white Lite pricing
@@ -695,31 +997,57 @@ export default function TcmBrainReportPage() {
                 </p>
 
                 <ul className="mt-5 space-y-2 max-w-sm mx-auto">
-                  {MEMBERSHIP.lite.perks.map((perk) => (
-                    <li key={perk} className="flex items-start gap-2.5 text-[13.5px] text-[#1F362D]">
-                      <span
-                        className="flex-shrink-0 mt-0.5 inline-flex items-center justify-center size-5 rounded-full"
-                        style={{ backgroundColor: "rgba(122,181,167,0.18)" }}
-                      >
-                        <svg
-                          className="size-3 text-[#388E6B]"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={3}
+                  {MEMBERSHIP.lite.perksValued.map((row) => (
+                    <li key={row.perk} className="flex items-start justify-between gap-3 text-[13.5px] text-[#1F362D]">
+                      <span className="flex items-start gap-2.5">
+                        <span
+                          className="flex-shrink-0 mt-0.5 inline-flex items-center justify-center size-5 rounded-full"
+                          style={{ backgroundColor: "rgba(122,181,167,0.18)" }}
                         >
-                          <path d="M5 13l4 4L19 7" />
-                        </svg>
+                          <svg
+                            className="size-3 text-[#388E6B]"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={3}
+                          >
+                            <path d="M5 13l4 4L19 7" />
+                          </svg>
+                        </span>
+                        <span>{row.perk}</span>
                       </span>
-                      <span>{perk}</span>
+                      <span className="flex-shrink-0 text-[12px] font-semibold whitespace-nowrap" style={{ color: "#A07040" }}>
+                        {row.valued}
+                      </span>
                     </li>
                   ))}
                 </ul>
 
+                {/* Stacked-value total: anchors the $12 against the summed
+                    perk values. Edit MEMBERSHIP.lite.totalValueLine at the
+                    top of the file to refresh both sides. */}
+                <div className="mt-3 max-w-sm mx-auto border-t border-[#E8D9C2]" />
+                <div className="mt-3 max-w-sm mx-auto flex items-baseline justify-between">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF]">{MEMBERSHIP.lite.totalValueLine.lhs}</p>
+                    <p className="text-[15px] font-bold text-[#1F362D]">{MEMBERSHIP.lite.totalValueLine.lhsAmount}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] uppercase tracking-wider text-[#7AB5A7]">{MEMBERSHIP.lite.totalValueLine.rhsLabel}</p>
+                    <p className="text-[15px] font-bold" style={{ color: "#2C4A3F" }}>{MEMBERSHIP.lite.totalValueLine.rhsAmount}</p>
+                  </div>
+                </div>
+
+                {/* Booth-only urgency. One constant; delete the line or null
+                    out MEMBERSHIP.lite.boothUrgency after the event. */}
+                <p className="mt-5 text-center text-[12px] italic font-semibold" style={{ color: "#A07040" }}>
+                  {MEMBERSHIP.lite.boothUrgency}
+                </p>
+
                 {/* PayNow QR — primary booth-floor close. Image bundles the
                     AI Wellness DBS UEN + a "PAY NOW" mark; visitor enters the
                     $12 amount in their own banking app. */}
-                <div className="mt-6 flex flex-col items-center">
+                <div className="mt-4 flex flex-col items-center">
                   <div
                     className="rounded-2xl bg-white p-3 sm:p-4"
                     style={{
