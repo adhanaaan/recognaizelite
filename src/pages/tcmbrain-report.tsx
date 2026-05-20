@@ -545,38 +545,27 @@ export default function TcmBrainReportPage() {
 
               <div className="bg-white px-5 sm:px-7 py-6">
                 <p className="text-center text-[13.5px] leading-relaxed text-[#4B5563] max-w-md mx-auto">
-                  Today you completed{" "}
-                  <span className="font-semibold text-[#1F362D]">1 of 4</span>{" "}
-                  pillars of your full health picture. The other three are unlocked by AI Wellness.
+                  Today&apos;s cognitive screening is just a sample. Inside AI Wellness VIP:
                 </p>
 
                 <ul className="mt-5 space-y-2.5 max-w-sm mx-auto">
-                  <li className="flex items-center gap-3 text-[14px]">
-                    <span
-                      className="flex-shrink-0 inline-flex items-center justify-center size-6 rounded-full"
-                      style={{ backgroundColor: "rgba(122,181,167,0.22)" }}
-                    >
-                      <svg className="size-3.5 text-[#388E6B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
-                        <path d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    <span className="text-[#1F362D] font-semibold">Cognitive Processing Speed</span>
-                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wider text-[#388E6B]">Done</span>
-                  </li>
                   {[
-                    "Monthly Blood Pressure Tracking",
-                    "Body Composition Analysis",
-                    "AI-Generated Health Report",
+                    "Full Cognitive Tests",
+                    "Longevity Wellness Programs",
+                    "Retreats Programs",
+                    "Nutrition Programs",
+                    "Asia Integrated Wellness",
                   ].map((label) => (
                     <li key={label} className="flex items-center gap-3 text-[14px]">
-                      <span className="flex-shrink-0 inline-flex items-center justify-center size-6 rounded-full bg-[#F5F9F3]">
-                        <svg className="size-3 text-[#9CA3AF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <rect x="6" y="11" width="12" height="9" rx="1.5" />
-                          <path d="M9 11V8a3 3 0 0 1 6 0v3" />
+                      <span
+                        className="flex-shrink-0 inline-flex items-center justify-center size-6 rounded-full"
+                        style={{ backgroundColor: "rgba(122,181,167,0.22)" }}
+                      >
+                        <svg className="size-3.5 text-[#388E6B]" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2l2.4 6.9L22 10l-5.5 5 1.5 7.5L12 18.7 6 22.5 7.5 15 2 10l7.6-1.1L12 2z" />
                         </svg>
                       </span>
-                      <span className="text-[#6B7280]">{label}</span>
-                      <span className="ml-auto text-[10px] uppercase tracking-wider text-[#9CA3AF]">Locked</span>
+                      <span className="text-[#1F362D] font-medium">{label}</span>
                     </li>
                   ))}
                 </ul>
