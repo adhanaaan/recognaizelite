@@ -548,24 +548,27 @@ export default function TcmBrainReportPage() {
                   Today&apos;s cognitive screening is just a sample. Inside AI Wellness VIP:
                 </p>
 
-                <ul className="mt-5 space-y-2.5 max-w-sm mx-auto">
+                <ul className="mt-5 space-y-3 max-w-sm mx-auto">
                   {[
-                    "Full Cognitive Tests",
-                    "Longevity Wellness Programs",
-                    "Retreats Programs",
-                    "Nutrition Programs",
-                    "Asia Integrated Wellness",
-                  ].map((label) => (
-                    <li key={label} className="flex items-center gap-3 text-[14px]">
+                    { name: "Full Cognitive Tests",         blurb: "Memory, attention, executive function — the full battery." },
+                    { name: "Longevity Wellness Programs",  blurb: "Personalised plans to extend your healthspan." },
+                    { name: "Retreats Programs",            blurb: "Multi-day wellness immersions across Asia." },
+                    { name: "Nutrition Programs",           blurb: "Clinical diet and supplement guidance." },
+                    { name: "Asia Integrated Wellness",     blurb: "TCM, acupuncture, and integrative therapies." },
+                  ].map((item) => (
+                    <li key={item.name} className="flex items-start gap-3 text-[14px]">
                       <span
-                        className="flex-shrink-0 inline-flex items-center justify-center size-6 rounded-full"
+                        className="flex-shrink-0 mt-0.5 inline-flex items-center justify-center size-6 rounded-full"
                         style={{ backgroundColor: "rgba(122,181,167,0.22)" }}
                       >
                         <svg className="size-3.5 text-[#388E6B]" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 2l2.4 6.9L22 10l-5.5 5 1.5 7.5L12 18.7 6 22.5 7.5 15 2 10l7.6-1.1L12 2z" />
                         </svg>
                       </span>
-                      <span className="text-[#1F362D] font-medium">{label}</span>
+                      <div className="flex-1">
+                        <p className="text-[#1F362D] font-semibold leading-tight">{item.name}</p>
+                        <p className="mt-0.5 text-[12px] leading-snug text-[#6B7280]">{item.blurb}</p>
+                      </div>
                     </li>
                   ))}
                 </ul>
