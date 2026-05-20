@@ -508,36 +508,95 @@ export default function TcmBrainReportPage() {
             </section>
 
             <section
-              className="rounded-2xl overflow-hidden shadow-[0_8px_40px_rgba(38,69,57,0.22)] p-6 sm:p-8 text-center"
-              style={{
-                background: "linear-gradient(135deg, #2C4A3F 0%, #1F362D 100%)",
-                border: "1px solid #1F362D",
-              }}
+              className="rounded-2xl overflow-hidden shadow-[0_8px_40px_rgba(38,69,57,0.22)]"
+              style={{ border: "1px solid #1F362D" }}
             >
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#7AB5A7]">
-                AI Wellness VIP
-              </p>
-              <h3
-                className="mt-2 text-[22px] sm:text-[26px] font-bold leading-snug text-white"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              <div
+                className="px-5 sm:px-7 pt-7 pb-6 text-center"
+                style={{ background: "linear-gradient(135deg, #2C4A3F 0%, #1F362D 100%)" }}
               >
-                Track your health, monthly. For life.
-              </h3>
-              <p className="mt-2 text-[13.5px] text-[#B8D2C7]">
-                Explore AI Wellness VIP programs &amp; memberships.
-              </p>
-              <a
-                href={AIWELLNESS_VIP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 inline-block rounded-full px-6 py-3 text-[14px] font-bold uppercase tracking-wider transition-opacity hover:opacity-90"
-                style={{ backgroundColor: "#E89671", color: "#1F362D" }}
-              >
-                View AI Wellness VIP →
-              </a>
-              <p className="mt-3 text-[11px] text-[#B8D2C7] break-all">
-                linktr.ee/AiWellnessViP
-              </p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7AB5A7]">
+                  You&apos;ve only seen
+                </p>
+                <div className="mt-2 flex items-baseline justify-center gap-1">
+                  <span
+                    className="text-[72px] sm:text-[80px] font-bold leading-none text-white"
+                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                  >
+                    25
+                  </span>
+                  <span
+                    className="text-[28px] sm:text-[32px] font-bold text-[#7AB5A7]"
+                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                  >
+                    %
+                  </span>
+                </div>
+                <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-[#B8D2C7]">
+                  of your full wellness picture
+                </p>
+                <div className="mt-5 max-w-xs mx-auto h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: "25%", background: "linear-gradient(90deg, #7AB5A7 0%, #E89671 100%)" }}
+                  />
+                </div>
+              </div>
+
+              <div className="bg-white px-5 sm:px-7 py-6">
+                <p className="text-center text-[13.5px] leading-relaxed text-[#4B5563] max-w-md mx-auto">
+                  Today you completed{" "}
+                  <span className="font-semibold text-[#1F362D]">1 of 4</span>{" "}
+                  pillars of your full health picture. The other three are unlocked by AI Wellness.
+                </p>
+
+                <ul className="mt-5 space-y-2.5 max-w-sm mx-auto">
+                  <li className="flex items-center gap-3 text-[14px]">
+                    <span
+                      className="flex-shrink-0 inline-flex items-center justify-center size-6 rounded-full"
+                      style={{ backgroundColor: "rgba(122,181,167,0.22)" }}
+                    >
+                      <svg className="size-3.5 text-[#388E6B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    <span className="text-[#1F362D] font-semibold">Cognitive Processing Speed</span>
+                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wider text-[#388E6B]">Done</span>
+                  </li>
+                  {[
+                    "Monthly Blood Pressure Tracking",
+                    "Body Composition Analysis",
+                    "AI-Generated Health Report",
+                  ].map((label) => (
+                    <li key={label} className="flex items-center gap-3 text-[14px]">
+                      <span className="flex-shrink-0 inline-flex items-center justify-center size-6 rounded-full bg-[#F5F9F3]">
+                        <svg className="size-3 text-[#9CA3AF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <rect x="6" y="11" width="12" height="9" rx="1.5" />
+                          <path d="M9 11V8a3 3 0 0 1 6 0v3" />
+                        </svg>
+                      </span>
+                      <span className="text-[#6B7280]">{label}</span>
+                      <span className="ml-auto text-[10px] uppercase tracking-wider text-[#9CA3AF]">Locked</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <a
+                  href={AIWELLNESS_VIP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 block w-full max-w-sm mx-auto rounded-full px-6 py-4 text-center text-[15px] font-bold uppercase tracking-wider text-white transition-all hover:opacity-95 active:scale-[0.98]"
+                  style={{
+                    background: "linear-gradient(135deg, #E89671 0%, #D5704D 100%)",
+                    boxShadow: "0 4px 24px rgba(213,112,77,0.35)",
+                  }}
+                >
+                  See the full picture →
+                </a>
+                <p className="mt-2.5 text-center text-[11px] text-[#9CA3AF] break-all">
+                  linktr.ee/AiWellnessViP
+                </p>
+              </div>
             </section>
 
             <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #B8D2C7" }}>
