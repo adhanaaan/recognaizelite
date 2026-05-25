@@ -50,6 +50,28 @@ export default function SjmcMandarinEntry() {
         className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden relative"
         style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
       >
+        {/* Language switcher — Mandarin is the default; English routes to the
+            existing /sjmc funnel (which sets ENGLISH + the English report). */}
+        <div className="absolute top-4 right-4 z-10">
+          <div className="relative">
+            <select
+              value="MANDARIN"
+              onChange={(e) => {
+                if (e.target.value === "ENGLISH") Router.push("/sjmc");
+              }}
+              aria-label="语言 / Language"
+              className="appearance-none cursor-pointer rounded-full border px-4 py-1.5 pr-8 text-[12px] font-medium text-[#4B5563] focus:outline-none"
+              style={{ backgroundColor: "rgba(255,255,255,0.7)", borderColor: "rgba(232,121,59,0.35)" }}
+            >
+              <option value="MANDARIN">中文</option>
+              <option value="ENGLISH">English</option>
+            </select>
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[9px] text-[#E8793B]">
+              ▼
+            </span>
+          </div>
+        </div>
+
         {/* Event badge */}
         <div className="mb-5">
           <div
