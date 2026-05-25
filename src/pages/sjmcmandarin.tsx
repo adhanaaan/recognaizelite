@@ -50,28 +50,6 @@ export default function SjmcMandarinEntry() {
         className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden relative"
         style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
       >
-        {/* Language switcher — Mandarin is the default; English routes to the
-            existing /sjmc funnel (which sets ENGLISH + the English report). */}
-        <div className="absolute top-4 right-4 z-10">
-          <div className="relative">
-            <select
-              value="MANDARIN"
-              onChange={(e) => {
-                if (e.target.value === "ENGLISH") Router.push("/sjmc");
-              }}
-              aria-label="语言 / Language"
-              className="appearance-none cursor-pointer rounded-full border px-4 py-1.5 pr-8 text-[12px] font-medium text-[#4B5563] focus:outline-none"
-              style={{ backgroundColor: "rgba(255,255,255,0.7)", borderColor: "rgba(232,121,59,0.35)" }}
-            >
-              <option value="MANDARIN">中文</option>
-              <option value="ENGLISH">English</option>
-            </select>
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[9px] text-[#E8793B]">
-              ▼
-            </span>
-          </div>
-        </div>
-
         {/* Event badge */}
         <div className="mb-5">
           <div
@@ -112,6 +90,39 @@ export default function SjmcMandarinEntry() {
           <p className="text-[13px] text-[#4B5563]">
             已有 <span className="font-bold text-[#1F2937]">{liveCount}</span> 人在本次活动完成筛查
           </p>
+        </div>
+
+        {/* Language selector — central + prominent. Mandarin is the default;
+            choosing English routes to the existing /sjmc funnel (which sets
+            ENGLISH + the English report path). */}
+        <div className="w-full max-w-[300px] mb-4">
+          <label
+            htmlFor="lang-select"
+            className="block text-center text-[12px] font-semibold uppercase tracking-wider text-[#4B5563] mb-2"
+          >
+            选择语言 · Select language
+          </label>
+          <div className="relative">
+            <select
+              id="lang-select"
+              value="MANDARIN"
+              onChange={(e) => {
+                if (e.target.value === "ENGLISH") Router.push("/sjmc");
+              }}
+              className="w-full appearance-none cursor-pointer rounded-full border px-5 py-3 pr-10 text-[16px] font-semibold text-[#1F2937] focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: "#ffffff",
+                borderColor: "rgba(232,121,59,0.35)",
+                boxShadow: "0 2px 12px rgba(232,121,59,0.12)",
+              }}
+            >
+              <option value="MANDARIN">中文</option>
+              <option value="ENGLISH">English</option>
+            </select>
+            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[11px] text-[#E8793B]">
+              ▼
+            </span>
+          </div>
         </div>
 
         {/* CTA */}
