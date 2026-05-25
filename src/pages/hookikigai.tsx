@@ -5,6 +5,7 @@ import { useCumulativeCounter } from "src/hooks/useCumulativeCounter";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
+import { setAppLanguage } from "src/lib/translations";
 
 export default function HookIkigaiEntry() {
   const testedCount = useCumulativeCounter({
@@ -15,6 +16,7 @@ export default function HookIkigaiEntry() {
   });
 
   useEffect(() => {
+    setAppLanguage("ENGLISH");
     setHookClinic("Ikigai Medical");
     setHookReportPath("/hookikigai-report");
     setAssessmentMode("short");

@@ -5,6 +5,7 @@ import { useCumulativeCounter } from "src/hooks/useCumulativeCounter";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
+import { setAppLanguage } from "src/lib/translations";
 
 export default function SjmcEntry() {
   const liveCount = useCumulativeCounter({
@@ -15,6 +16,7 @@ export default function SjmcEntry() {
   });
 
   useEffect(() => {
+    setAppLanguage("ENGLISH");
     setHookClinic("SJMC");
     setHookReportPath("/sjmc-report");
     setAssessmentMode("short");

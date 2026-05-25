@@ -28,6 +28,15 @@ function App({ Component, pageProps }: AppProps) {
     <ErrorBoundary>
       <Head>
         <title>Recognaize</title>
+        {/* CJK web font for Mandarin pages. Latin stays Avenir (first in the
+            tailwind sans stack); the browser falls through to Noto Sans SC
+            per-glyph for Chinese characters. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap"
+          rel="stylesheet"
+        />
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="manifest" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, user-scalable=0" />

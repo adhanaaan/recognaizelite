@@ -5,6 +5,7 @@ import { Button } from "src/NewComponents/Button";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { setAssessmentMode, setHookClinic } from "src/utils/assessment";
+import { setAppLanguage } from "src/lib/translations";
 
 export default function Hook2Entry() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function Hook2Entry() {
 
   useEffect(() => {
     if (!router.isReady) return;
+    setAppLanguage("ENGLISH");
     const clinicParam = typeof router.query.clinic === "string" ? router.query.clinic.trim() : "";
     if (clinicParam) {
       setHookClinic(clinicParam);

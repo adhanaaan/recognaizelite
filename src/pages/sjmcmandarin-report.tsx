@@ -6,21 +6,30 @@ import { useResultStore } from "src/stores/useResultStore";
 import { clearHookClinic, clearAssessmentMode } from "src/utils/assessment";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
-import { CLINICAL_DISCLAIMER } from "src/utils/disclaimers";
+
+// Mandarin variant of /sjmc-report. Fork of sjmc-report.tsx with all chrome
+// translated and leads tagged clinic "sjmcmandarin" (segments in public.leads
+// via the clinic column). The clinical report BODY (report.title / definition)
+// still comes back from /api/generate-report in English — Phase 2 will localize
+// the server report_data. Disclaimer is hardcoded Mandarin here.
+const CJK_SERIF = "'Noto Sans SC', Georgia, 'Times New Roman', serif";
+
+const CLINICAL_DISCLAIMER_ZH =
+  "本报告仅用于健康筛查与教育目的，不能用于诊断疾病，也不能替代专业的医疗评估。检测结果应结合临床咨询、生活方式评估，并在适当情况下结合生物医学评估共同解读。";
 
 type SeverityVisual = {
-  label: "WEAK" | "ADEQUATE" | "STRONG";
+  label: string;
   color: string;
   softBg: string;
 };
 
 const severityVisuals: Record<Severity, SeverityVisual> = {
-  Low:    { label: "WEAK",     color: "#B91C1C", softBg: "rgba(185,28,28,0.12)"   },
-  Medium: { label: "ADEQUATE", color: "#E89671", softBg: "rgba(232,150,113,0.14)" },
-  High:   { label: "STRONG",   color: "#34D399", softBg: "rgba(52,211,153,0.10)"  },
+  Low: { label: "偏弱", color: "#EF4444", softBg: "rgba(239,68,68,0.10)" },
+  Medium: { label: "中等", color: "#E8793B", softBg: "rgba(232,121,59,0.10)" },
+  High: { label: "优秀", color: "#34D399", softBg: "rgba(52,211,153,0.10)" },
 };
 
-// --- Bell Curve (light-themed, jade accent) ---
+// --- Bell Curve (light-themed) ---
 const BC_W = 500, BC_H = 260, BC_P = 20, BC_LS = 40, BC_N = 1000;
 const BC_RANGE = { min: -4, max: 4 };
 const BC_PDF_MAX = 1 / Math.sqrt(2 * Math.PI);
@@ -90,33 +99,52 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
   const lx = mx - lw / 2, ly = baseY + 4;
 
   return (
-    <div className="overflow-hidden rounded-2xl p-4" style={{ backgroundColor: "#F5F9F3" }}>
+    <div className="overflow-hidden rounded-2xl p-4" style={{ backgroundColor: "#FFF7F2" }}>
       <svg className="mx-auto block w-full h-auto" viewBox={`0 0 ${BC_W} ${BC_H}`} preserveAspectRatio="xMidYMid meet">
-        <rect width={BC_W} height={BC_H} fill="#F5F9F3" rx="8" />
-        <path d={buildAreaPath()} fill="rgba(122,181,167,0.12)" />
-        <path d={buildCurvePath()} fill="none" stroke="#7AB5A7" strokeWidth="2.5" strokeOpacity="0.8" />
+        <rect width={BC_W} height={BC_H} fill="#FFF7F2" rx="8" />
+        <path d={buildAreaPath()} fill="rgba(232,121,59,0.12)" />
+        <path d={buildCurvePath()} fill="none" stroke="#E8793B" strokeWidth="2.5" strokeOpacity="0.8" />
         <line x1={mx} y1={BC_P} x2={mx} y2={baseY} stroke={severity.color} strokeWidth="2" strokeDasharray="6 6" />
-        <circle cx={mx} cy={my} r="6" fill="#F5F9F3" stroke={severity.color} strokeWidth="2.5" />
+        <circle cx={mx} cy={my} r="6" fill="#FFF7F2" stroke={severity.color} strokeWidth="2.5" />
         <rect x={lx} y={ly} width={lw} height={lh} rx="10" fill={severity.color} />
         <text x={mx} y={ly + lh / 2 + 6} textAnchor="middle" fontSize="20" fontWeight="700" fill="#ffffff">{labelText}</text>
-        <text x={BC_P} y={BC_H - 8} fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">WEAK</text>
-        <text x={BC_W / 2} y={BC_H - 8} textAnchor="middle" fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">ADEQUATE</text>
-        <text x={BC_W - BC_P} y={BC_H - 8} textAnchor="end" fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">STRONG</text>
+        <text x={BC_P} y={BC_H - 8} fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">偏弱</text>
+        <text x={BC_W / 2} y={BC_H - 8} textAnchor="middle" fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">中等</text>
+        <text x={BC_W - BC_P} y={BC_H - 8} textAnchor="end" fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">优秀</text>
       </svg>
     </div>
   );
 }
 
-const LEAD_EMAIL_KEY = "recognaize-lead-email";
-const SHARE_URL = "https://recognaizelite.vercel.app/tcmbrain";
+const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
+  Low: {
+    headline: "你只看到了全貌的 25%。",
+    body: "处理速度出现了值得关注的信号——但这只是四大认知支柱之一。记忆力、注意力和执行功能可能正在默默代偿，也可能正在悄然衰退。没有完整的筛查，一切都只是猜测。",
+  },
+  Medium: {
+    headline: "你只看到了全貌的 25%。",
+    body: "处理速度看起来不错——但这并不能说明你的记忆力在压力下表现如何、专注力能维持多久，或决策是否敏锐。单一支柱无法定义你的大脑。",
+  },
+  High: {
+    headline: "你只看到了全貌的 25%。",
+    body: "处理速度很强——但高效能人士都明白，没有记忆力、专注力和决策力的速度是不完整的。完整的筛查才能揭示真正驱动你表现的因素。",
+  },
+};
 
-const AIWELLNESS_VIP_URL = "https://linktr.ee/AiWellnessViP?utm_source=qr_code";
+const LOCKED_AREAS = [
+  { name: "记忆力", skill: "压力下的回忆与记忆保持" },
+  { name: "注意力", skill: "持续专注与多任务处理" },
+  { name: "执行功能", skill: "决策与规划" },
+];
+
+const LEAD_EMAIL_KEY = "recognaize-lead-email";
+const SHARE_URL = "https://recognaizelite.vercel.app/sjmcmandarin";
 
 const AGE_OPTIONS = ["18-25", "26-35", "36-45", "46-55", "56-65", "66+"] as const;
 const GENDER_OPTIONS = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-  { value: "prefer_not_to_say", label: "Prefer not to say" },
+  { value: "male", label: "男" },
+  { value: "female", label: "女" },
+  { value: "prefer_not_to_say", label: "不愿透露" },
 ] as const;
 
 const SEVERITY_TO_KEY: Record<Severity, string> = {
@@ -125,7 +153,7 @@ const SEVERITY_TO_KEY: Record<Severity, string> = {
   High: "high",
 };
 
-export default function TcmBrainReportPage() {
+export default function SjmcMandarinReportPage() {
   const { result } = useResultStore();
   const [report, setReport] = useState<DomainReport | null>(null);
   const [loading, setLoading] = useState(true);
@@ -145,15 +173,15 @@ export default function TcmBrainReportPage() {
 
     const trimmed = emailInput.trim();
     if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setFormError("Please enter a valid email address.");
+      setFormError("请输入有效的电子邮箱地址。");
       return;
     }
     if (!ageInput) {
-      setFormError("Please select your age range.");
+      setFormError("请选择您的年龄范围。");
       return;
     }
     if (!genderInput) {
-      setFormError("Please select an option for gender.");
+      setFormError("请选择性别选项。");
       return;
     }
 
@@ -175,12 +203,10 @@ export default function TcmBrainReportPage() {
 
     const payload = {
       email: trimmed,
-      clinic: "tcmbrain",
+      clinic: "sjmcmandarin",
       ageRange: ageInput,
       gender: genderInput,
       whatsapp: whatsappInput.trim() || null,
-      dampnessIndex: null,
-      bloodStasisIndex: null,
       score: typeof task2Score === "number" ? task2Score : null,
       percentile: report ? Math.round(report.percentile) : null,
       severity: report ? SEVERITY_TO_KEY[report.severity] : null,
@@ -196,12 +222,12 @@ export default function TcmBrainReportPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error || "Failed to save. Please try again.");
+        throw new Error(data?.error || "保存失败，请重试。");
       }
       localStorage.setItem(LEAD_EMAIL_KEY, trimmed);
       setEmailSubmitted(true);
     } catch (err) {
-      setFormError((err as Error).message || "Failed to save. Please try again.");
+      setFormError((err as Error).message || "保存失败，请重试。");
     } finally {
       setSubmitting(false);
     }
@@ -240,16 +266,16 @@ export default function TcmBrainReportPage() {
         const res = await fetch("/api/generate-report", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ result, clinic: "tcmbrain" }),
+          body: JSON.stringify({ result }),
         });
         if (!res.ok) {
           const payload = await res.json().catch(() => null);
-          throw new Error(payload?.details || payload?.error || "Failed to generate report");
+          throw new Error(payload?.details || payload?.error || "无法生成报告");
         }
         const data = await res.json();
         setReport(data.shortReport ?? null);
       } catch (err) {
-        setError((err as Error).message || "Failed to generate report.");
+        setError((err as Error).message || "无法生成报告。");
       } finally {
         setLoading(false);
       }
@@ -262,17 +288,17 @@ export default function TcmBrainReportPage() {
     clearAssessmentMode();
     resetResults();
     resetTaskProgress();
-    Router.push("/tcmbrain");
+    Router.push("/sjmcmandarin");
   };
 
   const page = (children: React.ReactNode) => (
     <>
     <Head>
-      <meta name="theme-color" content="#F5F9F3" />
+      <meta name="theme-color" content="#FAEEE6" />
     </Head>
     <div
       className="min-h-[100dvh] w-full px-5 py-10 sm:px-8 overflow-y-auto"
-      style={{ background: "linear-gradient(180deg, #FBF8F3 0%, #F2EBDF 50%, #FBF8F3 100%)" }}
+      style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
     >
       <div className="max-w-2xl mx-auto space-y-6">{children}</div>
     </div>
@@ -282,7 +308,7 @@ export default function TcmBrainReportPage() {
   if (loading) {
     return page(
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-[#6B7280] text-lg">Generating your results...</p>
+        <p className="text-[#6B7280] text-lg">正在生成您的结果……</p>
       </div>
     );
   }
@@ -300,40 +326,35 @@ export default function TcmBrainReportPage() {
   return page(
     report && severity ? (
       <>
-        {/* Branding */}
+        {/* GMS branding */}
         <div className="text-center pt-2 pb-4">
           <img src="/logo.png" alt="ReCOGnAIze" className="mx-auto w-[60px]" />
-          <div className="flex items-center justify-center gap-2 mt-2">
-            <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#9CA3AF]">
-              In partnership with
-            </span>
-            <img src="/aiwellness-logo.jpeg" alt="AI Wellness" className="h-[24px] rounded" />
-          </div>
           <p className="text-[#9CA3AF] text-[9px] uppercase mt-3" style={{ letterSpacing: "0.2em" }}>
-            Mind-Body Cognitive Screening — Your Results
+            您的结果
           </p>
         </div>
 
-        {/* Result Card */}
-        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #B8D2C7" }}>
-          <p className="text-[12px] font-bold uppercase tracking-wider text-[#5A9582]">
-            Cognitive Screening
+        {/* Result Card — teaser always visible */}
+        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
+          <p className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+            认知筛查
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
             <h2
               className="text-[24px] sm:text-[30px] font-bold uppercase leading-tight text-[#1F2937]"
-              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              style={{ fontFamily: CJK_SERIF }}
             >
               {report.title}
             </h2>
             <span
-              className="rounded-full px-4 py-1.5 text-[13px] font-bold uppercase leading-none text-white"
+              className="rounded-full px-4 py-1.5 text-[13px] font-bold leading-none text-white"
               style={{ backgroundColor: severity.color }}
             >
               {severity.label}
             </span>
           </div>
 
+          {/* Bell curve — blurred if email not submitted */}
           <div className="mt-4 relative">
             <div style={!emailSubmitted ? { filter: "blur(12px)", pointerEvents: "none" } : undefined}>
               <BellCurve percentile={Math.round(report.percentile)} severity={severity} />
@@ -345,16 +366,17 @@ export default function TcmBrainReportPage() {
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  <p className="text-[13px] font-semibold text-[#4B5563]">Enter your details to reveal your score</p>
+                  <p className="text-[13px] font-semibold text-[#4B5563]">输入您的电子邮箱以查看您的得分</p>
                 </div>
               </div>
             )}
           </div>
 
+          {/* Definition — only shown after email */}
           {emailSubmitted && (
-            <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#F5F9F3" }}>
-              <p className="text-[13px] font-bold uppercase tracking-wider text-[#5A9582]">
-                What is {report.title}?
+            <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#FFF7F2" }}>
+              <p className="text-[13px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+                什么是 {report.title}？
               </p>
               <p className="mt-2 text-[14px] leading-relaxed text-[#4B5563]">
                 {report.definition}
@@ -363,17 +385,17 @@ export default function TcmBrainReportPage() {
           )}
         </section>
 
-        {/* Form — shown when email not yet submitted */}
+        {/* Email capture form — shown when email not yet submitted */}
         {!emailSubmitted && (
-          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #B8D2C7" }}>
+          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
             <h3
               className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937] text-center"
-              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              style={{ fontFamily: CJK_SERIF }}
             >
-              Want to see your full results?
+              想查看完整结果吗？
             </h3>
-            <p className="mt-3 text-[14px] leading-relaxed text-[#4B5563] text-center">
-              Tell us a bit about you.
+            <p className="mt-3 text-[14px] leading-relaxed text-[#6B7280] text-center">
+              输入您的电子邮箱，解锁详细的百分位得分，了解其含义，并获取改善建议。
             </p>
             <form onSubmit={handleEmailSubmit} className="mt-5 space-y-3">
               <input
@@ -381,7 +403,7 @@ export default function TcmBrainReportPage() {
                 placeholder="your@email.com"
                 value={emailInput}
                 onChange={(e) => { setEmailInput(e.target.value); setFormError(""); }}
-                className="w-full rounded-xl border border-[#B8D2C7] bg-[#F5F9F3] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#7AB5A7] transition-colors"
+                className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors"
               />
 
               <div>
@@ -389,18 +411,18 @@ export default function TcmBrainReportPage() {
                   type="tel"
                   inputMode="tel"
                   autoComplete="tel"
-                  placeholder="WhatsApp (e.g. +65 9123 4567)"
+                  placeholder="WhatsApp（例如 +65 9123 4567）"
                   value={whatsappInput}
                   onChange={(e) => { setWhatsappInput(e.target.value); setFormError(""); }}
-                  className="w-full rounded-xl border border-[#B8D2C7] bg-[#F5F9F3] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#7AB5A7] transition-colors"
+                  className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors"
                 />
-                <p className="mt-1 text-[11px] text-[#9CA3AF]">Optional — for follow-up.</p>
+                <p className="mt-1 text-[11px] text-[#9CA3AF]">选填——用于后续联系。</p>
               </div>
 
-              {/* Age */}
+              {/* Age range */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#5A9582] mb-1.5">
-                  Age
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
+                  年龄
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
                   {AGE_OPTIONS.map((age) => {
@@ -412,9 +434,9 @@ export default function TcmBrainReportPage() {
                         onClick={() => { setAgeInput(age); setFormError(""); }}
                         className="rounded-lg py-2 text-[13px] font-semibold transition-all"
                         style={{
-                          backgroundColor: active ? "#7AB5A7" : "#F5F9F3",
+                          backgroundColor: active ? "#E8793B" : "#FFF7F2",
                           color: active ? "#ffffff" : "#4B5563",
-                          border: `1px solid ${active ? "#7AB5A7" : "#B8D2C7"}`,
+                          border: `1px solid ${active ? "#E8793B" : "#D1C4B8"}`,
                         }}
                       >
                         {age}
@@ -426,8 +448,8 @@ export default function TcmBrainReportPage() {
 
               {/* Gender */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#5A9582] mb-1.5">
-                  Gender
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
+                  性别
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
                   {GENDER_OPTIONS.map((g) => {
@@ -437,11 +459,11 @@ export default function TcmBrainReportPage() {
                         key={g.value}
                         type="button"
                         onClick={() => { setGenderInput(g.value); setFormError(""); }}
-                        className="rounded-lg py-2 text-[12px] font-semibold transition-all leading-tight"
+                        className="rounded-lg py-2 text-[13px] font-semibold transition-all leading-tight"
                         style={{
-                          backgroundColor: active ? "#7AB5A7" : "#F5F9F3",
+                          backgroundColor: active ? "#E8793B" : "#FFF7F2",
                           color: active ? "#ffffff" : "#4B5563",
-                          border: `1px solid ${active ? "#7AB5A7" : "#B8D2C7"}`,
+                          border: `1px solid ${active ? "#E8793B" : "#D1C4B8"}`,
                         }}
                       >
                         {g.label}
@@ -459,148 +481,112 @@ export default function TcmBrainReportPage() {
                 disabled={submitting}
                 className="w-full rounded-full px-8 py-4 text-[16px] font-bold tracking-wide text-white transition-all active:opacity-90 disabled:opacity-60"
                 style={{
-                  background: "linear-gradient(135deg, #E89671 0%, #D5704D 100%)",
-                  boxShadow: "0 4px 24px rgba(213,112,77,0.35)",
+                  backgroundColor: "#E8793B",
+                  boxShadow: "0 0 30px rgba(232,121,59,0.25)",
                 }}
               >
-                {submitting ? "Saving…" : "Get My Results"}
+                {submitting ? "保存中……" : "获取我的结果"}
               </button>
             </form>
             <p className="mt-3 text-[11px] text-[#9CA3AF] text-center">
-              We&apos;ll only contact you about ReCOGnAIze. No spam.
+              我们会向您发送关于认知健康的洞见。绝不发送垃圾信息。
             </p>
           </section>
         )}
 
-        {/* Full report */}
+        {/* Full report — only shown after email */}
         {emailSubmitted && (
           <>
-            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #B8D2C7" }}>
+            {/* The bigger picture */}
+            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
               <h3
                 className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937]"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                style={{ fontFamily: CJK_SERIF }}
               >
-                Your Cognitive Brain Health Report
+                {CTA_COPY[report.severity].headline}
               </h3>
+              <p className="mt-4 text-[14px] leading-relaxed text-[#6B7280]">
+                {CTA_COPY[report.severity].body}
+              </p>
 
-              <div
-                className="mt-5 mx-auto max-w-sm rounded-xl px-5 py-5 text-center border-2"
-                style={{ backgroundColor: severity.softBg, borderColor: severity.color }}
-              >
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">
-                  Cognitive (Processing Speed)
-                </p>
-                <div
-                  className="mt-1 text-[32px] font-bold text-[#1F2937]"
-                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-                >
-                  {Math.round(report.percentile)}
-                  <span className="text-[14px] font-semibold text-[#6B7280] align-baseline">%ile</span>
+              {/* Progress indicator */}
+              <div className="mt-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">您的筛查进度</span>
+                  <span className="text-[13px] font-bold" style={{ color: "#E8793B" }}>4 项中的 1 项</span>
                 </div>
-                <div
-                  className="mt-1 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider"
-                  style={{ color: severity.color }}
-                >
-                  <span className="inline-block size-1.5 rounded-full" style={{ backgroundColor: severity.color }} />
-                  {severity.label}
+                <div className="h-1.5 rounded-full bg-[#F0E0D4] overflow-hidden">
+                  <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#E8793B" }} />
                 </div>
+              </div>
+
+              {/* Brain areas grid */}
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
+                  <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
+                    &#10003; 已完成
+                  </div>
+                  <div className="mt-1 text-[14px] font-bold text-[#1F2937]">处理速度</div>
+                  <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
+                </div>
+                {LOCKED_AREAS.map((area) => (
+                  <div key={area.name} className="rounded-xl border border-[#E5D5CA] bg-[#FFF7F2] px-4 py-4 text-center relative overflow-hidden">
+                    <div className="text-[#C4B5A8]">
+                      <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <rect x="3" y="11" width="18" height="11" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                    </div>
+                    <div className="mt-1 text-[14px] font-bold text-[#6B7280]">{area.name}</div>
+                    <div className="mt-0.5 text-[11px] text-[#9CA3AF]">{area.skill}</div>
+                  </div>
+                ))}
               </div>
             </section>
 
-            <section
-              className="rounded-2xl overflow-hidden shadow-[0_8px_40px_rgba(38,69,57,0.22)]"
-              style={{ border: "1px solid #1F362D" }}
-            >
-              <div
-                className="px-5 sm:px-7 pt-7 pb-6 text-center"
-                style={{ background: "linear-gradient(135deg, #2C4A3F 0%, #1F362D 100%)" }}
+            {/* Waitlist / Early Access CTA */}
+            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ background: "linear-gradient(135deg, #E8793B 0%, #D4693A 100%)" }}>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-2">
+                即将推出
+              </p>
+              <h3
+                className="text-[20px] sm:text-[22px] font-bold leading-snug text-white"
+                style={{ fontFamily: CJK_SERIF }}
               >
-                <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#7AB5A7]">
-                  You&apos;ve only seen
-                </p>
-                <div className="mt-2 flex items-baseline justify-center gap-1">
-                  <span
-                    className="text-[72px] sm:text-[80px] font-bold leading-none text-white"
-                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-                  >
-                    25
-                  </span>
-                  <span
-                    className="text-[28px] sm:text-[32px] font-bold text-[#7AB5A7]"
-                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-                  >
-                    %
-                  </span>
-                </div>
-                <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-[#B8D2C7]">
-                  of your full wellness picture
-                </p>
-                <div className="mt-5 max-w-xs mx-auto h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: "25%", background: "linear-gradient(90deg, #7AB5A7 0%, #E89671 100%)" }}
-                  />
-                </div>
+                完整版 ReCOGnAIze 评估即将上线。
+              </h3>
+              <p className="mt-3 text-[13px] text-white/80 leading-relaxed">
+                四大认知支柱 &middot; 10 分钟 &middot; 科学验证
+                <br />
+                记忆力 &middot; 注意力 &middot; 处理速度 &middot; 执行功能
+              </p>
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2">
+                <svg className="size-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-[13px] font-semibold text-white">
+                  您已加入抢先体验名单
+                </span>
               </div>
-
-              <div className="bg-white px-5 sm:px-7 py-6">
-                <p className="text-center text-[13.5px] leading-relaxed text-[#4B5563] max-w-md mx-auto">
-                  Today&apos;s cognitive screening is just a sample. Inside AI Wellness VIP:
-                </p>
-
-                <ul className="mt-5 space-y-2.5 max-w-sm mx-auto">
-                  {[
-                    "Full Cognitive Tests",
-                    "Longevity Wellness Programs",
-                    "Retreats Programs",
-                    "Nutrition Programs",
-                    "Asia Integrated Wellness",
-                  ].map((label) => (
-                    <li key={label} className="flex items-center gap-3 text-[14px]">
-                      <span
-                        className="flex-shrink-0 inline-flex items-center justify-center size-6 rounded-full"
-                        style={{ backgroundColor: "rgba(122,181,167,0.22)" }}
-                      >
-                        <svg className="size-3.5 text-[#388E6B]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2l2.4 6.9L22 10l-5.5 5 1.5 7.5L12 18.7 6 22.5 7.5 15 2 10l7.6-1.1L12 2z" />
-                        </svg>
-                      </span>
-                      <span className="text-[#1F362D] font-medium">{label}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <a
-                  href={AIWELLNESS_VIP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 block w-full max-w-sm mx-auto rounded-full px-6 py-4 text-center text-[15px] font-bold uppercase tracking-wider text-white transition-all hover:opacity-95 active:scale-[0.98]"
-                  style={{
-                    background: "linear-gradient(135deg, #E89671 0%, #D5704D 100%)",
-                    boxShadow: "0 4px 24px rgba(213,112,77,0.35)",
-                  }}
-                >
-                  See the full picture →
-                </a>
-                <p className="mt-2.5 text-center text-[11px] text-[#9CA3AF] break-all">
-                  linktr.ee/AiWellnessViP
-                </p>
-              </div>
+              <p className="mt-3 text-[11px] text-white/50">
+                完整版评估上线时我们会通知您。
+              </p>
             </section>
 
-            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #B8D2C7" }}>
-              <h3 className="text-[18px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
-                Think you&apos;re fast? Prove it.
+            {/* Challenge a friend */}
+            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
+              <h3 className="text-[18px] font-bold text-[#1F2937]" style={{ fontFamily: CJK_SERIF }}>
+                自认反应快？来证明一下。
               </h3>
               <p className="mt-2 text-[13px] text-[#6B7280]">
-                Challenge a friend to beat your score.
+                挑战朋友，看谁能超越你的分数。
               </p>
               <button
                 onClick={async () => {
-                  const text = `I just took a 60-second cognitive screening as part of a mind-body health check — can you beat my score? Try it: ${SHARE_URL}`;
+                  const text = `我刚在 SJMC 世界健康日活动测试了我的脑速——你能超过我的分数吗？快来试试：${SHARE_URL}`;
                   if (navigator.share) {
                     try {
-                      await navigator.share({ title: "Brain Speed Challenge", text, url: SHARE_URL });
+                      await navigator.share({ title: "脑速挑战", text, url: SHARE_URL });
                       setShared(true);
                     } catch { /* cancelled */ }
                   } else {
@@ -615,27 +601,28 @@ export default function TcmBrainReportPage() {
                   color: "#ffffff",
                 }}
               >
-                {shared ? "Link copied!" : "Share Challenge"}
+                {shared ? "链接已复制！" : "分享挑战"}
               </button>
             </section>
 
-            <p className="text-[11px] italic leading-normal text-[#9CA3AF] text-center px-2">
-              {CLINICAL_DISCLAIMER}
+            <p className="text-[11px] leading-normal text-[#9CA3AF] text-center px-2">
+              {CLINICAL_DISCLAIMER_ZH}
             </p>
           </>
         )}
 
+        {/* Retake */}
         <button
           onClick={handleRetake}
-          className="w-full rounded-full border border-[#B8D2C7] py-3 text-center text-[14px] font-medium text-[#9CA3AF] transition-colors hover:border-[#7AB5A7] hover:text-[#7AB5A7]"
+          className="w-full rounded-full border border-[#D1C4B8] py-3 text-center text-[14px] font-medium text-[#9CA3AF] transition-colors hover:border-[#E8793B] hover:text-[#E8793B]"
         >
-          Retake
+          重新测试
         </button>
       </>
     ) : (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="rounded-2xl border border-[#B8D2C7] bg-white p-6 text-center text-sm text-[#6B7280]">
-          Complete the screening game to see your results.
+        <div className="rounded-2xl border border-[#E5D5CA] bg-white p-6 text-center text-sm text-[#6B7280]">
+          请完成筛查游戏以查看您的结果。
         </div>
       </div>
     )

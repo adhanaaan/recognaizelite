@@ -5,6 +5,7 @@ import { useCumulativeCounter } from "src/hooks/useCumulativeCounter";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
+import { setAppLanguage } from "src/lib/translations";
 
 export default function TcmBrainEntry() {
   const liveCount = useCumulativeCounter({
@@ -15,6 +16,7 @@ export default function TcmBrainEntry() {
   });
 
   useEffect(() => {
+    setAppLanguage("ENGLISH");
     // hookClinic stays "SJMC" so the games render in the existing 60s/light theme
     // without touching every isSjmcMode() call site. The lead is tagged "tcmbrain"
     // by the report page when the API call is made.

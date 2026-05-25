@@ -3,7 +3,7 @@ import { LanguageType } from "src/types";
 export const isServer = typeof window === "undefined";
 export const __prod__ = process.env.NODE_ENV === "production";
 
-const APP_LANG_KEY = "APP_LANG";
+export const APP_LANG_KEY = "APP_LANG";
 const DEFAULT_APP_LANG: LanguageType = "ENGLISH";
 const SUPPORTED_LANGUAGES: LanguageType[] = ["ENGLISH", "BAHASA", "MANDARIN", "MALAY", "TAGALOG", "MALAYALAM"];
 

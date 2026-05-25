@@ -1,4 +1,4 @@
-import { APP_LANG, hydrateAppLanguageFromStorage } from "src/constants";
+import { APP_LANG, APP_LANG_KEY, hydrateAppLanguageFromStorage } from "src/constants";
 import { LanguageType } from "src/types";
 import * as locales from "../locales";
 
@@ -40,4 +40,21 @@ export function hydrateTranslationsFromStorage() {
     syncTranslations(APP_LANG);
   }
   return languageChanged;
+}
+
+// Persist a language choice and apply it immediately: writes localStorage,
+// re-hydrates the APP_LANG module variable, and regenerates `t`. Entry routes
+// call this on mount so the language travels through the shared game flow via
+// localStorage (the Mandarin /sjmcmandarin route sets MANDARIN; every English
+// entry route resets to ENGLISH to prevent the persisted value from leaking).
+export function setAppLanguage(language: LanguageType) {
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(APP_LANG_KEY, language);
+    } catch {
+      /* ignore storage failures */
+    }
+  }
+  hydrateAppLanguageFromStorage();
+  syncTranslations(APP_LANG);
 }
