@@ -15,6 +15,7 @@ module.exports = {
         "Roboto",
         "Helvetica",
         "Arial",
+        "Noto Sans SC",
         "sans-serif",
       ],
       mono: ["Menlo", "Monaco", "Courier New", "monospace"],

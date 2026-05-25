@@ -9,7 +9,31 @@ import { Button } from "src/NewComponents/Button";
 import { saveResult, useResultStore } from "src/stores/useResultStore";
 import { saveProgress, useTaskProgress } from "src/stores/useTaskProgress";
 import { ResultType } from "src/types";
+import { APP_LANG } from "src/constants";
 import { getAssessmentMode, getHookReportPath, isHookMode, isDarkHookMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
+
+// Minimal localized strings for the SJMC short-assessment completion flow.
+// Only the SJMC (incl. Mandarin variant) path sets APP_LANG=MANDARIN today.
+const GC_COPY = {
+  ENGLISH: {
+    saving: "Saving your result, please wait.",
+    errorTitle: "Error saving your result.",
+    errorBody: "Please check your internet connection and try again.",
+    retry: "RETRY",
+    complete: "Assessment Complete",
+    ready: "Your report is ready to view.",
+    viewReport: "View report",
+  },
+  MANDARIN: {
+    saving: "正在保存您的结果，请稍候。",
+    errorTitle: "保存结果时出错。",
+    errorBody: "请检查您的网络连接后重试。",
+    retry: "重试",
+    complete: "评估完成",
+    ready: "您的报告已准备就绪。",
+    viewReport: "查看报告",
+  },
+};
 
 export interface GameCompleteScreenProps extends React.PropsWithChildren {
   result: ResultType;
@@ -78,6 +102,7 @@ export function GameCompleteScreen({
 
   const ikigai = isDarkHookMode();
   const sjmc = isSjmcMode();
+  const gc = APP_LANG === "MANDARIN" ? GC_COPY.MANDARIN : GC_COPY.ENGLISH;
 
   if (!result) return children;
 
@@ -86,14 +111,14 @@ export function GameCompleteScreen({
     content = (
       <div className="space-y-16 text-center md:scale-125 lg:scale-150 cc">
         <PiSpinnerBold size={72} className={`animate-spin ${ikigai ? "text-[#5CE0D8]" : sjmc ? "text-[#E8793B]" : ""}`} />
-        <p className={`text-lg ${ikigai ? "text-gray-300" : sjmc ? "text-[#4B5563]" : ""}`}>Saving your result, please wait.</p>
+        <p className={`text-lg ${ikigai ? "text-gray-300" : sjmc ? "text-[#4B5563]" : ""}`}>{gc.saving}</p>
       </div>
     );
   } else if (resultError || taskError) {
     content = (
       <div className="space-y-16 text-center md:scale-125 lg:scale-150 cc">
-        <p className={`text-lg ${ikigai ? "text-gray-300" : sjmc ? "text-[#4B5563]" : ""}`}>Error saving your result.</p>
-        <p className={`text-lg w-80 ${ikigai ? "text-gray-400" : sjmc ? "text-[#6B7280]" : ""}`}>Please check your internet connection and try again.</p>
+        <p className={`text-lg ${ikigai ? "text-gray-300" : sjmc ? "text-[#4B5563]" : ""}`}>{gc.errorTitle}</p>
+        <p className={`text-lg w-80 ${ikigai ? "text-gray-400" : sjmc ? "text-[#6B7280]" : ""}`}>{gc.errorBody}</p>
         {ikigai ? (
           <button
             className="w-84 rounded-full bg-[#5CE0D8] px-5 py-3 text-lg font-semibold text-[#0B0F1A]"
@@ -107,7 +132,7 @@ export function GameCompleteScreen({
             style={{ backgroundColor: "#E8793B" }}
             onClick={() => { saveResult(); saveProgress(); }}
           >
-            RETRY
+            {gc.retry}
           </button>
         ) : (
           <Button
@@ -162,9 +187,9 @@ export function GameCompleteScreen({
           <FaCheck className="mx-auto size-14" style={{ color: "#E8793B" }} />
         </div>
         <div>
-          <h2 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>Assessment Complete</h2>
+          <h2 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>{gc.complete}</h2>
           <p className="mt-6 text-sm font-medium w-84 text-[#6B7280]">
-            Your report is ready to view.
+            {gc.ready}
           </p>
         </div>
         <div className="h-16 tall:h-20" />
@@ -174,7 +199,7 @@ export function GameCompleteScreen({
             style={{ backgroundColor: "#E8793B" }}
             onClick={() => Router.push(getHookReportPath())}
           >
-            View report
+            {gc.viewReport}
           </button>
         </div>
       </div>

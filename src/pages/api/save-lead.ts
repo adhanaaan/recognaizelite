@@ -8,7 +8,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 //   hookikigai  → public.hookikigai_leads  (new, no dedup)
 //   healthtechx → public.demo_leads        (new, B2B columns, no dedup)
 //   tcmbrain    → public.tcmbrain_leads    (new, B2C + TCM indices, no dedup)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain"]);
+//   sjmcmandarin→ public.leads             (Mandarin SJMC variant; segmented by clinic column)
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin"]);
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;

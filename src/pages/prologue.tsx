@@ -4,9 +4,11 @@ import { useEffect } from "react";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
+import { setAppLanguage } from "src/lib/translations";
 
 export default function PrologueEntry() {
   useEffect(() => {
+    setAppLanguage("ENGLISH");
     setHookClinic("Prologue Clinic");
     setHookReportPath("/prologue-report");
     setAssessmentMode("short");
