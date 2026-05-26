@@ -7,6 +7,7 @@ import { preloadImages } from "src/lib/image-cache";
 import { t } from "src/lib/translations";
 import { useTaskProgress } from "src/stores/useTaskProgress";
 import { isDarkHookMode, getHookClinic, isPrologueMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
+import { readStoredAppLanguage } from "src/constants";
 import { getTaskStatus } from "src/utils/task-verif";
 import { Background } from "../components/Layout/Background";
 import { BackButton } from "./BackButton";
@@ -95,6 +96,14 @@ export function TaskInstruction() {
   const sjmc = isSjmcMode();
 
   if (sjmc) {
+    // /sjmc and /sjmcmandarin share clinic "SJMC"; the Mandarin funnel is told
+    // apart by the persisted app language so back navigation and copy stay in
+    // the visitor's chosen language.
+    const isMandarin = readStoredAppLanguage() === "MANDARIN";
+    const sjmcBackUrl = isMandarin ? "/sjmcmandarin" : "/sjmc";
+    const sjmcInstruction = isMandarin
+      ? "在 60 秒内，尽可能多地将符号与其对应的数字匹配起来。"
+      : "Match as many symbols to their numbers as possible within 60 seconds.";
     return (
       <div
         className="w-full h-[100dvh] overflow-x-hidden overflow-y-auto fc"
@@ -104,7 +113,7 @@ export function TaskInstruction() {
           <div className="justify-between w-full mx-auto f">
             <button
               className="items-center justify-center px-3 py-1.5 rounded-full f font-semibold text-[#4B5563] border border-[#D1C4B8]"
-              onClick={() => Router.replace("/sjmc")}
+              onClick={() => Router.replace(sjmcBackUrl)}
             >
               <svg className="mr-2 size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -115,9 +124,9 @@ export function TaskInstruction() {
           </div>
 
           <div className="w-full mx-auto text-center cc grow">
-            <h1 style={{ color: "#E8793B", fontFamily: "Georgia, 'Times New Roman', serif" }}>{task.name}</h1>
+            <h1 style={{ color: "#E8793B", fontFamily: "Georgia, 'Times New Roman', serif" }}>{t.SM["Symbol Matching"]}</h1>
             <p className="text-sm font-medium sm:text-lg text-[#4B5563]">
-              Match as many symbols to their numbers as possible within 60 seconds.
+              {sjmcInstruction}
             </p>
 
             <DemoGIFContainer name={task.name} className="h-full scale-90 min-h-80 max-h-[520px]" />
