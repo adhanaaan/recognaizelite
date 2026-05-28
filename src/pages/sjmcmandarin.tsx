@@ -36,14 +36,14 @@ export default function SjmcMandarinEntry() {
     <>
       <Head>
         <meta name="theme-color" content="#FAEEE6" />
-        <title>脑健康筛查 | SJMC 世界健康日</title>
-        <meta property="og:title" content="你常锻炼身体，那你锻炼过大脑吗？" />
-        <meta property="og:description" content="SJMC 世界健康日免费 60 秒脑速测试。无需下载应用，即时出结果。" />
+        <title>脑健康筛查 | SJMC @ Banting Community Day</title>
+        <meta property="og:title" content="经常锻炼身体，那你有经常锻炼你的大脑吗？" />
+        <meta property="og:description" content="SJMC @ Banting Community Day 免费 60 秒脑速测试。无需下载应用，即时出结果。" />
         <meta property="og:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="你常锻炼身体，那你锻炼过大脑吗？" />
-        <meta name="twitter:description" content="SJMC 世界健康日免费 60 秒脑速测试。" />
+        <meta name="twitter:title" content="经常锻炼身体，那你有经常锻炼你的大脑吗？" />
+        <meta name="twitter:description" content="SJMC @ Banting Community Day 免费 60 秒脑速测试。" />
         <meta name="twitter:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
       </Head>
       <div
@@ -57,7 +57,7 @@ export default function SjmcMandarinEntry() {
             style={{ backgroundColor: "rgba(232,121,59,0.12)", border: "1px solid rgba(232,121,59,0.25)" }}
           >
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#E8793B]">
-              SJMC 世界健康日
+              SJMC @ Banting Community Day
             </span>
           </div>
         </div>
@@ -68,16 +68,16 @@ export default function SjmcMandarinEntry() {
             className="text-[#1F2937] text-[34px] sm:text-[42px] leading-[1.15] font-normal"
             style={{ fontFamily: CJK_SERIF }}
           >
-            你常锻炼身体，
+            经常锻炼身体，
             <br />
-            那你锻炼过你的
+            那你有经常锻炼你的
             <em className="not-italic text-[#E8793B]">大脑</em>
             吗？
           </h1>
           <p className="mt-4 text-[#4B5563] text-[15px] leading-relaxed">
-            今天你已经检查了体重指数、血压和血糖。
+            你已经检查了体重，血压和血糖。
             <br />
-            <span className="font-semibold text-[#1F2937]">现在，检查一下掌控这一切的器官。</span>
+            <span className="font-semibold text-[#1F2937]">现在，检查一下掌控身体一切的器官 — 大脑。</span>
           </p>
         </div>
 
