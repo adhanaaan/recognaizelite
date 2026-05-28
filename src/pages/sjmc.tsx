@@ -28,14 +28,14 @@ export default function SjmcEntry() {
     <>
       <Head>
         <meta name="theme-color" content="#FAEEE6" />
-        <title>Brain Health Screening | World Health Day @ SJMC</title>
+        <title>Brain Health Screening | SJMC @ Banting Community Day</title>
         <meta property="og:title" content="You train your body. Have you trained your brain?" />
-        <meta property="og:description" content="Free 60-second brain speed test at SJMC World Health Day. No app needed — instant results." />
+        <meta property="og:description" content="Free 60-second brain speed test at SJMC @ Banting Community Day. No app needed — instant results." />
         <meta property="og:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="You train your body. Have you trained your brain?" />
-        <meta name="twitter:description" content="Free 60-second brain speed test at SJMC World Health Day." />
+        <meta name="twitter:description" content="Free 60-second brain speed test at SJMC @ Banting Community Day." />
         <meta name="twitter:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
       </Head>
       <div
@@ -49,7 +49,7 @@ export default function SjmcEntry() {
             style={{ backgroundColor: "rgba(232,121,59,0.12)", border: "1px solid rgba(232,121,59,0.25)" }}
           >
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#E8793B]">
-              World Health Day @ SJMC
+              SJMC @ Banting Community Day
             </span>
           </div>
         </div>

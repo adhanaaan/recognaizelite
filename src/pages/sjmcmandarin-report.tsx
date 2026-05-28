@@ -172,7 +172,12 @@ export default function SjmcMandarinReportPage() {
     if (submitting) return;
 
     const trimmed = emailInput.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    const whatsappTrimmed = whatsappInput.trim();
+    if (!trimmed && !whatsappTrimmed) {
+      setFormError("请填写电子邮箱或 WhatsApp（任填一项即可）。");
+      return;
+    }
+    if (trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       setFormError("请输入有效的电子邮箱地址。");
       return;
     }
@@ -202,11 +207,11 @@ export default function SjmcMandarinReportPage() {
     const referrer = typeof document !== "undefined" ? document.referrer || null : null;
 
     const payload = {
-      email: trimmed,
+      email: trimmed || null,
       clinic: "sjmcmandarin",
       ageRange: ageInput,
       gender: genderInput,
-      whatsapp: whatsappInput.trim() || null,
+      whatsapp: whatsappTrimmed || null,
       score: typeof task2Score === "number" ? task2Score : null,
       percentile: report ? Math.round(report.percentile) : null,
       severity: report ? SEVERITY_TO_KEY[report.severity] : null,
@@ -224,7 +229,7 @@ export default function SjmcMandarinReportPage() {
         const data = await res.json().catch(() => null);
         throw new Error(data?.error || "保存失败，请重试。");
       }
-      localStorage.setItem(LEAD_EMAIL_KEY, trimmed);
+      if (trimmed) localStorage.setItem(LEAD_EMAIL_KEY, trimmed);
       setEmailSubmitted(true);
     } catch (err) {
       setFormError((err as Error).message || "保存失败，请重试。");
@@ -366,7 +371,7 @@ export default function SjmcMandarinReportPage() {
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  <p className="text-[13px] font-semibold text-[#4B5563]">输入您的电子邮箱以查看您的得分</p>
+                  <p className="text-[13px] font-semibold text-[#4B5563]">输入电子邮箱或 WhatsApp 以查看您的得分</p>
                 </div>
               </div>
             )}
@@ -395,7 +400,7 @@ export default function SjmcMandarinReportPage() {
               想查看完整结果吗？
             </h3>
             <p className="mt-3 text-[14px] leading-relaxed text-[#6B7280] text-center">
-              输入您的电子邮箱，解锁详细的百分位得分，了解其含义，并获取改善建议。
+              填写电子邮箱<strong>或</strong> WhatsApp（任填一项），解锁详细的百分位得分，了解其含义，并获取改善建议。
             </p>
             <form onSubmit={handleEmailSubmit} className="mt-5 space-y-3">
               <input
@@ -416,7 +421,7 @@ export default function SjmcMandarinReportPage() {
                   onChange={(e) => { setWhatsappInput(e.target.value); setFormError(""); }}
                   className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors"
                 />
-                <p className="mt-1 text-[11px] text-[#9CA3AF]">选填——用于后续联系。</p>
+                <p className="mt-1 text-[11px] text-[#9CA3AF]">电子邮箱或 WhatsApp 任填一项即可。</p>
               </div>
 
               {/* Age range */}

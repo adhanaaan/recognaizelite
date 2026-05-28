@@ -56,15 +56,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const body = (req.body ?? {}) as Record<string, unknown>;
 
-  // --- Required: email + clinic ---
-  const emailRaw = str(body.email);
-  if (!emailRaw || !EMAIL_RE.test(emailRaw)) {
-    return res.status(400).json({ error: "Invalid email address" });
-  }
+  // --- Clinic + contact channel ---
+  // SJMC's Banting Community Day audience skews senior; many can't recall an
+  // email on the spot. For the SJMC funnels we accept "email OR WhatsApp"; all
+  // other clinics still require email.
+  const SJMC_CLINICS = new Set(["sjmc", "sjmcmandarin"]);
 
   const clinic = str(body.clinic);
   if (!clinic || !ALLOWED_CLINICS.has(clinic)) {
     return res.status(400).json({ error: "Unsupported clinic" });
+  }
+
+  const emailRaw = str(body.email);
+  if (emailRaw && !EMAIL_RE.test(emailRaw)) {
+    return res.status(400).json({ error: "Invalid email address" });
+  }
+  if (!emailRaw && !SJMC_CLINICS.has(clinic)) {
+    return res.status(400).json({ error: "Invalid email address" });
   }
 
   // --- Shared scoring/attribution fields ---
@@ -98,6 +106,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     whatsapp = cleaned;
   }
 
+  // SJMC funnels: require at least one contact channel.
+  if (SJMC_CLINICS.has(clinic) && !emailRaw && !whatsapp) {
+    return res.status(400).json({ error: "Please provide an email or WhatsApp number" });
+  }
+
   let supabase;
   try {
     supabase = getSupabaseAdmin();
@@ -107,7 +120,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const sharedRow = {
-    email: emailRaw,
+    email: emailRaw, // nullable for SJMC clinics when WhatsApp is supplied instead
     whatsapp,
     score,
     percentile,

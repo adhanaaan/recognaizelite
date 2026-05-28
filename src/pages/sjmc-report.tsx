@@ -163,7 +163,12 @@ export default function SjmcReportPage() {
     if (submitting) return;
 
     const trimmed = emailInput.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    const whatsappTrimmed = whatsappInput.trim();
+    if (!trimmed && !whatsappTrimmed) {
+      setFormError("Please enter your email or WhatsApp number.");
+      return;
+    }
+    if (trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       setFormError("Please enter a valid email address.");
       return;
     }
@@ -194,11 +199,11 @@ export default function SjmcReportPage() {
     const referrer = typeof document !== "undefined" ? document.referrer || null : null;
 
     const payload = {
-      email: trimmed,
+      email: trimmed || null,
       clinic: "sjmc",
       ageRange: ageInput,
       gender: genderInput,
-      whatsapp: whatsappInput.trim() || null,
+      whatsapp: whatsappTrimmed || null,
       score: typeof task2Score === "number" ? task2Score : null,
       percentile: report ? Math.round(report.percentile) : null,
       severity: report ? SEVERITY_TO_KEY[report.severity] : null,
@@ -216,7 +221,7 @@ export default function SjmcReportPage() {
         const data = await res.json().catch(() => null);
         throw new Error(data?.error || "Failed to save. Please try again.");
       }
-      localStorage.setItem(LEAD_EMAIL_KEY, trimmed);
+      if (trimmed) localStorage.setItem(LEAD_EMAIL_KEY, trimmed);
       setEmailSubmitted(true);
     } catch (err) {
       setFormError((err as Error).message || "Failed to save. Please try again.");
@@ -358,7 +363,7 @@ export default function SjmcReportPage() {
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  <p className="text-[13px] font-semibold text-[#4B5563]">Enter your email to reveal your score</p>
+                  <p className="text-[13px] font-semibold text-[#4B5563]">Enter your email or WhatsApp to reveal your score</p>
                 </div>
               </div>
             )}
@@ -387,7 +392,7 @@ export default function SjmcReportPage() {
               Want to see your full results?
             </h3>
             <p className="mt-3 text-[14px] leading-relaxed text-[#6B7280] text-center">
-              Enter your email to unlock your detailed percentile score, learn what it means, and get tips to improve.
+              Enter your email <strong>or</strong> WhatsApp (whichever is easier) to unlock your detailed percentile score, learn what it means, and get tips to improve.
             </p>
             <form onSubmit={handleEmailSubmit} className="mt-5 space-y-3">
               <input
@@ -408,7 +413,7 @@ export default function SjmcReportPage() {
                   onChange={(e) => { setWhatsappInput(e.target.value); setFormError(""); }}
                   className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors"
                 />
-                <p className="mt-1 text-[11px] text-[#9CA3AF]">Optional — for follow-up.</p>
+                <p className="mt-1 text-[11px] text-[#9CA3AF]">Either email or WhatsApp will do — whichever is easier.</p>
               </div>
 
               {/* Age range */}
