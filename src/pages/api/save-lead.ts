@@ -155,13 +155,86 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: "Cognitive interest note too long" });
     }
 
-    const { error } = await supabase.from("demo_leads").insert({
+    // Brain Health Quiz fields (added with /demo-questions). All optional —
+    // legacy direct hits to /demo-report still post without these and the
+    // row inserts cleanly. Shape: brain_health_score 0-100, risk 0-68,
+    // symptom 0-32, band one of {low,moderate,elevated,high}, persona one
+    // of {neutral,highPerformer,perimenopausal,caregiver}. quiz_answers is
+    // a JSONB answers map keyed by questionId.
+    const ALLOWED_BANDS = new Set(["low", "moderate", "elevated", "high"]);
+    const ALLOWED_PERSONAS = new Set([
+      "neutral",
+      "highPerformer",
+      "perimenopausal",
+      "caregiver",
+    ]);
+
+    const brainHealthScore = num(body.brainHealthScore);
+    if (
+      brainHealthScore !== null &&
+      (brainHealthScore < 0 || brainHealthScore > 100 || !Number.isFinite(brainHealthScore))
+    ) {
+      return res.status(400).json({ error: "Invalid brainHealthScore" });
+    }
+
+    const riskScoreRaw = num(body.riskScore);
+    if (riskScoreRaw !== null && (riskScoreRaw < 0 || riskScoreRaw > 68)) {
+      return res.status(400).json({ error: "Invalid riskScore" });
+    }
+
+    const symptomScoreRaw = num(body.symptomScore);
+    if (symptomScoreRaw !== null && (symptomScoreRaw < 0 || symptomScoreRaw > 32)) {
+      return res.status(400).json({ error: "Invalid symptomScore" });
+    }
+
+    const band = str(body.band);
+    if (band && !ALLOWED_BANDS.has(band)) {
+      return res.status(400).json({ error: "Invalid band" });
+    }
+
+    const persona = str(body.persona);
+    if (persona && !ALLOWED_PERSONAS.has(persona)) {
+      return res.status(400).json({ error: "Invalid persona" });
+    }
+
+    const quizAnswers =
+      body.quizAnswers && typeof body.quizAnswers === "object" && !Array.isArray(body.quizAnswers)
+        ? (body.quizAnswers as Record<string, unknown>)
+        : null;
+
+    const demoRow = {
       ...sharedRow,
       role,
       organization,
       organization_type: organizationType,
       cognitive_interest: cognitiveInterest,
-    });
+      quiz_answers: quizAnswers,
+      brain_health_score: brainHealthScore,
+      risk_score: riskScoreRaw,
+      symptom_score: symptomScoreRaw,
+      band,
+      persona,
+    };
+
+    let { error } = await supabase.from("demo_leads").insert(demoRow);
+
+    // Schema-cache fallback for older deploys that pre-date migration 009.
+    // Strip the Brain Health Quiz columns and retry so legacy environments
+    // still accept the lead.
+    if (error && error.message?.includes("schema cache")) {
+      const {
+        quiz_answers: _qa,
+        brain_health_score: _bhs,
+        risk_score: _rs,
+        symptom_score: _ss,
+        band: _b,
+        persona: _p,
+        ...legacyRow
+      } = demoRow;
+      void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
+      const retry = await supabase.from("demo_leads").insert(legacyRow);
+      error = retry.error;
+    }
 
     if (error) {
       console.error("Supabase insert (demo_leads) failed:", error);
