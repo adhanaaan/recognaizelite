@@ -2,6 +2,7 @@ import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useMemo } from "react";
 import { QuestionStep } from "src/components/Quiz/QuestionStep";
+import { QuestionGroupScreen } from "src/components/Quiz/QuestionGroupScreen";
 import { QuizProgressBar } from "src/components/Quiz/ProgressBar";
 import { StatCardScreen } from "src/components/Quiz/StatCardScreen";
 import { QUESTIONS_BY_ID } from "src/data/brainHealthQuestions";
@@ -14,21 +15,28 @@ import {
 } from "src/stores/useQuestionnaireStore";
 
 /**
- * Brain Health Quiz orchestrator — the new screen wedged between the 60s
- * Symbol Matching game and the existing /demo-report B2B capture page.
+ * Brain Health Quiz orchestrator — wedged between the 60s Symbol Matching
+ * game and the existing /demo-report B2B capture page.
  *
- * Step list mirrors b2cfunnel's EVENT_FLOW, extended with the universal
- * questions (hot flushes / family history / hearing / vision) so this
- * demo carries the *full* question bank. Conditional branching matches
- * the source: hot flushes only when sex=female, persistence only when
- * forgetfulness is reported. Stat cards punctuate the flow with
- * credibility — Lancet (after health), IMH WiSE (after lifestyle —
- * Singapore-specific), Salthouse (after symptoms — bridges back to the
- * game).
+ * Step structure mirrors b2cfunnel's FULL_FLOW (sibling repo,
+ * src/config/funnelFlow.ts). The wins over a flat one-question-per-screen
+ * list are the `questionGroup` blocks: the health-history group
+ * (BP / cholesterol / diabetes / hearing / vision) and the lifestyle
+ * group (smoking / sleep / exercise / diet / alcohol) each collapse five
+ * yes/no taps into one labelled screen — the audience never feels like
+ * they're 20 questions deep.
+ *
+ * Conditional branching:
+ *   - hotFlushes appears only when sex === "female"
+ *   - persistence appears only when forgetfulness was noticed
+ *
+ * Stat cards punctuate the flow with credibility (Lancet 2024 →
+ * IMH WiSE 2024 → Salthouse 2017).
  */
 
 type StepDef =
   | { kind: "question"; questionId: string }
+  | { kind: "questionGroup"; title: string; questionIds: string[] }
   | { kind: "statCard"; cardId: string };
 
 const ALL_STEPS: StepDef[] = [
@@ -36,17 +44,17 @@ const ALL_STEPS: StepDef[] = [
   { kind: "question", questionId: "sex" },
   { kind: "question", questionId: "hotFlushes" },
   { kind: "question", questionId: "familyHistory" },
-  { kind: "question", questionId: "highBp" },
-  { kind: "question", questionId: "highCholesterol" },
-  { kind: "question", questionId: "diabetes" },
-  { kind: "question", questionId: "hearingLoss" },
-  { kind: "question", questionId: "visionLoss" },
+  {
+    kind: "questionGroup",
+    title: "A bit of health history",
+    questionIds: ["highBp", "highCholesterol", "diabetes", "hearingLoss", "visionLoss"],
+  },
   { kind: "statCard", cardId: "lancet2024" },
-  { kind: "question", questionId: "smoking" },
-  { kind: "question", questionId: "sleep" },
-  { kind: "question", questionId: "exercise" },
-  { kind: "question", questionId: "diet" },
-  { kind: "question", questionId: "alcohol" },
+  {
+    kind: "questionGroup",
+    title: "Your lifestyle",
+    questionIds: ["smoking", "sleep", "exercise", "diet", "alcohol"],
+  },
   { kind: "statCard", cardId: "imhWise" },
   { kind: "question", questionId: "tracks" },
   { kind: "question", questionId: "concentrating" },
@@ -57,14 +65,14 @@ const ALL_STEPS: StepDef[] = [
   { kind: "statCard", cardId: "salthouse" },
 ];
 
-function showIfPasses(question: Question, answers: Answers): boolean {
+function questionVisible(question: Question, answers: Answers): boolean {
   if (!question.showIf) return true;
   const target = answers[question.showIf.questionId];
   if (target === undefined) return false;
   const expected = Array.isArray(question.showIf.equals)
     ? question.showIf.equals
     : [question.showIf.equals];
-  return expected.includes(String(target));
+  return typeof target === "string" && expected.includes(target);
 }
 
 function visibleSteps(answers: Answers): StepDef[] {
@@ -72,14 +80,25 @@ function visibleSteps(answers: Answers): StepDef[] {
     if (step.kind !== "question") return true;
     const q = QUESTIONS_BY_ID[step.questionId];
     if (!q) return false;
-    return showIfPasses(q, answers);
+    return questionVisible(q, answers);
   });
 }
 
-// Total questions visible if every conditional fired — used as a stable
-// denominator for the progress bar so the UI doesn't shrink/expand as
-// conditional questions appear/disappear.
-const QUESTION_COUNT = ALL_STEPS.filter((s) => s.kind === "question").length;
+const isQuestionPage = (step: StepDef) =>
+  step.kind === "question" || step.kind === "questionGroup";
+
+/** 1-based question-page count up to and including `cursor`. */
+function questionNumber(steps: StepDef[], cursor: number): number {
+  let n = 0;
+  for (let i = 0; i <= cursor && i < steps.length; i++) {
+    if (isQuestionPage(steps[i])) n++;
+  }
+  return n;
+}
+
+function totalQuestionPages(steps: StepDef[]): number {
+  return steps.filter(isQuestionPage).length;
+}
 
 export default function DemoQuestionsPage() {
   const answers = useQuestionnaireStore((s) => s.answers);
@@ -110,28 +129,23 @@ export default function DemoQuestionsPage() {
     };
   }, []);
 
-  // Clamp the step pointer if conditional rewrites shorten the list (e.g. the
-  // user changed forgetfulness and persistence disappeared).
+  // Clamp the cursor when conditional rewrites shorten the step list.
   useEffect(() => {
     if (currentStep > steps.length) setCurrentStep(steps.length);
   }, [currentStep, steps.length]);
 
-  // After the final step, hand off to the existing demo-report page. The
-  // questionnaire store is persisted for the report to read.
+  // Hand off to the report once we've walked past the last step.
   useEffect(() => {
-    if (currentStep >= steps.length) {
+    if (currentStep >= steps.length && steps.length > 0) {
       Router.replace("/demo-report");
     }
   }, [currentStep, steps.length]);
 
   const advance = () => setCurrentStep(currentStep + 1);
-
-  const handleAnswer = (questionId: string, value: AnswerValue) => {
-    setAnswer(questionId, value);
-    advance();
+  const goBack = () => {
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
 
-  // Show a placeholder while the redirect is in flight.
   if (currentStep >= steps.length) {
     return (
       <div
@@ -144,11 +158,9 @@ export default function DemoQuestionsPage() {
   }
 
   const step = steps[currentStep];
-
-  // Track how many *question* screens precede this one for the progress bar.
-  const questionsAnswered = steps
-    .slice(0, currentStep)
-    .filter((s) => s.kind === "question").length;
+  const canGoBack = currentStep > 0;
+  const totalPages = totalQuestionPages(steps);
+  const currentPage = questionNumber(steps, currentStep);
 
   return (
     <>
@@ -157,26 +169,44 @@ export default function DemoQuestionsPage() {
         <meta name="theme-color" content="#FAEEE6" />
       </Head>
       <div
-        className="min-h-[100dvh] w-full px-5 py-6 sm:px-8 sm:py-10"
+        className="min-h-[100dvh] w-full"
         style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
       >
-        <QuizProgressBar current={questionsAnswered} total={QUESTION_COUNT} />
+        <div className="max-w-[480px] mx-auto px-5 sm:px-6 pt-6 pb-12">
+          <QuizProgressBar current={isQuestionPage(step) ? currentPage : currentPage} total={totalPages} />
 
-        <div className="mt-8 sm:mt-12 pb-12">
-          {step.kind === "question" ? (
-            <QuestionStep
-              key={step.questionId}
-              question={QUESTIONS_BY_ID[step.questionId]}
-              initial={answers[step.questionId]}
-              onAnswer={(value) => handleAnswer(step.questionId, value)}
-            />
-          ) : (
-            <StatCardScreen
-              key={step.cardId}
-              card={STAT_CARDS_BY_ID[step.cardId]}
-              onContinue={advance}
-            />
-          )}
+          <div className="mt-8">
+            {step.kind === "question" && (
+              <QuestionStep
+                key={step.questionId}
+                question={QUESTIONS_BY_ID[step.questionId]}
+                value={answers[step.questionId]}
+                canGoBack={canGoBack}
+                onAnswer={(value) => setAnswer(step.questionId, value)}
+                onNext={advance}
+                onBack={goBack}
+              />
+            )}
+            {step.kind === "questionGroup" && (
+              <QuestionGroupScreen
+                key={step.title}
+                title={step.title}
+                questions={step.questionIds.map((id) => QUESTIONS_BY_ID[id]).filter(Boolean)}
+                answers={answers}
+                canGoBack={canGoBack}
+                onAnswer={(qid, value) => setAnswer(qid, value)}
+                onNext={advance}
+                onBack={goBack}
+              />
+            )}
+            {step.kind === "statCard" && (
+              <StatCardScreen
+                key={step.cardId}
+                card={STAT_CARDS_BY_ID[step.cardId]}
+                onNext={advance}
+              />
+            )}
+          </div>
         </div>
       </div>
     </>

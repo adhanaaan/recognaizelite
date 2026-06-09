@@ -1,10 +1,13 @@
-import { useState } from "react";
 import type { Question, AnswerValue, CitationTag } from "src/types/quiz";
+import { OptionButton, optionColsClass } from "./OptionButton";
 
 interface QuestionStepProps {
   question: Question;
-  initial: AnswerValue | undefined;
+  value: AnswerValue | undefined;
+  canGoBack: boolean;
   onAnswer: (value: AnswerValue) => void;
+  onNext: () => void;
+  onBack: () => void;
 }
 
 const CITATION_LABELS: Record<NonNullable<CitationTag>, string> = {
@@ -22,91 +25,98 @@ function citationLabel(tag: CitationTag): string | null {
   return CITATION_LABELS[tag] ?? null;
 }
 
-export function QuestionStep({ question, initial, onAnswer }: QuestionStepProps) {
+/**
+ * Single-question screen. Single-select auto-advances after a short beat
+ * so the chosen option is visible (mirrors b2cfunnel/event). Multi-select
+ * waits for an explicit Continue.
+ *
+ * "Nothing in particular" on the `tracks` multi-select is exclusive of
+ * the other options, matching b2cfunnel's behaviour.
+ */
+export function QuestionStep({
+  question,
+  value,
+  canGoBack,
+  onAnswer,
+  onNext,
+  onBack,
+}: QuestionStepProps) {
   const isMulti = question.multiSelect === true || question.type === "multi-select";
-  const [multiSelection, setMultiSelection] = useState<string[]>(
-    Array.isArray(initial) ? initial : []
-  );
+  const selected: string[] = Array.isArray(value)
+    ? value
+    : typeof value === "string"
+      ? [value]
+      : [];
 
-  const citation = citationLabel(question.citation ?? null);
-
-  const handleSingle = (optionId: string) => onAnswer(optionId);
-
-  const toggleMulti = (optionId: string) => {
-    setMultiSelection((prev) =>
-      prev.includes(optionId) ? prev.filter((id) => id !== optionId) : [...prev, optionId]
-    );
+  const handleSingle = (optionId: string) => {
+    onAnswer(optionId);
+    // Brief beat so the visual selection registers before we navigate.
+    setTimeout(onNext, 220);
   };
 
-  const handleMultiContinue = () => onAnswer(multiSelection);
+  const handleMulti = (optionId: string) => {
+    if (optionId === "nothing") {
+      onAnswer(["nothing"]);
+      return;
+    }
+    const base = selected.filter((s) => s !== "nothing");
+    const next = base.includes(optionId)
+      ? base.filter((s) => s !== optionId)
+      : [...base, optionId];
+    onAnswer(next);
+  };
+
+  const citation = citationLabel(question.citation ?? null);
+  const cols = optionColsClass(question.options);
 
   return (
-    <div className="w-full max-w-[440px] mx-auto">
-      <h2
-        className="text-[#1F2937] text-[22px] sm:text-[26px] leading-[1.25] font-normal text-center"
+    <div className="w-full max-w-[480px] mx-auto">
+      <h1
+        className="text-[#1F2937] text-[24px] sm:text-[28px] leading-[1.25] font-bold"
         style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
       >
         {question.prompt}
-      </h2>
+      </h1>
       {question.helpText && (
-        <p className="mt-2 text-center text-[13px] text-[#6B7280]">{question.helpText}</p>
+        <p className="mt-2 text-[14px] text-[#6B7280] leading-relaxed">{question.helpText}</p>
       )}
 
-      <div className="mt-6 space-y-2.5">
-        {question.options?.map((option) => {
-          const selected = isMulti
-            ? multiSelection.includes(option.id)
-            : initial === option.id;
-          return (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => (isMulti ? toggleMulti(option.id) : handleSingle(option.id))}
-              className="w-full rounded-xl border px-4 py-3.5 text-left text-[15px] font-medium transition-all active:scale-[0.99]"
-              style={{
-                backgroundColor: selected ? "#E8793B" : "#ffffff",
-                borderColor: selected ? "#E8793B" : "#E5D5CA",
-                color: selected ? "#ffffff" : "#1F2937",
-                boxShadow: selected ? "0 4px 16px rgba(232,121,59,0.25)" : "0 1px 2px rgba(0,0,0,0.03)",
-              }}
-            >
-              <span className="flex items-center gap-3">
-                {isMulti && (
-                  <span
-                    className="inline-flex items-center justify-center size-5 rounded-md border flex-shrink-0"
-                    style={{
-                      backgroundColor: selected ? "#ffffff" : "transparent",
-                      borderColor: selected ? "#ffffff" : "#D1C4B8",
-                    }}
-                  >
-                    {selected && (
-                      <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="#E8793B" strokeWidth={3}>
-                        <path d="M5 12l5 5L20 7" />
-                      </svg>
-                    )}
-                  </span>
-                )}
-                <span>{option.label}</span>
-              </span>
-            </button>
-          );
-        })}
+      <div className={`mt-6 grid gap-2.5 ${cols}`}>
+        {question.options?.map((opt) => (
+          <OptionButton
+            key={opt.id}
+            label={opt.label}
+            multi={isMulti}
+            selected={selected.includes(opt.id)}
+            onClick={() => (isMulti ? handleMulti(opt.id) : handleSingle(opt.id))}
+          />
+        ))}
       </div>
 
-      {isMulti && (
+      <div className="mt-8 flex items-center justify-between gap-4">
         <button
           type="button"
-          onClick={handleMultiContinue}
-          disabled={multiSelection.length === 0}
-          className="mt-5 w-full rounded-full px-6 py-3.5 text-[15px] font-bold text-white tracking-wide transition-all active:scale-[0.98] disabled:opacity-40"
-          style={{ backgroundColor: "#E8793B", boxShadow: "0 4px 24px rgba(232,121,59,0.30)" }}
+          onClick={onBack}
+          disabled={!canGoBack}
+          className="rounded-lg px-4 py-2.5 text-[14px] font-semibold text-[#9CA3AF] transition-colors hover:text-[#1F2937] disabled:invisible"
         >
-          Continue
+          ← Back
         </button>
-      )}
+        {isMulti && (
+          <button
+            type="button"
+            onClick={onNext}
+            disabled={selected.length === 0}
+            className="rounded-full px-6 py-3 text-[15px] font-bold text-white tracking-wide transition-all active:scale-[0.98] disabled:opacity-40"
+            style={{ backgroundColor: "#E8793B", boxShadow: "0 4px 20px rgba(232,121,59,0.25)" }}
+          >
+            Continue
+          </button>
+        )}
+      </div>
 
       {citation && (
-        <p className="mt-5 text-center text-[10.5px] text-[#9CA3AF]">
+        <p className="mt-6 text-center text-[10.5px] text-[#9CA3AF]">
           Based on {citation}
         </p>
       )}
