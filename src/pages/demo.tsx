@@ -6,6 +6,7 @@ import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
 import { setAppLanguage } from "src/lib/translations";
+import { resetQuestionnaire } from "src/stores/useQuestionnaireStore";
 
 export default function DemoEntry() {
   const liveCount = useCumulativeCounter({
@@ -21,24 +22,28 @@ export default function DemoEntry() {
     // without touching every isSjmcMode() call site. The actual lead is tagged
     // "healthtechx" by the demo-report page when the API call is made.
     setHookClinic("SJMC");
-    setHookReportPath("/demo-report");
+    // The game's end-of-task router uses hookReportPath. We detour through
+    // the Brain Health Quiz first; /demo-questions hands off to /demo-report
+    // after the final answer.
+    setHookReportPath("/demo-questions");
     setAssessmentMode("short");
     resetTaskProgress();
     resetResults();
+    resetQuestionnaire();
   }, []);
 
   return (
     <>
       <Head>
         <meta name="theme-color" content="#FAEEE6" />
-        <title>Brain Health Screening | HealthTechX Asia 2026</title>
+        <title>Brain Health Check | HealthTechX Asia 2026</title>
         <meta property="og:title" content="Train your brain at HealthTechX Asia." />
-        <meta property="og:description" content="Free 60-second brain speed test at the ReCOGnAIze booth. No app needed — instant results." />
+        <meta property="og:description" content="A free Brain Health Check at the ReCOGnAIze booth — cognitive task + a short evidence-based questionnaire, instant result." />
         <meta property="og:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Train your brain at HealthTechX Asia." />
-        <meta name="twitter:description" content="Free 60-second brain speed test at the ReCOGnAIze booth." />
+        <meta name="twitter:description" content="Free Brain Health Check at the ReCOGnAIze booth." />
         <meta name="twitter:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
       </Head>
       <div
@@ -69,9 +74,9 @@ export default function DemoEntry() {
             <em className="text-[#E8793B]">brain?</em>
           </h1>
           <p className="mt-4 text-[#4B5563] text-[15px] leading-relaxed">
-            Step into the booth for a 60-second screening.
+            A 60-second cognitive task, then a short evidence-based questionnaire.
             <br />
-            <span className="font-semibold text-[#1F2937]">See where your processing speed lands.</span>
+            <span className="font-semibold text-[#1F2937]">Get your Brain Health Score on the spot.</span>
           </p>
         </div>
 
@@ -92,15 +97,15 @@ export default function DemoEntry() {
           className="w-full max-w-[300px] rounded-full px-8 py-4 text-[17px] font-bold text-white tracking-wide transition-all active:scale-[0.97]"
           style={{ backgroundColor: "#E8793B", boxShadow: "0 4px 24px rgba(232,121,59,0.35)" }}
         >
-          Test My Brain — 60 Seconds
+          Start Brain Health Check
         </button>
 
         {/* Trust signals */}
         <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
           {[
-            { icon: "⚡", label: "60 seconds" },
+            { icon: "🧠", label: "Under 4 minutes" },
             { icon: "📱", label: "No app needed" },
-            { icon: "📊", label: "Instant results" },
+            { icon: "📊", label: "Evidence-based" },
           ].map((item) => (
             <div
               key={item.label}

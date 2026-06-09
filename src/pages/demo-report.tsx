@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Router from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DomainReport, Severity } from "src/types/report";
 import { useResultStore } from "src/stores/useResultStore";
 import { clearHookClinic, clearAssessmentMode } from "src/utils/assessment";
@@ -8,6 +8,16 @@ import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { useKioskAutoReset } from "src/hooks/useKioskAutoReset";
 import { CLINICAL_DISCLAIMER } from "src/utils/disclaimers";
+import {
+  resetQuestionnaire,
+  useQuestionnaireStore,
+} from "src/stores/useQuestionnaireStore";
+import {
+  BANDS,
+  BAND_LABELS,
+  PERSONA_LABELS,
+  computeScore,
+} from "src/lib/brainHealthScoring";
 
 type SeverityVisual = {
   label: "WEAK" | "ADEQUATE" | "STRONG";
@@ -150,8 +160,158 @@ const SEVERITY_TO_KEY: Record<Severity, string> = {
   High: "high",
 };
 
+// --- Brain Health Score panel (headline result for the questioned demo) ---
+
+function softBg(colour: string, alpha = 0.12) {
+  // Convert "#aabbcc" to "rgba(r,g,b,alpha)" for a soft band background.
+  const c = colour.replace("#", "");
+  const r = parseInt(c.slice(0, 2), 16);
+  const g = parseInt(c.slice(2, 4), 16);
+  const b = parseInt(c.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function BrainHealthScorePanel({
+  score,
+  emailSubmitted,
+}: {
+  score: ReturnType<typeof computeScore>;
+  emailSubmitted: boolean;
+}) {
+  const band = BANDS[score.band];
+  const bandSoft = softBg(band.colour, 0.16);
+  const riskPct = Math.min(100, Math.round((score.riskScore / 68) * 100));
+  const symptomPct = Math.min(100, Math.round((score.symptomScore / 32) * 100));
+
+  return (
+    <section
+      className="rounded-2xl p-5 sm:p-6"
+      style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}
+    >
+      <p className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+        Your Brain Health Score
+      </p>
+
+      <div className="mt-3 relative">
+        <div style={!emailSubmitted ? { filter: "blur(12px)", pointerEvents: "none" } : undefined}>
+          {/* Headline number + band */}
+          <div className="flex flex-col items-center">
+            <div
+              className="rounded-full flex flex-col items-center justify-center"
+              style={{
+                width: 144,
+                height: 144,
+                backgroundColor: bandSoft,
+                border: `4px solid ${band.colour}`,
+              }}
+            >
+              <span
+                className="font-bold leading-none"
+                style={{ fontSize: 48, color: band.colour, fontFamily: "Georgia, 'Times New Roman', serif" }}
+              >
+                {score.total}
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#9CA3AF] mt-1">
+                / {score.maxTotal}
+              </span>
+            </div>
+            <span
+              className="mt-3 rounded-full px-4 py-1 text-[12px] font-bold uppercase tracking-[0.15em]"
+              style={{ backgroundColor: bandSoft, color: band.colour }}
+            >
+              {BAND_LABELS[score.band]} band
+            </span>
+          </div>
+
+          {/* Axis breakdown */}
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <div className="rounded-xl p-3" style={{ backgroundColor: "#FFF7F2" }}>
+              <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+                Risk factors
+              </div>
+              <div className="mt-1 flex items-baseline gap-1">
+                <span className="text-[22px] font-bold text-[#1F2937]">{score.riskScore}</span>
+                <span className="text-[12px] text-[#9CA3AF]">/ 68</span>
+              </div>
+              <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(232,121,59,0.10)" }}>
+                <div className="h-full rounded-full" style={{ width: `${riskPct}%`, backgroundColor: "#E8793B" }} />
+              </div>
+              <div className="mt-1.5 text-[11px] text-[#6B7280] capitalize">
+                {BAND_LABELS[score.riskBand]} risk
+              </div>
+            </div>
+            <div className="rounded-xl p-3" style={{ backgroundColor: "#FFF7F2" }}>
+              <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+                Symptom signal
+              </div>
+              <div className="mt-1 flex items-baseline gap-1">
+                <span className="text-[22px] font-bold text-[#1F2937]">{score.symptomScore}</span>
+                <span className="text-[12px] text-[#9CA3AF]">/ 32</span>
+              </div>
+              <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(232,121,59,0.10)" }}>
+                <div className="h-full rounded-full" style={{ width: `${symptomPct}%`, backgroundColor: "#E8793B" }} />
+              </div>
+              <div className="mt-1.5 text-[11px] text-[#6B7280] capitalize">
+                {BAND_LABELS[score.symptomBand]} signal
+              </div>
+            </div>
+          </div>
+
+          {/* Driving factors (lifestyle/biomedical only) */}
+          {score.drivingFactors.length > 0 && (
+            <div className="mt-5">
+              <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+                What&apos;s driving this
+              </div>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {score.drivingFactors.map((f) => (
+                  <span
+                    key={f.id}
+                    className="rounded-full px-3 py-1 text-[12px] font-medium"
+                    style={{ backgroundColor: "rgba(232,121,59,0.10)", color: "#C25D27" }}
+                  >
+                    {f.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {score.persona !== "neutral" && (
+            <p className="mt-4 text-[12px] text-[#6B7280]">
+              Profile: <span className="font-semibold text-[#1F2937]">{PERSONA_LABELS[score.persona]}</span>
+            </p>
+          )}
+        </div>
+
+        {!emailSubmitted && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="rounded-xl px-5 py-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.88)" }}>
+              <svg className="mx-auto size-5 text-[#9CA3AF] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <p className="text-[13px] font-semibold text-[#4B5563]">Enter your details to reveal your score</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <p className="mt-5 pt-3 text-[10px] leading-relaxed text-[#9CA3AF] text-center border-t border-[#F0E0D4]">
+        Anchored to CAIDE · Lancet Commission on Dementia Prevention (2024) · SCD literature · IMH WiSE Study (2024)
+      </p>
+    </section>
+  );
+}
+
 export default function DemoReportPage() {
   const { result } = useResultStore();
+  const quizAnswers = useQuestionnaireStore((s) => s.answers);
+  const hasQuizAnswers = Object.keys(quizAnswers).length > 0;
+  const brainScore = useMemo(
+    () => (hasQuizAnswers ? computeScore(quizAnswers) : null),
+    [quizAnswers, hasQuizAnswers]
+  );
   const [report, setReport] = useState<DomainReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -172,6 +332,7 @@ export default function DemoReportPage() {
     clearAssessmentMode();
     resetResults();
     resetTaskProgress();
+    resetQuestionnaire();
     Router.replace("/demo");
   };
 
@@ -237,6 +398,17 @@ export default function DemoReportPage() {
       score: typeof task2Score === "number" ? task2Score : null,
       percentile: report ? Math.round(report.percentile) : null,
       severity: report ? SEVERITY_TO_KEY[report.severity] : null,
+      // Brain Health Quiz signals (added with /demo-questions). Stored as
+      // a JSONB blob on demo_leads so the schema stays stable as the
+      // question bank evolves; alongside denormalised columns for the
+      // computed score, the per-axis breakdown, band, and persona to
+      // make lead-dashboard filtering easy.
+      quizAnswers: hasQuizAnswers ? quizAnswers : null,
+      brainHealthScore: brainScore ? brainScore.total : null,
+      riskScore: brainScore ? brainScore.riskScore : null,
+      symptomScore: brainScore ? brainScore.symptomScore : null,
+      band: brainScore ? brainScore.band : null,
+      persona: brainScore ? brainScore.persona : null,
       utm,
       referrer,
     };
@@ -352,6 +524,17 @@ export default function DemoReportPage() {
             HealthTechX Asia 2026 — Your Results
           </p>
         </div>
+
+        {/* Brain Health Score — the new headline panel. Only rendered when
+            the user actually completed the Brain Health Quiz; legacy direct
+            hits to /demo-report (without quiz answers in store) fall through
+            to the existing cognitive panel below. */}
+        {brainScore && (
+          <BrainHealthScorePanel
+            score={brainScore}
+            emailSubmitted={emailSubmitted}
+          />
+        )}
 
         {/* Result Card */}
         <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
