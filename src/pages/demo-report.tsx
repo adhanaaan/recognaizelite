@@ -559,8 +559,24 @@ export default function DemoReportPage() {
             </span>
           </div>
 
-          <div className="mt-4">
-            <BellCurve percentile={Math.round(report.percentile)} severity={severity} />
+          {/* Bell curve stays gated until the form is submitted — the precise
+              percentile is the unlock payoff. The eyebrow / title / severity
+              chip above remain visible as the teaser. */}
+          <div className="mt-4 relative">
+            <div style={!emailSubmitted ? { filter: "blur(12px)", pointerEvents: "none" } : undefined}>
+              <BellCurve percentile={Math.round(report.percentile)} severity={severity} />
+            </div>
+            {!emailSubmitted && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="rounded-xl bg-quizSurface-lowest/95 shadow-card px-5 py-3 text-center">
+                  <svg className="mx-auto size-5 text-quizOutline mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  <p className="text-[13px] font-semibold text-charcoal">Enter your details to reveal your score</p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="mt-4 rounded-xl bg-quizSurface-low p-4">
