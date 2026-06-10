@@ -135,6 +135,15 @@ body {
   backdrop-filter: blur(15px);
 }
 
+/* Brain Health Quiz screens: respect prefers-reduced-motion. The animate-fade-up
+   utility is enabled by the Tailwind keyframe; we just kill it for users who
+   have asked for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none !important;
+  }
+}
+
 .home-logo {
   width: 52px;
   height: 45px;

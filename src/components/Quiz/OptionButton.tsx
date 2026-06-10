@@ -1,9 +1,11 @@
 import type { QuestionOption } from "src/types/quiz";
 
 /**
- * Pick how many columns of options to render, based on the longest label.
- * Mirrors b2cfunnel's `colsClass` in QuestionGroupScreen so dense "Yes / No /
- * Not sure" rows pack 3 wide while long-prose options stay full width.
+ * Choose how many columns of compact option buttons to render, based on the
+ * longest label. Mirrors b2cfunnel's `colsClass` in QuestionGroupScreen so
+ * "Yes / No / Not sure" packs three across, mid-length labels pack two, and
+ * long-prose answers stay full width. ONLY used inside QuestionGroupScreen
+ * — the standalone QuestionStep stacks full-width tiles vertically instead.
  */
 export function optionColsClass(options: QuestionOption[] | undefined): string {
   if (!options || options.length === 0) return "grid-cols-1";
@@ -13,7 +15,7 @@ export function optionColsClass(options: QuestionOption[] | undefined): string {
   return "grid-cols-1";
 }
 
-interface OptionButtonProps {
+interface OptionTileProps {
   label: string;
   selected: boolean;
   multi?: boolean;
@@ -21,42 +23,76 @@ interface OptionButtonProps {
 }
 
 /**
- * Single option button shared by the single-question and grouped-question
- * screens. Selected state is a soft peach container with an orange border
- * and dark text — restrained, not full saturation.
+ * Full-width option tile shown on standalone question screens. Matches the
+ * b2cfunnel OptionButton verbatim: left-aligned label, indicator on the
+ * left (rounded checkbox for multi, rounded-full radio for single), peach
+ * container background when selected, shadow that lifts on hover.
  */
-export function OptionButton({ label, selected, multi, onClick }: OptionButtonProps) {
+export function OptionTile({ label, selected, multi, onClick }: OptionTileProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className="rounded-xl border-2 px-3 py-3 text-center text-[14px] font-semibold transition-all active:scale-[0.985]"
-      style={{
-        backgroundColor: selected ? "rgba(232,121,59,0.10)" : "#ffffff",
-        borderColor: selected ? "#E8793B" : "#E5D5CA",
-        color: "#1F2937",
-        boxShadow: selected ? "0 2px 10px rgba(232,121,59,0.12)" : "0 1px 2px rgba(0,0,0,0.02)",
-      }}
+      className={[
+        "flex w-full items-center gap-3 rounded-lg border-2 px-5 py-4 text-left text-[15px] sm:text-base font-medium transition font-jakarta",
+        "shadow-card hover:-translate-y-0.5 hover:shadow-float",
+        selected
+          ? "border-quizPrimary bg-quizPrimary-container text-quizPrimary-onContainer"
+          : "border-quizOutline-variant bg-quizSurface-lowest text-charcoal hover:border-quizPrimary",
+      ].join(" ")}
     >
-      <span className="flex items-center justify-center gap-2">
-        {multi && (
-          <span
-            className="inline-flex items-center justify-center size-4 rounded-md border-2 flex-shrink-0"
-            style={{
-              backgroundColor: selected ? "#E8793B" : "transparent",
-              borderColor: selected ? "#E8793B" : "#D1C4B8",
-            }}
-          >
-            {selected && (
-              <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="#ffffff" strokeWidth={3}>
-                <path d="M5 12l5 5L20 7" />
-              </svg>
-            )}
-          </span>
+      <span
+        aria-hidden
+        className={[
+          "flex h-5 w-5 flex-shrink-0 items-center justify-center border-2 transition",
+          multi ? "rounded" : "rounded-full",
+          selected ? "border-quizPrimary bg-quizPrimary" : "border-quizOutline",
+        ].join(" ")}
+      >
+        {selected && (
+          <svg viewBox="0 0 12 12" className="h-3 w-3 text-quizPrimary-on">
+            <path
+              d="M2 6l3 3 5-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         )}
-        <span className="leading-tight">{label}</span>
       </span>
+      <span>{label}</span>
+    </button>
+  );
+}
+
+interface CompactOptionProps {
+  label: string;
+  selected: boolean;
+  onClick: () => void;
+}
+
+/**
+ * Compact centered-text button used inside QuestionGroupScreen. Smaller
+ * than OptionTile (no indicator, no shadow, no lift) so several short
+ * answers can sit in a row without dominating.
+ */
+export function CompactOption({ label, selected, onClick }: CompactOptionProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={[
+        "rounded-lg border-2 px-3 py-3 text-center text-[13.5px] sm:text-sm font-medium transition font-jakarta",
+        selected
+          ? "border-quizPrimary bg-quizPrimary-container text-quizPrimary-onContainer"
+          : "border-quizOutline-variant bg-quizSurface-lowest text-charcoal hover:border-quizPrimary",
+      ].join(" ")}
+    >
+      {label}
     </button>
   );
 }

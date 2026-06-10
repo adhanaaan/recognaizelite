@@ -148,12 +148,9 @@ export default function DemoQuestionsPage() {
 
   if (currentStep >= steps.length) {
     return (
-      <div
-        className="min-h-[100dvh] w-full flex items-center justify-center px-6"
-        style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
-      >
-        <p className="text-[#6B7280] text-[15px]">Preparing your result…</p>
-      </div>
+      <main className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#fff4ee] via-quizSurface to-quizSurface-container px-6">
+        <p className="text-quizSecondary text-[15px] font-jakarta">Preparing your result…</p>
+      </main>
     );
   }
 
@@ -166,14 +163,23 @@ export default function DemoQuestionsPage() {
     <>
       <Head>
         <title>Brain Health Check | Gray Matter Solutions</title>
-        <meta name="theme-color" content="#FAEEE6" />
+        <meta name="theme-color" content="#fff4ee" />
       </Head>
-      <div
-        className="min-h-[100dvh] w-full"
-        style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 sm:px-6 pt-6 pb-12">
-          <QuizProgressBar current={isQuestionPage(step) ? currentPage : currentPage} total={totalPages} />
+      {/* ScreenShell — ported from b2cfunnel/src/components/ui/ScreenShell.tsx.
+          The warm-cream gradient plus the two ambient blurred circles is what
+          gives the quiz the same depth and intentional feel as the source. */}
+      <main className="relative flex min-h-[100dvh] flex-col items-center overflow-hidden bg-gradient-to-b from-[#fff4ee] via-quizSurface to-quizSurface-container px-4 py-8 sm:py-12">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-quizPrimary/20 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-[#ffb37a]/30 blur-3xl"
+        />
+
+        <div className="relative w-full max-w-lg">
+          <QuizProgressBar current={currentPage} total={totalPages} />
 
           <div className="mt-8">
             {step.kind === "question" && (
@@ -208,7 +214,7 @@ export default function DemoQuestionsPage() {
             )}
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

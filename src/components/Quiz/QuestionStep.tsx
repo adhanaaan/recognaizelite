@@ -1,5 +1,5 @@
 import type { Question, AnswerValue, CitationTag } from "src/types/quiz";
-import { OptionButton, optionColsClass } from "./OptionButton";
+import { OptionTile } from "./OptionButton";
 
 interface QuestionStepProps {
   question: Question;
@@ -26,12 +26,11 @@ function citationLabel(tag: CitationTag): string | null {
 }
 
 /**
- * Single-question screen. Single-select auto-advances after a short beat
- * so the chosen option is visible (mirrors b2cfunnel/event). Multi-select
- * waits for an explicit Continue.
- *
- * "Nothing in particular" on the `tracks` multi-select is exclusive of
- * the other options, matching b2cfunnel's behaviour.
+ * Single-question screen. Matches b2cfunnel's QuestionScreen layout:
+ * Jakarta display heading, vertically-stacked full-width tile buttons,
+ * single-select auto-advances after a 220ms beat, multi-select waits for
+ * an explicit Continue. "Nothing in particular" on the tracks question
+ * is exclusive of the others.
  */
 export function QuestionStep({
   question,
@@ -50,7 +49,6 @@ export function QuestionStep({
 
   const handleSingle = (optionId: string) => {
     onAnswer(optionId);
-    // Brief beat so the visual selection registers before we navigate.
     setTimeout(onNext, 220);
   };
 
@@ -67,23 +65,19 @@ export function QuestionStep({
   };
 
   const citation = citationLabel(question.citation ?? null);
-  const cols = optionColsClass(question.options);
 
   return (
-    <div className="w-full max-w-[480px] mx-auto">
-      <h1
-        className="text-[#1F2937] text-[24px] sm:text-[28px] leading-[1.25] font-bold"
-        style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-      >
+    <div key={question.id} className="animate-fade-up">
+      <h1 className="font-display text-[24px] sm:text-[28px] font-bold leading-snug text-charcoal">
         {question.prompt}
       </h1>
       {question.helpText && (
-        <p className="mt-2 text-[14px] text-[#6B7280] leading-relaxed">{question.helpText}</p>
+        <p className="mt-2 text-[14px] text-quizSecondary font-jakarta">{question.helpText}</p>
       )}
 
-      <div className={`mt-6 grid gap-2.5 ${cols}`}>
+      <div className="mt-6 space-y-3">
         {question.options?.map((opt) => (
-          <OptionButton
+          <OptionTile
             key={opt.id}
             label={opt.label}
             multi={isMulti}
@@ -98,7 +92,7 @@ export function QuestionStep({
           type="button"
           onClick={onBack}
           disabled={!canGoBack}
-          className="rounded-lg px-4 py-2.5 text-[14px] font-semibold text-[#9CA3AF] transition-colors hover:text-[#1F2937] disabled:invisible"
+          className="rounded-lg px-4 py-2.5 text-[14px] font-semibold text-quizSecondary transition-colors hover:text-charcoal disabled:invisible font-jakarta"
         >
           ← Back
         </button>
@@ -107,8 +101,7 @@ export function QuestionStep({
             type="button"
             onClick={onNext}
             disabled={selected.length === 0}
-            className="rounded-full px-6 py-3 text-[15px] font-bold text-white tracking-wide transition-all active:scale-[0.98] disabled:opacity-40"
-            style={{ backgroundColor: "#E8793B", boxShadow: "0 4px 20px rgba(232,121,59,0.25)" }}
+            className="rounded-lg bg-quizPrimary px-6 py-3 text-[15px] font-bold text-quizPrimary-on shadow-card transition hover:brightness-105 disabled:opacity-40 font-jakarta"
           >
             Continue
           </button>
@@ -116,7 +109,7 @@ export function QuestionStep({
       </div>
 
       {citation && (
-        <p className="mt-6 text-center text-[10.5px] text-[#9CA3AF]">
+        <p className="mt-6 text-center text-[10.5px] text-quizOutline font-jakarta">
           Based on {citation}
         </p>
       )}
