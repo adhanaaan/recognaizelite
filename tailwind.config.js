@@ -55,8 +55,18 @@ module.exports = {
           DEFAULT: "#7d5747",
           on: "#ffffff",
         },
+        quizTertiary: {
+          DEFAULT: "#6c5d2e",
+          on: "#ffffff",
+        },
+        quizError: {
+          DEFAULT: "#ba1a1a",
+          on: "#ffffff",
+        },
         quizSurface: {
           DEFAULT: "#fff8f6",
+          dim: "#ecd5cc",
+          bright: "#fff8f6",
           lowest: "#ffffff",
           low: "#fff1eb",
           container: "#fbe7de",

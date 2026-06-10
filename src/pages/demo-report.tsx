@@ -26,9 +26,9 @@ type SeverityVisual = {
 };
 
 const severityVisuals: Record<Severity, SeverityVisual> = {
-  Low: { label: "WEAK", color: "#EF4444", softBg: "rgba(239,68,68,0.10)" },
-  Medium: { label: "ADEQUATE", color: "#E8793B", softBg: "rgba(232,121,59,0.10)" },
-  High: { label: "STRONG", color: "#34D399", softBg: "rgba(52,211,153,0.10)" },
+  Low: { label: "WEAK", color: "#ba1a1a", softBg: "rgba(186,26,26,0.08)" },
+  Medium: { label: "ADEQUATE", color: "#f77528", softBg: "rgba(247,117,40,0.10)" },
+  High: { label: "STRONG", color: "#97c459", softBg: "rgba(151,196,89,0.12)" },
 };
 
 // --- Bell Curve (light-themed) ---
@@ -101,18 +101,18 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
   const lx = mx - lw / 2, ly = baseY + 4;
 
   return (
-    <div className="overflow-hidden rounded-2xl p-4" style={{ backgroundColor: "#FFF7F2" }}>
+    <div className="overflow-hidden rounded-2xl bg-quizSurface-low p-4">
       <svg className="mx-auto block w-full h-auto" viewBox={`0 0 ${BC_W} ${BC_H}`} preserveAspectRatio="xMidYMid meet">
-        <rect width={BC_W} height={BC_H} fill="#FFF7F2" rx="8" />
-        <path d={buildAreaPath()} fill="rgba(232,121,59,0.12)" />
-        <path d={buildCurvePath()} fill="none" stroke="#E8793B" strokeWidth="2.5" strokeOpacity="0.8" />
+        <rect width={BC_W} height={BC_H} fill="#fff1eb" rx="8" />
+        <path d={buildAreaPath()} fill="rgba(247,117,40,0.12)" />
+        <path d={buildCurvePath()} fill="none" stroke="#f77528" strokeWidth="2.5" strokeOpacity="0.8" />
         <line x1={mx} y1={BC_P} x2={mx} y2={baseY} stroke={severity.color} strokeWidth="2" strokeDasharray="6 6" />
-        <circle cx={mx} cy={my} r="6" fill="#FFF7F2" stroke={severity.color} strokeWidth="2.5" />
+        <circle cx={mx} cy={my} r="6" fill="#fff1eb" stroke={severity.color} strokeWidth="2.5" />
         <rect x={lx} y={ly} width={lw} height={lh} rx="10" fill={severity.color} />
         <text x={mx} y={ly + lh / 2 + 6} textAnchor="middle" fontSize="20" fontWeight="700" fill="#ffffff">{labelText}</text>
-        <text x={BC_P} y={BC_H - 8} fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">WEAK</text>
-        <text x={BC_W / 2} y={BC_H - 8} textAnchor="middle" fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">ADEQUATE</text>
-        <text x={BC_W - BC_P} y={BC_H - 8} textAnchor="end" fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">STRONG</text>
+        <text x={BC_P} y={BC_H - 8} fill="#85736b" fontSize="11" fontWeight="700" letterSpacing="1">WEAK</text>
+        <text x={BC_W / 2} y={BC_H - 8} textAnchor="middle" fill="#85736b" fontSize="11" fontWeight="700" letterSpacing="1">ADEQUATE</text>
+        <text x={BC_W - BC_P} y={BC_H - 8} textAnchor="end" fill="#85736b" fontSize="11" fontWeight="700" letterSpacing="1">STRONG</text>
       </svg>
     </div>
   );
@@ -184,11 +184,8 @@ function BrainHealthScorePanel({
   const symptomPct = Math.min(100, Math.round((score.symptomScore / 32) * 100));
 
   return (
-    <section
-      className="rounded-2xl p-5 sm:p-6"
-      style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}
-    >
-      <p className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+    <section className="rounded-2xl bg-quizSurface-lowest border border-quizOutline-variant p-5 sm:p-6 shadow-card font-jakarta">
+      <p className="text-[12px] font-bold uppercase tracking-wider text-quizOutline">
         Your Brain Health Score
       </p>
 
@@ -203,7 +200,7 @@ function BrainHealthScorePanel({
         >
           {BAND_LABELS[score.band]} band
         </span>
-        <p className="mt-1.5 text-[11px] text-[#9CA3AF] uppercase tracking-[0.18em]">
+        <p className="mt-1.5 text-[10.5px] text-quizOutline uppercase tracking-[0.18em]">
           {emailSubmitted ? "Your headline result" : "Provisional · enter details for the full breakdown"}
         </p>
       </div>
@@ -222,45 +219,45 @@ function BrainHealthScorePanel({
               }}
             >
               <span
-                className="font-bold leading-none"
-                style={{ fontSize: 48, color: band.colour, fontFamily: "Georgia, 'Times New Roman', serif" }}
+                className="font-display font-extrabold leading-none"
+                style={{ fontSize: 52, color: band.colour }}
               >
                 {score.total}
               </span>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-[#9CA3AF] mt-1">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-quizOutline mt-1">
                 / {score.maxTotal}
               </span>
             </div>
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <div className="rounded-xl p-3" style={{ backgroundColor: "#FFF7F2" }}>
-              <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+            <div className="rounded-xl bg-quizSurface-low p-3">
+              <div className="text-[10.5px] font-bold uppercase tracking-wider text-quizOutline">
                 Risk factors
               </div>
               <div className="mt-1 flex items-baseline gap-1">
-                <span className="text-[22px] font-bold text-[#1F2937]">{score.riskScore}</span>
-                <span className="text-[12px] text-[#9CA3AF]">/ 68</span>
+                <span className="text-[22px] font-bold text-charcoal">{score.riskScore}</span>
+                <span className="text-[12px] text-quizOutline">/ 68</span>
               </div>
-              <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(232,121,59,0.10)" }}>
-                <div className="h-full rounded-full" style={{ width: `${riskPct}%`, backgroundColor: "#E8793B" }} />
+              <div className="mt-2 h-1.5 rounded-full overflow-hidden bg-quizPrimary/10">
+                <div className="h-full rounded-full bg-quizPrimary" style={{ width: `${riskPct}%` }} />
               </div>
-              <div className="mt-1.5 text-[11px] text-[#6B7280] capitalize">
+              <div className="mt-1.5 text-[11px] text-quizSecondary capitalize">
                 {BAND_LABELS[score.riskBand]} risk
               </div>
             </div>
-            <div className="rounded-xl p-3" style={{ backgroundColor: "#FFF7F2" }}>
-              <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+            <div className="rounded-xl bg-quizSurface-low p-3">
+              <div className="text-[10.5px] font-bold uppercase tracking-wider text-quizOutline">
                 Symptom signal
               </div>
               <div className="mt-1 flex items-baseline gap-1">
-                <span className="text-[22px] font-bold text-[#1F2937]">{score.symptomScore}</span>
-                <span className="text-[12px] text-[#9CA3AF]">/ 32</span>
+                <span className="text-[22px] font-bold text-charcoal">{score.symptomScore}</span>
+                <span className="text-[12px] text-quizOutline">/ 32</span>
               </div>
-              <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(232,121,59,0.10)" }}>
-                <div className="h-full rounded-full" style={{ width: `${symptomPct}%`, backgroundColor: "#E8793B" }} />
+              <div className="mt-2 h-1.5 rounded-full overflow-hidden bg-quizPrimary/10">
+                <div className="h-full rounded-full bg-quizPrimary" style={{ width: `${symptomPct}%` }} />
               </div>
-              <div className="mt-1.5 text-[11px] text-[#6B7280] capitalize">
+              <div className="mt-1.5 text-[11px] text-quizSecondary capitalize">
                 {BAND_LABELS[score.symptomBand]} signal
               </div>
             </div>
@@ -269,12 +266,12 @@ function BrainHealthScorePanel({
 
         {!emailSubmitted && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="rounded-xl px-5 py-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.92)", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
-              <svg className="mx-auto size-5 text-[#9CA3AF] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <div className="rounded-xl bg-quizSurface-lowest/95 shadow-card px-5 py-3 text-center">
+              <svg className="mx-auto size-5 text-quizOutline mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <rect x="3" y="11" width="18" height="11" rx="2" />
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
-              <p className="text-[13px] font-semibold text-[#4B5563]">Enter your details to see your number</p>
+              <p className="text-[13px] font-semibold text-charcoal">Enter your details to see your number</p>
             </div>
           </div>
         )}
@@ -285,15 +282,14 @@ function BrainHealthScorePanel({
           here); persona surfaces when we have signal. */}
       {score.drivingFactors.length > 0 && (
         <div className="mt-6">
-          <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+          <div className="text-[10.5px] font-bold uppercase tracking-wider text-quizOutline">
             What&apos;s driving this
           </div>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {score.drivingFactors.map((f) => (
               <span
                 key={f.id}
-                className="rounded-full px-3 py-1 text-[12px] font-medium"
-                style={{ backgroundColor: "rgba(232,121,59,0.10)", color: "#C25D27" }}
+                className="rounded-full bg-quizPill-bg text-quizPill-text px-3 py-1 text-[12px] font-medium"
               >
                 {f.label}
               </span>
@@ -303,12 +299,12 @@ function BrainHealthScorePanel({
       )}
 
       {score.persona !== "neutral" && (
-        <p className="mt-4 text-[12px] text-[#6B7280]">
-          Profile: <span className="font-semibold text-[#1F2937]">{PERSONA_LABELS[score.persona]}</span>
+        <p className="mt-4 text-[12px] text-quizSecondary">
+          Profile: <span className="font-semibold text-charcoal">{PERSONA_LABELS[score.persona]}</span>
         </p>
       )}
 
-      <p className="mt-5 pt-3 text-[10px] leading-relaxed text-[#9CA3AF] text-center border-t border-[#F0E0D4]">
+      <p className="mt-5 pt-3 text-[10px] leading-relaxed text-quizOutline text-center border-t border-quizOutline-variant/60">
         Anchored to CAIDE · Lancet Commission on Dementia Prevention (2024) · SCD literature · IMH WiSE Study (2024)
       </p>
     </section>
@@ -496,21 +492,28 @@ export default function DemoReportPage() {
   const page = (children: React.ReactNode) => (
     <>
     <Head>
-      <meta name="theme-color" content="#FAEEE6" />
+      <meta name="theme-color" content="#fff4ee" />
     </Head>
-    <div
-      className="min-h-[100dvh] w-full px-5 py-10 sm:px-8 overflow-y-auto"
-      style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
-    >
-      <div className="max-w-2xl mx-auto space-y-6">{children}</div>
-    </div>
+    {/* Clinical Empathy ScreenShell — same gradient + blur circles as the
+        quiz and the landing, so the whole demo flow reads as one surface. */}
+    <main className="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto bg-gradient-to-b from-[#fff4ee] via-quizSurface to-quizSurface-container px-5 py-10 sm:px-8">
+      <div
+        aria-hidden
+        className="pointer-events-none fixed -right-20 -top-24 h-72 w-72 rounded-full bg-quizPrimary/20 blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed -bottom-24 -left-20 h-72 w-72 rounded-full bg-[#ffb37a]/30 blur-3xl"
+      />
+      <div className="relative max-w-2xl mx-auto space-y-6">{children}</div>
+    </main>
     </>
   );
 
   if (loading) {
     return page(
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-[#6B7280] text-lg">Generating your results...</p>
+        <p className="text-quizSecondary text-lg font-jakarta">Generating your results…</p>
       </div>
     );
   }
@@ -518,7 +521,7 @@ export default function DemoReportPage() {
   if (error) {
     return page(
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="rounded-2xl border border-red-300 bg-red-50 p-8 text-center text-red-600">{error}</div>
+        <div className="rounded-2xl border border-quizError/40 bg-quizError/5 p-8 text-center text-quizError font-jakarta">{error}</div>
       </div>
     );
   }
@@ -531,7 +534,7 @@ export default function DemoReportPage() {
         {/* Branding */}
         <div className="text-center pt-2 pb-4">
           <img src="/logo.png" alt="ReCOGnAIze" className="mx-auto w-[60px]" />
-          <p className="text-[#9CA3AF] text-[9px] uppercase mt-3" style={{ letterSpacing: "0.2em" }}>
+          <p className="text-quizOutline text-[9px] font-bold uppercase mt-3 font-jakarta" style={{ letterSpacing: "0.2em" }}>
             Brain Health Check — Your Results
           </p>
         </div>
@@ -547,16 +550,14 @@ export default function DemoReportPage() {
           />
         )}
 
-        {/* Result Card */}
-        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
-          <p className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+        {/* Cognitive screening — secondary panel, complementary to the
+            Brain Health Score above. */}
+        <section className="rounded-2xl bg-quizSurface-lowest border border-quizOutline-variant p-5 sm:p-6 shadow-card font-jakarta">
+          <p className="text-[12px] font-bold uppercase tracking-wider text-quizOutline">
             Cognitive Screening
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
-            <h2
-              className="text-[24px] sm:text-[30px] font-bold uppercase leading-tight text-[#1F2937]"
-              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-            >
+            <h2 className="font-display text-[24px] sm:text-[30px] font-bold uppercase leading-tight text-charcoal">
               {report.title}
             </h2>
             <span
@@ -573,23 +574,23 @@ export default function DemoReportPage() {
             </div>
             {!emailSubmitted && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="rounded-xl px-5 py-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.85)" }}>
-                  <svg className="mx-auto size-5 text-[#9CA3AF] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <div className="rounded-xl bg-quizSurface-lowest/95 shadow-card px-5 py-3 text-center">
+                  <svg className="mx-auto size-5 text-quizOutline mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  <p className="text-[13px] font-semibold text-[#4B5563]">Enter your details to reveal your score</p>
+                  <p className="text-[13px] font-semibold text-charcoal">Enter your details to reveal your score</p>
                 </div>
               </div>
             )}
           </div>
 
           {emailSubmitted && (
-            <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#FFF7F2" }}>
-              <p className="text-[13px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+            <div className="mt-4 rounded-xl bg-quizSurface-low p-4">
+              <p className="text-[13px] font-bold uppercase tracking-wider text-quizOutline">
                 What is {report.title}?
               </p>
-              <p className="mt-2 text-[14px] leading-relaxed text-[#4B5563]">
+              <p className="mt-2 text-[14px] leading-relaxed text-quizSecondary">
                 {report.definition}
               </p>
             </div>
@@ -598,14 +599,11 @@ export default function DemoReportPage() {
 
         {/* B2B qualifier form — shown when email not yet submitted */}
         {!emailSubmitted && (
-          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
-            <h3
-              className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937] text-center"
-              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-            >
+          <section className="rounded-2xl bg-quizSurface-lowest border border-quizOutline-variant p-5 sm:p-6 shadow-card font-jakarta">
+            <h3 className="font-display text-[20px] sm:text-[24px] font-bold leading-snug text-charcoal text-center">
               Want to see your full results?
             </h3>
-            <p className="mt-3 text-[14px] leading-relaxed text-[#6B7280] text-center">
+            <p className="mt-3 text-[14px] leading-relaxed text-quizSecondary text-center">
               Tell us a bit about you so the team can follow up with relevant info.
             </p>
             <form onSubmit={handleEmailSubmit} className="mt-5 space-y-3">
@@ -614,7 +612,7 @@ export default function DemoReportPage() {
                 placeholder="your@email.com"
                 value={emailInput}
                 onChange={(e) => { setEmailInput(e.target.value); setFormError(""); }}
-                className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors"
+                className="w-full rounded-lg border border-quizOutline-variant bg-quizSurface-low px-4 py-3.5 text-[15px] text-charcoal placeholder-quizOutline outline-none focus:border-quizPrimary transition-colors"
               />
 
               <div>
@@ -625,23 +623,23 @@ export default function DemoReportPage() {
                   placeholder="WhatsApp (e.g. +65 9123 4567)"
                   value={whatsappInput}
                   onChange={(e) => { setWhatsappInput(e.target.value); setFormError(""); }}
-                  className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors"
+                  className="w-full rounded-lg border border-quizOutline-variant bg-quizSurface-low px-4 py-3.5 text-[15px] text-charcoal placeholder-quizOutline outline-none focus:border-quizPrimary transition-colors"
                 />
-                <p className="mt-1 text-[11px] text-[#9CA3AF]">Optional — for follow-up.</p>
+                <p className="mt-1 text-[11px] text-quizOutline">Optional — for follow-up.</p>
               </div>
 
               {/* Role */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-quizOutline mb-1.5">
                   Your role
                 </label>
                 <select
                   value={roleInput}
                   onChange={(e) => { setRoleInput(e.target.value); setFormError(""); }}
-                  className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3 text-[15px] text-[#1F2937] outline-none focus:border-[#E8793B] transition-colors appearance-none"
+                  className="w-full rounded-lg border border-quizOutline-variant bg-quizSurface-low px-4 py-3 text-[15px] text-charcoal outline-none focus:border-quizPrimary transition-colors appearance-none"
                   style={{
                     backgroundImage:
-                      "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%239CA3AF' d='M6 8L0 0h12z'/></svg>\")",
+                      "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%2385736b' d='M6 8L0 0h12z'/></svg>\")",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "right 1rem center",
                     paddingRight: "2.5rem",
@@ -656,7 +654,7 @@ export default function DemoReportPage() {
 
               {/* Organization */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-quizOutline mb-1.5">
                   Organization
                 </label>
                 <input
@@ -665,14 +663,14 @@ export default function DemoReportPage() {
                   maxLength={200}
                   value={organizationInput}
                   onChange={(e) => { setOrganizationInput(e.target.value); setFormError(""); }}
-                  className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors"
+                  className="w-full rounded-lg border border-quizOutline-variant bg-quizSurface-low px-4 py-3 text-[15px] text-charcoal placeholder-quizOutline outline-none focus:border-quizPrimary transition-colors"
                 />
               </div>
 
               {/* Cognitive health interest (optional, free text) */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
-                  Interest in cognitive health <span className="text-[#C4B5A8] font-normal normal-case tracking-normal">(optional)</span>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-quizOutline mb-1.5">
+                  Interest in cognitive health <span className="text-quizOutline-variant font-normal normal-case tracking-normal">(optional)</span>
                 </label>
                 <textarea
                   placeholder="What draws you to cognitive health? (research, partnership, deploying for patients, personal, etc.)"
@@ -680,26 +678,22 @@ export default function DemoReportPage() {
                   rows={3}
                   value={cognitiveInterestInput}
                   onChange={(e) => { setCognitiveInterestInput(e.target.value); setFormError(""); }}
-                  className="w-full rounded-xl border border-[#D1C4B8] bg-[#FFF7F2] px-4 py-3 text-[14px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#E8793B] transition-colors resize-none"
+                  className="w-full rounded-lg border border-quizOutline-variant bg-quizSurface-low px-4 py-3 text-[14px] text-charcoal placeholder-quizOutline outline-none focus:border-quizPrimary transition-colors resize-none"
                 />
               </div>
 
               {formError && (
-                <p className="text-red-500 text-[12px]">{formError}</p>
+                <p className="text-quizError text-[12px]">{formError}</p>
               )}
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-full px-8 py-4 text-[16px] font-bold tracking-wide text-white transition-all active:opacity-90 disabled:opacity-60"
-                style={{
-                  backgroundColor: "#E8793B",
-                  boxShadow: "0 0 30px rgba(232,121,59,0.25)",
-                }}
+                className="w-full rounded-lg bg-quizPrimary px-8 py-4 text-[16px] font-bold tracking-wide text-quizPrimary-on shadow-card transition-all hover:brightness-105 hover:shadow-float active:scale-[0.98] disabled:opacity-60"
               >
                 {submitting ? "Saving…" : "Get My Results"}
               </button>
             </form>
-            <p className="mt-3 text-[11px] text-[#9CA3AF] text-center">
+            <p className="mt-3 text-[11px] text-quizOutline text-center">
               We&apos;ll only contact you about ReCOGnAIze. No spam.
             </p>
           </section>
@@ -708,24 +702,21 @@ export default function DemoReportPage() {
         {/* Full report — only shown after email */}
         {emailSubmitted && (
           <>
-            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
-              <h3
-                className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937]"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-              >
+            <section className="rounded-2xl bg-quizSurface-lowest border border-quizOutline-variant p-5 sm:p-6 shadow-card font-jakarta">
+              <h3 className="font-display text-[20px] sm:text-[24px] font-bold leading-snug text-charcoal">
                 {CTA_COPY[report.severity].headline}
               </h3>
-              <p className="mt-4 text-[14px] leading-relaxed text-[#6B7280]">
+              <p className="mt-4 text-[14px] leading-relaxed text-quizSecondary">
                 {CTA_COPY[report.severity].body}
               </p>
 
               <div className="mt-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">Your screening progress</span>
-                  <span className="text-[13px] font-bold" style={{ color: "#E8793B" }}>1 of 4</span>
+                  <span className="text-[12px] font-bold uppercase tracking-wider text-quizOutline">Your screening progress</span>
+                  <span className="text-[13px] font-bold text-quizPrimary">1 of 4</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-[#F0E0D4] overflow-hidden">
-                  <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#E8793B" }} />
+                <div className="h-1.5 rounded-full bg-quizSurface-high overflow-hidden">
+                  <div className="h-full rounded-full w-1/4 bg-quizPrimary" />
                 </div>
               </div>
 
@@ -734,38 +725,35 @@ export default function DemoReportPage() {
                   <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
                     &#10003; Complete
                   </div>
-                  <div className="mt-1 text-[14px] font-bold text-[#1F2937]">Processing Speed</div>
+                  <div className="mt-1 text-[14px] font-bold text-charcoal">Processing Speed</div>
                   <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
                 </div>
                 {LOCKED_AREAS.map((area) => (
-                  <div key={area.name} className="rounded-xl border border-[#E5D5CA] bg-[#FFF7F2] px-4 py-4 text-center relative overflow-hidden">
-                    <div className="text-[#C4B5A8]">
+                  <div key={area.name} className="rounded-xl border border-quizOutline-variant bg-quizSurface-low px-4 py-4 text-center relative overflow-hidden">
+                    <div className="text-quizOutline-variant">
                       <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <rect x="3" y="11" width="18" height="11" rx="2" />
                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                       </svg>
                     </div>
-                    <div className="mt-1 text-[14px] font-bold text-[#6B7280]">{area.name}</div>
-                    <div className="mt-0.5 text-[11px] text-[#9CA3AF]">{area.skill}</div>
+                    <div className="mt-1 text-[14px] font-bold text-quizSecondary">{area.name}</div>
+                    <div className="mt-0.5 text-[11px] text-quizOutline">{area.skill}</div>
                   </div>
                 ))}
               </div>
             </section>
 
-            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ background: "linear-gradient(135deg, #E8793B 0%, #D4693A 100%)" }}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-2">
+            <section className="rounded-2xl p-5 sm:p-6 text-center shadow-card font-jakarta" style={{ background: "linear-gradient(135deg, #f77528 0%, #d65f1d 100%)" }}>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/65 mb-2">
                 Coming Soon
               </p>
-              <h3
-                className="text-[20px] sm:text-[22px] font-bold leading-snug text-white"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-              >
+              <h3 className="font-display text-[20px] sm:text-[22px] font-bold leading-snug text-white">
                 The full ReCOGnAIze assessment is launching soon.
               </h3>
-              <p className="mt-3 text-[13px] text-white/80 leading-relaxed">
-                4 cognitive pillars &middot; 10 minutes &middot; Science-backed
+              <p className="mt-3 text-[13px] text-white/85 leading-relaxed">
+                4 cognitive pillars · 10 minutes · Science-backed
                 <br />
-                Memory &middot; Attention &middot; Processing Speed &middot; Executive Function
+                Memory · Attention · Processing Speed · Executive Function
               </p>
               <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2">
                 <svg className="size-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -775,16 +763,16 @@ export default function DemoReportPage() {
                   You&apos;re on the early access list
                 </span>
               </div>
-              <p className="mt-3 text-[11px] text-white/50">
+              <p className="mt-3 text-[11px] text-white/60">
                 We&apos;ll notify you when the full assessment launches.
               </p>
             </section>
 
-            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
-              <h3 className="text-[18px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+            <section className="rounded-2xl bg-quizSurface-lowest border border-quizOutline-variant p-5 sm:p-6 text-center shadow-card font-jakarta">
+              <h3 className="font-display text-[18px] font-bold text-charcoal">
                 Pass it on.
               </h3>
-              <p className="mt-2 text-[13px] text-[#6B7280]">
+              <p className="mt-2 text-[13px] text-quizSecondary">
                 Share the demo with a colleague.
               </p>
               <button
@@ -801,9 +789,9 @@ export default function DemoReportPage() {
                     setTimeout(() => setShared(false), 3000);
                   }
                 }}
-                className="mt-4 w-full rounded-full px-6 py-3 text-[15px] font-bold transition-all active:scale-[0.97]"
+                className="mt-4 w-full rounded-lg px-6 py-3 text-[15px] font-bold transition-all active:scale-[0.98] shadow-card font-jakarta"
                 style={{
-                  backgroundColor: shared ? "#34D399" : "#1F2937",
+                  backgroundColor: shared ? "#97c459" : "#2d2d2d",
                   color: "#ffffff",
                 }}
               >
@@ -811,23 +799,23 @@ export default function DemoReportPage() {
               </button>
             </section>
 
-            <p className="text-[11px] italic leading-normal text-[#9CA3AF] text-center px-2">
+            <p className="text-[11px] italic leading-normal text-quizOutline text-center px-2 font-jakarta">
               {CLINICAL_DISCLAIMER}
             </p>
           </>
         )}
 
-        {/* Manual reset for booth staff */}
+        {/* Manual reset for staff running the demo on a shared device. */}
         <button
           onClick={handleKioskReset}
-          className="w-full rounded-full border border-[#D1C4B8] py-3 text-center text-[14px] font-medium text-[#9CA3AF] transition-colors hover:border-[#E8793B] hover:text-[#E8793B]"
+          className="w-full rounded-lg border border-quizOutline-variant bg-quizSurface-lowest/60 py-3 text-center text-[14px] font-medium text-quizOutline transition-colors hover:border-quizPrimary hover:text-quizPrimary font-jakarta"
         >
           Start over
         </button>
       </>
     ) : (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="rounded-2xl border border-[#E5D5CA] bg-white p-6 text-center text-sm text-[#6B7280]">
+      <div className="flex items-center justify-center min-h-[60vh] font-jakarta">
+        <div className="rounded-2xl border border-quizOutline-variant bg-quizSurface-lowest p-6 text-center text-sm text-quizSecondary shadow-card">
           Complete the screening game to see your results.
         </div>
       </div>
