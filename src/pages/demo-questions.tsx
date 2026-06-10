@@ -39,30 +39,39 @@ type StepDef =
   | { kind: "questionGroup"; title: string; questionIds: string[] }
   | { kind: "statCard"; cardId: string };
 
+/**
+ * Aggressively compressed flow: four labelled question pages and one stat
+ * card. Goes from ~15 screens down to 5 so an IHH-style exec demo doesn't
+ * feel like a tax. We keep the Singapore-specific IMH WiSE card (lands
+ * hardest with the hospital audience) and drop Lancet + Salthouse, plus
+ * the `tracks` multi-select (no score, only feeds the highPerformer
+ * persona). Conditional rows still appear/disappear inside their group:
+ *
+ *   - hot flushes      appears when sex === "female"
+ *   - persistence       appears when forgetfulness is reported
+ */
 const ALL_STEPS: StepDef[] = [
-  { kind: "question", questionId: "age" },
-  { kind: "question", questionId: "sex" },
-  { kind: "question", questionId: "hotFlushes" },
-  { kind: "question", questionId: "familyHistory" },
   {
     kind: "questionGroup",
-    title: "A bit of health history",
+    title: "About you",
+    questionIds: ["age", "sex", "hotFlushes", "familyHistory"],
+  },
+  {
+    kind: "questionGroup",
+    title: "Your health",
     questionIds: ["highBp", "highCholesterol", "diabetes", "hearingLoss", "visionLoss"],
   },
-  { kind: "statCard", cardId: "lancet2024" },
   {
     kind: "questionGroup",
     title: "Your lifestyle",
     questionIds: ["smoking", "sleep", "exercise", "diet", "alcohol"],
   },
   { kind: "statCard", cardId: "imhWise" },
-  { kind: "question", questionId: "tracks" },
-  { kind: "question", questionId: "concentrating" },
-  { kind: "question", questionId: "judgement" },
-  { kind: "question", questionId: "forgetfulness" },
-  { kind: "question", questionId: "persistence" },
-  { kind: "question", questionId: "someoneElseNoticed" },
-  { kind: "statCard", cardId: "salthouse" },
+  {
+    kind: "questionGroup",
+    title: "Your day-to-day",
+    questionIds: ["concentrating", "judgement", "forgetfulness", "persistence", "someoneElseNoticed"],
+  },
 ];
 
 function questionVisible(question: Question, answers: Answers): boolean {
@@ -75,13 +84,20 @@ function questionVisible(question: Question, answers: Answers): boolean {
   return typeof target === "string" && expected.includes(target);
 }
 
-function visibleSteps(answers: Answers): StepDef[] {
-  return ALL_STEPS.filter((step) => {
-    if (step.kind !== "question") return true;
-    const q = QUESTIONS_BY_ID[step.questionId];
-    if (!q) return false;
-    return questionVisible(q, answers);
-  });
+// Steps don't carry conditional logic any more (everything is a group); we
+// expose a helper so the orchestrator can prune invisible questions inside
+// each group screen.
+function visibleQuestionsForGroup(
+  questionIds: readonly string[],
+  answers: Answers
+): Question[] {
+  return questionIds
+    .map((id) => QUESTIONS_BY_ID[id])
+    .filter((q): q is Question => Boolean(q) && questionVisible(q, answers));
+}
+
+function visibleSteps(_answers: Answers): StepDef[] {
+  return ALL_STEPS;
 }
 
 const isQuestionPage = (step: StepDef) =>
@@ -197,7 +213,7 @@ export default function DemoQuestionsPage() {
               <QuestionGroupScreen
                 key={step.title}
                 title={step.title}
-                questions={step.questionIds.map((id) => QUESTIONS_BY_ID[id]).filter(Boolean)}
+                questions={visibleQuestionsForGroup(step.questionIds, answers)}
                 answers={answers}
                 canGoBack={canGoBack}
                 onAnswer={(qid, value) => setAnswer(qid, value)}
