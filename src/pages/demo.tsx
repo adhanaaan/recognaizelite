@@ -43,73 +43,77 @@ export default function DemoEntry() {
       </Head>
       {/* ScreenShell — same gradient + ambient blur circles as the quiz, so
           the demo flow reads as one continuous Clinical Empathy surface. */}
-      <main className="relative h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden bg-gradient-to-b from-[#fff4ee] via-quizSurface to-quizSurface-container">
+      <main className="relative min-h-[100dvh] w-full flex flex-col px-6 overflow-hidden bg-gradient-to-b from-[#fff4ee] via-quizSurface to-quizSurface-container">
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-quizPrimary/20 blur-3xl"
+          className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-quizPrimary/15 blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-[#ffb37a]/30 blur-3xl"
+          className="pointer-events-none absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-[#ffb37a]/25 blur-3xl"
         />
 
-        <div className="relative w-full max-w-lg flex flex-col items-center">
-          {/* Product-demo eyebrow pill — uses the Pill spec (coral on cream). */}
-          <div className="mb-5">
-            <span className="inline-flex items-center rounded-full bg-quizPill-bg px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-quizPill-text font-jakarta">
-              Product Demo
-            </span>
+        {/* Brand header — lead with the institution so the page never opens
+            anonymously. Previously this lived as a tiny line at the bottom,
+            which made the URL feel like a lead-magnet quiz; promoting it
+            here is the single biggest credibility tweak on this view. */}
+        <header className="relative pt-7 sm:pt-9">
+          <div className="flex items-center justify-center gap-2.5">
+            <img src="/logo.png" alt="ReCOGnAIze" className="size-7" />
+            <div className="text-left leading-tight">
+              <div className="font-display text-[15px] font-bold text-charcoal">ReCOGnAIze</div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-quizSecondary font-jakarta">
+                Digital Cognitive Screening
+              </div>
+            </div>
           </div>
+        </header>
 
-          {/* Headline — Plus Jakarta Sans display weight, charcoal. */}
-          <div className="text-center max-w-[360px] mx-auto mb-6">
-            <h1 className="font-display text-[36px] sm:text-[44px] font-bold leading-[1.05] text-charcoal">
-              How sharp is your{" "}
-              <span className="text-quizPrimary">brain?</span>
+        {/* Hero */}
+        <div className="relative flex-1 flex flex-col items-center justify-center py-10">
+          <div className="w-full max-w-[440px] text-center">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-quizPrimary font-jakarta">
+              Brain Health Check · 4 minutes
+            </p>
+            <h1 className="mt-4 font-display text-[32px] sm:text-[40px] font-bold leading-[1.08] text-charcoal">
+              Try the cognitive screening,
+              <br />
+              on yourself.
             </h1>
             <p className="mt-4 font-jakarta text-[15px] leading-relaxed text-quizSecondary">
-              Try the cognitive screen we built — on yourself, in 4 minutes.
-              <br />
-              <span className="font-semibold text-charcoal">Get your Brain Health Score on the spot.</span>
+              A 60-second cognitive task, then a short evidence-based questionnaire. Your
+              <span className="font-semibold text-charcoal"> Brain Health Score</span> on the spot.
+            </p>
+
+            <button
+              onClick={() => Router.push("/instruction")}
+              className="mt-8 w-full max-w-[300px] rounded-lg bg-quizPrimary px-8 py-4 text-[16px] font-bold text-quizPrimary-on tracking-wide shadow-card transition-all hover:brightness-105 hover:shadow-float active:scale-[0.98] font-jakarta"
+            >
+              Start the check
+            </button>
+
+            {/* Evidence row — replaces the old emoji trust badges with the
+                actual references the questions are anchored to. This is the
+                second credibility lever on this page. */}
+            <p className="mt-6 text-[11px] leading-relaxed text-quizOutline font-jakarta">
+              Anchored to{" "}
+              <span className="font-semibold text-quizSecondary">Lancet Commission 2024</span>
+              {" · "}
+              <span className="font-semibold text-quizSecondary">CAIDE</span>
+              {" · "}
+              <span className="font-semibold text-quizSecondary">SCD literature</span>
+              {" · "}
+              <span className="font-semibold text-quizSecondary">IMH WiSE 2024</span>
             </p>
           </div>
-
-          {/* CTA — Clinical Empathy primary button: 8px corners, shadow-card. */}
-          <button
-            onClick={() => Router.push("/instruction")}
-            className="w-full max-w-[320px] rounded-lg bg-quizPrimary px-8 py-4 text-[17px] font-bold text-quizPrimary-on tracking-wide shadow-card transition-all hover:brightness-105 hover:shadow-float active:scale-[0.98] font-jakarta"
-          >
-            Start Brain Health Check
-          </button>
-
-          {/* Trust signals — small labels on soft cream pills. */}
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-            {[
-              { icon: "🧠", label: "Under 4 minutes" },
-              { icon: "📱", label: "No app needed" },
-              { icon: "📊", label: "Evidence-based" },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="flex items-center gap-1.5 rounded-full bg-quizSurface-lowest/70 px-3 py-1.5"
-              >
-                <span className="text-[12px]">{item.icon}</span>
-                <span className="text-[11px] font-medium text-quizSecondary font-jakarta">{item.label}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* Bottom branding */}
-        <div className="absolute bottom-5 left-0 right-0 text-center">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <img src="/logo.png" alt="ReCOGnAIze" className="w-[22px] h-[22px]" />
-            <span className="text-[11px] font-medium text-quizOutline font-jakarta">ReCOGnAIze</span>
-          </div>
-          <p className="text-[9px] text-quizOutline-variant font-jakarta">
-            Digital Cognitive Screening by Gray Matter Solutions
+        {/* Footer */}
+        <footer className="relative pb-6 text-center">
+          <p className="text-[10.5px] text-quizOutline font-jakarta">
+            By Gray Matter Solutions · Singapore
           </p>
-        </div>
+        </footer>
       </main>
     </>
   );
