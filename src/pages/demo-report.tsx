@@ -532,7 +532,7 @@ export default function DemoReportPage() {
         <div className="text-center pt-2 pb-4">
           <img src="/logo.png" alt="ReCOGnAIze" className="mx-auto w-[60px]" />
           <p className="text-[#9CA3AF] text-[9px] uppercase mt-3" style={{ letterSpacing: "0.2em" }}>
-            HealthTechX Asia 2026 — Your Results
+            Brain Health Check — Your Results
           </p>
         </div>
 
@@ -782,17 +782,17 @@ export default function DemoReportPage() {
 
             <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #E5D5CA" }}>
               <h3 className="text-[18px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
-                Think you&apos;re fast? Prove it.
+                Pass it on.
               </h3>
               <p className="mt-2 text-[13px] text-[#6B7280]">
-                Challenge a colleague to beat your score.
+                Share the demo with a colleague.
               </p>
               <button
                 onClick={async () => {
-                  const text = `I just tested my brain speed at the ReCOGnAIze booth at HealthTechX Asia — can you beat my score? Try it: ${SHARE_URL}`;
+                  const text = `I just tried the Brain Health Check by ReCOGnAIze — take a look: ${SHARE_URL}`;
                   if (navigator.share) {
                     try {
-                      await navigator.share({ title: "Brain Speed Challenge", text, url: SHARE_URL });
+                      await navigator.share({ title: "ReCOGnAIze — Brain Health Check", text, url: SHARE_URL });
                       setShared(true);
                     } catch { /* cancelled */ }
                   } else {
@@ -807,7 +807,7 @@ export default function DemoReportPage() {
                   color: "#ffffff",
                 }}
               >
-                {shared ? "Link copied!" : "Share Challenge"}
+                {shared ? "Link copied!" : "Share the demo"}
               </button>
             </section>
 

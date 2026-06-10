@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
-import { useCumulativeCounter } from "src/hooks/useCumulativeCounter";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
@@ -9,18 +8,14 @@ import { setAppLanguage } from "src/lib/translations";
 import { resetQuestionnaire } from "src/stores/useQuestionnaireStore";
 
 export default function DemoEntry() {
-  const liveCount = useCumulativeCounter({
-    anchorDate: "2026-04-01",
-    baseCount: 40,
-    dailyMin: 20,
-    dailyMax: 45,
-  });
-
   useEffect(() => {
     setAppLanguage("ENGLISH");
     // hookClinic stays "SJMC" so the games render in the existing light theme
     // without touching every isSjmcMode() call site. The actual lead is tagged
-    // "healthtechx" by the demo-report page when the API call is made.
+    // "healthtechx" by the demo-report page when the API call is made — the
+    // tag is a historical artefact from the first event we showed this at;
+    // the URL itself is now a generic B2B product demo (IHH-style sessions,
+    // Gleneagles HK, hospital execs).
     setHookClinic("SJMC");
     // The game's end-of-task router uses hookReportPath. We detour through
     // the Brain Health Quiz first; /demo-questions hands off to /demo-report
@@ -36,58 +31,46 @@ export default function DemoEntry() {
     <>
       <Head>
         <meta name="theme-color" content="#FAEEE6" />
-        <title>Brain Health Check | HealthTechX Asia 2026</title>
-        <meta property="og:title" content="Train your brain at HealthTechX Asia." />
-        <meta property="og:description" content="A free Brain Health Check at the ReCOGnAIze booth — cognitive task + a short evidence-based questionnaire, instant result." />
+        <title>Brain Health Check — Demo | ReCOGnAIze by Gray Matter Solutions</title>
+        <meta property="og:title" content="Try the Brain Health Check." />
+        <meta property="og:description" content="A 60-second cognitive task and a short evidence-based questionnaire. Your Brain Health Score on the spot." />
         <meta property="og:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Train your brain at HealthTechX Asia." />
-        <meta name="twitter:description" content="Free Brain Health Check at the ReCOGnAIze booth." />
+        <meta name="twitter:title" content="Try the Brain Health Check." />
+        <meta name="twitter:description" content="A 60-second cognitive task plus a short evidence-based questionnaire. Brain Health Score on the spot." />
         <meta name="twitter:image" content="https://recognaizelite.vercel.app/api/og-sjmc" />
       </Head>
       <div
         className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden relative"
         style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
       >
-        {/* Event badge */}
+        {/* Product-demo eyebrow — positions the URL as a self-try preview of
+            the product, not a conference activation. */}
         <div className="mb-5">
           <div
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5"
             style={{ backgroundColor: "rgba(232,121,59,0.12)", border: "1px solid rgba(232,121,59,0.25)" }}
           >
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#E8793B]">
-              HealthTechX Asia 2026
+            <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#E8793B]">
+              Product Demo
             </span>
           </div>
         </div>
 
         {/* Headline */}
-        <div className="text-center max-w-[340px] mx-auto mb-5">
+        <div className="text-center max-w-[360px] mx-auto mb-6">
           <h1
             className="text-[#1F2937] text-[36px] sm:text-[44px] leading-[1.08] font-normal"
             style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
           >
-            You build the future of health.
-            <br />
-            Have you tested your{" "}
+            How sharp is your{" "}
             <em className="text-[#E8793B]">brain?</em>
           </h1>
           <p className="mt-4 text-[#4B5563] text-[15px] leading-relaxed">
-            A 60-second cognitive task, then a short evidence-based questionnaire.
+            Try the cognitive screen we built — on yourself, in 4 minutes.
             <br />
             <span className="font-semibold text-[#1F2937]">Get your Brain Health Score on the spot.</span>
-          </p>
-        </div>
-
-        {/* Live event counter */}
-        <div className="flex items-center gap-2 mb-6">
-          <span className="relative flex size-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E8793B] opacity-60" />
-            <span className="relative inline-flex size-2.5 rounded-full bg-[#E8793B]" />
-          </span>
-          <p className="text-[13px] text-[#4B5563]">
-            <span className="font-bold text-[#1F2937]">{liveCount}</span> screened at this event
           </p>
         </div>
 
