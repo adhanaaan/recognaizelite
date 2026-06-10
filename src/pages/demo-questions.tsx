@@ -42,10 +42,18 @@ type StepDef =
 /**
  * Aggressively compressed flow: four labelled question pages and one stat
  * card. Goes from ~15 screens down to 5 so an IHH-style exec demo doesn't
- * feel like a tax. We keep the Singapore-specific IMH WiSE card (lands
- * hardest with the hospital audience) and drop Lancet + Salthouse, plus
- * the `tracks` multi-select (no score, only feeds the highPerformer
- * persona). Conditional rows still appear/disappear inside their group:
+ * feel like a tax.
+ *
+ * Stat card placement: directly before the result reveal. After answering
+ * the honest day-to-day questions, the IMH WiSE Singapore number lands
+ * as the stakes-setter just before the Brain Health Score is shown —
+ * meaningful credibility moment in the right place, rather than a
+ * mid-flow break the user is impatient to swipe past.
+ *
+ * We keep the Singapore-specific IMH WiSE card (lands hardest with the
+ * hospital audience) and drop Lancet + Salthouse, plus the `tracks`
+ * multi-select (no score, only feeds the highPerformer persona).
+ * Conditional rows still appear/disappear inside their group:
  *
  *   - hot flushes      appears when sex === "female"
  *   - persistence       appears when forgetfulness is reported
@@ -66,12 +74,12 @@ const ALL_STEPS: StepDef[] = [
     title: "Your lifestyle",
     questionIds: ["smoking", "sleep", "exercise", "diet", "alcohol"],
   },
-  { kind: "statCard", cardId: "imhWise" },
   {
     kind: "questionGroup",
     title: "Your day-to-day",
     questionIds: ["concentrating", "judgement", "forgetfulness", "persistence", "someoneElseNoticed"],
   },
+  { kind: "statCard", cardId: "imhWise" },
 ];
 
 function questionVisible(question: Question, answers: Answers): boolean {
