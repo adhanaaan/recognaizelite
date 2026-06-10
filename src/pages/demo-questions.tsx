@@ -67,7 +67,7 @@ const ALL_STEPS: StepDef[] = [
   {
     kind: "questionGroup",
     title: "Your health",
-    questionIds: ["highBp", "highCholesterol", "diabetes", "hearingLoss", "visionLoss"],
+    questionIds: ["highBp", "highCholesterol", "diabetes"],
   },
   {
     kind: "questionGroup",
