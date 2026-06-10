@@ -539,19 +539,10 @@ export default function DemoReportPage() {
           </p>
         </div>
 
-        {/* Brain Health Score — the new headline panel. Only rendered when
-            the user actually completed the Brain Health Quiz; legacy direct
-            hits to /demo-report (without quiz answers in store) fall through
-            to the existing cognitive panel below. */}
-        {brainScore && (
-          <BrainHealthScorePanel
-            score={brainScore}
-            emailSubmitted={emailSubmitted}
-          />
-        )}
-
-        {/* Cognitive screening — secondary panel, complementary to the
-            Brain Health Score above. */}
+        {/* HERO: Processing Speed — the result they earned in the 60s game.
+            Un-gated and at the top because it's the moment of payoff for the
+            effort the user just put in; the Brain Health Score panel sits
+            further down as a complementary depth layer. */}
         <section className="rounded-2xl bg-quizSurface-lowest border border-quizOutline-variant p-5 sm:p-6 shadow-card font-jakarta">
           <p className="text-[12px] font-bold uppercase tracking-wider text-quizOutline">
             Cognitive Screening
@@ -568,34 +559,64 @@ export default function DemoReportPage() {
             </span>
           </div>
 
-          <div className="mt-4 relative">
-            <div style={!emailSubmitted ? { filter: "blur(12px)", pointerEvents: "none" } : undefined}>
-              <BellCurve percentile={Math.round(report.percentile)} severity={severity} />
+          <div className="mt-4">
+            <BellCurve percentile={Math.round(report.percentile)} severity={severity} />
+          </div>
+
+          <div className="mt-4 rounded-xl bg-quizSurface-low p-4">
+            <p className="text-[13px] font-bold uppercase tracking-wider text-quizOutline">
+              What is {report.title}?
+            </p>
+            <p className="mt-2 text-[14px] leading-relaxed text-quizSecondary">
+              {report.definition}
+            </p>
+          </div>
+        </section>
+
+        {/* Screening progress + locked cognitive pillars — always visible.
+            Sits right under the Processing Speed hero so the user immediately
+            sees "this is 1 of 4 cognitive pillars; here's the rest". */}
+        <section className="rounded-2xl bg-quizSurface-lowest border border-quizOutline-variant p-5 sm:p-6 shadow-card font-jakarta">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[12px] font-bold uppercase tracking-wider text-quizOutline">Your screening progress</span>
+            <span className="text-[13px] font-bold text-quizPrimary">1 of 4</span>
+          </div>
+          <div className="h-1.5 rounded-full bg-quizSurface-high overflow-hidden">
+            <div className="h-full rounded-full w-1/4 bg-quizPrimary" />
+          </div>
+
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
+              <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
+                &#10003; Complete
+              </div>
+              <div className="mt-1 text-[14px] font-bold text-charcoal">Processing Speed</div>
+              <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
             </div>
-            {!emailSubmitted && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="rounded-xl bg-quizSurface-lowest/95 shadow-card px-5 py-3 text-center">
-                  <svg className="mx-auto size-5 text-quizOutline mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            {LOCKED_AREAS.map((area) => (
+              <div key={area.name} className="rounded-xl border border-quizOutline-variant bg-quizSurface-low px-4 py-4 text-center relative overflow-hidden">
+                <div className="text-quizOutline-variant">
+                  <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  <p className="text-[13px] font-semibold text-charcoal">Enter your details to reveal your score</p>
                 </div>
+                <div className="mt-1 text-[14px] font-bold text-quizSecondary">{area.name}</div>
+                <div className="mt-0.5 text-[11px] text-quizOutline">{area.skill}</div>
               </div>
-            )}
+            ))}
           </div>
-
-          {emailSubmitted && (
-            <div className="mt-4 rounded-xl bg-quizSurface-low p-4">
-              <p className="text-[13px] font-bold uppercase tracking-wider text-quizOutline">
-                What is {report.title}?
-              </p>
-              <p className="mt-2 text-[14px] leading-relaxed text-quizSecondary">
-                {report.definition}
-              </p>
-            </div>
-          )}
         </section>
+
+        {/* Brain Health Score — the secondary depth layer. Band + drivers
+            always visible; the score number + axis breakdown stay gated
+            behind the form below. */}
+        {brainScore && (
+          <BrainHealthScorePanel
+            score={brainScore}
+            emailSubmitted={emailSubmitted}
+          />
+        )}
 
         {/* B2B qualifier form — shown when email not yet submitted */}
         {!emailSubmitted && (
@@ -702,6 +723,10 @@ export default function DemoReportPage() {
         {/* Full report — only shown after email */}
         {emailSubmitted && (
           <>
+            {/* Severity-specific narrative — sits in the post-submit zone as
+                the "why this matters" beat. The progress bar + locked-pillar
+                grid that used to live here have been promoted above the form
+                so they read as structural context, not an upsell payoff. */}
             <section className="rounded-2xl bg-quizSurface-lowest border border-quizOutline-variant p-5 sm:p-6 shadow-card font-jakarta">
               <h3 className="font-display text-[20px] sm:text-[24px] font-bold leading-snug text-charcoal">
                 {CTA_COPY[report.severity].headline}
@@ -709,38 +734,6 @@ export default function DemoReportPage() {
               <p className="mt-4 text-[14px] leading-relaxed text-quizSecondary">
                 {CTA_COPY[report.severity].body}
               </p>
-
-              <div className="mt-6">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[12px] font-bold uppercase tracking-wider text-quizOutline">Your screening progress</span>
-                  <span className="text-[13px] font-bold text-quizPrimary">1 of 4</span>
-                </div>
-                <div className="h-1.5 rounded-full bg-quizSurface-high overflow-hidden">
-                  <div className="h-full rounded-full w-1/4 bg-quizPrimary" />
-                </div>
-              </div>
-
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
-                  <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
-                    &#10003; Complete
-                  </div>
-                  <div className="mt-1 text-[14px] font-bold text-charcoal">Processing Speed</div>
-                  <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
-                </div>
-                {LOCKED_AREAS.map((area) => (
-                  <div key={area.name} className="rounded-xl border border-quizOutline-variant bg-quizSurface-low px-4 py-4 text-center relative overflow-hidden">
-                    <div className="text-quizOutline-variant">
-                      <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <rect x="3" y="11" width="18" height="11" rx="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                    </div>
-                    <div className="mt-1 text-[14px] font-bold text-quizSecondary">{area.name}</div>
-                    <div className="mt-0.5 text-[11px] text-quizOutline">{area.skill}</div>
-                  </div>
-                ))}
-              </div>
             </section>
 
             <section className="rounded-2xl p-5 sm:p-6 text-center shadow-card font-jakarta" style={{ background: "linear-gradient(135deg, #f77528 0%, #d65f1d 100%)" }}>
