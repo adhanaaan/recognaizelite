@@ -1,5 +1,6 @@
 import type { Answers, AnswerValue, Question, CitationTag } from "src/types/quiz";
 import { CompactOption, optionColsClass } from "./OptionButton";
+import { CitationPill } from "./CitationPill";
 
 interface QuestionGroupScreenProps {
   title: string;
@@ -88,10 +89,10 @@ export function QuestionGroupScreen({
         </button>
       </div>
 
-      {groupCitation === "lancet2024" && (
-        <p className="mt-6 text-center text-[10.5px] text-quizOutline font-jakarta">
-          Based on Lancet Commission on Dementia Prevention, 2024
-        </p>
+      {groupCitation && (
+        <div className="mt-6 flex justify-center">
+          <CitationPill tag={groupCitation} />
+        </div>
       )}
     </div>
   );

@@ -1,5 +1,6 @@
-import type { Question, AnswerValue, CitationTag } from "src/types/quiz";
+import type { Question, AnswerValue } from "src/types/quiz";
 import { OptionTile } from "./OptionButton";
+import { CitationPill } from "./CitationPill";
 
 interface QuestionStepProps {
   question: Question;
@@ -8,21 +9,6 @@ interface QuestionStepProps {
   onAnswer: (value: AnswerValue) => void;
   onNext: () => void;
   onBack: () => void;
-}
-
-const CITATION_LABELS: Record<NonNullable<CitationTag>, string> = {
-  lancet2024: "Lancet Commission on Dementia Prevention, 2024",
-  caide: "CAIDE Dementia Risk Score",
-  scd: "Subjective Cognitive Decline (SCD) literature",
-  straw10: "STRAW+10, 2012",
-  salthouse: "Salthouse, Frontiers in Aging Neuroscience, 2017",
-  imhWise: "IMH WiSE Study, 2024",
-  whitehall: "Whitehall II Study",
-};
-
-function citationLabel(tag: CitationTag): string | null {
-  if (!tag) return null;
-  return CITATION_LABELS[tag] ?? null;
 }
 
 /**
@@ -63,8 +49,6 @@ export function QuestionStep({
       : [...base, optionId];
     onAnswer(next);
   };
-
-  const citation = citationLabel(question.citation ?? null);
 
   return (
     <div key={question.id} className="animate-fade-up">
@@ -108,10 +92,10 @@ export function QuestionStep({
         )}
       </div>
 
-      {citation && (
-        <p className="mt-6 text-center text-[10.5px] text-quizOutline font-jakarta">
-          Based on {citation}
-        </p>
+      {question.citation && (
+        <div className="mt-6 flex justify-center">
+          <CitationPill tag={question.citation} />
+        </div>
       )}
     </div>
   );
