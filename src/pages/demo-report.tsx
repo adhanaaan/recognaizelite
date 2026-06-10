@@ -192,9 +192,25 @@ function BrainHealthScorePanel({
         Your Brain Health Score
       </p>
 
-      <div className="mt-3 relative">
+      {/* Always visible — gives the visitor something to chew on before the
+          submit gate. Mirrors b2cfunnel's paywall pattern: band + lifestyle
+          drivers stay open, the actual number and the per-axis breakdown
+          stay gated. */}
+      <div className="mt-4 flex flex-col items-center text-center">
+        <span
+          className="rounded-full px-4 py-1.5 text-[12px] font-bold uppercase tracking-[0.15em]"
+          style={{ backgroundColor: bandSoft, color: band.colour }}
+        >
+          {BAND_LABELS[score.band]} band
+        </span>
+        <p className="mt-1.5 text-[11px] text-[#9CA3AF] uppercase tracking-[0.18em]">
+          {emailSubmitted ? "Your headline result" : "Provisional · enter details for the full breakdown"}
+        </p>
+      </div>
+
+      {/* Gated section — score number + axis breakdown. */}
+      <div className="mt-5 relative">
         <div style={!emailSubmitted ? { filter: "blur(12px)", pointerEvents: "none" } : undefined}>
-          {/* Headline number + band */}
           <div className="flex flex-col items-center">
             <div
               className="rounded-full flex flex-col items-center justify-center"
@@ -215,15 +231,8 @@ function BrainHealthScorePanel({
                 / {score.maxTotal}
               </span>
             </div>
-            <span
-              className="mt-3 rounded-full px-4 py-1 text-[12px] font-bold uppercase tracking-[0.15em]"
-              style={{ backgroundColor: bandSoft, color: band.colour }}
-            >
-              {BAND_LABELS[score.band]} band
-            </span>
           </div>
 
-          {/* Axis breakdown */}
           <div className="mt-6 grid grid-cols-2 gap-3">
             <div className="rounded-xl p-3" style={{ backgroundColor: "#FFF7F2" }}>
               <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#9CA3AF]">
@@ -256,46 +265,48 @@ function BrainHealthScorePanel({
               </div>
             </div>
           </div>
-
-          {/* Driving factors (lifestyle/biomedical only) */}
-          {score.drivingFactors.length > 0 && (
-            <div className="mt-5">
-              <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#9CA3AF]">
-                What&apos;s driving this
-              </div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {score.drivingFactors.map((f) => (
-                  <span
-                    key={f.id}
-                    className="rounded-full px-3 py-1 text-[12px] font-medium"
-                    style={{ backgroundColor: "rgba(232,121,59,0.10)", color: "#C25D27" }}
-                  >
-                    {f.label}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {score.persona !== "neutral" && (
-            <p className="mt-4 text-[12px] text-[#6B7280]">
-              Profile: <span className="font-semibold text-[#1F2937]">{PERSONA_LABELS[score.persona]}</span>
-            </p>
-          )}
         </div>
 
         {!emailSubmitted && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="rounded-xl px-5 py-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.88)" }}>
+            <div className="rounded-xl px-5 py-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.92)", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
               <svg className="mx-auto size-5 text-[#9CA3AF] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <rect x="3" y="11" width="18" height="11" rx="2" />
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
-              <p className="text-[13px] font-semibold text-[#4B5563]">Enter your details to reveal your score</p>
+              <p className="text-[13px] font-semibold text-[#4B5563]">Enter your details to see your number</p>
             </div>
           </div>
         )}
       </div>
+
+      {/* Always visible — what's behind the band. Driving factors are
+          lifestyle/biomedical only (the engine never surfaces symptoms
+          here); persona surfaces when we have signal. */}
+      {score.drivingFactors.length > 0 && (
+        <div className="mt-6">
+          <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+            What&apos;s driving this
+          </div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {score.drivingFactors.map((f) => (
+              <span
+                key={f.id}
+                className="rounded-full px-3 py-1 text-[12px] font-medium"
+                style={{ backgroundColor: "rgba(232,121,59,0.10)", color: "#C25D27" }}
+              >
+                {f.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {score.persona !== "neutral" && (
+        <p className="mt-4 text-[12px] text-[#6B7280]">
+          Profile: <span className="font-semibold text-[#1F2937]">{PERSONA_LABELS[score.persona]}</span>
+        </p>
+      )}
 
       <p className="mt-5 pt-3 text-[10px] leading-relaxed text-[#9CA3AF] text-center border-t border-[#F0E0D4]">
         Anchored to CAIDE · Lancet Commission on Dementia Prevention (2024) · SCD literature · IMH WiSE Study (2024)
