@@ -3,22 +3,31 @@ interface ProgressBarProps {
   total: number;
 }
 
+/**
+ * High-visibility funnel progress bar matching b2cfunnel's ProgressBar:
+ * label + percentage on top, peach track below with an animated orange
+ * fill that transitions over 500ms.
+ */
 export function QuizProgressBar({ current, total }: ProgressBarProps) {
-  const pct = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
+  const pct = total > 0 ? Math.round((Math.min(current, total) / total) * 100) : 0;
   return (
-    <div className="w-full max-w-[440px] mx-auto">
-      <div className="flex justify-between items-baseline mb-1.5">
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9CA3AF]">
-          Brain Health Check
+    <div className="w-full">
+      <div className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-quizSecondary font-jakarta">
+        <span>
+          Question {Math.min(current, total)} of {total}
         </span>
-        <span className="text-[11px] font-semibold text-[#4B5563]">
-          {Math.min(current, total)} / {total}
-        </span>
+        <span>{pct}%</span>
       </div>
-      <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(232,121,59,0.12)" }}>
+      <div
+        className="h-2 w-full overflow-hidden rounded-full bg-quizSurface-high"
+        role="progressbar"
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
         <div
-          className="h-full rounded-full transition-all duration-300"
-          style={{ width: `${pct}%`, backgroundColor: "#E8793B" }}
+          className="h-full rounded-full bg-quizPrimary transition-all duration-500 ease-out"
+          style={{ width: `${pct}%` }}
         />
       </div>
     </div>

@@ -39,30 +39,47 @@ type StepDef =
   | { kind: "questionGroup"; title: string; questionIds: string[] }
   | { kind: "statCard"; cardId: string };
 
+/**
+ * Aggressively compressed flow: four labelled question pages and one stat
+ * card. Goes from ~15 screens down to 5 so an IHH-style exec demo doesn't
+ * feel like a tax.
+ *
+ * Stat card placement: directly before the result reveal. After answering
+ * the honest day-to-day questions, the IMH WiSE Singapore number lands
+ * as the stakes-setter just before the Brain Health Score is shown —
+ * meaningful credibility moment in the right place, rather than a
+ * mid-flow break the user is impatient to swipe past.
+ *
+ * We keep the Singapore-specific IMH WiSE card (lands hardest with the
+ * hospital audience) and drop Lancet + Salthouse, plus the `tracks`
+ * multi-select (no score, only feeds the highPerformer persona).
+ * Conditional rows still appear/disappear inside their group:
+ *
+ *   - hot flushes      appears when sex === "female"
+ *   - persistence       appears when forgetfulness is reported
+ */
 const ALL_STEPS: StepDef[] = [
-  { kind: "question", questionId: "age" },
-  { kind: "question", questionId: "sex" },
-  { kind: "question", questionId: "hotFlushes" },
-  { kind: "question", questionId: "familyHistory" },
   {
     kind: "questionGroup",
-    title: "A bit of health history",
+    title: "About you",
+    questionIds: ["age", "sex", "hotFlushes", "familyHistory"],
+  },
+  {
+    kind: "questionGroup",
+    title: "Your health",
     questionIds: ["highBp", "highCholesterol", "diabetes", "hearingLoss", "visionLoss"],
   },
-  { kind: "statCard", cardId: "lancet2024" },
   {
     kind: "questionGroup",
     title: "Your lifestyle",
     questionIds: ["smoking", "sleep", "exercise", "diet", "alcohol"],
   },
+  {
+    kind: "questionGroup",
+    title: "Your day-to-day",
+    questionIds: ["concentrating", "judgement", "forgetfulness", "persistence", "someoneElseNoticed"],
+  },
   { kind: "statCard", cardId: "imhWise" },
-  { kind: "question", questionId: "tracks" },
-  { kind: "question", questionId: "concentrating" },
-  { kind: "question", questionId: "judgement" },
-  { kind: "question", questionId: "forgetfulness" },
-  { kind: "question", questionId: "persistence" },
-  { kind: "question", questionId: "someoneElseNoticed" },
-  { kind: "statCard", cardId: "salthouse" },
 ];
 
 function questionVisible(question: Question, answers: Answers): boolean {
@@ -75,13 +92,20 @@ function questionVisible(question: Question, answers: Answers): boolean {
   return typeof target === "string" && expected.includes(target);
 }
 
-function visibleSteps(answers: Answers): StepDef[] {
-  return ALL_STEPS.filter((step) => {
-    if (step.kind !== "question") return true;
-    const q = QUESTIONS_BY_ID[step.questionId];
-    if (!q) return false;
-    return questionVisible(q, answers);
-  });
+// Steps don't carry conditional logic any more (everything is a group); we
+// expose a helper so the orchestrator can prune invisible questions inside
+// each group screen.
+function visibleQuestionsForGroup(
+  questionIds: readonly string[],
+  answers: Answers
+): Question[] {
+  return questionIds
+    .map((id) => QUESTIONS_BY_ID[id])
+    .filter((q): q is Question => Boolean(q) && questionVisible(q, answers));
+}
+
+function visibleSteps(_answers: Answers): StepDef[] {
+  return ALL_STEPS;
 }
 
 const isQuestionPage = (step: StepDef) =>
@@ -148,12 +172,9 @@ export default function DemoQuestionsPage() {
 
   if (currentStep >= steps.length) {
     return (
-      <div
-        className="min-h-[100dvh] w-full flex items-center justify-center px-6"
-        style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
-      >
-        <p className="text-[#6B7280] text-[15px]">Preparing your result…</p>
-      </div>
+      <main className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#fff4ee] via-quizSurface to-quizSurface-container px-6">
+        <p className="text-quizSecondary text-[15px] font-jakarta">Preparing your result…</p>
+      </main>
     );
   }
 
@@ -166,14 +187,23 @@ export default function DemoQuestionsPage() {
     <>
       <Head>
         <title>Brain Health Check | Gray Matter Solutions</title>
-        <meta name="theme-color" content="#FAEEE6" />
+        <meta name="theme-color" content="#fff4ee" />
       </Head>
-      <div
-        className="min-h-[100dvh] w-full"
-        style={{ background: "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)" }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 sm:px-6 pt-6 pb-12">
-          <QuizProgressBar current={isQuestionPage(step) ? currentPage : currentPage} total={totalPages} />
+      {/* ScreenShell — ported from b2cfunnel/src/components/ui/ScreenShell.tsx.
+          The warm-cream gradient plus the two ambient blurred circles is what
+          gives the quiz the same depth and intentional feel as the source. */}
+      <main className="relative flex min-h-[100dvh] flex-col items-center overflow-hidden bg-gradient-to-b from-[#fff4ee] via-quizSurface to-quizSurface-container px-4 py-8 sm:py-12">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-quizPrimary/20 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-[#ffb37a]/30 blur-3xl"
+        />
+
+        <div className="relative w-full max-w-lg">
+          <QuizProgressBar current={currentPage} total={totalPages} />
 
           <div className="mt-8">
             {step.kind === "question" && (
@@ -191,7 +221,7 @@ export default function DemoQuestionsPage() {
               <QuestionGroupScreen
                 key={step.title}
                 title={step.title}
-                questions={step.questionIds.map((id) => QUESTIONS_BY_ID[id]).filter(Boolean)}
+                questions={visibleQuestionsForGroup(step.questionIds, answers)}
                 answers={answers}
                 canGoBack={canGoBack}
                 onAnswer={(qid, value) => setAnswer(qid, value)}
@@ -208,7 +238,7 @@ export default function DemoQuestionsPage() {
             )}
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }
