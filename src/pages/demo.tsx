@@ -53,19 +53,16 @@ export default function DemoEntry() {
           className="pointer-events-none absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-[#ffb37a]/25 blur-3xl"
         />
 
-        {/* Brand header — lead with the institution so the page never opens
-            anonymously. Previously this lived as a tiny line at the bottom,
-            which made the URL feel like a lead-magnet quiz; promoting it
-            here is the single biggest credibility tweak on this view. */}
+        {/* Institutional anchor — logo + parent company at the top so the
+            page reads as "Gray Matter Solutions' product preview" rather
+            than an anonymous URL. ReCOGnAIze itself lives in the H1 below
+            so the brand has prime real-estate, not a watermark slot. */}
         <header className="relative pt-7 sm:pt-9">
-          <div className="flex items-center justify-center gap-2.5">
-            <img src="/logo.png" alt="ReCOGnAIze" className="size-7" />
-            <div className="text-left leading-tight">
-              <div className="font-display text-[15px] font-bold text-charcoal">ReCOGnAIze</div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-quizSecondary font-jakarta">
-                Digital Cognitive Screening
-              </div>
-            </div>
+          <div className="flex items-center justify-center gap-2">
+            <img src="/logo.png" alt="Gray Matter Solutions" className="size-5" />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-quizSecondary font-jakarta">
+              Gray Matter Solutions
+            </span>
           </div>
         </header>
 
@@ -75,12 +72,14 @@ export default function DemoEntry() {
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-quizPrimary font-jakarta">
               Brain Health Check · 4 minutes
             </p>
-            <h1 className="mt-4 font-display text-[32px] sm:text-[40px] font-bold leading-[1.08] text-charcoal">
-              Try the cognitive screening,
-              <br />
-              on yourself.
+            {/* H1 — the product name IS the headline. COG / AI highlighted
+                in primary orange to mirror the wordmark used on the main
+                LandingPage (src/NewComponents/LandingPage.tsx). */}
+            <h1 className="mt-4 font-display text-[40px] sm:text-[52px] font-extrabold leading-[1.02] text-charcoal">
+              Re<span className="text-quizPrimary">COG</span>n<span className="text-quizPrimary">AI</span>ze
+              <span className="font-normal text-quizSecondary"> Demo</span>
             </h1>
-            <p className="mt-4 font-jakarta text-[15px] leading-relaxed text-quizSecondary">
+            <p className="mt-5 font-jakarta text-[15px] leading-relaxed text-quizSecondary">
               A 60-second cognitive task, then a short evidence-based questionnaire. Your
               <span className="font-semibold text-charcoal"> Brain Health Score</span> on the spot.
             </p>
@@ -92,9 +91,8 @@ export default function DemoEntry() {
               Start the check
             </button>
 
-            {/* Evidence row — replaces the old emoji trust badges with the
-                actual references the questions are anchored to. This is the
-                second credibility lever on this page. */}
+            {/* Evidence row — the actual references the questions are
+                anchored to. Replaces the old emoji trust badges. */}
             <p className="mt-6 text-[11px] leading-relaxed text-quizOutline font-jakarta">
               Anchored to{" "}
               <span className="font-semibold text-quizSecondary">Lancet Commission 2024</span>
@@ -108,10 +106,11 @@ export default function DemoEntry() {
           </div>
         </div>
 
-        {/* Footer */}
+        {/* Footer — tagline, since the parent company already lives at the
+            top of the page. */}
         <footer className="relative pb-6 text-center">
           <p className="text-[10.5px] text-quizOutline font-jakarta">
-            By Gray Matter Solutions · Singapore
+            Digital Cognitive Screening
           </p>
         </footer>
       </main>
