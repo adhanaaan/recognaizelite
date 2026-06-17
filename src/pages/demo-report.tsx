@@ -3,7 +3,14 @@ import Router from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { DomainReport, Severity } from "src/types/report";
 import { useResultStore } from "src/stores/useResultStore";
-import { clearHookClinic, clearAssessmentMode } from "src/utils/assessment";
+import {
+  clearAssessmentMode,
+  clearDemoFormPrefill,
+  clearDemoSource,
+  clearHookClinic,
+  getDemoFormPrefill,
+  getDemoSource,
+} from "src/utils/assessment";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { useKioskAutoReset } from "src/hooks/useKioskAutoReset";
@@ -334,9 +341,21 @@ export default function DemoReportPage() {
 
   const COGNITIVE_INTEREST_MAX = 1000;
 
+  // Hydrate the form with per-event prefill values (e.g. /demo-pantai sets
+  // role=clinician + org=Pantai Hospital Kuala Lumpur so the visitor doesn't
+  // re-type them). Runs once on mount; visitor can still edit either field.
+  useEffect(() => {
+    const prefill = getDemoFormPrefill();
+    if (!prefill) return;
+    if (prefill.role) setRoleInput(prefill.role);
+    if (prefill.organization) setOrganizationInput(prefill.organization);
+  }, []);
+
   const handleKioskReset = () => {
     clearHookClinic();
     clearAssessmentMode();
+    clearDemoSource();
+    clearDemoFormPrefill();
     resetResults();
     resetTaskProgress();
     resetQuestionnaire();
@@ -397,7 +416,10 @@ export default function DemoReportPage() {
 
     const payload = {
       email: trimmedEmail,
-      clinic: "healthtechx",
+      // Tag the lead with whichever entry route the visitor came from
+      // ("healthtechx" for the generic /demo, "pantai-kl" for /demo-pantai,
+      // etc.) so post-event exports are a single Supabase filter.
+      clinic: getDemoSource(),
       role: roleInput,
       organization: trimmedOrg,
       whatsapp: whatsappInput.trim() || null,

@@ -9,7 +9,20 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 //   healthtechx → public.demo_leads        (new, B2B columns, no dedup)
 //   tcmbrain    → public.tcmbrain_leads    (new, B2C + TCM indices, no dedup)
 //   sjmcmandarin→ public.leads             (Mandarin SJMC variant; segmented by clinic column)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin"]);
+//   pantai-kl   → public.demo_leads        (Pantai KL event variant; tagged via demo_source)
+const ALLOWED_CLINICS = new Set([
+  "sjmc",
+  "hookikigai",
+  "healthtechx",
+  "tcmbrain",
+  "sjmcmandarin",
+  "pantai-kl",
+]);
+
+// Per-event demo variants all funnel into the same demo_leads table; the
+// `demo_source` column distinguishes them so post-event exports are a
+// single `where demo_source = ...` filter.
+const DEMO_CLINICS = new Set(["healthtechx", "pantai-kl"]);
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;
@@ -133,7 +146,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ip_region,
   };
 
-  if (clinic === "healthtechx") {
+  if (DEMO_CLINICS.has(clinic)) {
     // B2B funnel — role + organization required-shape (validated client-side too).
     const role = str(body.role);
     if (role && !(ROLE_OPTIONS as readonly string[]).includes(role)) {
@@ -214,15 +227,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       symptom_score: symptomScoreRaw,
       band,
       persona,
+      // Which event variant this lead came from — "healthtechx" for the
+      // generic /demo route, "pantai-kl" for /demo-pantai, etc. Added in
+      // migration 010; schema-cache fallback below strips it for legacy
+      // deployments that pre-date the column.
+      demo_source: clinic,
     };
 
     let { error } = await supabase.from("demo_leads").insert(demoRow);
 
-    // Schema-cache fallback for older deploys that pre-date migration 009.
-    // Strip the Brain Health Quiz columns and retry so legacy environments
-    // still accept the lead.
+    // Schema-cache fallback for older deploys that pre-date migration 010
+    // (no demo_source column). Strip demo_source first; if that still fails,
+    // strip the migration-009 Brain Health Quiz columns too.
+    if (error && error.message?.includes("schema cache")) {
+      const { demo_source: _ds, ...withoutSource } = demoRow;
+      void _ds;
+      const retry = await supabase.from("demo_leads").insert(withoutSource);
+      error = retry.error;
+    }
     if (error && error.message?.includes("schema cache")) {
       const {
+        demo_source: _ds,
         quiz_answers: _qa,
         brain_health_score: _bhs,
         risk_score: _rs,
@@ -231,7 +256,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         persona: _p,
         ...legacyRow
       } = demoRow;
-      void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
+      void _ds; void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
       const retry = await supabase.from("demo_leads").insert(legacyRow);
       error = retry.error;
     }

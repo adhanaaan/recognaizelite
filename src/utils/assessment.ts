@@ -95,6 +95,62 @@ export function clearHookClinic() {
   localStorage.removeItem(HOOK_REPORT_PATH_KEY);
 }
 
+// --- Demo lead tag (which event the visitor came in from) ---
+// Used by /demo-report to tag the Supabase row with a specific event ID
+// like "pantai-kl" instead of the default catch-all "healthtechx" — so we
+// can pull a clean lead list per event without polluting other columns.
+
+const DEMO_SOURCE_KEY = "recognaize-demo-source";
+const DEFAULT_DEMO_SOURCE = "healthtechx";
+
+export function setDemoSource(source: string) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(DEMO_SOURCE_KEY, source);
+}
+
+export function getDemoSource(): string {
+  if (typeof window === "undefined") return DEFAULT_DEMO_SOURCE;
+  return localStorage.getItem(DEMO_SOURCE_KEY) || DEFAULT_DEMO_SOURCE;
+}
+
+export function clearDemoSource() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(DEMO_SOURCE_KEY);
+}
+
+// --- Demo form prefill (per-event defaults for the B2B capture form) ---
+// Event-day variants like /demo-pantai pre-set the visitor's role + org so
+// nobody has to re-type "Pantai Hospital Kuala Lumpur" on a phone. Values
+// are localStorage-only — the user can still edit them on the form.
+
+const DEMO_PREFILL_KEY = "recognaize-demo-prefill";
+
+export type DemoFormPrefill = {
+  role?: string;
+  organization?: string;
+};
+
+export function setDemoFormPrefill(value: DemoFormPrefill) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(DEMO_PREFILL_KEY, JSON.stringify(value));
+}
+
+export function getDemoFormPrefill(): DemoFormPrefill | null {
+  if (typeof window === "undefined") return null;
+  const raw = localStorage.getItem(DEMO_PREFILL_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as DemoFormPrefill;
+  } catch {
+    return null;
+  }
+}
+
+export function clearDemoFormPrefill() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(DEMO_PREFILL_KEY);
+}
+
 // --- Hook report path (per-clinic custom report pages) ---
 
 const HOOK_REPORT_PATH_KEY = "recognaize-hook-report-path";
