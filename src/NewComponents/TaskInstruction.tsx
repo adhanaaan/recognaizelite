@@ -74,13 +74,13 @@ export function TaskInstruction() {
               </svg>
               {t.GENERAL.Back}
             </button>
-            <TimeRemainingCard time={30} color={accentColor} disabled />
+            <TimeRemainingCard time={novi ? 60 : 30} color={accentColor} disabled />
           </div>
 
           <div className="w-full mx-auto text-center cc grow">
             <h1 style={{ color: accentColor, fontFamily: novi ? "'Poppins', sans-serif" : "Georgia, 'Times New Roman', serif" }}>{task.name}</h1>
             <p className="text-sm font-medium sm:text-lg text-gray-300">
-              {activeTask === "task2" ? "Match as many symbols to their numbers as possible within 30 seconds." : task.instruction}
+              {activeTask === "task2" ? `Match as many symbols to their numbers as possible within ${novi ? 60 : 30} seconds.` : task.instruction}
             </p>
 
             <DemoGIFContainer name={task.name} className="h-full scale-90 min-h-80 max-h-[520px]" />
