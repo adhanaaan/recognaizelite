@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { isDarkHookMode, isSjmcMode } from "src/utils/assessment";
+import { isDarkHookMode, isNoviMode, isSjmcMode } from "src/utils/assessment";
 import { IconList } from "./utils";
 
 export function ReferenceIcons({ randomList, desktopDemo = false }: { randomList: number[]; desktopDemo?: boolean }) {
+  const novi = isNoviMode();
   const ikigai = isDarkHookMode();
   const sjmc = isSjmcMode();
   const darkGlass =
@@ -18,7 +19,7 @@ export function ReferenceIcons({ randomList, desktopDemo = false }: { randomList
         "grid grid-cols-5 c-shadow",
         desktopDemo
           ? `w-[565.20px] h-[312.58px] rounded-[49.15px] border-[1.23px] ${ikigai ? "border-white/20" : "border-white/50"} gap-[12.29px] p-[29.49px]`
-          : `w-full rounded-[40px] gap-1 tall:gap-2 px-4 py-1 tall:py-3 ${ikigai ? "border border-white/10" : sjmc ? "border border-[#E5D5CA]" : ""}`,
+          : `w-full rounded-[40px] gap-1 tall:gap-2 px-4 py-1 tall:py-3 ${novi ? "border border-[#EBB02D]/20" : ikigai ? "border border-white/10" : sjmc ? "border border-[#E5D5CA]" : ""}`,
       ].join(" ")}
       style={{ background: ikigai ? darkGlass : sjmc ? peachGlass : lightGlass }}
     >

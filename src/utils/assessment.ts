@@ -84,9 +84,13 @@ export function isSjmcMode(): boolean {
   return getHookClinic() === "SJMC";
 }
 
-/** Returns true for any clinic that uses dark-themed game UI (Ikigai only) */
+export function isNoviMode(): boolean {
+  return getHookClinic() === "Novi";
+}
+
+/** Returns true for any clinic that uses dark-themed game UI */
 export function isDarkHookMode(): boolean {
-  return isIkigaiMode();
+  return isIkigaiMode() || isNoviMode();
 }
 
 export function clearHookClinic() {

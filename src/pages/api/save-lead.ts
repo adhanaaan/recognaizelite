@@ -9,7 +9,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 //   healthtechx → public.demo_leads        (new, B2B columns, no dedup)
 //   tcmbrain    → public.tcmbrain_leads    (new, B2C + TCM indices, no dedup)
 //   sjmcmandarin→ public.leads             (Mandarin SJMC variant; segmented by clinic column)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin"]);
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi"]);
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;
@@ -91,19 +91,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const ip_region =
     str(req.headers["x-vercel-ip-country"]) || str(req.headers["x-vercel-ip-country-region"]);
 
-  // Optional WhatsApp follow-up channel. Free text in; normalised to
-  // "+digits" (single leading + allowed) and validated to 8-16 digits.
+  // Optional WhatsApp / LINE follow-up channel. Novi stores a LINE ID
+  // (free-text, no phone-number validation); all other clinics normalise
+  // to "+digits" and validate 8-16 digit length.
   const whatsappRaw = str(body.whatsapp);
   let whatsapp: string | null = null;
   if (whatsappRaw) {
-    const cleaned = whatsappRaw
-      .replace(/[^\d+]/g, "")
-      .replace(/(?!^)\+/g, "");
-    const digits = cleaned.replace(/^\+/, "");
-    if (digits.length < 8 || digits.length > 16) {
-      return res.status(400).json({ error: "Invalid WhatsApp number" });
+    if (clinic === "novi") {
+      whatsapp = whatsappRaw;
+    } else {
+      const cleaned = whatsappRaw
+        .replace(/[^\d+]/g, "")
+        .replace(/(?!^)\+/g, "");
+      const digits = cleaned.replace(/^\+/, "");
+      if (digits.length < 8 || digits.length > 16) {
+        return res.status(400).json({ error: "Invalid WhatsApp number" });
+      }
+      whatsapp = cleaned;
     }
-    whatsapp = cleaned;
   }
 
   // SJMC funnels: require at least one contact channel.
