@@ -80,6 +80,20 @@ const BRAND: Record<string, BrandTheme> = {
     pillBg: "rgba(122,181,167,0.15)",
     pillText: "#2C4A3F",
   },
+  novi: {
+    name: "NOVI Health",
+    partnerLogoSrc: null,
+    partnerLogoAlt: "NOVI Health",
+    pageBg: "linear-gradient(180deg, #FFF9ED 0%, #FFFFFF 100%)",
+    cardBg: "#ffffff",
+    cardBorder: "#E8DCC8",
+    textPrimary: "#1F2937",
+    textMuted: "#6B7280",
+    accent: "#EBB02D",
+    accentDark: "#C8960F",
+    pillBg: "rgba(235,176,45,0.12)",
+    pillText: "#C8960F",
+  },
 };
 
 const GENDER_LABELS: Record<string, string> = {

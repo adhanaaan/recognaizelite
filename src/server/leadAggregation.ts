@@ -8,7 +8,7 @@ import { getSupabaseAdmin, LeadRow } from "src/utils/supabase";
  * this from client code — it relies on the Supabase service-role key.
  */
 
-export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain"] as const;
+export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi"] as const;
 export type KnownClinic = (typeof KNOWN_CLINICS)[number];
 
 export interface LeadStats {
@@ -188,6 +188,7 @@ export interface ClinicLeadsResult {
  *   (legacy hookikigai rows still live in `leads` from before the split-out)
  * - "healthtechx" → public.demo_leads
  * - "tcmbrain" → public.tcmbrain_leads
+ * - "novi" → public.leads WHERE clinic = 'novi'
  * - unknown clinic → empty result (caller decides 404 vs. permissive empty)
  */
 export async function fetchClinicLeads(clinic: string): Promise<ClinicLeadsResult> {
@@ -243,6 +244,13 @@ export async function fetchClinicLeads(clinic: string): Promise<ClinicLeadsResul
       supabase.from("tcmbrain_leads").select("*").then(({ data, error }) => {
         if (error) throw error;
         return (data ?? []).map(normalizeTcmbrainRow);
+      }),
+    );
+  } else if (clinic === "novi") {
+    sources.push(
+      supabase.from("leads").select("*").eq("clinic", "novi").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeLegacyLeadsRow);
       }),
     );
   } else {

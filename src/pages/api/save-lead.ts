@@ -9,7 +9,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 //   healthtechx → public.demo_leads        (new, B2B columns, no dedup)
 //   tcmbrain    → public.tcmbrain_leads    (new, B2C + TCM indices, no dedup)
 //   sjmcmandarin→ public.leads             (Mandarin SJMC variant; segmented by clinic column)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin"]);
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi"]);
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;
@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // SJMC's Banting Community Day audience skews senior; many can't recall an
   // email on the spot. For the SJMC funnels we accept "email OR WhatsApp"; all
   // other clinics still require email.
-  const SJMC_CLINICS = new Set(["sjmc", "sjmcmandarin"]);
+  const SJMC_CLINICS = new Set(["sjmc", "sjmcmandarin", "novi"]);
 
   const clinic = str(body.clinic);
   if (!clinic || !ALLOWED_CLINICS.has(clinic)) {
