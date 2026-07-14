@@ -111,7 +111,7 @@ export default function NoviEntry() {
         {/* Bottom branding */}
         <div className="absolute bottom-5 left-0 right-0 text-center">
           <div className="flex items-center justify-center gap-2 mb-1">
-            <img src="/logo.png" alt="ReCOGnAIze" className="w-[22px] h-[22px]" />
+            <img src="/logo.png" alt="ReCOGnAIze" className="w-[36px] h-[36px]" />
             <span className="text-[11px] font-medium text-gray-500">ReCOGnAIze</span>
           </div>
           <p className="text-[9px] text-gray-600">

@@ -307,7 +307,7 @@ export default function NoviReportPage() {
       <>
         {/* GMS branding */}
         <div className="text-center pt-2 pb-4">
-          <img src="/logo.png" alt="ReCOGnAIze" className="mx-auto w-[60px]" />
+          <img src="/logo.png" alt="ReCOGnAIze" className="mx-auto w-[80px]" />
           <p className="text-gray-500 text-[9px] uppercase mt-3" style={{ letterSpacing: "0.2em" }}>
             Your Results
           </p>
