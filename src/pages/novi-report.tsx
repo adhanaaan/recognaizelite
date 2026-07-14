@@ -538,34 +538,31 @@ export default function NoviReportPage() {
               </div>
             </section>
 
-            {/* Waitlist / Early Access CTA */}
-            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ background: "linear-gradient(135deg, #EBB02D 0%, #D49A1A 100%)" }}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[#1B2130]/50 mb-2">
-                Coming Soon
+            {/* Full Screening CTA */}
+            <div className="rounded-2xl px-5 py-6 text-center" style={{ background: "linear-gradient(135deg, #EBB02D 0%, #D49A1A 100%)" }}>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[#1B2130]/60 mb-2">
+                RecognAIze
               </p>
-              <h3
-                className="text-[20px] sm:text-[22px] font-bold leading-snug text-[#1B2130]"
+              <p
+                className="text-[19px] sm:text-[22px] font-bold leading-snug text-[#1B2130]"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
-                The full ReCOGnAIze assessment is launching soon.
-              </h3>
-              <p className="mt-3 text-[13px] text-[#1B2130]/70 leading-relaxed">
-                4 cognitive pillars &middot; 10 minutes &middot; Science-backed
+                Unlock your complete cognitive baseline.
+              </p>
+              <p className="mt-2 text-[13px] text-[#1B2130]/70 leading-relaxed">
+                A comprehensive cognitive health check-up.
                 <br />
-                Memory &middot; Attention &middot; Processing Speed &middot; Executive Function
+                10 minutes &middot; Non-invasive &middot; Science-backed
               </p>
-              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#1B2130]/20 px-4 py-2">
-                <svg className="size-4 text-[#1B2130]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-[13px] font-semibold text-[#1B2130]">
-                  You&apos;re on the early access list
-                </span>
-              </div>
-              <p className="mt-3 text-[11px] text-[#1B2130]/40">
-                We&apos;ll notify you when the full assessment launches.
-              </p>
-            </section>
+              <a
+                href="https://wa.me/message/4SH3VCKNDO5KF1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-block rounded-full bg-[#1B2130] px-8 py-3 cursor-pointer hover:bg-[#252D3F] transition-colors"
+              >
+                <span className="text-[14px] font-bold text-white">Book Your Full Screening</span>
+              </a>
+            </div>
 
             {/* Challenge a friend */}
             <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
