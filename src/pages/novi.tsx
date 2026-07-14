@@ -30,11 +30,11 @@ export default function NoviEntry() {
         <meta name="theme-color" content="#1B2130" />
         <title>Brain Health Screening | NOVI Health</title>
         <meta property="og:title" content="Your body gets check-ups. What about your brain?" />
-        <meta property="og:description" content="Free 30-second brain speed test by NOVI Health. No app needed — instant results." />
+        <meta property="og:description" content="Free 60-second brain speed test by NOVI Health. No app needed — instant results." />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Your body gets check-ups. What about your brain?" />
-        <meta name="twitter:description" content="Free 30-second brain speed test by NOVI Health." />
+        <meta name="twitter:description" content="Free 60-second brain speed test by NOVI Health." />
       </Head>
       <div
         className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden relative"
@@ -87,13 +87,13 @@ export default function NoviEntry() {
           className="w-full max-w-[300px] rounded-full px-8 py-4 text-[17px] font-bold text-[#1B2130] tracking-wide transition-all active:scale-[0.97]"
           style={{ backgroundColor: "#EBB02D", boxShadow: "0 4px 24px rgba(235,176,45,0.30)" }}
         >
-          Test My Brain — 30 Seconds
+          Test My Brain — 60 Seconds
         </button>
 
         {/* Trust signals */}
         <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
           {[
-            { icon: "⚡", label: "30 seconds" },
+            { icon: "⚡", label: "60 seconds" },
             { icon: "📱", label: "No app needed" },
             { icon: "📊", label: "Instant results" },
           ].map((item) => (

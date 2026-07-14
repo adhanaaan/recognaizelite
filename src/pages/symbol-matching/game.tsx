@@ -22,13 +22,13 @@ import { verifyCompletedTasks } from "src/utils/task-verif";
 function Task2({ currLevel }: { currLevel: number }) {
   const shortMode = isShortAssessment();
   const sjmc = isSjmcMode();
-  // SJMC runs the full 60-second test even though short mode is enabled for report routing
-  const levels = shortMode && !sjmc ? task2LevelsShort : task2Levels;
+  const novi = isNoviMode();
+  const ikigai = isDarkHookMode();
+  // SJMC and Novi run the full 60-second test even though short mode is enabled for report routing
+  const levels = shortMode && !sjmc && !novi ? task2LevelsShort : task2Levels;
   const { tiles, time } = levels[currLevel];
   const res = useRef({ correct: 0, errors: 0, rounds: [] as any[] });
   const lap = useCallback(getTimeLap(), [currLevel]);
-  const novi = isNoviMode();
-  const ikigai = isDarkHookMode();
 
   const update = useForceUpdate();
   const { result, setResult } = useResult();
