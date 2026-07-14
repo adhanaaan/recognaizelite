@@ -6,7 +6,7 @@ import { task2, task3, task4, task5 } from "src/constants/tasks";
 import { preloadImages } from "src/lib/image-cache";
 import { t } from "src/lib/translations";
 import { useTaskProgress } from "src/stores/useTaskProgress";
-import { isDarkHookMode, getHookClinic, isPrologueMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
+import { isDarkHookMode, getHookClinic, isNoviMode, isPrologueMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
 import { readStoredAppLanguage } from "src/constants";
 import { getTaskStatus } from "src/utils/task-verif";
 import { Background } from "../components/Layout/Background";
@@ -47,15 +47,21 @@ export function TaskInstruction() {
   // Don't render anything while redirecting for Airplane Game
   if (activeTask === "task4") return null;
 
+  const novi = isNoviMode();
   const darkHook = isDarkHookMode();
   const clinic = getHookClinic();
-  const backUrl = clinic === "Ikigai Medical" ? "/hookikigai" : clinic === "Prologue Clinic" ? "/prologue" : clinic === "SJMC" ? "/sjmc" : "/landing";
+  const backUrl = clinic === "Ikigai Medical" ? "/hookikigai" : clinic === "Prologue Clinic" ? "/prologue" : clinic === "Novi" ? "/novi" : clinic === "SJMC" ? "/sjmc" : "/landing";
 
   if (darkHook) {
+    const accentColor = novi ? "#EBB02D" : "#5CE0D8";
+    const darkBg = novi
+      ? "linear-gradient(180deg, #1B2130 0%, #252D3F 50%, #1B2130 100%)"
+      : "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)";
+    const darkText = novi ? "#1B2130" : "#0B0F1A";
     return (
       <div
         className="w-full h-[100dvh] overflow-x-hidden overflow-y-auto fc"
-        style={{ background: "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)" }}
+        style={{ background: darkBg }}
       >
         <div className="flex-1 fc max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto justify-center gap-6 section-padding-large">
           <div className="justify-between w-full mx-auto f">
@@ -68,11 +74,11 @@ export function TaskInstruction() {
               </svg>
               {t.GENERAL.Back}
             </button>
-            <TimeRemainingCard time={30} color="#5CE0D8" disabled />
+            <TimeRemainingCard time={30} color={accentColor} disabled />
           </div>
 
           <div className="w-full mx-auto text-center cc grow">
-            <h1 style={{ color: "#5CE0D8", fontFamily: "Georgia, 'Times New Roman', serif" }}>{task.name}</h1>
+            <h1 style={{ color: accentColor, fontFamily: "Georgia, 'Times New Roman', serif" }}>{task.name}</h1>
             <p className="text-sm font-medium sm:text-lg text-gray-300">
               {activeTask === "task2" ? "Match as many symbols to their numbers as possible within 30 seconds." : task.instruction}
             </p>
@@ -83,7 +89,8 @@ export function TaskInstruction() {
           <div className="w-full mx-auto">
             <button
               onClick={() => activeTask && Router.push(`/${task.name.replaceAll(" ", "-").toLowerCase()}/demo`)}
-              className="w-full rounded-full bg-[#5CE0D8] px-5 py-3 text-lg font-semibold text-[#0B0F1A] transition-all active:bg-[#4BC8C0]"
+              className="w-full rounded-full px-5 py-3 text-lg font-semibold transition-all active:opacity-90"
+              style={{ backgroundColor: accentColor, color: darkText }}
             >
               {t.GENERAL["Start tutorial"]}
             </button>

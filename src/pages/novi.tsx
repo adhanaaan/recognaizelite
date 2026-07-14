@@ -17,10 +17,7 @@ export default function NoviEntry() {
 
   useEffect(() => {
     setAppLanguage("ENGLISH");
-    // hookClinic stays "SJMC" so the games render in the existing light theme
-    // without touching every isSjmcMode() call site. The lead is tagged "novi"
-    // by the report page when the API call is made.
-    setHookClinic("SJMC");
+    setHookClinic("Novi");
     setHookReportPath("/novi-report");
     setAssessmentMode("short");
     resetTaskProgress();
@@ -30,7 +27,7 @@ export default function NoviEntry() {
   return (
     <>
       <Head>
-        <meta name="theme-color" content="#FFF9ED" />
+        <meta name="theme-color" content="#1B2130" />
         <title>Brain Health Screening | NOVI Health</title>
         <meta property="og:title" content="Your body gets check-ups. What about your brain?" />
         <meta property="og:description" content="Free 60-second brain speed test by NOVI Health. No app needed — instant results." />
@@ -41,16 +38,16 @@ export default function NoviEntry() {
       </Head>
       <div
         className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden relative"
-        style={{ background: "linear-gradient(180deg, #FFF9ED 0%, #FFEFC2 50%, #FFF9ED 100%)" }}
+        style={{ background: "linear-gradient(180deg, #1B2130 0%, #252D3F 50%, #1B2130 100%)" }}
       >
         {/* Event badge */}
         <div className="mb-5">
           <div
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5"
-            style={{ backgroundColor: "rgba(235,176,45,0.12)", border: "1px solid rgba(235,176,45,0.25)" }}
+            style={{ backgroundColor: "rgba(235,176,45,0.15)", border: "1px solid rgba(235,176,45,0.30)" }}
           >
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#C8960F]">
-              NOVI Health
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#EBB02D]">
+              NOVI Health × ONTRACK
             </span>
           </div>
         </div>
@@ -58,7 +55,7 @@ export default function NoviEntry() {
         {/* Headline */}
         <div className="text-center max-w-[340px] mx-auto mb-5">
           <h1
-            className="text-[#1F2937] text-[36px] sm:text-[44px] leading-[1.08] font-normal"
+            className="text-white text-[36px] sm:text-[44px] leading-[1.08] font-normal"
             style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
           >
             Your body gets check-ups.
@@ -66,10 +63,10 @@ export default function NoviEntry() {
             What about your{" "}
             <em className="text-[#EBB02D]">brain?</em>
           </h1>
-          <p className="mt-4 text-[#4B5563] text-[15px] leading-relaxed">
+          <p className="mt-4 text-gray-400 text-[15px] leading-relaxed">
             You track your blood sugar, weight, and vitals.
             <br />
-            <span className="font-semibold text-[#1F2937]">Now check the organ that runs it all.</span>
+            <span className="font-semibold text-white">Now check the organ that runs it all.</span>
           </p>
         </div>
 
@@ -79,16 +76,16 @@ export default function NoviEntry() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#EBB02D] opacity-60" />
             <span className="relative inline-flex size-2.5 rounded-full bg-[#EBB02D]" />
           </span>
-          <p className="text-[13px] text-[#4B5563]">
-            <span className="font-bold text-[#1F2937]">{liveCount}</span> screened so far
+          <p className="text-[13px] text-gray-400">
+            <span className="font-bold text-white">{liveCount}</span> screened so far
           </p>
         </div>
 
         {/* CTA */}
         <button
           onClick={() => Router.push("/instruction")}
-          className="w-full max-w-[300px] rounded-full px-8 py-4 text-[17px] font-bold text-white tracking-wide transition-all active:scale-[0.97]"
-          style={{ backgroundColor: "#EBB02D", boxShadow: "0 4px 24px rgba(235,176,45,0.35)" }}
+          className="w-full max-w-[300px] rounded-full px-8 py-4 text-[17px] font-bold text-[#1B2130] tracking-wide transition-all active:scale-[0.97]"
+          style={{ backgroundColor: "#EBB02D", boxShadow: "0 4px 24px rgba(235,176,45,0.30)" }}
         >
           Test My Brain — 60 Seconds
         </button>
@@ -103,10 +100,10 @@ export default function NoviEntry() {
             <div
               key={item.label}
               className="flex items-center gap-1.5 rounded-full px-3 py-1.5"
-              style={{ backgroundColor: "rgba(255,255,255,0.6)" }}
+              style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
             >
               <span className="text-[12px]">{item.icon}</span>
-              <span className="text-[11px] font-medium text-[#4B5563]">{item.label}</span>
+              <span className="text-[11px] font-medium text-gray-400">{item.label}</span>
             </div>
           ))}
         </div>
@@ -115,9 +112,9 @@ export default function NoviEntry() {
         <div className="absolute bottom-5 left-0 right-0 text-center">
           <div className="flex items-center justify-center gap-2 mb-1">
             <img src="/logo.png" alt="ReCOGnAIze" className="w-[22px] h-[22px]" />
-            <span className="text-[11px] font-medium text-[#9CA3AF]">ReCOGnAIze</span>
+            <span className="text-[11px] font-medium text-gray-500">ReCOGnAIze</span>
           </div>
-          <p className="text-[9px] text-[#B0A296]">
+          <p className="text-[9px] text-gray-600">
             Digital Cognitive Screening by Gray Matter Solutions
           </p>
         </div>

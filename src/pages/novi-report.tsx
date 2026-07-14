@@ -89,18 +89,18 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
   const lx = mx - lw / 2, ly = baseY + 4;
 
   return (
-    <div className="overflow-hidden rounded-2xl p-4" style={{ backgroundColor: "#FFFBF0" }}>
+    <div className="overflow-hidden rounded-2xl p-4" style={{ backgroundColor: "#141925" }}>
       <svg className="mx-auto block w-full h-auto" viewBox={`0 0 ${BC_W} ${BC_H}`} preserveAspectRatio="xMidYMid meet">
-        <rect width={BC_W} height={BC_H} fill="#FFFBF0" rx="8" />
-        <path d={buildAreaPath()} fill="rgba(235,176,45,0.12)" />
+        <rect width={BC_W} height={BC_H} fill="#141925" rx="8" />
+        <path d={buildAreaPath()} fill="rgba(235,176,45,0.15)" />
         <path d={buildCurvePath()} fill="none" stroke="#EBB02D" strokeWidth="2.5" strokeOpacity="0.8" />
         <line x1={mx} y1={BC_P} x2={mx} y2={baseY} stroke={severity.color} strokeWidth="2" strokeDasharray="6 6" />
-        <circle cx={mx} cy={my} r="6" fill="#FFFBF0" stroke={severity.color} strokeWidth="2.5" />
+        <circle cx={mx} cy={my} r="6" fill="#141925" stroke={severity.color} strokeWidth="2.5" />
         <rect x={lx} y={ly} width={lw} height={lh} rx="10" fill={severity.color} />
         <text x={mx} y={ly + lh / 2 + 6} textAnchor="middle" fontSize="20" fontWeight="700" fill="#ffffff">{labelText}</text>
-        <text x={BC_P} y={BC_H - 8} fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">WEAK</text>
-        <text x={BC_W / 2} y={BC_H - 8} textAnchor="middle" fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">ADEQUATE</text>
-        <text x={BC_W - BC_P} y={BC_H - 8} textAnchor="end" fill="#9CA3AF" fontSize="11" fontWeight="700" letterSpacing="1">STRONG</text>
+        <text x={BC_P} y={BC_H - 8} fill="#6B7280" fontSize="11" fontWeight="700" letterSpacing="1">WEAK</text>
+        <text x={BC_W / 2} y={BC_H - 8} textAnchor="middle" fill="#6B7280" fontSize="11" fontWeight="700" letterSpacing="1">ADEQUATE</text>
+        <text x={BC_W - BC_P} y={BC_H - 8} textAnchor="end" fill="#6B7280" fontSize="11" fontWeight="700" letterSpacing="1">STRONG</text>
       </svg>
     </div>
   );
@@ -108,16 +108,16 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
 
 const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
   Low: {
-    headline: "You’ve only seen 25% of the picture.",
-    body: "Processing speed flagged a concern — but that’s just one of four cognitive pillars. Memory, attention, and executive function could be compensating or declining silently. Without the full screening, you’re guessing.",
+    headline: "You've only seen 25% of the picture.",
+    body: "Processing speed flagged a concern — but that's just one of four cognitive pillars. Memory, attention, and executive function could be compensating or declining silently. Without the full screening, you're guessing.",
   },
   Medium: {
-    headline: "You’ve only seen 25% of the picture.",
-    body: "Processing speed looks adequate — but that tells you nothing about how your memory holds under pressure, how long your focus lasts, or how sharp your decisions are. One pillar doesn’t define your brain.",
+    headline: "You've only seen 25% of the picture.",
+    body: "Processing speed looks adequate — but that tells you nothing about how your memory holds under pressure, how long your focus lasts, or how sharp your decisions are. One pillar doesn't define your brain.",
   },
   High: {
-    headline: "You’ve only seen 25% of the picture.",
-    body: "Processing speed is strong — but high performers know that speed without memory, focus, and decision-making is incomplete. The full screening reveals what’s really driving your performance.",
+    headline: "You've only seen 25% of the picture.",
+    body: "Processing speed is strong — but high performers know that speed without memory, focus, and decision-making is incomplete. The full screening reveals what's really driving your performance.",
   },
 };
 
@@ -289,11 +289,11 @@ export default function NoviReportPage() {
   const page = (children: React.ReactNode) => (
     <>
     <Head>
-      <meta name="theme-color" content="#FFF9ED" />
+      <meta name="theme-color" content="#1B2130" />
     </Head>
     <div
       className="min-h-[100dvh] w-full px-5 py-10 sm:px-8 overflow-y-auto"
-      style={{ background: "linear-gradient(180deg, #FFF9ED 0%, #FFEFC2 50%, #FFF9ED 100%)" }}
+      style={{ background: "linear-gradient(180deg, #1B2130 0%, #252D3F 50%, #1B2130 100%)" }}
     >
       <div className="max-w-2xl mx-auto space-y-6">{children}</div>
     </div>
@@ -303,7 +303,7 @@ export default function NoviReportPage() {
   if (loading) {
     return page(
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-[#6B7280] text-lg">Generating your results...</p>
+        <p className="text-gray-400 text-lg">Generating your results...</p>
       </div>
     );
   }
@@ -311,7 +311,7 @@ export default function NoviReportPage() {
   if (error) {
     return page(
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="rounded-2xl border border-red-300 bg-red-50 p-8 text-center text-red-600">{error}</div>
+        <div className="rounded-2xl border border-red-800 bg-red-900/30 p-8 text-center text-red-400">{error}</div>
       </div>
     );
   }
@@ -324,19 +324,19 @@ export default function NoviReportPage() {
         {/* GMS branding */}
         <div className="text-center pt-2 pb-4">
           <img src="/logo.png" alt="ReCOGnAIze" className="mx-auto w-[60px]" />
-          <p className="text-[#9CA3AF] text-[9px] uppercase mt-3" style={{ letterSpacing: "0.2em" }}>
+          <p className="text-gray-500 text-[9px] uppercase mt-3" style={{ letterSpacing: "0.2em" }}>
             Your Results
           </p>
         </div>
 
         {/* Result Card */}
-        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E8DCC8" }}>
-          <p className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+        <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
+          <p className="text-[12px] font-bold uppercase tracking-wider text-gray-500">
             Cognitive Screening
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
             <h2
-              className="text-[24px] sm:text-[30px] font-bold uppercase leading-tight text-[#1F2937]"
+              className="text-[24px] sm:text-[30px] font-bold uppercase leading-tight text-white"
               style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
             >
               {report.title}
@@ -356,12 +356,12 @@ export default function NoviReportPage() {
             </div>
             {!emailSubmitted && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="rounded-xl px-5 py-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.85)" }}>
-                  <svg className="mx-auto size-5 text-[#9CA3AF] mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <div className="rounded-xl px-5 py-3 text-center" style={{ backgroundColor: "rgba(27,33,48,0.85)" }}>
+                  <svg className="mx-auto size-5 text-gray-500 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  <p className="text-[13px] font-semibold text-[#4B5563]">Enter your email or WhatsApp to reveal your score</p>
+                  <p className="text-[13px] font-semibold text-gray-300">Enter your email or WhatsApp to reveal your score</p>
                 </div>
               </div>
             )}
@@ -369,11 +369,11 @@ export default function NoviReportPage() {
 
           {/* Definition — only shown after email */}
           {emailSubmitted && (
-            <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#FFFBF0" }}>
-              <p className="text-[13px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+            <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "#141925" }}>
+              <p className="text-[13px] font-bold uppercase tracking-wider text-gray-500">
                 What is {report.title}?
               </p>
-              <p className="mt-2 text-[14px] leading-relaxed text-[#4B5563]">
+              <p className="mt-2 text-[14px] leading-relaxed text-gray-400">
                 {report.definition}
               </p>
             </div>
@@ -382,15 +382,15 @@ export default function NoviReportPage() {
 
         {/* Email capture form */}
         {!emailSubmitted && (
-          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E8DCC8" }}>
+          <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
             <h3
-              className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937] text-center"
+              className="text-[20px] sm:text-[24px] font-bold leading-snug text-white text-center"
               style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
             >
               Want to see your full results?
             </h3>
-            <p className="mt-3 text-[14px] leading-relaxed text-[#6B7280] text-center">
-              Enter your email <strong>or</strong> WhatsApp (whichever is easier) to unlock your detailed percentile score, learn what it means, and get tips to improve.
+            <p className="mt-3 text-[14px] leading-relaxed text-gray-400 text-center">
+              Enter your email <strong className="text-gray-300">or</strong> WhatsApp (whichever is easier) to unlock your detailed percentile score, learn what it means, and get tips to improve.
             </p>
             <form onSubmit={handleEmailSubmit} className="mt-5 space-y-3">
               <input
@@ -398,7 +398,7 @@ export default function NoviReportPage() {
                 placeholder="your@email.com"
                 value={emailInput}
                 onChange={(e) => { setEmailInput(e.target.value); setFormError(""); }}
-                className="w-full rounded-xl border border-[#DDD2C0] bg-[#FFFBF0] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#EBB02D] transition-colors"
+                className="w-full rounded-xl border border-[#2E3650] bg-[#141925] px-4 py-3.5 text-[15px] text-white placeholder-gray-500 outline-none focus:border-[#EBB02D] transition-colors"
               />
 
               <div>
@@ -409,14 +409,14 @@ export default function NoviReportPage() {
                   placeholder="WhatsApp (e.g. +65 9123 4567)"
                   value={whatsappInput}
                   onChange={(e) => { setWhatsappInput(e.target.value); setFormError(""); }}
-                  className="w-full rounded-xl border border-[#DDD2C0] bg-[#FFFBF0] px-4 py-3.5 text-[15px] text-[#1F2937] placeholder-[#9CA3AF] outline-none focus:border-[#EBB02D] transition-colors"
+                  className="w-full rounded-xl border border-[#2E3650] bg-[#141925] px-4 py-3.5 text-[15px] text-white placeholder-gray-500 outline-none focus:border-[#EBB02D] transition-colors"
                 />
-                <p className="mt-1 text-[11px] text-[#9CA3AF]">Either email or WhatsApp will do — whichever is easier.</p>
+                <p className="mt-1 text-[11px] text-gray-500">Either email or WhatsApp will do — whichever is easier.</p>
               </div>
 
               {/* Age range */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">
                   Age
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -429,9 +429,9 @@ export default function NoviReportPage() {
                         onClick={() => { setAgeInput(age); setFormError(""); }}
                         className="rounded-lg py-2 text-[13px] font-semibold transition-all"
                         style={{
-                          backgroundColor: active ? "#EBB02D" : "#FFFBF0",
-                          color: active ? "#ffffff" : "#4B5563",
-                          border: `1px solid ${active ? "#EBB02D" : "#DDD2C0"}`,
+                          backgroundColor: active ? "#EBB02D" : "#141925",
+                          color: active ? "#1B2130" : "#9CA3AF",
+                          border: `1px solid ${active ? "#EBB02D" : "#2E3650"}`,
                         }}
                       >
                         {age}
@@ -443,7 +443,7 @@ export default function NoviReportPage() {
 
               {/* Gender */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#9CA3AF] mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">
                   Gender
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -456,9 +456,9 @@ export default function NoviReportPage() {
                         onClick={() => { setGenderInput(g.value); setFormError(""); }}
                         className="rounded-lg py-2 text-[12px] font-semibold transition-all leading-tight"
                         style={{
-                          backgroundColor: active ? "#EBB02D" : "#FFFBF0",
-                          color: active ? "#ffffff" : "#4B5563",
-                          border: `1px solid ${active ? "#EBB02D" : "#DDD2C0"}`,
+                          backgroundColor: active ? "#EBB02D" : "#141925",
+                          color: active ? "#1B2130" : "#9CA3AF",
+                          border: `1px solid ${active ? "#EBB02D" : "#2E3650"}`,
                         }}
                       >
                         {g.label}
@@ -469,21 +469,21 @@ export default function NoviReportPage() {
               </div>
 
               {formError && (
-                <p className="text-red-500 text-[12px]">{formError}</p>
+                <p className="text-red-400 text-[12px]">{formError}</p>
               )}
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-full px-8 py-4 text-[16px] font-bold tracking-wide text-white transition-all active:opacity-90 disabled:opacity-60"
+                className="w-full rounded-full px-8 py-4 text-[16px] font-bold tracking-wide text-[#1B2130] transition-all active:opacity-90 disabled:opacity-60"
                 style={{
                   backgroundColor: "#EBB02D",
-                  boxShadow: "0 0 30px rgba(235,176,45,0.25)",
+                  boxShadow: "0 0 30px rgba(235,176,45,0.20)",
                 }}
               >
                 {submitting ? "Saving…" : "Get My Results"}
               </button>
             </form>
-            <p className="mt-3 text-[11px] text-[#9CA3AF] text-center">
+            <p className="mt-3 text-[11px] text-gray-500 text-center">
               We&apos;ll send you insights about your cognitive health. No spam.
             </p>
           </section>
@@ -493,24 +493,24 @@ export default function NoviReportPage() {
         {emailSubmitted && (
           <>
             {/* The bigger picture */}
-            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#ffffff", border: "1px solid #E8DCC8" }}>
+            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
               <h3
-                className="text-[20px] sm:text-[24px] font-bold leading-snug text-[#1F2937]"
+                className="text-[20px] sm:text-[24px] font-bold leading-snug text-white"
                 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
               >
                 {CTA_COPY[report.severity].headline}
               </h3>
-              <p className="mt-4 text-[14px] leading-relaxed text-[#6B7280]">
+              <p className="mt-4 text-[14px] leading-relaxed text-gray-400">
                 {CTA_COPY[report.severity].body}
               </p>
 
               {/* Progress indicator */}
               <div className="mt-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[12px] font-bold uppercase tracking-wider text-[#9CA3AF]">Your screening progress</span>
+                  <span className="text-[12px] font-bold uppercase tracking-wider text-gray-500">Your screening progress</span>
                   <span className="text-[13px] font-bold" style={{ color: "#EBB02D" }}>1 of 4</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-[#F0E6D0] overflow-hidden">
+                <div className="h-1.5 rounded-full bg-[#2E3650] overflow-hidden">
                   <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#EBB02D" }} />
                 </div>
               </div>
@@ -521,19 +521,19 @@ export default function NoviReportPage() {
                   <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
                     &#10003; Complete
                   </div>
-                  <div className="mt-1 text-[14px] font-bold text-[#1F2937]">Processing Speed</div>
+                  <div className="mt-1 text-[14px] font-bold text-white">Processing Speed</div>
                   <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
                 </div>
                 {LOCKED_AREAS.map((area) => (
-                  <div key={area.name} className="rounded-xl border border-[#E8DCC8] bg-[#FFFBF0] px-4 py-4 text-center relative overflow-hidden">
-                    <div className="text-[#C8B898]">
+                  <div key={area.name} className="rounded-xl border border-[#2E3650] bg-[#141925] px-4 py-4 text-center relative overflow-hidden">
+                    <div className="text-gray-600">
                       <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <rect x="3" y="11" width="18" height="11" rx="2" />
                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                       </svg>
                     </div>
-                    <div className="mt-1 text-[14px] font-bold text-[#6B7280]">{area.name}</div>
-                    <div className="mt-0.5 text-[11px] text-[#9CA3AF]">{area.skill}</div>
+                    <div className="mt-1 text-[14px] font-bold text-gray-400">{area.name}</div>
+                    <div className="mt-0.5 text-[11px] text-gray-500">{area.skill}</div>
                   </div>
                 ))}
               </div>
@@ -541,39 +541,39 @@ export default function NoviReportPage() {
 
             {/* Waitlist / Early Access CTA */}
             <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ background: "linear-gradient(135deg, #EBB02D 0%, #D49A1A 100%)" }}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-2">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[#1B2130]/50 mb-2">
                 Coming Soon
               </p>
               <h3
-                className="text-[20px] sm:text-[22px] font-bold leading-snug text-white"
+                className="text-[20px] sm:text-[22px] font-bold leading-snug text-[#1B2130]"
                 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
               >
                 The full ReCOGnAIze assessment is launching soon.
               </h3>
-              <p className="mt-3 text-[13px] text-white/80 leading-relaxed">
+              <p className="mt-3 text-[13px] text-[#1B2130]/70 leading-relaxed">
                 4 cognitive pillars &middot; 10 minutes &middot; Science-backed
                 <br />
                 Memory &middot; Attention &middot; Processing Speed &middot; Executive Function
               </p>
-              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2">
-                <svg className="size-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#1B2130]/20 px-4 py-2">
+                <svg className="size-4 text-[#1B2130]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-[13px] font-semibold text-white">
+                <span className="text-[13px] font-semibold text-[#1B2130]">
                   You&apos;re on the early access list
                 </span>
               </div>
-              <p className="mt-3 text-[11px] text-white/50">
+              <p className="mt-3 text-[11px] text-[#1B2130]/40">
                 We&apos;ll notify you when the full assessment launches.
               </p>
             </section>
 
             {/* Challenge a friend */}
-            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#ffffff", border: "1px solid #E8DCC8" }}>
-              <h3 className="text-[18px] font-bold text-[#1F2937]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
+              <h3 className="text-[18px] font-bold text-white" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
                 Think you&apos;re fast? Prove it.
               </h3>
-              <p className="mt-2 text-[13px] text-[#6B7280]">
+              <p className="mt-2 text-[13px] text-gray-400">
                 Challenge a friend to beat your score.
               </p>
               <button
@@ -592,15 +592,15 @@ export default function NoviReportPage() {
                 }}
                 className="mt-4 w-full rounded-full px-6 py-3 text-[15px] font-bold transition-all active:scale-[0.97]"
                 style={{
-                  backgroundColor: shared ? "#34D399" : "#1F2937",
-                  color: "#ffffff",
+                  backgroundColor: shared ? "#34D399" : "#EBB02D",
+                  color: "#1B2130",
                 }}
               >
                 {shared ? "Link copied!" : "Share Challenge"}
               </button>
             </section>
 
-            <p className="text-[11px] italic leading-normal text-[#9CA3AF] text-center px-2">
+            <p className="text-[11px] italic leading-normal text-gray-500 text-center px-2">
               {CLINICAL_DISCLAIMER}
             </p>
           </>
@@ -609,14 +609,14 @@ export default function NoviReportPage() {
         {/* Retake */}
         <button
           onClick={handleRetake}
-          className="w-full rounded-full border border-[#DDD2C0] py-3 text-center text-[14px] font-medium text-[#9CA3AF] transition-colors hover:border-[#EBB02D] hover:text-[#EBB02D]"
+          className="w-full rounded-full border border-[#2E3650] py-3 text-center text-[14px] font-medium text-gray-500 transition-colors hover:border-[#EBB02D] hover:text-[#EBB02D]"
         >
           Retake
         </button>
       </>
     ) : (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="rounded-2xl border border-[#E8DCC8] bg-white p-6 text-center text-sm text-[#6B7280]">
+        <div className="rounded-2xl border border-[#2E3650] bg-[#1E2538] p-6 text-center text-sm text-gray-400">
           Complete the screening game to see your results.
         </div>
       </div>
