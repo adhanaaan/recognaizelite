@@ -87,7 +87,7 @@ export default function NoviEntry() {
           className="w-full max-w-[300px] rounded-full px-8 py-4 text-[17px] font-bold text-[#1B2130] tracking-wide transition-all active:scale-[0.97]"
           style={{ backgroundColor: "#EBB02D", boxShadow: "0 4px 24px rgba(235,176,45,0.30)" }}
         >
-          Test My Brain — 60 Seconds
+          Start the 60-second check
         </button>
 
         {/* Trust signals */}

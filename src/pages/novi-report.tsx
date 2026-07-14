@@ -106,26 +106,6 @@ function BellCurve({ percentile, severity }: { percentile: number; severity: Sev
   );
 }
 
-const CTA_COPY: Record<Severity, { headline: string; body: string }> = {
-  Low: {
-    headline: "You've only seen 25% of the picture.",
-    body: "Processing speed flagged a concern — but that's just one of four cognitive pillars. Memory, attention, and executive function could be compensating or declining silently. Without the full screening, you're guessing.",
-  },
-  Medium: {
-    headline: "You've only seen 25% of the picture.",
-    body: "Processing speed looks adequate — but that tells you nothing about how your memory holds under pressure, how long your focus lasts, or how sharp your decisions are. One pillar doesn't define your brain.",
-  },
-  High: {
-    headline: "You've only seen 25% of the picture.",
-    body: "Processing speed is strong — but high performers know that speed without memory, focus, and decision-making is incomplete. The full screening reveals what's really driving your performance.",
-  },
-};
-
-const LOCKED_AREAS = [
-  { name: "Memory", skill: "Recall & retention under pressure" },
-  { name: "Attention", skill: "Sustained focus & multitasking" },
-  { name: "Executive Function", skill: "Decision-making & planning" },
-];
 
 const LEAD_EMAIL_KEY = "recognaize-lead-email";
 const SHARE_URL = "https://recognaizelite.vercel.app/novi";
@@ -391,7 +371,7 @@ export default function NoviReportPage() {
               className="text-[20px] sm:text-[24px] font-bold leading-snug text-white text-center"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
-              Want to see your full results?
+              Want to see your result?
             </h3>
             <p className="mt-3 text-[14px] leading-relaxed text-gray-400 text-center">
               Enter your email and LINE ID to unlock your detailed percentile score, learn what it means, and get tips to improve.
@@ -491,78 +471,24 @@ export default function NoviReportPage() {
         {/* Full report — only shown after email */}
         {emailSubmitted && (
           <>
-            {/* The bigger picture */}
-            <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
+            {/* Learn more */}
+            <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
+              <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-full" style={{ backgroundColor: "rgba(235,176,45,0.12)" }}>
+                <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="#EBB02D" strokeWidth={2}>
+                  <path d="M12 2a7 7 0 0 1 7 7c0 2.8-1.6 4.5-3 6-.7.7-1 1.4-1 2.2V18a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.8c0-.8-.3-1.5-1-2.2-1.4-1.5-3-3.2-3-6a7 7 0 0 1 7-7z" />
+                  <path d="M9 22h6" />
+                </svg>
+              </div>
               <h3
-                className="text-[20px] sm:text-[24px] font-bold leading-snug text-white"
+                className="text-[18px] sm:text-[20px] font-bold leading-snug text-white"
                 style={{ fontFamily: "'Poppins', sans-serif" }}
               >
-                {CTA_COPY[report.severity].headline}
+                Curious about your full cognitive profile?
               </h3>
-              <p className="mt-4 text-[14px] leading-relaxed text-gray-400">
-                {CTA_COPY[report.severity].body}
+              <p className="mt-3 text-[14px] leading-relaxed text-gray-400">
+                This test covers one of four cognitive domains. For a more comprehensive look at your memory, attention, and executive function, ask any NOVI team member about the full screening experience.
               </p>
-
-              {/* Progress indicator */}
-              <div className="mt-6">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[12px] font-bold uppercase tracking-wider text-gray-500">Your screening progress</span>
-                  <span className="text-[13px] font-bold" style={{ color: "#EBB02D" }}>1 of 4</span>
-                </div>
-                <div className="h-1.5 rounded-full bg-[#2E3650] overflow-hidden">
-                  <div className="h-full rounded-full w-1/4" style={{ backgroundColor: "#EBB02D" }} />
-                </div>
-              </div>
-
-              {/* Brain areas grid */}
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                <div className="rounded-xl border-2 px-4 py-4 text-center" style={{ borderColor: severity.color, backgroundColor: severity.softBg }}>
-                  <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: severity.color }}>
-                    &#10003; Complete
-                  </div>
-                  <div className="mt-1 text-[14px] font-bold text-white">Processing Speed</div>
-                  <div className="mt-0.5 text-[12px] font-semibold" style={{ color: severity.color }}>{severity.label}</div>
-                </div>
-                {LOCKED_AREAS.map((area) => (
-                  <div key={area.name} className="rounded-xl border border-[#2E3650] bg-[#141925] px-4 py-4 text-center relative overflow-hidden">
-                    <div className="text-gray-600">
-                      <svg className="mx-auto size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <rect x="3" y="11" width="18" height="11" rx="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                    </div>
-                    <div className="mt-1 text-[14px] font-bold text-gray-400">{area.name}</div>
-                    <div className="mt-0.5 text-[11px] text-gray-500">{area.skill}</div>
-                  </div>
-                ))}
-              </div>
             </section>
-
-            {/* Full Screening CTA */}
-            <div className="rounded-2xl px-5 py-6 text-center" style={{ background: "linear-gradient(135deg, #EBB02D 0%, #D49A1A 100%)" }}>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-[#1B2130]/60 mb-2">
-                RecognAIze
-              </p>
-              <p
-                className="text-[19px] sm:text-[22px] font-bold leading-snug text-[#1B2130]"
-                style={{ fontFamily: "'Poppins', sans-serif" }}
-              >
-                Unlock your complete cognitive baseline.
-              </p>
-              <p className="mt-2 text-[13px] text-[#1B2130]/70 leading-relaxed">
-                A comprehensive cognitive health check-up.
-                <br />
-                10 minutes &middot; Non-invasive &middot; Science-backed
-              </p>
-              <a
-                href="https://wa.me/message/4SH3VCKNDO5KF1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-block rounded-full bg-[#1B2130] px-8 py-3 cursor-pointer hover:bg-[#252D3F] transition-colors"
-              >
-                <span className="text-[14px] font-bold text-white">Book Your Full Screening</span>
-              </a>
-            </div>
 
             {/* Challenge a friend */}
             <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
