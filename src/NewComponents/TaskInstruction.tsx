@@ -61,7 +61,7 @@ export function TaskInstruction() {
     return (
       <div
         className="w-full h-[100dvh] overflow-x-hidden overflow-y-auto fc"
-        style={{ background: darkBg }}
+        style={{ background: darkBg, ...(novi ? { fontFamily: "'Poppins', sans-serif" } : {}) }}
       >
         <div className="flex-1 fc max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto justify-center gap-6 section-padding-large">
           <div className="justify-between w-full mx-auto f">
@@ -78,7 +78,7 @@ export function TaskInstruction() {
           </div>
 
           <div className="w-full mx-auto text-center cc grow">
-            <h1 style={{ color: accentColor, fontFamily: "Georgia, 'Times New Roman', serif" }}>{task.name}</h1>
+            <h1 style={{ color: accentColor, fontFamily: novi ? "'Poppins', sans-serif" : "Georgia, 'Times New Roman', serif" }}>{task.name}</h1>
             <p className="text-sm font-medium sm:text-lg text-gray-300">
               {activeTask === "task2" ? "Match as many symbols to their numbers as possible within 30 seconds." : task.instruction}
             </p>

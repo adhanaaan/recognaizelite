@@ -293,7 +293,7 @@ export default function NoviReportPage() {
     </Head>
     <div
       className="min-h-[100dvh] w-full px-5 py-10 sm:px-8 overflow-y-auto"
-      style={{ background: "linear-gradient(180deg, #1B2130 0%, #252D3F 50%, #1B2130 100%)" }}
+      style={{ background: "linear-gradient(180deg, #1B2130 0%, #252D3F 50%, #1B2130 100%)", fontFamily: "'Poppins', sans-serif" }}
     >
       <div className="max-w-2xl mx-auto space-y-6">{children}</div>
     </div>
@@ -337,7 +337,7 @@ export default function NoviReportPage() {
           <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
             <h2
               className="text-[24px] sm:text-[30px] font-bold uppercase leading-tight text-white"
-              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               {report.title}
             </h2>
@@ -385,7 +385,7 @@ export default function NoviReportPage() {
           <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
             <h3
               className="text-[20px] sm:text-[24px] font-bold leading-snug text-white text-center"
-              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               Want to see your full results?
             </h3>
@@ -496,7 +496,7 @@ export default function NoviReportPage() {
             <section className="rounded-2xl p-5 sm:p-6" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
               <h3
                 className="text-[20px] sm:text-[24px] font-bold leading-snug text-white"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 {CTA_COPY[report.severity].headline}
               </h3>
@@ -546,7 +546,7 @@ export default function NoviReportPage() {
               </p>
               <h3
                 className="text-[20px] sm:text-[22px] font-bold leading-snug text-[#1B2130]"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 The full ReCOGnAIze assessment is launching soon.
               </h3>
@@ -570,7 +570,7 @@ export default function NoviReportPage() {
 
             {/* Challenge a friend */}
             <section className="rounded-2xl p-5 sm:p-6 text-center" style={{ backgroundColor: "#1E2538", border: "1px solid #2E3650" }}>
-              <h3 className="text-[18px] font-bold text-white" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+              <h3 className="text-[18px] font-bold text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
                 Think you&apos;re fast? Prove it.
               </h3>
               <p className="mt-2 text-[13px] text-gray-400">

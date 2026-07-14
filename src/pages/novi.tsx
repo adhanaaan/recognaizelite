@@ -38,7 +38,7 @@ export default function NoviEntry() {
       </Head>
       <div
         className="h-[100dvh] w-full flex flex-col items-center justify-center px-6 overflow-hidden relative"
-        style={{ background: "linear-gradient(180deg, #1B2130 0%, #252D3F 50%, #1B2130 100%)" }}
+        style={{ background: "linear-gradient(180deg, #1B2130 0%, #252D3F 50%, #1B2130 100%)", fontFamily: "'Poppins', sans-serif" }}
       >
         {/* Event badge */}
         <div className="mb-5">
@@ -47,7 +47,7 @@ export default function NoviEntry() {
             style={{ backgroundColor: "rgba(235,176,45,0.15)", border: "1px solid rgba(235,176,45,0.30)" }}
           >
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#EBB02D]">
-              NOVI Health × ONTRACK
+              NOVI Experience
             </span>
           </div>
         </div>
@@ -55,8 +55,8 @@ export default function NoviEntry() {
         {/* Headline */}
         <div className="text-center max-w-[340px] mx-auto mb-5">
           <h1
-            className="text-white text-[36px] sm:text-[44px] leading-[1.08] font-normal"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+            className="text-white text-[36px] sm:text-[44px] leading-[1.08] font-semibold"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
           >
             Your body gets check-ups.
             <br />

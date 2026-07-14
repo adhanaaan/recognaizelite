@@ -156,7 +156,7 @@ export function GameCompleteScreen({
     );
   } else if (!nextTask) {
     content = novi ? (
-      <div className="space-y-8 text-center text-white md:scale-125 lg:scale-150">
+      <div className="space-y-8 text-center text-white md:scale-125 lg:scale-150" style={{ fontFamily: "'Poppins', sans-serif" }}>
         <div className="h-16 tall:h-20" />
         <div
           className="mx-auto rounded-full c size-24"
@@ -168,7 +168,7 @@ export function GameCompleteScreen({
           <FaCheck className="mx-auto size-14" style={{ color: "#EBB02D" }} />
         </div>
         <div>
-          <h2 style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>Assessment Complete</h2>
+          <h2 style={{ fontFamily: "'Poppins', sans-serif" }}>Assessment Complete</h2>
           <p className="mt-6 text-sm font-medium w-84 text-gray-400">
             Your report is ready to view.
           </p>
