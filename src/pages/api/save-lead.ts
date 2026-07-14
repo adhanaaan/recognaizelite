@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // SJMC's Banting Community Day audience skews senior; many can't recall an
   // email on the spot. For the SJMC funnels we accept "email OR WhatsApp"; all
   // other clinics still require email.
-  const SJMC_CLINICS = new Set(["sjmc", "sjmcmandarin", "novi"]);
+  const SJMC_CLINICS = new Set(["sjmc", "sjmcmandarin"]);
 
   const clinic = str(body.clinic);
   if (!clinic || !ALLOWED_CLINICS.has(clinic)) {
@@ -91,19 +91,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const ip_region =
     str(req.headers["x-vercel-ip-country"]) || str(req.headers["x-vercel-ip-country-region"]);
 
-  // Optional WhatsApp follow-up channel. Free text in; normalised to
-  // "+digits" (single leading + allowed) and validated to 8-16 digits.
+  // Optional WhatsApp / LINE follow-up channel. Novi stores a LINE ID
+  // (free-text, no phone-number validation); all other clinics normalise
+  // to "+digits" and validate 8-16 digit length.
   const whatsappRaw = str(body.whatsapp);
   let whatsapp: string | null = null;
   if (whatsappRaw) {
-    const cleaned = whatsappRaw
-      .replace(/[^\d+]/g, "")
-      .replace(/(?!^)\+/g, "");
-    const digits = cleaned.replace(/^\+/, "");
-    if (digits.length < 8 || digits.length > 16) {
-      return res.status(400).json({ error: "Invalid WhatsApp number" });
+    if (clinic === "novi") {
+      whatsapp = whatsappRaw;
+    } else {
+      const cleaned = whatsappRaw
+        .replace(/[^\d+]/g, "")
+        .replace(/(?!^)\+/g, "");
+      const digits = cleaned.replace(/^\+/, "");
+      if (digits.length < 8 || digits.length > 16) {
+        return res.status(400).json({ error: "Invalid WhatsApp number" });
+      }
+      whatsapp = cleaned;
     }
-    whatsapp = cleaned;
   }
 
   // SJMC funnels: require at least one contact channel.

@@ -150,7 +150,7 @@ export default function NoviReportPage() {
   const [error, setError] = useState<string | null>(null);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailInput, setEmailInput] = useState("");
-  const [whatsappInput, setWhatsappInput] = useState("");
+  const [lineInput, setLineInput] = useState("");
   const [ageInput, setAgeInput] = useState<string>("");
   const [genderInput, setGenderInput] = useState<string>("");
   const [formError, setFormError] = useState("");
@@ -162,13 +162,17 @@ export default function NoviReportPage() {
     if (submitting) return;
 
     const trimmed = emailInput.trim();
-    const whatsappTrimmed = whatsappInput.trim();
-    if (!trimmed && !whatsappTrimmed) {
-      setFormError("Please enter your email or WhatsApp number.");
+    const lineTrimmed = lineInput.trim();
+    if (!trimmed) {
+      setFormError("Please enter your email address.");
       return;
     }
-    if (trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       setFormError("Please enter a valid email address.");
+      return;
+    }
+    if (!lineTrimmed) {
+      setFormError("Please enter your LINE ID.");
       return;
     }
     if (!ageInput) {
@@ -197,11 +201,11 @@ export default function NoviReportPage() {
     const referrer = typeof document !== "undefined" ? document.referrer || null : null;
 
     const payload = {
-      email: trimmed || null,
+      email: trimmed,
       clinic: "novi",
       ageRange: ageInput,
       gender: genderInput,
-      whatsapp: whatsappTrimmed || null,
+      whatsapp: lineTrimmed || null,
       score: typeof task2Score === "number" ? task2Score : null,
       percentile: report ? Math.round(report.percentile) : null,
       severity: report ? SEVERITY_TO_KEY[report.severity] : null,
@@ -361,7 +365,7 @@ export default function NoviReportPage() {
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  <p className="text-[13px] font-semibold text-gray-300">Enter your email or WhatsApp to reveal your score</p>
+                  <p className="text-[13px] font-semibold text-gray-300">Enter your email and LINE ID to reveal your score</p>
                 </div>
               </div>
             )}
@@ -390,7 +394,7 @@ export default function NoviReportPage() {
               Want to see your full results?
             </h3>
             <p className="mt-3 text-[14px] leading-relaxed text-gray-400 text-center">
-              Enter your email <strong className="text-gray-300">or</strong> WhatsApp (whichever is easier) to unlock your detailed percentile score, learn what it means, and get tips to improve.
+              Enter your email and LINE ID to unlock your detailed percentile score, learn what it means, and get tips to improve.
             </p>
             <form onSubmit={handleEmailSubmit} className="mt-5 space-y-3">
               <input
@@ -401,18 +405,13 @@ export default function NoviReportPage() {
                 className="w-full rounded-xl border border-[#2E3650] bg-[#141925] px-4 py-3.5 text-[15px] text-white placeholder-gray-500 outline-none focus:border-[#EBB02D] transition-colors"
               />
 
-              <div>
-                <input
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="WhatsApp (e.g. +65 9123 4567)"
-                  value={whatsappInput}
-                  onChange={(e) => { setWhatsappInput(e.target.value); setFormError(""); }}
-                  className="w-full rounded-xl border border-[#2E3650] bg-[#141925] px-4 py-3.5 text-[15px] text-white placeholder-gray-500 outline-none focus:border-[#EBB02D] transition-colors"
-                />
-                <p className="mt-1 text-[11px] text-gray-500">Either email or WhatsApp will do — whichever is easier.</p>
-              </div>
+              <input
+                type="text"
+                placeholder="LINE ID"
+                value={lineInput}
+                onChange={(e) => { setLineInput(e.target.value); setFormError(""); }}
+                className="w-full rounded-xl border border-[#2E3650] bg-[#141925] px-4 py-3.5 text-[15px] text-white placeholder-gray-500 outline-none focus:border-[#EBB02D] transition-colors"
+              />
 
               {/* Age range */}
               <div>
