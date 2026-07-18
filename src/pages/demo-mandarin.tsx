@@ -3,7 +3,7 @@ import Router from "next/router";
 import { useEffect } from "react";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
-import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
+import { setAssessmentMode, setHookClinic, setHookEntryPath, setHookReportPath } from "src/utils/assessment";
 import { setAppLanguage } from "src/lib/translations";
 import { resetQuestionnaire } from "src/stores/useQuestionnaireStore";
 
@@ -13,6 +13,7 @@ export default function DemoMandarinEntry() {
   useEffect(() => {
     setAppLanguage("MANDARIN");
     setHookClinic("SJMC");
+    setHookEntryPath("/demo-mandarin");
     setHookReportPath("/demo-mandarin-questions");
     setAssessmentMode("short");
     resetTaskProgress();
