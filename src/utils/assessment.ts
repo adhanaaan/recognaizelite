@@ -97,21 +97,6 @@ export function clearHookClinic() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(HOOK_CLINIC_KEY);
   localStorage.removeItem(HOOK_REPORT_PATH_KEY);
-  localStorage.removeItem(HOOK_ENTRY_PATH_KEY);
-}
-
-// --- Hook entry path (which landing page the user came from) ---
-
-const HOOK_ENTRY_PATH_KEY = "recognaize-hook-entry-path";
-
-export function setHookEntryPath(path: string) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(HOOK_ENTRY_PATH_KEY, path);
-}
-
-export function getHookEntryPath(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(HOOK_ENTRY_PATH_KEY);
 }
 
 // --- Hook report path (per-clinic custom report pages) ---

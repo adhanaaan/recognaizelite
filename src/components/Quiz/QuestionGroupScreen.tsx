@@ -10,7 +10,6 @@ interface QuestionGroupScreenProps {
   onAnswer: (questionId: string, value: AnswerValue) => void;
   onNext: () => void;
   onBack: () => void;
-  labels?: { back?: string; continue?: string };
 }
 
 /**
@@ -28,7 +27,6 @@ export function QuestionGroupScreen({
   onAnswer,
   onNext,
   onBack,
-  labels,
 }: QuestionGroupScreenProps) {
   const allAnswered = questions.every((q) => typeof answers[q.id] === "string");
 
@@ -79,7 +77,7 @@ export function QuestionGroupScreen({
           disabled={!canGoBack}
           className="rounded-lg px-4 py-2.5 text-[14px] font-semibold text-quizSecondary transition-colors hover:text-charcoal disabled:invisible font-jakarta"
         >
-          {labels?.back ?? "← Back"}
+          ← Back
         </button>
         <button
           type="button"
@@ -87,7 +85,7 @@ export function QuestionGroupScreen({
           disabled={!allAnswered}
           className="rounded-lg bg-quizPrimary px-6 py-3 text-[15px] font-bold text-quizPrimary-on shadow-card transition hover:brightness-105 disabled:opacity-40 font-jakarta"
         >
-          {labels?.continue ?? "Continue"}
+          Continue
         </button>
       </div>
 
