@@ -84,6 +84,21 @@ export default function DemoEntry() {
               <span className="font-semibold text-charcoal"> Brain Health Score</span> on the spot.
             </p>
 
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <span
+                className="rounded-full px-4 py-1.5 text-[13px] font-semibold text-quizPrimary bg-quizPrimary/10 border border-quizPrimary/30 font-jakarta"
+                aria-current="true"
+              >
+                English
+              </span>
+              <button
+                onClick={() => Router.push("/demo-mandarin")}
+                className="rounded-full px-4 py-1.5 text-[13px] font-semibold text-quizSecondary bg-white/60 border border-quizOutline/30 transition-all hover:bg-white/80 font-jakarta"
+              >
+                中文
+              </button>
+            </div>
+
             <button
               onClick={() => Router.push("/instruction")}
               className="mt-8 w-full max-w-[300px] rounded-lg bg-quizPrimary px-8 py-4 text-[16px] font-bold text-quizPrimary-on tracking-wide shadow-card transition-all hover:brightness-105 hover:shadow-float active:scale-[0.98] font-jakarta"
