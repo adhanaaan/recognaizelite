@@ -13,7 +13,7 @@ export default function DemoMandarinEntry() {
   useEffect(() => {
     setAppLanguage("MANDARIN");
     setHookClinic("SJMC");
-    setHookReportPath("/demo-questions");
+    setHookReportPath("/demo-mandarin-questions");
     setAssessmentMode("short");
     resetTaskProgress();
     resetResults();

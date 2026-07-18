@@ -1,6 +1,7 @@
 interface ProgressBarProps {
   current: number;
   total: number;
+  labels?: { questionXOfY?: (current: number, total: number) => string };
 }
 
 /**
@@ -8,13 +9,15 @@ interface ProgressBarProps {
  * label + percentage on top, peach track below with an animated orange
  * fill that transitions over 500ms.
  */
-export function QuizProgressBar({ current, total }: ProgressBarProps) {
+export function QuizProgressBar({ current, total, labels }: ProgressBarProps) {
   const pct = total > 0 ? Math.round((Math.min(current, total) / total) * 100) : 0;
   return (
     <div className="w-full">
       <div className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-quizSecondary font-jakarta">
         <span>
-          Question {Math.min(current, total)} of {total}
+          {labels?.questionXOfY
+            ? labels.questionXOfY(Math.min(current, total), total)
+            : `Question ${Math.min(current, total)} of ${total}`}
         </span>
         <span>{pct}%</span>
       </div>
