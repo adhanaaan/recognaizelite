@@ -354,7 +354,7 @@ export default function DemoMandarinReportPage() {
   const [error, setError] = useState<string | null>(null);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailInput, setEmailInput] = useState("");
-  const [whatsappInput, setWhatsappInput] = useState("");
+  const [wechatInput, setWechatInput] = useState("");
   const [roleInput, setRoleInput] = useState<string>("");
   const [organizationInput, setOrganizationInput] = useState<string>("");
   const [cognitiveInterestInput, setCognitiveInterestInput] = useState<string>("");
@@ -428,7 +428,7 @@ export default function DemoMandarinReportPage() {
       clinic: "healthtechx",
       role: roleInput,
       organization: trimmedOrg,
-      whatsapp: whatsappInput.trim() || null,
+      wechat: wechatInput.trim() || null,
       cognitiveInterest: trimmedInterest || null,
       score: typeof task2Score === "number" ? task2Score : null,
       percentile: report ? Math.round(report.percentile) : null,
@@ -649,12 +649,11 @@ export default function DemoMandarinReportPage() {
 
               <div>
                 <input
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="WhatsApp（例如 +65 9123 4567）"
-                  value={whatsappInput}
-                  onChange={(e) => { setWhatsappInput(e.target.value); setFormError(""); }}
+                  type="text"
+                  autoComplete="off"
+                  placeholder="微信号"
+                  value={wechatInput}
+                  onChange={(e) => { setWechatInput(e.target.value); setFormError(""); }}
                   className="w-full rounded-lg border border-quizOutline-variant bg-quizSurface-low px-4 py-3.5 text-[15px] text-charcoal placeholder-quizOutline outline-none focus:border-quizPrimary transition-colors"
                 />
                 <p className="mt-1 text-[11px] text-quizOutline">可选——用于后续联系。</p>
