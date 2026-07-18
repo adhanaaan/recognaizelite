@@ -9,6 +9,7 @@ interface QuestionStepProps {
   onAnswer: (value: AnswerValue) => void;
   onNext: () => void;
   onBack: () => void;
+  labels?: { back?: string; continue?: string };
 }
 
 /**
@@ -25,6 +26,7 @@ export function QuestionStep({
   onAnswer,
   onNext,
   onBack,
+  labels,
 }: QuestionStepProps) {
   const isMulti = question.multiSelect === true || question.type === "multi-select";
   const selected: string[] = Array.isArray(value)
@@ -78,7 +80,7 @@ export function QuestionStep({
           disabled={!canGoBack}
           className="rounded-lg px-4 py-2.5 text-[14px] font-semibold text-quizSecondary transition-colors hover:text-charcoal disabled:invisible font-jakarta"
         >
-          ← Back
+          {labels?.back ?? "← Back"}
         </button>
         {isMulti && (
           <button
@@ -87,7 +89,7 @@ export function QuestionStep({
             disabled={selected.length === 0}
             className="rounded-lg bg-quizPrimary px-6 py-3 text-[15px] font-bold text-quizPrimary-on shadow-card transition hover:brightness-105 disabled:opacity-40 font-jakarta"
           >
-            Continue
+            {labels?.continue ?? "Continue"}
           </button>
         )}
       </div>

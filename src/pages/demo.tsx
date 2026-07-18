@@ -3,7 +3,7 @@ import Router from "next/router";
 import { useEffect } from "react";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
-import { setAssessmentMode, setHookClinic, setHookReportPath } from "src/utils/assessment";
+import { setAssessmentMode, setHookClinic, setHookEntryPath, setHookReportPath } from "src/utils/assessment";
 import { setAppLanguage } from "src/lib/translations";
 import { resetQuestionnaire } from "src/stores/useQuestionnaireStore";
 
@@ -17,9 +17,7 @@ export default function DemoEntry() {
     // the URL itself is now a generic B2B product demo (IHH-style sessions,
     // Gleneagles HK, hospital execs).
     setHookClinic("SJMC");
-    // The game's end-of-task router uses hookReportPath. We detour through
-    // the Brain Health Quiz first; /demo-questions hands off to /demo-report
-    // after the final answer.
+    setHookEntryPath("/demo");
     setHookReportPath("/demo-questions");
     setAssessmentMode("short");
     resetTaskProgress();
