@@ -6,7 +6,7 @@ import { task2, task3, task4, task5 } from "src/constants/tasks";
 import { preloadImages } from "src/lib/image-cache";
 import { t } from "src/lib/translations";
 import { useTaskProgress } from "src/stores/useTaskProgress";
-import { isDarkHookMode, getHookClinic, isNoviMode, isPrologueMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
+import { isDarkHookMode, getHookClinic, getHookEntryPath, isNoviMode, isPrologueMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
 import { readStoredAppLanguage } from "src/constants";
 import { getTaskStatus } from "src/utils/task-verif";
 import { Background } from "../components/Layout/Background";
@@ -50,7 +50,8 @@ export function TaskInstruction() {
   const novi = isNoviMode();
   const darkHook = isDarkHookMode();
   const clinic = getHookClinic();
-  const backUrl = clinic === "Ikigai Medical" ? "/hookikigai" : clinic === "Prologue Clinic" ? "/prologue" : clinic === "Novi" ? "/novi" : clinic === "SJMC" ? "/sjmc" : "/landing";
+  const entryPath = getHookEntryPath();
+  const backUrl = entryPath || (clinic === "Ikigai Medical" ? "/hookikigai" : clinic === "Prologue Clinic" ? "/prologue" : clinic === "Novi" ? "/novi" : clinic === "SJMC" ? "/sjmc" : "/landing");
 
   if (darkHook) {
     const accentColor = novi ? "#EBB02D" : "#5CE0D8";
@@ -107,7 +108,7 @@ export function TaskInstruction() {
     // apart by the persisted app language so back navigation and copy stay in
     // the visitor's chosen language.
     const isMandarin = readStoredAppLanguage() === "MANDARIN";
-    const sjmcBackUrl = isMandarin ? "/sjmcmandarin" : "/sjmc";
+    const sjmcBackUrl = entryPath || (isMandarin ? "/sjmcmandarin" : "/sjmc");
     const sjmcInstruction = isMandarin
       ? "在 60 秒内，尽可能多地将符号与其对应的数字匹配起来。"
       : "Match as many symbols to their numbers as possible within 60 seconds.";
