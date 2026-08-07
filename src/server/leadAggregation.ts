@@ -8,7 +8,7 @@ import { getSupabaseAdmin, LeadRow } from "src/utils/supabase";
  * this from client code — it relies on the Supabase service-role key.
  */
 
-export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi"] as const;
+export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi", "liteone"] as const;
 export type KnownClinic = (typeof KNOWN_CLINICS)[number];
 
 export interface LeadStats {
@@ -189,6 +189,7 @@ export interface ClinicLeadsResult {
  * - "healthtechx" → public.demo_leads
  * - "tcmbrain" → public.tcmbrain_leads
  * - "novi" → public.leads WHERE clinic = 'novi'
+ * - "liteone" → public.leads WHERE clinic = 'liteone'
  * - unknown clinic → empty result (caller decides 404 vs. permissive empty)
  */
 export async function fetchClinicLeads(clinic: string): Promise<ClinicLeadsResult> {
@@ -249,6 +250,13 @@ export async function fetchClinicLeads(clinic: string): Promise<ClinicLeadsResul
   } else if (clinic === "novi") {
     sources.push(
       supabase.from("leads").select("*").eq("clinic", "novi").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map(normalizeLegacyLeadsRow);
+      }),
+    );
+  } else if (clinic === "liteone") {
+    sources.push(
+      supabase.from("leads").select("*").eq("clinic", "liteone").then(({ data, error }) => {
         if (error) throw error;
         return (data ?? []).map(normalizeLegacyLeadsRow);
       }),

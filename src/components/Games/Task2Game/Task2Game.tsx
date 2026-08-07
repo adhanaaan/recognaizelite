@@ -3,7 +3,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ResultOverlay } from "src/components/ResultOverlay";
 import { useDemoReset } from "src/hooks/useDemoReset";
 import { useResult } from "src/hooks/useResult";
-import { isDarkHookMode, isNoviMode, isSjmcMode } from "src/utils/assessment";
+import { isDarkHookMode, isLiteOneMode, isNoviMode, isSjmcMode } from "src/utils/assessment";
+import { LITE } from "src/constants/liteOneTheme";
 import { isDemoPage } from "src/utils/helpers";
 import { NumberPad } from "./NumberPad";
 import { ReferenceIcons } from "./ReferenceIcons";
@@ -25,6 +26,7 @@ export const Task2Game: React.FC<{
   const novi = isNoviMode();
   const ikigai = isDarkHookMode();
   const sjmc = isSjmcMode();
+  const lite = isLiteOneMode();
 
   const randomList = useMemo(() => genRandomIconList(tiles), [tiles, refreshKey]);
 
@@ -60,7 +62,7 @@ export const Task2Game: React.FC<{
     return (
       <div
         className="w-full h-dvh overflow-hidden flex items-center justify-center"
-        style={{ background: novi ? "radial-gradient(#1B2130, #0F1420)" : ikigai ? "radial-gradient(#0B0F1A, #101828)" : sjmc ? "radial-gradient(#FAEEE6, #F0D4BE)" : "radial-gradient(#E4E3FF78, #D68DE878)" }}
+        style={{ background: lite ? LITE.bg : novi ? "radial-gradient(#1B2130, #0F1420)" : ikigai ? "radial-gradient(#0B0F1A, #101828)" : sjmc ? "radial-gradient(#FAEEE6, #F0D4BE)" : "radial-gradient(#E4E3FF78, #D68DE878)" }}
       >
         <div
           className="fc items-center justify-start"
@@ -84,7 +86,7 @@ export const Task2Game: React.FC<{
                   "relative w-[248px] h-[199px] mb-[56px]",
                   result === "success" ? "text-emerald-500" : result === "error" ? "text-red-500" : "",
                 ].join(" ")}
-                style={{ background: novi ? "radial-gradient(circle 120px, rgba(235,176,45,0.1), transparent)" : ikigai ? "radial-gradient(circle 120px, rgba(92,224,216,0.1), transparent)" : sjmc ? "radial-gradient(circle 120px, rgba(232,121,59,0.08), transparent)" : "radial-gradient(circle 120px, white, transparent)" }}
+                style={{ background: lite ? LITE.glowDesktop : novi ? "radial-gradient(circle 120px, rgba(235,176,45,0.1), transparent)" : ikigai ? "radial-gradient(circle 120px, rgba(92,224,216,0.1), transparent)" : sjmc ? "radial-gradient(circle 120px, rgba(232,121,59,0.08), transparent)" : "radial-gradient(circle 120px, white, transparent)" }}
               >
                 <AnimatePresence>
                   <motion.img
@@ -118,7 +120,7 @@ export const Task2Game: React.FC<{
   return (
     <div
       className="items-center max-h-dvh h-full fc px-6 py-3 justify-between gap-1"
-      style={{ background: novi ? "radial-gradient(#1B2130, #0F1420)" : ikigai ? "radial-gradient(#0B0F1A, #101828)" : sjmc ? "radial-gradient(#FAEEE6, #F0D4BE)" : "radial-gradient(#E4E3FF78, #D68DE878)" }}
+      style={{ background: lite ? LITE.bg : novi ? "radial-gradient(#1B2130, #0F1420)" : ikigai ? "radial-gradient(#0B0F1A, #101828)" : sjmc ? "radial-gradient(#FAEEE6, #F0D4BE)" : "radial-gradient(#E4E3FF78, #D68DE878)" }}
     >
       <ResultOverlay result={result} />
 
@@ -130,7 +132,7 @@ export const Task2Game: React.FC<{
           "relative shrink min-h-0 aspect-square w-20 md:scale-125 lg:scale-150",
           result === "success" ? "text-emerald-500" : result === "error" ? "text-red-500" : "",
         ].join(" ")}
-        style={{ background: novi ? "radial-gradient(circle 60px, rgba(235,176,45,0.1), transparent)" : ikigai ? "radial-gradient(circle 60px, rgba(92,224,216,0.1), transparent)" : sjmc ? "radial-gradient(circle 60px, rgba(232,121,59,0.08), transparent)" : "radial-gradient(circle 60px, white, transparent)" }}
+        style={{ background: lite ? LITE.glowMobile : novi ? "radial-gradient(circle 60px, rgba(235,176,45,0.1), transparent)" : ikigai ? "radial-gradient(circle 60px, rgba(92,224,216,0.1), transparent)" : sjmc ? "radial-gradient(circle 60px, rgba(232,121,59,0.08), transparent)" : "radial-gradient(circle 60px, white, transparent)" }}
       >
         <AnimatePresence>
           <motion.img

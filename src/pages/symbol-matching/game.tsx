@@ -15,7 +15,8 @@ import { TimeRemainingCard } from "src/NewComponents/TimeRemainingCard";
 import Error403 from "src/pages/403";
 import { updateResult } from "src/stores/useResultStore";
 import { updateTaskProgress, useTaskProgress } from "src/stores/useTaskProgress";
-import { isDarkHookMode, isNoviMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
+import { isDarkHookMode, isLiteOneMode, isNoviMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
+import { LITE } from "src/constants/liteOneTheme";
 import { getTimeLap } from "src/utils/helpers";
 import { verifyCompletedTasks } from "src/utils/task-verif";
 
@@ -24,8 +25,9 @@ function Task2({ currLevel }: { currLevel: number }) {
   const sjmc = isSjmcMode();
   const novi = isNoviMode();
   const ikigai = isDarkHookMode();
-  // SJMC and Novi run the full 60-second test even though short mode is enabled for report routing
-  const levels = shortMode && !sjmc && !novi ? task2LevelsShort : task2Levels;
+  const lite = isLiteOneMode();
+  // SJMC, Novi and Lite run the full 60-second test even though short mode is enabled for report routing
+  const levels = shortMode && !sjmc && !novi && !lite ? task2LevelsShort : task2Levels;
   const { tiles, time } = levels[currLevel];
   const res = useRef({ correct: 0, errors: 0, rounds: [] as any[] });
   const lap = useCallback(getTimeLap(), [currLevel]);
@@ -68,11 +70,11 @@ function Task2({ currLevel }: { currLevel: number }) {
             score={score}
             className={isDesktop
               ? "[font-family:Avenir] [font-weight:800] text-[26.51px] leading-[26.51px] align-middle"
-              : `text-2xl font-bold leading-6 ${ikigai || sjmc ? "" : "text-task2"}`
+              : `text-2xl font-bold leading-6 ${ikigai || sjmc || lite ? "" : "text-task2"}`
             }
-            style={isDesktop ? { color: novi ? "#EBB02D" : ikigai ? "#5CE0D8" : sjmc ? "#E8793B" : "#630092" } : novi ? { color: "#EBB02D" } : ikigai ? { color: "#5CE0D8" } : sjmc ? { color: "#E8793B" } : undefined}
+            style={isDesktop ? { color: lite ? LITE.accent : novi ? "#EBB02D" : ikigai ? "#5CE0D8" : sjmc ? "#E8793B" : "#630092" } : lite ? { color: LITE.accent } : novi ? { color: "#EBB02D" } : ikigai ? { color: "#5CE0D8" } : sjmc ? { color: "#E8793B" } : undefined}
           />
-          <TimeRemainingCard time={time} callback={updateTask} showSeconds={false} color={novi ? "#EBB02D" : ikigai ? "#5CE0D8" : sjmc ? "#E8793B" : "#3A3A3A"} />
+          <TimeRemainingCard time={time} callback={updateTask} showSeconds={false} color={lite ? LITE.accent : novi ? "#EBB02D" : ikigai ? "#5CE0D8" : sjmc ? "#E8793B" : "#3A3A3A"} />
         </div>
       </Task2Game>
     </GameCompleteScreen>
@@ -85,6 +87,7 @@ const Task2Wrapper = () => {
   const noviW = isNoviMode();
   const ikigai = isDarkHookMode();
   const sjmcW = isSjmcMode();
+  const liteW = isLiteOneMode();
 
   return (
     <>
@@ -93,15 +96,24 @@ const Task2Wrapper = () => {
       ) : (
         <>
           <Head>
-            <meta name="theme-color" content={noviW ? "#1B2130" : ikigai ? "#0B0F1A" : sjmcW ? "#FAEEE6" : task2.color} />
+            <meta name="theme-color" content={liteW ? LITE.surface : noviW ? "#1B2130" : ikigai ? "#0B0F1A" : sjmcW ? "#FAEEE6" : task2.color} />
           </Head>
           {currLevel === totalLevel ? (
             <Celebrations />
           ) : (
-            <AssetsLoading assets={IMAGES["task-2"]} prefix="/images/task-2">
+            <AssetsLoading
+              assets={IMAGES["task-2"]}
+              prefix="/images/task-2"
+              loadingGradient={liteW ? "lite" : undefined}
+              loadingColor={liteW ? LITE.accent : undefined}
+            >
               <CountDownScreen
-                color={noviW ? "#EBB02D" : ikigai ? "#5CE0D8" : sjmcW ? "#E8793B" : task2.color}
-                backgroundColor={noviW ? "#1B2130" : ikigai ? "#0B0F1A" : sjmcW ? "#FAEEE6" : task2.color + "11"}
+                color={liteW ? LITE.accent : noviW ? "#EBB02D" : ikigai ? "#5CE0D8" : sjmcW ? "#E8793B" : task2.color}
+                backgroundColor={liteW ? LITE.surface : noviW ? "#1B2130" : ikigai ? "#0B0F1A" : sjmcW ? "#FAEEE6" : task2.color + "11"}
+                variant={liteW ? "numeric" : "dots"}
+                title={liteW ? "Reaction time challenge" : undefined}
+                subtitle={liteW ? "Match as many symbols to their numbers" : undefined}
+                titleColor={liteW ? LITE.accentDeep : undefined}
               >
                 <Task2 currLevel={currLevel} />
               </CountDownScreen>

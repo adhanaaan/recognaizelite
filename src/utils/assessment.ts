@@ -88,6 +88,15 @@ export function isNoviMode(): boolean {
   return getHookClinic() === "Novi";
 }
 
+/**
+ * ReCOGnAIze Lite (/lite-one). Runs the same Symbol Matching game as every
+ * other funnel but re-skinned in the orange "Clinical Empathy" palette that
+ * /demo uses, so the whole flow reads as one surface.
+ */
+export function isLiteOneMode(): boolean {
+  return getHookClinic() === "LiteOne";
+}
+
 /** Returns true for any clinic that uses dark-themed game UI */
 export function isDarkHookMode(): boolean {
   return isIkigaiMode() || isNoviMode();

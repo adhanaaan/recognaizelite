@@ -12,8 +12,10 @@ import { preloadImages } from "src/lib/image-cache";
 import { t } from "src/lib/translations";
 import { DemoStep } from "src/types";
 import { demoNextStep } from "src/utils/helpers";
+import { isLiteOneMode } from "src/utils/assessment";
+import { LITE } from "src/constants/liteOneTheme";
 
-const getSteps = (isDesktop: boolean): DemoStep[] => [
+const getSteps = (isDesktop: boolean, handFill: string): DemoStep[] => [
   {
     elements: [{ id: "sb-main-icon", className: "scale-105", instruction: t.SM["Focus on the symbol at the top of the screen."] }],
     delay: 400,
@@ -50,7 +52,7 @@ const getSteps = (isDesktop: boolean): DemoStep[] => [
         className: "bg-transparent z-10",
         children: (
           <div className="translate-x-1/2 translate-y-2/3 animate-pulse">
-            <HandIcon fill="#b7430a" background="white" className="size-12 sm:size-16 md:size-20" />
+            <HandIcon fill={handFill} background="white" className="size-12 sm:size-16 md:size-20" />
           </div>
         ),
         onClick: () => {
@@ -96,6 +98,10 @@ const getSteps = (isDesktop: boolean): DemoStep[] => [
 export default function GameDemo() {
   const score = useRef(-1); // start from -1 since first success will increment to 0
   const [isDesktop, setIsDesktop] = useState(false);
+  // ReCOGnAIze Lite re-skins the tutorial card in the orange Clinical Empathy
+  // palette. Every other funnel keeps the original purple values.
+  const lite = isLiteOneMode();
+  const handFill = lite ? LITE.accentDeep : "#b7430a";
   resetSkipShuffle();
 
   useEffect(() => {
@@ -121,19 +127,27 @@ export default function GameDemo() {
       value={{
         name: "SM",
         title: task2.title,
-        steps: getSteps(isDesktop),
+        steps: getSteps(isDesktop, handFill),
         texts: {},
-        colors: {
-          color: task2.color,
-          secondaryColor: "#A969C7",
-          previousBtn1: "#FDFDFD",
-          previousBtn2: "#E0D0E7",
-          arrow2: "#E0D0E7",
-        },
+        colors: lite
+          ? {
+              color: LITE.accent,
+              secondaryColor: "#ffa06b",
+              previousBtn1: "#FFFFFF",
+              previousBtn2: "#ffdbcb",
+              arrow2: "#ffdbcb",
+            }
+          : {
+              color: task2.color,
+              secondaryColor: "#A969C7",
+              previousBtn1: "#FDFDFD",
+              previousBtn2: "#E0D0E7",
+              arrow2: "#E0D0E7",
+            },
       }}
     >
       <Head>
-        <meta name="theme-color" content={task2.color} />
+        <meta name="theme-color" content={lite ? LITE.surface : task2.color} />
       </Head>
 
       <DemoScreen>
@@ -151,9 +165,9 @@ export default function GameDemo() {
               score={0}
               className={isDesktop
                 ? "[font-family:Avenir] [font-weight:800] text-[26.51px] leading-[26.51px] align-middle"
-                : "text-2xl font-bold leading-6 text-task2"
+                : `text-2xl font-bold leading-6 ${lite ? "" : "text-task2"}`
               }
-              style={isDesktop ? { color: "#630092" } : undefined}
+              style={isDesktop ? { color: lite ? LITE.accent : "#630092" } : lite ? { color: LITE.accent } : undefined}
             />
             {isDesktop ? (
               <div
@@ -162,8 +176,8 @@ export default function GameDemo() {
                   width: 113.13,
                   height: 55.57,
                   borderRadius: 16304.32,
-                  border: "2.45px solid #3A3A3A",
-                  color: "#3A3A3A",
+                  border: `2.45px solid ${lite ? LITE.accentDeep : "#3A3A3A"}`,
+                  color: lite ? LITE.accentDeep : "#3A3A3A",
                   padding: "9.78px 19.57px",
                 }}
               >

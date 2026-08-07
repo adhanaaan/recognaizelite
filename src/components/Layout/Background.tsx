@@ -8,12 +8,17 @@ const gradients: Record<string, string> = {
   task3: "radial-gradient(108.21% 50% at 50% 50%, rgba(200, 248, 216, 0.4) 0%, rgba(68, 234, 124, 0.4) 100%), #FFFFFF",
   task4: "radial-gradient(108.21% 50% at 50% 50%, rgba(175, 205, 250, 0.4) 0%, rgba(61, 136, 253, 0.4) 100%), #FFFFFF",
   task5: "radial-gradient(108.21% 50% at 50% 50%, rgba(242, 211, 191, 0.4) 0%, rgba(254, 142, 68, 0.4) 100%), #FFFFFF",
+  // ReCOGnAIze Lite — matches the cream surface the rest of /lite-one sits on.
+  lite: "radial-gradient(108.21% 50% at 50% 50%, #fff4ee 0%, #fbe7de 100%), #FFFFFF",
 };
+
+/** Falls back to `default` for an unknown key, so callers can pass through freely. */
+const gradientFor = (key: string) => gradients[key] ?? gradients.default;
 
 export function Background({
   children,
   className,
-  gradient = "default",
+  gradient,
   desktopFrame = false,
   fluid = false,
 }: React.HTMLAttributes<HTMLDivElement> & { gradient?: string; desktopFrame?: boolean; fluid?: boolean }) {
@@ -21,8 +26,12 @@ export function Background({
     <div
       className={"w-full h-[100dvh] overflow-x-hidden overflow-y-auto fc"}
       style={{
-        background: gradients[gradient],
+        background: gradientFor(gradient ?? "default"),
       }}
+      // Callers pick `gradient` from localStorage-backed theme predicates, so
+      // SSR resolves to the default and the client may not. Colour-only, and
+      // expected — so don't warn on it.
+      suppressHydrationWarning
     >
       <div
         className={twMerge(

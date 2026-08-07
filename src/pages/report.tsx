@@ -5,6 +5,7 @@ import { HeaderWrapper } from "src/components/Layout/Header";
 import MainLayout from "src/NewComponents/MainLayout";
 import { Button } from "src/NewComponents/Button";
 import { setAssessmentMode } from "src/utils/assessment";
+import { improveIconPaths } from "src/constants/improveIcons";
 import { DomainReport, Severity } from "src/types/report";
 import { useResultStore } from "src/stores/useResultStore";
 import { useTaskProgress } from "src/stores/useTaskProgress";
@@ -38,41 +39,6 @@ const severityVisuals: Record<Severity, SeverityVisual> = {
     color: "#1BAA63",
     softColor: "#D8EFE4",
   },
-};
-
-const improveIconPaths: Record<string, string[]> = {
-  "Working Memory": [
-    "/images/report-icons/memory/puzzle.png",
-    "/images/report-icons/memory/link.png",
-    "/images/report-icons/memory/breakdown.png",
-    "/images/report-icons/memory/story.png",
-    "/images/report-icons/memory/explain.png",
-    "/images/report-icons/memory/family.png",
-  ],
-  Attention: [
-    "/images/report-icons/attention/mindful.png",
-    "/images/report-icons/attention/chess.png",
-    "/images/report-icons/attention/clock.png",
-    "/images/report-icons/attention/breathe.png",
-    "/images/report-icons/attention/routine.png",
-    "/images/report-icons/attention/monitor.png",
-  ],
-  "Executive Function": [
-    "/images/report-icons/executive/goals.png",
-    "/images/report-icons/executive/routine.png",
-    "/images/report-icons/executive/server.png",
-    "/images/report-icons/executive/checklist.png",
-    "/images/report-icons/executive/variety.png",
-    "/images/report-icons/executive/journal.png",
-  ],
-  "Processing Speed": [
-    "/images/report-icons/processing/math.png",
-    "/images/report-icons/processing/clock.png",
-    "/images/report-icons/processing/book.png",
-    "/images/report-icons/processing/timer.png",
-    "/images/report-icons/processing/keyboard.png",
-    "/images/report-icons/processing/human.png",
-  ],
 };
 
 const BELL_CURVE_WIDTH = 500;
