@@ -26,8 +26,11 @@ export function getSupabaseAdmin(): SupabaseClient {
 
 export interface LeadRow {
   id: string;
-  email: string;
-  email_lower: string;
+  // Nullable since migration 008 (SJMC accepts WhatsApp-only leads) and again
+  // for `liteone`, where a row is written when the game ends — before any
+  // contact details exist. Always guard before calling string methods on it.
+  email: string | null;
+  email_lower: string | null;
   clinic: string;
   age_range: string | null;
   gender: string | null;
@@ -52,6 +55,10 @@ export interface LeadRow {
   dampness_index: number | null;
   blood_stasis_index: number | null;
   created_at: string;
+  // ReCOGnAIze Lite (`liteone_leads`): set when the visitor submits the form.
+  // Null means they finished the game but abandoned the form. Null for every
+  // other clinic, which has no row until submit.
+  completed_at: string | null;
 }
 
 // `partner_share_links` row. Token-in-URL bearer credential for the

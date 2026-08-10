@@ -1,0 +1,187 @@
+/*
+ * ReCOGnAIze Lite (/lite-one) motion.
+ *
+ * Rules this file holds itself to:
+ *  - transform and opacity only, so nothing triggers layout
+ *  - every looping animation sits behind `prefers-reduced-motion: no-preference`
+ *  - one-shot entrance animations are cheap enough to run either way, but the
+ *    reduce block below still flattens them so a motion-sensitive visitor gets
+ *    a static, fully legible page
+ */
+
+/* ---------- one-shot entrances ---------- */
+
+@keyframes lite-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lite-rise {
+  animation: lite-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes lite-ring-draw {
+  from { stroke-dashoffset: var(--ring-len, 320); }
+  to   { stroke-dashoffset: var(--ring-offset, 0); }
+}
+.lite-ring-draw {
+  animation: lite-ring-draw 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+}
+
+/* Vertical connector between the numbered step circles. */
+@keyframes lite-line-draw {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+.lite-line-draw {
+  transform-origin: top;
+  animation: lite-line-draw 0.5s ease-out both;
+}
+
+/* Bell-curve reveal (BellCurve `animate` prop). */
+@keyframes bc-draw {
+  from { stroke-dashoffset: 1400; }
+  to   { stroke-dashoffset: 0; }
+}
+.bc-draw {
+  stroke-dasharray: 1400;
+  animation: bc-draw 1.4s cubic-bezier(0.33, 1, 0.68, 1) 0.15s both;
+}
+@keyframes bc-marker-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.bc-marker {
+  animation: bc-marker-in 0.5s ease-out 1.15s both;
+}
+
+/* ---------- looping ambience ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Cardiac lub-dub: a strong beat, a softer second beat, then rest. */
+  @keyframes lite-heartbeat {
+    0%   { transform: scale(1); }
+    8%   { transform: scale(1.11); }
+    16%  { transform: scale(1); }
+    26%  { transform: scale(1.06); }
+    36%  { transform: scale(1); }
+    100% { transform: scale(1); }
+  }
+  .lite-heartbeat { animation: lite-heartbeat 1.15s ease-in-out infinite; }
+
+  /* ECG trace sweeping left to right on the same period as the beat. */
+  /* The trace path is only ~36 units long, so the dash has to be short
+     enough to actually sit on it. */
+  @keyframes lite-ecg {
+    from { stroke-dashoffset: 56; }
+    to   { stroke-dashoffset: -56; }
+  }
+  .lite-ecg {
+    stroke-dasharray: 30 30;
+    animation: lite-ecg 2.3s linear infinite;
+  }
+
+  /* Glucose sparkline redraw. */
+  @keyframes lite-spark {
+    0%   { stroke-dashoffset: 300; }
+    45%  { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: 0; }
+  }
+  .lite-spark {
+    stroke-dasharray: 300;
+    animation: lite-spark 4.2s ease-in-out infinite;
+  }
+
+  /* Crescent rocking gently, like a slow breath. */
+  @keyframes lite-rock {
+    0%, 100% { transform: rotate(-7deg); }
+    50%      { transform: rotate(7deg); }
+  }
+  .lite-rock { animation: lite-rock 4.6s ease-in-out infinite; }
+
+  /* Sleep "z" glyphs drifting up and fading. */
+  @keyframes lite-zfloat {
+    0%   { opacity: 0; transform: translate(0, 4px) scale(0.7); }
+    25%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(9px, -16px) scale(1.05); }
+  }
+  .lite-zfloat { animation: lite-zfloat 3.2s ease-out infinite; }
+
+  /* Sleep-stage bars breathing at slightly different rates. */
+  @keyframes lite-bar {
+    0%, 100% { transform: scaleY(0.55); }
+    50%      { transform: scaleY(1); }
+  }
+  .lite-bar { transform-origin: bottom; animation: lite-bar 2.4s ease-in-out infinite; }
+
+  /* Orbiting symbol ring around the "?" — the wrapper spins, each icon
+     counter-spins at the same rate so it never appears upside down. */
+  @keyframes lite-orbit {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes lite-orbit-counter {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(-360deg); }
+  }
+  .lite-orbit         { animation: lite-orbit 26s linear infinite; }
+  .lite-orbit-counter { animation: lite-orbit-counter 26s linear infinite; }
+
+  @keyframes lite-breathe {
+    0%, 100% { opacity: 0.45; transform: scale(0.94); }
+    50%      { opacity: 0.85; transform: scale(1.06); }
+  }
+  .lite-breathe { animation: lite-breathe 5.5s ease-in-out infinite; }
+
+  @keyframes lite-bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+  }
+  .lite-bob { animation: lite-bob 3.4s ease-in-out infinite; }
+
+  /* Light sweeping across a CTA / the offer card. The band is half the width
+     of its container and starts fully off the left edge, so it has to travel
+     320% of its own width to clear the right edge — anything less parks a
+     visible block mid-button. */
+  @keyframes lite-shimmer {
+    0%, 8%    { transform: translateX(0); }
+    42%, 100% { transform: translateX(320%); }
+  }
+  .lite-shimmer { animation: lite-shimmer 5s ease-in-out infinite; }
+
+  /* Ambient background blobs, offset so they never move in lockstep. */
+  @keyframes lite-drift-a {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(-26px, 22px); }
+  }
+  @keyframes lite-drift-b {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(22px, -20px); }
+  }
+  .lite-drift-a { animation: lite-drift-a 19s ease-in-out infinite; }
+  .lite-drift-b { animation: lite-drift-b 23s ease-in-out infinite; }
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .lite-rise,
+  .lite-ring-draw,
+  .lite-line-draw,
+  .bc-draw,
+  .bc-marker {
+    animation: none !important;
+  }
+  .bc-draw { stroke-dasharray: none; }
+  .lite-line-draw { transform: scaleY(1); }
+}
+
+/* ---------- utilities ---------- */
+
+/* Horizontal card rail that snaps, without a visible scrollbar. */
+.lite-rail {
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.lite-rail::-webkit-scrollbar { display: none; }
+.lite-rail > * { scroll-snap-align: start; }

@@ -10,7 +10,8 @@ import { saveResult, useResultStore } from "src/stores/useResultStore";
 import { saveProgress, useTaskProgress } from "src/stores/useTaskProgress";
 import { ResultType } from "src/types";
 import { APP_LANG } from "src/constants";
-import { getAssessmentMode, getHookReportPath, isHookMode, isDarkHookMode, isNoviMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
+import { getAssessmentMode, getHookReportPath, isHookMode, isDarkHookMode, isLiteOneMode, isNoviMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
+import { LITE } from "src/constants/liteOneTheme";
 
 // Minimal localized strings for the SJMC short-assessment completion flow.
 // Only the SJMC (incl. Mandarin variant) path sets APP_LANG=MANDARIN today.
@@ -103,6 +104,7 @@ export function GameCompleteScreen({
   const novi = isNoviMode();
   const ikigai = isDarkHookMode();
   const sjmc = isSjmcMode();
+  const lite = isLiteOneMode();
   const gc = APP_LANG === "MANDARIN" ? GC_COPY.MANDARIN : GC_COPY.ENGLISH;
 
   if (!result) return children;
@@ -111,16 +113,24 @@ export function GameCompleteScreen({
   if (resultSubmitting && taskSubmitting) {
     content = (
       <div className="space-y-16 text-center md:scale-125 lg:scale-150 cc">
-        <PiSpinnerBold size={72} className={`animate-spin ${novi ? "text-[#EBB02D]" : ikigai ? "text-[#5CE0D8]" : sjmc ? "text-[#E8793B]" : ""}`} />
-        <p className={`text-lg ${ikigai ? "text-gray-300" : sjmc ? "text-[#4B5563]" : ""}`}>{gc.saving}</p>
+        <PiSpinnerBold size={72} className={`animate-spin ${lite ? "text-quizPrimary" : novi ? "text-[#EBB02D]" : ikigai ? "text-[#5CE0D8]" : sjmc ? "text-[#E8793B]" : ""}`} />
+        <p className={`text-lg ${lite ? "text-quizSecondary font-jakarta" : ikigai ? "text-gray-300" : sjmc ? "text-[#4B5563]" : ""}`}>{gc.saving}</p>
       </div>
     );
   } else if (resultError || taskError) {
     content = (
       <div className="space-y-16 text-center md:scale-125 lg:scale-150 cc">
-        <p className={`text-lg ${ikigai ? "text-gray-300" : sjmc ? "text-[#4B5563]" : ""}`}>{gc.errorTitle}</p>
-        <p className={`text-lg w-80 ${ikigai ? "text-gray-400" : sjmc ? "text-[#6B7280]" : ""}`}>{gc.errorBody}</p>
-        {novi ? (
+        <p className={`text-lg ${lite ? "text-charcoal font-jakarta" : ikigai ? "text-gray-300" : sjmc ? "text-[#4B5563]" : ""}`}>{gc.errorTitle}</p>
+        <p className={`text-lg w-80 ${lite ? "text-quizSecondary font-jakarta" : ikigai ? "text-gray-400" : sjmc ? "text-[#6B7280]" : ""}`}>{gc.errorBody}</p>
+        {lite ? (
+          <button
+            className="w-84 rounded-full px-5 py-3 text-lg font-bold text-white font-jakarta"
+            style={{ backgroundColor: LITE.accent }}
+            onClick={() => { saveResult(); saveProgress(); }}
+          >
+            {gc.retry}
+          </button>
+        ) : novi ? (
           <button
             className="w-84 rounded-full px-5 py-3 text-lg font-semibold text-[#1B2130]"
             style={{ backgroundColor: "#EBB02D" }}
@@ -155,7 +165,36 @@ export function GameCompleteScreen({
       </div>
     );
   } else if (!nextTask) {
-    content = novi ? (
+    content = lite ? (
+      <div className="space-y-8 text-center text-charcoal font-jakarta md:scale-125 lg:scale-150">
+        <div className="h-16 tall:h-20" />
+        <div
+          className="mx-auto rounded-full c size-24"
+          style={{
+            background: "linear-gradient(to bottom, #FFFFFF, #ffdbcb)",
+            boxShadow: "0 0 30px rgba(247,117,40,0.2)",
+          }}
+        >
+          <FaCheck className="mx-auto size-14" style={{ color: LITE.accent }} />
+        </div>
+        <div>
+          <h2 className="font-display font-extrabold">{gc.complete}</h2>
+          <p className="mt-6 text-sm font-medium w-84 text-quizSecondary">
+            {gc.ready}
+          </p>
+        </div>
+        <div className="h-16 tall:h-20" />
+        <div className="mx-auto w-84">
+          <button
+            className="w-full rounded-full px-5 py-3 text-lg font-bold text-white"
+            style={{ backgroundColor: LITE.accent }}
+            onClick={() => Router.push(getHookReportPath())}
+          >
+            {gc.viewReport}
+          </button>
+        </div>
+      </div>
+    ) : novi ? (
       <div className="space-y-8 text-center text-white md:scale-125 lg:scale-150" style={{ fontFamily: "'Poppins', sans-serif" }}>
         <div className="h-16 tall:h-20" />
         <div
@@ -299,6 +338,7 @@ export function GameCompleteScreen({
   const noviBg = "linear-gradient(180deg, #1B2130 0%, #252D3F 50%, #1B2130 100%)";
   const darkBg = "linear-gradient(180deg, #0B0F1A 0%, #101828 50%, #0B0F1A 100%)";
   const sjmcBg = "linear-gradient(180deg, #FAEEE6 0%, #F5D4C0 50%, #FAEEE6 100%)";
+  const liteBg = "linear-gradient(180deg, #fff8f6 0%, #ffdbcb 50%, #fff8f6 100%)";
 
   return (
     <PcScreen>
@@ -308,7 +348,9 @@ export function GameCompleteScreen({
         <div
           className="c z-[1000] h-full section-padding-large"
           style={{
-            background: novi
+            background: lite
+              ? liteBg
+              : novi
               ? noviBg
               : ikigai
               ? darkBg
@@ -319,7 +361,7 @@ export function GameCompleteScreen({
                     ? TASK_TO_GRADIENT[task]
                     : "radial-gradient(108.21% 50% at 50% 50%, rgba(228, 227, 255, 0.4) 0%, rgba(141, 231, 244, 0.4) 100%), #FFFFFF"
                   : undefined,
-            color: ikigai ? "#fff" : sjmc ? "#1F2937" : color,
+            color: lite ? "#2d2d2d" : ikigai ? "#fff" : sjmc ? "#1F2937" : color,
           }}
         >
           {content}

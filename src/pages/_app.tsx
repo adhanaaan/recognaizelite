@@ -13,6 +13,7 @@ import "src/styles/animations.css";
 import "src/styles/circular-progress.css";
 import "src/styles/fonts.css";
 import "src/styles/games.css";
+import "src/styles/lite-one.css";
 import "src/styles/nprogress.css";
 
 function App({ Component, pageProps }: AppProps) {

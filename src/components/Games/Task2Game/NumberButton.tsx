@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { isDarkHookMode, isNoviMode, isSjmcMode } from "src/utils/assessment";
+import { isDarkHookMode, isLiteOneMode, isNoviMode, isSjmcMode } from "src/utils/assessment";
+import { LITE } from "src/constants/liteOneTheme";
 
 interface Props extends React.PropsWithChildren {
   active?: boolean;
@@ -18,7 +19,8 @@ export function NumberButton({ onClick, className, children, id, desktopDemo = f
   const novi = isNoviMode();
   const ikigai = isDarkHookMode();
   const sjmc = isSjmcMode();
-  const defaultBg = novi ? NoviBgColor : ikigai ? IkigaiBgColor : sjmc ? SjmcBgColor : InitialBgColor;
+  const lite = isLiteOneMode();
+  const defaultBg = lite ? LITE.padGradient : novi ? NoviBgColor : ikigai ? IkigaiBgColor : sjmc ? SjmcBgColor : InitialBgColor;
   const [background, setBackground] = useState(defaultBg);
 
   useEffect(() => {
@@ -30,7 +32,7 @@ export function NumberButton({ onClick, className, children, id, desktopDemo = f
     <button
       id={id}
       className={[
-        `bg-gradient-to-b font-extrabold ${novi ? "text-[#1B2130]" : "text-white"} rounded-full shadow-md ${novi ? "shadow-black/30" : ikigai ? "shadow-black/30" : sjmc ? "shadow-[#C4A48F]/40" : "shadow-gray-400"} c last:col-span-3 last:mx-auto`,
+        `bg-gradient-to-b font-extrabold ${novi ? "text-[#1B2130]" : "text-white"} rounded-full shadow-md ${lite ? "shadow-[#e8a583]/50" : novi ? "shadow-black/30" : ikigai ? "shadow-black/30" : sjmc ? "shadow-[#C4A48F]/40" : "shadow-gray-400"} c last:col-span-3 last:mx-auto`,
         desktopDemo
           ? "w-[85.86px] h-[85.86px] text-[48px] leading-none"
           : "size-11 tall:h-14 tall:w-14 tall-lg:size-16 text-[24px] tall:text-[32px] leading-[32px] tall:leading-[40px]",
