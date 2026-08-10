@@ -2,53 +2,34 @@ import React from "react";
 
 export type LiteStep = {
   label: string;
-  /** Inline glyph rendered at the end of the row. */
-  icon: React.ReactNode;
+  /** Artwork for the right-hand side of the row — a preview of that step. */
+  illustration: React.ReactNode;
 };
 
 /**
  * The numbered rows on the "In the next 3 mins" screen.
  *
- * Each step is a circle, joined by a hairline that draws downward as the
- * rows stagger in — so the list reads as a route through the flow rather
- * than three unrelated bullets.
+ * Each step is its own soft card carrying a preview of what that step looks
+ * like, so the list shows the flow rather than just naming it.
  */
 export function StepList({ steps }: { steps: LiteStep[] }) {
   return (
-    <ol className="mx-auto w-full max-w-[360px] text-left">
-      {steps.map((step, idx) => {
-        const last = idx === steps.length - 1;
-        const delay = 220 + idx * 110;
-        return (
-          <li key={step.label} className="relative flex gap-4 pb-6 last:pb-0">
-            {/* connector */}
-            {!last && (
-              <span
-                aria-hidden
-                className="lite-line-draw absolute left-[17px] top-9 h-[calc(100%-2.25rem)] w-px bg-quizOutline-variant"
-                style={{ animationDelay: `${delay + 90}ms` }}
-              />
-            )}
-
-            <span
-              className="lite-rise relative z-10 flex size-[34px] shrink-0 items-center justify-center rounded-full border-2 border-quizPrimary/35 bg-quizSurface-lowest text-[14px] font-bold text-quizPrimary shadow-card"
-              style={{ animationDelay: `${delay}ms` }}
-            >
-              {idx + 1}
-            </span>
-
-            <span
-              className="lite-rise flex min-h-[34px] flex-1 items-center justify-between gap-3"
-              style={{ animationDelay: `${delay + 50}ms` }}
-            >
-              <span className="text-[15.5px] font-medium leading-snug text-charcoal">
-                {step.label}
-              </span>
-              <span className="shrink-0 text-quizPrimary/70">{step.icon}</span>
-            </span>
-          </li>
-        );
-      })}
+    <ol className="mx-auto w-full max-w-[380px] space-y-3.5 text-left">
+      {steps.map((step, idx) => (
+        <li
+          key={step.label}
+          className="lite-rise flex items-center gap-3 rounded-2xl border border-quizOutline-variant/40 bg-quizSurface-low/70 py-3 pl-3.5 pr-3"
+          style={{ animationDelay: `${200 + idx * 120}ms` }}
+        >
+          <span className="flex size-[26px] shrink-0 items-center justify-center rounded-full bg-quizSurface-lowest text-[13px] font-bold text-quizSecondary shadow-sm">
+            {idx + 1}
+          </span>
+          <span className="flex-1 text-[14.5px] font-semibold leading-snug text-charcoal">
+            {step.label}
+          </span>
+          <span className="shrink-0">{step.illustration}</span>
+        </li>
+      ))}
     </ol>
   );
 }

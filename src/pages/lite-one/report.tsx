@@ -93,7 +93,7 @@ export default function LiteOneReport() {
       <Head>
         <title>Your brain speed result | ReCOGnAIze Lite</title>
       </Head>
-      <LiteShell scroll className="px-5 pb-16 sm:px-8" headerLabel="Your results">
+      <LiteShell scroll className="px-5 pb-16 sm:px-8">
         <div className="relative mx-auto w-full max-w-[520px] space-y-5 pt-6">{children}</div>
       </LiteShell>
     </>

@@ -16,13 +16,14 @@ export function LiteShell({
   className = "",
   showHeader = true,
   headerLabel = "Gray Matter Solutions",
-  dualLogo = false,
+  dualLogo = true,
 }: {
   children: React.ReactNode;
   scroll?: boolean;
   className?: string;
   showHeader?: boolean;
   headerLabel?: string;
+  /** Parkway Shenton + Gray Matter co-branded lock-up, as every comp shows. */
   dualLogo?: boolean;
 }) {
   React.useEffect(() => {
@@ -80,22 +81,17 @@ export function LiteShell({
         {showHeader && (
           <header className="relative shrink-0 pt-7 sm:pt-9">
             {dualLogo ? (
-              <div className="flex items-center justify-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <div className="flex size-5 items-center justify-center rounded bg-[#00614a]">
-                    <span className="text-[8px] font-bold leading-none text-white">PS</span>
-                  </div>
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-quizSecondary">
-                    Parkway Shenton
-                  </span>
-                </div>
-                <span className="text-[10px] text-quizOutline-variant">×</span>
-                <div className="flex items-center gap-1.5">
-                  <img src="/logo.png" alt="" aria-hidden className="size-5" />
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-quizSecondary">
-                    Gray Matter
-                  </span>
-                </div>
+              <div className="mx-auto flex w-full max-w-[420px] items-center justify-between gap-4 px-6">
+                <img
+                  src="/images/lite-one/logo-parkway-shenton.png"
+                  alt="Parkway Shenton"
+                  className="h-[23px] w-auto"
+                />
+                <img
+                  src="/images/lite-one/logo-gray-matter.png"
+                  alt="Gray Matter Solutions"
+                  className="h-[30px] w-auto"
+                />
               </div>
             ) : (
               <div className="flex items-center justify-center gap-2">

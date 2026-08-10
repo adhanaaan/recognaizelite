@@ -3,39 +3,67 @@ import Router from "next/router";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { SectionBadge } from "src/components/LiteOne/SectionBadge";
 
-const PHOTOS: { label: string; color: string; rotate: string }[] = [
-  { label: "Exercise", color: "#e8844a", rotate: "-3deg" },
-  { label: "Yoga", color: "#7d5747", rotate: "2deg" },
-  { label: "Nutrition", color: "#6c5d2e", rotate: "-4deg" },
-  { label: "Sleep", color: "#4a6fa5", rotate: "3deg" },
-  { label: "Hydration", color: "#5a9e6f", rotate: "-2deg" },
-  { label: "Relaxation", color: "#8b6fa5", rotate: "4deg" },
+const TOP_ROW = [
+  { src: "quiz-exercise", alt: "Cycling outdoors", tilt: "-7deg" },
+  { src: "quiz-yoga", alt: "Stretching in a meadow", tilt: "3deg" },
+  { src: "quiz-nutrition", alt: "A bowl of vegetables and grains", tilt: "-5deg" },
 ];
 
+const BOTTOM_ROW = [
+  { src: "quiz-sleep", alt: "Sleeping in morning light", tilt: "-3deg" },
+  { src: "quiz-hydration", alt: "Drinking water by the sea", tilt: "5deg" },
+  { src: "quiz-supplements", alt: "Supplements on a counter", tilt: "-8deg" },
+];
+
+/**
+ * One lifestyle card. The tilt sits on an inner element because `lite-rise`
+ * animates `transform`, which would otherwise cancel the rotation.
+ */
 function PhotoCard({
-  label,
-  color,
-  rotate,
+  src,
+  alt,
+  tilt,
   delay,
 }: {
-  label: string;
-  color: string;
-  rotate: string;
+  src: string;
+  alt: string;
+  tilt: string;
   delay: number;
 }) {
   return (
-    <div
-      className="lite-rise aspect-[4/3] overflow-hidden rounded-xl shadow-card"
-      style={{ animationDelay: `${delay}ms`, transform: `rotate(${rotate})` }}
-    >
+    <div className="lite-rise w-[140px] shrink-0" style={{ animationDelay: `${delay}ms` }}>
       <div
-        className="flex h-full w-full items-center justify-center"
-        style={{ background: `linear-gradient(135deg, ${color}30, ${color}18)` }}
+        className="overflow-hidden rounded-[18px] shadow-float"
+        style={{ transform: `rotate(${tilt})` }}
       >
-        <span className="text-[12px] font-bold uppercase tracking-wider" style={{ color }}>
-          {label}
-        </span>
+        <img
+          src={`/images/lite-one/${src}.jpg`}
+          alt={alt}
+          className="block aspect-square w-full object-cover"
+        />
       </div>
+    </div>
+  );
+}
+
+/**
+ * A row of three cards, wider than the page so the outer cards run off both
+ * edges as the comp shows. `left-1/2` + `-translate-x-1/2` centres the fixed
+ * width on the column whatever the column measures; LiteShell clips the
+ * overflow.
+ */
+function PhotoRow({
+  items,
+  baseDelay,
+}: {
+  items: typeof TOP_ROW;
+  baseDelay: number;
+}) {
+  return (
+    <div className="relative left-1/2 flex w-[456px] -translate-x-1/2 justify-center gap-[18px]">
+      {items.map((item, i) => (
+        <PhotoCard key={item.src} {...item} delay={baseDelay + i * 90} />
+      ))}
     </div>
   );
 }
@@ -48,44 +76,40 @@ export default function LiteOneQuizIntro() {
       </Head>
 
       <LiteShell>
-        <div className="relative flex flex-1 flex-col overflow-y-auto px-6 py-6">
+        <div className="relative flex flex-1 flex-col justify-center overflow-y-auto px-6 py-5">
           <div className="mx-auto w-full max-w-[440px]">
-            <div className="lite-rise" style={{ animationDelay: "0ms" }}>
+            <div className="lite-rise" style={{ animationDelay: "40ms" }}>
               <SectionBadge label="2 | Brain Health Quiz" />
             </div>
 
-            <div className="mt-5 grid grid-cols-3 gap-2.5 px-2">
-              {PHOTOS.map((photo, i) => (
-                <PhotoCard
-                  key={photo.label}
-                  {...photo}
-                  delay={80 + i * 70}
-                />
-              ))}
+            <div className="mt-5">
+              <PhotoRow items={TOP_ROW} baseDelay={140} />
             </div>
 
             <h1
-              className="lite-rise mt-8 text-center font-display text-[28px] font-extrabold leading-[1.1] text-charcoal sm:text-[32px]"
-              style={{ animationDelay: "540ms" }}
+              className="lite-rise mt-8 text-center font-display text-[27px] font-extrabold leading-[1.15] text-charcoal sm:text-[30px]"
+              style={{ animationDelay: "430ms" }}
             >
               Is your brain at its peak performance?
             </h1>
 
             <p
-              className="lite-rise mt-4 text-center text-[14.5px] leading-relaxed text-quizSecondary"
-              style={{ animationDelay: "620ms" }}
+              className="lite-rise mx-auto mt-3.5 max-w-[330px] text-center text-[14px] leading-relaxed text-quizSecondary"
+              style={{ animationDelay: "500ms" }}
             >
               Take a medically-backed quiz built on 14 modifiable risk factors to see how
               healthy your brain is.
             </p>
 
+            <div className="mt-8">
+              <PhotoRow items={BOTTOM_ROW} baseDelay={560} />
+            </div>
+
             <div
-              className="lite-rise mx-auto mt-8 max-w-[320px]"
-              style={{ animationDelay: "720ms" }}
+              className="lite-rise mx-auto mt-9 max-w-[320px]"
+              style={{ animationDelay: "840ms" }}
             >
-              <LiteButton onClick={() => Router.push("/lite-one/quiz")}>
-                Start quiz
-              </LiteButton>
+              <LiteButton onClick={() => Router.push("/lite-one/quiz")}>Start quiz</LiteButton>
             </div>
           </div>
         </div>
