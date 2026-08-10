@@ -5,12 +5,15 @@ import { useEffect, useMemo, useState } from "react";
 import { verifyAdminCookie } from "src/utils/adminAuth";
 import { AGE_RANGES, GENDERS, LeadRow } from "src/utils/supabase";
 
+// Mirrors LeadStats in src/server/leadAggregation.ts. Kept local so this
+// client page never imports from src/server.
 interface Stats {
   total: number;
   today: number;
   avgScore: number | null;
   byGender: Record<string, number>;
   byAgeRange: Record<string, number>;
+  withContact: number;
 }
 
 interface LeadsResponse {
@@ -145,7 +148,9 @@ export default function AdminLeadsPage() {
     const toMs = dateTo ? new Date(dateTo + "T23:59:59").getTime() : null;
 
     return leads.filter((lead) => {
-      if (q && !lead.email.toLowerCase().includes(q)) return false;
+      // email is nullable: WhatsApp-only SJMC leads, and liteone rows for a game
+      // that was played but whose form was never submitted.
+      if (q && !(lead.email ?? "").toLowerCase().includes(q)) return false;
       if (genderFilter && lead.gender !== genderFilter) return false;
       if (ageFilter && lead.age_range !== ageFilter) return false;
       if (fromMs || toMs) {
@@ -181,6 +186,8 @@ export default function AdminLeadsPage() {
       "Referrer",
       "Region",
       "Created",
+      // liteone only: blank means the game was played but the form abandoned.
+      "Completed",
     ];
     const rows = filtered.map((l) =>
       [
@@ -206,6 +213,7 @@ export default function AdminLeadsPage() {
         l.referrer,
         l.ip_region,
         l.created_at,
+        l.completed_at,
       ]
         .map(csvEscape)
         .join(",")
@@ -301,7 +309,17 @@ export default function AdminLeadsPage() {
           {/* Stats */}
           {stats && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-              <StatCard label="Total leads" value={stats.total} />
+              <StatCard
+                label="Total leads"
+                value={stats.total}
+                // Only differs for liteone, which records a row when the game
+                // ends rather than when the form is submitted.
+                sub={
+                  stats.withContact !== stats.total
+                    ? `${stats.withContact} gave contact details`
+                    : undefined
+                }
+              />
               <StatCard label="Today" value={stats.today} />
               <StatCard
                 label="Avg score"
@@ -434,7 +452,7 @@ export default function AdminLeadsPage() {
                       }}
                     >
                       <Td className="text-gray-600">{i + 1}</Td>
-                      <Td className="text-white font-medium">{lead.email}</Td>
+                      <Td className="text-white font-medium">{lead.email ?? "—"}</Td>
                       <Td className="text-gray-300">
                         {lead.whatsapp ? (
                           <a
@@ -495,11 +513,20 @@ export default function AdminLeadsPage() {
   );
 }
 
-function StatCard({ label, value }: { label: string; value: string | number }) {
+function StatCard({
+  label,
+  value,
+  sub,
+}: {
+  label: string;
+  value: string | number;
+  sub?: string;
+}) {
   return (
     <div className="rounded-xl border border-gray-800 bg-[#0D1320] p-4">
       <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500">{label}</div>
       <div className="mt-1 text-[22px] font-bold text-white">{value}</div>
+      {sub && <div className="mt-0.5 text-[11px] text-gray-500">{sub}</div>}
     </div>
   );
 }

@@ -14,6 +14,7 @@ export const LITE_CLINIC = "liteone";
 
 const REPORT_KEY = "recognaize-lite-report";
 const PROFILE_KEY = "recognaize-lite-profile";
+const ATTEMPT_KEY = "recognaize-lite-attempt";
 
 export type LiteProfile = {
   email: string;
@@ -54,6 +55,73 @@ export function clearLiteSession() {
   if (typeof window === "undefined") return;
   sessionStorage.removeItem(REPORT_KEY);
   sessionStorage.removeItem(PROFILE_KEY);
+  // Cleared on retake, so the next run opens a fresh attempt rather than
+  // overwriting the previous one's row.
+  sessionStorage.removeItem(ATTEMPT_KEY);
+}
+
+/**
+ * `crypto.randomUUID` needs a secure context, so it's missing over plain http
+ * on a LAN address and on Safari before 15.4. The API validates the UUID shape
+ * and rejects anything else, so fall back to composing one from random bytes
+ * rather than sending something it will refuse.
+ */
+function randomUuidV4(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40; // version 4
+  bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant 10xx
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+/**
+ * Stable id for one run through the funnel. `/api/lite-attempt` creates a row
+ * under it when the game ends; the form submit later updates that same row.
+ *
+ * Held in sessionStorage so a refresh of the form reuses the id instead of
+ * opening a second attempt, and so a retake (which clears the session) gets a
+ * new one.
+ */
+export function readOrCreateAttemptId(): string {
+  if (typeof window === "undefined") return "";
+  const existing = sessionStorage.getItem(ATTEMPT_KEY);
+  if (existing) return existing;
+
+  const id = randomUuidV4();
+
+  try {
+    sessionStorage.setItem(ATTEMPT_KEY, id);
+  } catch {
+    // Private mode: the id still works for this page's two calls.
+  }
+  return id;
+}
+
+/**
+ * Records that the game was finished, before any contact details exist.
+ * Best-effort — a failure here must never block the visitor from submitting.
+ */
+export async function recordLiteAttempt(payload: {
+  attemptId: string;
+  score: number | null;
+  percentile: number | null;
+  severity: string | null;
+}) {
+  const { utm, referrer } = readAttribution();
+  try {
+    await fetch("/api/lite-attempt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...payload, utm, referrer }),
+    });
+  } catch {
+    // Offline or blocked. save-lead falls back to an insert if this row is
+    // missing, so the lead itself is still captured.
+  }
 }
 
 /** Pulls the task2 score out of the result store's two historical shapes. */

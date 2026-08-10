@@ -1,7 +1,9 @@
+import { randomUUID } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { AGE_RANGES, GENDERS, getSupabaseAdmin } from "src/utils/supabase";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // Each clinic has its own table. The dispatcher routes by `clinic` value.
 //   sjmc        → public.leads             (existing, with (clinic, email_lower) unique constraint)
@@ -9,8 +11,11 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 //   healthtechx → public.demo_leads        (new, B2B columns, no dedup)
 //   tcmbrain    → public.tcmbrain_leads    (new, B2C + TCM indices, no dedup)
 //   sjmcmandarin→ public.leads             (Mandarin SJMC variant; segmented by clinic column)
-//   liteone     → public.leads             (ReCOGnAIze Lite; segmented by clinic column —
-//                                           demo_leads has no age_range/gender columns)
+//   liteone     → public.liteone_leads     (ReCOGnAIze Lite; own table so retakes aren't
+//                                           swallowed by the (clinic, email_lower) dedup
+//                                           that only `leads` still carries. Rows are
+//                                           created by /api/lite-attempt at game end and
+//                                           updated here when contact details arrive.)
 const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone"]);
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
@@ -265,6 +270,53 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const healthGoalRaw = str(body.healthGoal);
   if (healthGoalRaw && !(HEALTH_GOALS as readonly string[]).includes(healthGoalRaw)) {
     return res.status(400).json({ error: "Invalid health goal" });
+  }
+
+  if (clinic === "liteone") {
+    // The row usually already exists: /api/lite-attempt wrote it when the game
+    // finished. Attaching contact details to that row is what turns an attempt
+    // into a lead, and it keeps the game's own `created_at` rather than
+    // restamping it with the moment they got round to typing an email.
+    const attemptId = str(body.attemptId);
+    const contactRow = {
+      email: emailRaw,
+      whatsapp,
+      age_range: ageRangeRaw,
+      gender: genderRaw,
+      completed_at: new Date().toISOString(),
+    };
+
+    if (attemptId && UUID_RE.test(attemptId)) {
+      const { data, error } = await supabase
+        .from("liteone_leads")
+        .update(contactRow)
+        .eq("attempt_id", attemptId)
+        .select("id");
+
+      if (error) {
+        console.error("Supabase update (liteone_leads) failed:", error);
+        return res.status(500).json({ error: "Failed to save lead", detail: error.message });
+      }
+      // Matched a row — done. If it matched nothing (the attempt POST failed,
+      // or sessionStorage was cleared between the game and the submit) fall
+      // through and insert, so a lead is never dropped on the floor.
+      if (data && data.length > 0) {
+        return res.status(200).json({ success: true });
+      }
+    }
+
+    const { error } = await supabase.from("liteone_leads").insert({
+      ...sharedRow,
+      ...contactRow,
+      attempt_id: attemptId && UUID_RE.test(attemptId) ? attemptId : randomUUID(),
+    });
+
+    if (error) {
+      console.error("Supabase insert (liteone_leads) failed:", error);
+      return res.status(500).json({ error: "Failed to save lead", detail: error.message });
+    }
+
+    return res.status(200).json({ success: true });
   }
 
   if (clinic === "hookikigai") {

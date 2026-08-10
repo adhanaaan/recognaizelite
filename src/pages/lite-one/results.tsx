@@ -10,7 +10,9 @@ import {
   LITE_CLINIC,
   fetchLiteReport,
   readAttribution,
+  readOrCreateAttemptId,
   readTask2Score,
+  recordLiteAttempt,
   stashLiteProfile,
   stashReport,
   validateOptionalPhone,
@@ -67,19 +69,43 @@ export default function LiteOneResults() {
   // paints without a second round-trip.
   const reportRef = React.useRef<DomainReport | null>(null);
 
+  const attemptIdRef = React.useRef<string>("");
+
   React.useEffect(() => {
     if (!result || Object.keys(result).length === 0) return;
-    if (readTask2Score(result) === null) return;
+    const score = readTask2Score(result);
+    if (score === null) return;
+
     let cancelled = false;
+    attemptIdRef.current = readOrCreateAttemptId();
+
+    // Reaching this page means the game finished — record it now, before any
+    // contact details exist. Whether the report resolves or fails, the attempt
+    // is logged; the score is the part that must not be lost, and the gap
+    // between this row and a later `completed_at` is the form's drop-off.
     fetchLiteReport(result)
       .then((report) => {
         if (cancelled) return;
         reportRef.current = report;
         stashReport(report);
+        return recordLiteAttempt({
+          attemptId: attemptIdRef.current,
+          score,
+          percentile: Math.round(report.percentile),
+          severity: SEVERITY_TO_KEY[report.severity] ?? null,
+        });
       })
       .catch(() => {
-        // Non-fatal: the report page will retry. The lead still saves.
+        if (cancelled) return;
+        // Report generation failed — still record that the game was played.
+        return recordLiteAttempt({
+          attemptId: attemptIdRef.current,
+          score,
+          percentile: null,
+          severity: null,
+        });
       });
+
     return () => {
       cancelled = true;
     };
@@ -120,6 +146,9 @@ export default function LiteOneResults() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clinic: LITE_CLINIC,
+          // Attaches these details to the row the attempt POST already created.
+          // If that never landed, save-lead inserts a complete row instead.
+          attemptId: attemptIdRef.current || readOrCreateAttemptId(),
           email: trimmedEmail,
           whatsapp: phoneCheck.value,
           ageRange,

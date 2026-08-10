@@ -80,6 +80,20 @@ const BRAND: Record<string, BrandTheme> = {
     pillBg: "rgba(122,181,167,0.15)",
     pillText: "#2C4A3F",
   },
+  liteone: {
+    name: "ReCOGnAIze Lite",
+    partnerLogoSrc: null,
+    partnerLogoAlt: "ReCOGnAIze Lite",
+    pageBg: "linear-gradient(180deg, #fff4ee 0%, #FFFFFF 100%)",
+    cardBg: "#ffffff",
+    cardBorder: "#d8c2b9",
+    textPrimary: "#2d2d2d",
+    textMuted: "#7d5747",
+    accent: "#f77528",
+    accentDark: "#b8480f",
+    pillBg: "rgba(247,117,40,0.12)",
+    pillText: "#b8480f",
+  },
   novi: {
     name: "NOVI Health",
     partnerLogoSrc: null,
@@ -135,7 +149,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ params
     clinic,
     label: null,
     leads: [],
-    stats: { total: 0, today: 0, avgScore: null, byGender: {}, byAgeRange: {} },
+    stats: { total: 0, today: 0, avgScore: null, byGender: {}, byAgeRange: {}, withContact: 0 },
     loadedAt: new Date().toISOString(),
   };
 
