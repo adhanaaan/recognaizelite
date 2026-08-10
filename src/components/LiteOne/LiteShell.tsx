@@ -16,12 +16,14 @@ export function LiteShell({
   className = "",
   showHeader = true,
   headerLabel = "Gray Matter Solutions",
+  dualLogo = false,
 }: {
   children: React.ReactNode;
   scroll?: boolean;
   className?: string;
   showHeader?: boolean;
   headerLabel?: string;
+  dualLogo?: boolean;
 }) {
   React.useEffect(() => {
     if (!scroll) return;
@@ -77,12 +79,32 @@ export function LiteShell({
 
         {showHeader && (
           <header className="relative shrink-0 pt-7 sm:pt-9">
-            <div className="flex items-center justify-center gap-2">
-              <img src="/logo.png" alt="" aria-hidden className="size-5" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-quizSecondary">
-                {headerLabel}
-              </span>
-            </div>
+            {dualLogo ? (
+              <div className="flex items-center justify-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <div className="flex size-5 items-center justify-center rounded bg-[#00614a]">
+                    <span className="text-[8px] font-bold leading-none text-white">PS</span>
+                  </div>
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-quizSecondary">
+                    Parkway Shenton
+                  </span>
+                </div>
+                <span className="text-[10px] text-quizOutline-variant">×</span>
+                <div className="flex items-center gap-1.5">
+                  <img src="/logo.png" alt="" aria-hidden className="size-5" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-quizSecondary">
+                    Gray Matter
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2">
+                <img src="/logo.png" alt="" aria-hidden className="size-5" />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-quizSecondary">
+                  {headerLabel}
+                </span>
+              </div>
+            )}
           </header>
         )}
 

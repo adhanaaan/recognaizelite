@@ -30,7 +30,7 @@ export default function LiteOneEntry() {
     setAppLanguage("ENGLISH");
     setHookClinic("LiteOne");
     setHookEntryPath("/lite-one");
-    setHookReportPath("/lite-one/results");
+    setHookReportPath("/lite-one/game-complete");
     setAssessmentMode("short");
     resetTaskProgress();
     resetResults();

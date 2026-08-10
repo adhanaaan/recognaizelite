@@ -85,3 +85,11 @@ export const BulbGlyph = (
     <path d="M10 20h4" />
   </svg>
 );
+
+export const QuizGlyph = (
+  <svg viewBox="0 0 24 24" className="size-5" aria-hidden {...stroke}>
+    <rect x="5" y="2" width="14" height="20" rx="2" />
+    <path d="M9 7h6M9 11h6M9 15h3" />
+    <circle cx="16.5" cy="15" r="0.5" fill="currentColor" stroke="none" />
+  </svg>
+);

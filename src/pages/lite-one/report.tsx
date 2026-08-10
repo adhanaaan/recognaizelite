@@ -8,6 +8,7 @@ import { LiteModal } from "src/components/LiteOne/LiteModal";
 import { OfferCard } from "src/components/LiteOne/OfferCard";
 import { SampleReportMock } from "src/components/LiteOne/SampleReportMock";
 import { QuoteBubbles, TestimonialRail } from "src/components/LiteOne/Testimonials";
+import { RiskFactorDropdown } from "src/components/LiteOne/RiskFactorDropdown";
 import { Reveal } from "src/components/LiteOne/useInView";
 import { improveIconPaths } from "src/constants/improveIcons";
 import { OFFER, PROOF_POINTS, RESEARCH_LINE } from "src/data/liteOneContent";
@@ -185,6 +186,11 @@ export default function LiteOneReport() {
           </p>
           <p className="mt-2 text-[13.5px] leading-relaxed text-quizSecondary">{report.definition}</p>
         </div>
+      </Reveal>
+
+      {/* 1b — brain health risk factor quiz results */}
+      <Reveal>
+        <RiskFactorDropdown />
       </Reveal>
 
       {/* 2 — room for improvement */}

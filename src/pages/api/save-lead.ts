@@ -278,38 +278,93 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // into a lead, and it keeps the game's own `created_at` rather than
     // restamping it with the moment they got round to typing an email.
     const attemptId = str(body.attemptId);
+
+    const nameVal = str(body.name);
+    if (nameVal && nameVal.length > 200) {
+      return res.status(400).json({ error: "Name too long" });
+    }
+
+    const ALLOWED_BANDS = new Set(["low", "moderate", "elevated", "high"]);
+    const ALLOWED_PERSONAS = new Set(["neutral", "highPerformer", "perimenopausal", "caregiver"]);
+
+    const brainHealthScore = num(body.brainHealthScore);
+    if (brainHealthScore !== null && (brainHealthScore < 0 || brainHealthScore > 100)) {
+      return res.status(400).json({ error: "Invalid brainHealthScore" });
+    }
+    const riskScoreRaw = num(body.riskScore);
+    if (riskScoreRaw !== null && (riskScoreRaw < 0 || riskScoreRaw > 68)) {
+      return res.status(400).json({ error: "Invalid riskScore" });
+    }
+    const symptomScoreRaw = num(body.symptomScore);
+    if (symptomScoreRaw !== null && (symptomScoreRaw < 0 || symptomScoreRaw > 32)) {
+      return res.status(400).json({ error: "Invalid symptomScore" });
+    }
+    const band = str(body.band);
+    if (band && !ALLOWED_BANDS.has(band)) {
+      return res.status(400).json({ error: "Invalid band" });
+    }
+    const persona = str(body.persona);
+    if (persona && !ALLOWED_PERSONAS.has(persona)) {
+      return res.status(400).json({ error: "Invalid persona" });
+    }
+    const quizAnswers =
+      body.quizAnswers && typeof body.quizAnswers === "object" && !Array.isArray(body.quizAnswers)
+        ? (body.quizAnswers as Record<string, unknown>)
+        : null;
+
     const contactRow = {
+      name: nameVal,
       email: emailRaw,
       whatsapp,
       age_range: ageRangeRaw,
       gender: genderRaw,
+      quiz_answers: quizAnswers,
+      brain_health_score: brainHealthScore,
+      risk_score: riskScoreRaw,
+      symptom_score: symptomScoreRaw,
+      band,
+      persona,
       completed_at: new Date().toISOString(),
     };
 
     if (attemptId && UUID_RE.test(attemptId)) {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from("liteone_leads")
         .update(contactRow)
         .eq("attempt_id", attemptId)
         .select("id");
 
+      if (error && error.message?.includes("schema cache")) {
+        const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, ...legacyRow } = contactRow;
+        void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
+        const retry = await supabase.from("liteone_leads").update(legacyRow).eq("attempt_id", attemptId).select("id");
+        data = retry.data;
+        error = retry.error;
+      }
+
       if (error) {
         console.error("Supabase update (liteone_leads) failed:", error);
         return res.status(500).json({ error: "Failed to save lead", detail: error.message });
       }
-      // Matched a row — done. If it matched nothing (the attempt POST failed,
-      // or sessionStorage was cleared between the game and the submit) fall
-      // through and insert, so a lead is never dropped on the floor.
       if (data && data.length > 0) {
         return res.status(200).json({ success: true });
       }
     }
 
-    const { error } = await supabase.from("liteone_leads").insert({
+    const fullRow = {
       ...sharedRow,
       ...contactRow,
       attempt_id: attemptId && UUID_RE.test(attemptId) ? attemptId : randomUUID(),
-    });
+    };
+
+    let { error } = await supabase.from("liteone_leads").insert(fullRow);
+
+    if (error && error.message?.includes("schema cache")) {
+      const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, ...legacyRow } = fullRow;
+      void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
+      const retry = await supabase.from("liteone_leads").insert(legacyRow);
+      error = retry.error;
+    }
 
     if (error) {
       console.error("Supabase insert (liteone_leads) failed:", error);

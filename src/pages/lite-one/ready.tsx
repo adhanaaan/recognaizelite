@@ -2,16 +2,16 @@ import Head from "next/head";
 import Router from "next/router";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import {
-  BulbGlyph,
   CurveGlyph,
   GamepadGlyph,
+  QuizGlyph,
   StepList,
 } from "src/components/LiteOne/StepList";
 
 const STEPS = [
   { label: "Play a 60-second cognitive game", icon: GamepadGlyph },
+  { label: "Take a medically-backed quiz on brain health risk factors", icon: QuizGlyph },
   { label: "See how you compare to people your age", icon: CurveGlyph },
-  { label: "Learn how you can improve", icon: BulbGlyph },
 ];
 
 /** Circumference of the r=46 ring below, used to drive the draw-on animation. */
