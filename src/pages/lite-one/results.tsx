@@ -2,20 +2,21 @@ import Head from "next/head";
 import Router from "next/router";
 import React from "react";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
+import { SectionBadge } from "src/components/LiteOne/SectionBadge";
+import { computeScore } from "src/lib/brainHealthScoring";
+import { useQuestionnaireStore } from "src/stores/useQuestionnaireStore";
 import { useResultStore } from "src/stores/useResultStore";
-import { AGE_RANGES } from "src/utils/supabase";
 import {
-  AGE_LABELS,
-  GENDER_OPTIONS,
   LITE_CLINIC,
+  QUIZ_AGE_TO_LITE,
   fetchLiteReport,
   readAttribution,
   readOrCreateAttemptId,
+  readStashedQuizResult,
   readTask2Score,
   recordLiteAttempt,
   stashLiteProfile,
   stashReport,
-  validateOptionalPhone,
 } from "src/utils/liteOne";
 import type { DomainReport } from "src/types/report";
 
@@ -25,50 +26,19 @@ const SEVERITY_TO_KEY: Record<string, string> = {
   High: "high",
 };
 
-/** Segmented chip used for both Age and Gender. */
-function Chip({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={[
-        "rounded-xl border px-2 py-3 text-[13px] font-semibold leading-tight transition-all",
-        active
-          ? "border-quizPrimary bg-quizPrimary text-quizPrimary-on shadow-card"
-          : "border-quizOutline-variant bg-quizSurface-lowest text-quizSecondary hover:bg-quizSurface-low",
-      ].join(" ")}
-    >
-      {label}
-    </button>
-  );
-}
-
 const inputClass =
   "w-full rounded-xl border border-quizOutline-variant bg-quizSurface-lowest px-4 py-3.5 text-[15px] text-charcoal placeholder-quizOutline outline-none transition-colors focus:border-quizPrimary";
 
 export default function LiteOneResults() {
   const { result } = useResultStore();
+  const quizAnswers = useQuestionnaireStore((s) => s.answers);
 
+  const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  const [ageRange, setAgeRange] = React.useState("");
-  const [gender, setGender] = React.useState("");
   const [error, setError] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
 
-  // Fetched up front so the payload carries the score and the report page
-  // paints without a second round-trip.
   const reportRef = React.useRef<DomainReport | null>(null);
-
   const attemptIdRef = React.useRef<string>("");
 
   React.useEffect(() => {
@@ -79,10 +49,6 @@ export default function LiteOneResults() {
     let cancelled = false;
     attemptIdRef.current = readOrCreateAttemptId();
 
-    // Reaching this page means the game finished — record it now, before any
-    // contact details exist. Whether the report resolves or fails, the attempt
-    // is logged; the score is the part that must not be lost, and the gap
-    // between this row and a later `completed_at` is the form's drop-off.
     fetchLiteReport(result)
       .then((report) => {
         if (cancelled) return;
@@ -97,7 +63,6 @@ export default function LiteOneResults() {
       })
       .catch(() => {
         if (cancelled) return;
-        // Report generation failed — still record that the game was played.
         return recordLiteAttempt({
           attemptId: attemptIdRef.current,
           score,
@@ -106,31 +71,22 @@ export default function LiteOneResults() {
         });
       });
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [result]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
 
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      setError("Please enter your name.");
+      return;
+    }
+
     const trimmedEmail = email.trim();
     if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       setError("Please enter a valid email address.");
-      return;
-    }
-    const phoneCheck = validateOptionalPhone(phone);
-    if (!phoneCheck.ok) {
-      setError(phoneCheck.error);
-      return;
-    }
-    if (!ageRange) {
-      setError("Please choose your age range — it's what your score is compared against.");
-      return;
-    }
-    if (!gender) {
-      setError("Please choose an option for gender.");
       return;
     }
 
@@ -140,22 +96,35 @@ export default function LiteOneResults() {
     const report = reportRef.current;
     const { utm, referrer } = readAttribution();
 
+    const hasQuizAnswers = Object.keys(quizAnswers).length > 0;
+    const brainScore = hasQuizAnswers ? computeScore(quizAnswers) : readStashedQuizResult();
+
+    const quizAge = typeof quizAnswers.age === "string" ? quizAnswers.age : null;
+    const ageRange = quizAge ? QUIZ_AGE_TO_LITE[quizAge] ?? null : null;
+    const gender = typeof quizAnswers.sex === "string"
+      ? (quizAnswers.sex === "female" ? "female" : quizAnswers.sex === "male" ? "male" : null)
+      : null;
+
     try {
       const res = await fetch("/api/save-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clinic: LITE_CLINIC,
-          // Attaches these details to the row the attempt POST already created.
-          // If that never landed, save-lead inserts a complete row instead.
           attemptId: attemptIdRef.current || readOrCreateAttemptId(),
+          name: trimmedName,
           email: trimmedEmail,
-          whatsapp: phoneCheck.value,
           ageRange,
           gender,
           score: readTask2Score(result),
           percentile: report ? Math.round(report.percentile) : null,
           severity: report ? SEVERITY_TO_KEY[report.severity] ?? null : null,
+          quizAnswers: hasQuizAnswers ? quizAnswers : null,
+          brainHealthScore: brainScore ? brainScore.total : null,
+          riskScore: brainScore ? brainScore.riskScore : null,
+          symptomScore: brainScore ? brainScore.symptomScore : null,
+          band: brainScore ? brainScore.band : null,
+          persona: brainScore ? brainScore.persona : null,
           utm,
           referrer,
         }),
@@ -164,10 +133,14 @@ export default function LiteOneResults() {
         const data = await res.json().catch(() => null);
         throw new Error(data?.error || "We couldn't save that. Please try again.");
       }
-      // A repeat submit comes back { success: true, duplicate: true } — still
-      // a success as far as the visitor is concerned.
-      stashLiteProfile({ email: trimmedEmail, ageRange, gender, score: readTask2Score(result) });
-      Router.push("/lite-one/report");
+      stashLiteProfile({
+        name: trimmedName,
+        email: trimmedEmail,
+        ageRange: ageRange ?? "",
+        gender: gender ?? "",
+        score: readTask2Score(result),
+      });
+      Router.push("/lite-one/loading");
     } catch (err) {
       setError((err as Error).message || "We couldn't save that. Please try again.");
       setSubmitting(false);
@@ -182,11 +155,12 @@ export default function LiteOneResults() {
 
       <LiteShell scroll className="px-5 pb-12 sm:px-8">
         <div className="relative mx-auto w-full max-w-[440px] pt-8">
-          <p className="lite-rise text-[11px] font-bold uppercase tracking-[0.22em] text-quizPrimary">
-            Your results
-          </p>
+          <div className="lite-rise" style={{ animationDelay: "0ms" }}>
+            <SectionBadge label="3 | Result" />
+          </div>
+
           <h1
-            className="lite-rise mt-3 font-display text-[30px] font-extrabold leading-[1.1] text-charcoal sm:text-[34px]"
+            className="lite-rise mt-5 font-display text-[30px] font-extrabold leading-[1.1] text-charcoal sm:text-[34px]"
             style={{ animationDelay: "60ms" }}
           >
             Where should we send your results?
@@ -195,8 +169,7 @@ export default function LiteOneResults() {
             className="lite-rise mt-4 text-[14.5px] leading-relaxed text-quizSecondary"
             style={{ animationDelay: "120ms" }}
           >
-            Your score is ready. Add an email and we&apos;ll send the full profile and what to do
-            about it. We only use it to send your results.
+            Tell us your name and email, and we&apos;ll send you a copy
           </p>
 
           <form
@@ -206,7 +179,28 @@ export default function LiteOneResults() {
             noValidate
           >
             <div>
-              <label htmlFor="lite-email" className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-quizOutline">
+              <label
+                htmlFor="lite-name"
+                className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-quizOutline"
+              >
+                Name
+              </label>
+              <input
+                id="lite-name"
+                type="text"
+                autoComplete="name"
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => { setName(e.target.value); setError(""); }}
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="lite-email"
+                className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-quizOutline"
+              >
                 Email
               </label>
               <input
@@ -215,70 +209,10 @@ export default function LiteOneResults() {
                 autoComplete="email"
                 placeholder="your@email.com"
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setError("");
-                }}
+                onChange={(e) => { setEmail(e.target.value); setError(""); }}
                 className={inputClass}
               />
             </div>
-
-            <div>
-              <label htmlFor="lite-phone" className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-quizOutline">
-                WhatsApp <span className="font-semibold normal-case tracking-normal">(optional)</span>
-              </label>
-              <input
-                id="lite-phone"
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel"
-                placeholder="+65 1234 5678"
-                value={phone}
-                onChange={(e) => {
-                  setPhone(e.target.value);
-                  setError("");
-                }}
-                className={inputClass}
-              />
-            </div>
-
-            <fieldset>
-              <legend className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-quizOutline">
-                Age
-              </legend>
-              <div className="grid grid-cols-3 gap-2">
-                {AGE_RANGES.map((age) => (
-                  <Chip
-                    key={age}
-                    label={AGE_LABELS[age] ?? age}
-                    active={ageRange === age}
-                    onClick={() => {
-                      setAgeRange(age);
-                      setError("");
-                    }}
-                  />
-                ))}
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-quizOutline">
-                Gender
-              </legend>
-              <div className="grid grid-cols-3 gap-2">
-                {GENDER_OPTIONS.map((g) => (
-                  <Chip
-                    key={g.value}
-                    label={g.label}
-                    active={gender === g.value}
-                    onClick={() => {
-                      setGender(g.value);
-                      setError("");
-                    }}
-                  />
-                ))}
-              </div>
-            </fieldset>
 
             {error && (
               <p role="alert" className="text-[13px] font-medium text-quizError">
@@ -287,12 +221,12 @@ export default function LiteOneResults() {
             )}
 
             <LiteButton type="submit" disabled={submitting}>
-              {submitting ? "Saving…" : "Get my results"}
+              {submitting ? "Saving…" : "Reveal my score"}
             </LiteButton>
 
             <p className="text-center text-[11.5px] leading-relaxed text-quizOutline">
-              We compare your score against people in your age band. No spam, and you can
-              unsubscribe from any email.
+              We&apos;ll only use your details to share your result and brain health
+              recommendations. Unsubscribe any time.
             </p>
           </form>
         </div>

@@ -1,4 +1,5 @@
 import type { DomainReport } from "src/types/report";
+import type { ScoreResult } from "src/types/quiz";
 
 /**
  * Small session bridge between /lite-one/results (the lead form) and
@@ -15,8 +16,10 @@ export const LITE_CLINIC = "liteone";
 const REPORT_KEY = "recognaize-lite-report";
 const PROFILE_KEY = "recognaize-lite-profile";
 const ATTEMPT_KEY = "recognaize-lite-attempt";
+const QUIZ_RESULT_KEY = "recognaize-lite-quiz";
 
 export type LiteProfile = {
+  name: string;
   email: string;
   ageRange: string;
   gender: string;
@@ -51,10 +54,14 @@ export const stashReport = (report: DomainReport) => writeJson(REPORT_KEY, repor
 export const readLiteProfile = () => readJson<LiteProfile>(PROFILE_KEY);
 export const stashLiteProfile = (profile: LiteProfile) => writeJson(PROFILE_KEY, profile);
 
+export const readStashedQuizResult = () => readJson<ScoreResult>(QUIZ_RESULT_KEY);
+export const stashQuizResult = (result: ScoreResult) => writeJson(QUIZ_RESULT_KEY, result);
+
 export function clearLiteSession() {
   if (typeof window === "undefined") return;
   sessionStorage.removeItem(REPORT_KEY);
   sessionStorage.removeItem(PROFILE_KEY);
+  sessionStorage.removeItem(QUIZ_RESULT_KEY);
   // Cleared on retake, so the next run opens a fresh attempt rather than
   // overwriting the previous one's row.
   sessionStorage.removeItem(ATTEMPT_KEY);
@@ -191,6 +198,18 @@ export function ordinal(n: number): string {
       return `${n}th`;
   }
 }
+
+/**
+ * Maps quiz age-band answers to the closest liteone_leads age_range value
+ * so the database stays consistent even though the form no longer asks.
+ */
+export const QUIZ_AGE_TO_LITE: Record<string, string> = {
+  "18-29": "18-25",
+  "30-39": "26-35",
+  "40-49": "36-45",
+  "50-59": "46-55",
+  "60+": "56-65",
+};
 
 export const AGE_LABELS: Record<string, string> = {
   "18-25": "18–25",

@@ -16,12 +16,15 @@ export function LiteShell({
   className = "",
   showHeader = true,
   headerLabel = "Gray Matter Solutions",
+  dualLogo = true,
 }: {
   children: React.ReactNode;
   scroll?: boolean;
   className?: string;
   showHeader?: boolean;
   headerLabel?: string;
+  /** Parkway Shenton + Gray Matter co-branded lock-up, as every comp shows. */
+  dualLogo?: boolean;
 }) {
   React.useEffect(() => {
     if (!scroll) return;
@@ -77,12 +80,27 @@ export function LiteShell({
 
         {showHeader && (
           <header className="relative shrink-0 pt-7 sm:pt-9">
-            <div className="flex items-center justify-center gap-2">
-              <img src="/logo.png" alt="" aria-hidden className="size-5" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-quizSecondary">
-                {headerLabel}
-              </span>
-            </div>
+            {dualLogo ? (
+              <div className="mx-auto flex w-full max-w-[420px] items-center justify-between gap-4 px-6">
+                <img
+                  src="/images/lite-one/logo-parkway-shenton.png"
+                  alt="Parkway Shenton"
+                  className="h-[23px] w-auto"
+                />
+                <img
+                  src="/images/lite-one/logo-gray-matter.png"
+                  alt="Gray Matter Solutions"
+                  className="h-[30px] w-auto"
+                />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2">
+                <img src="/logo.png" alt="" aria-hidden className="size-5" />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-quizSecondary">
+                  {headerLabel}
+                </span>
+              </div>
+            )}
           </header>
         )}
 
