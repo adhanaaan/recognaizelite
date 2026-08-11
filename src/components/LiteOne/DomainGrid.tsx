@@ -19,17 +19,16 @@ const LockGlyph = (
  * The four cognitive domains: the one the visitor earned, and the three the
  * 60-second test can't see. The locked cards are the argument for the full
  * test, so they carry real descriptions rather than a blurred placeholder.
+ *
+ * The cards are read-only. Four buttons here competed with the offer banner
+ * directly beneath the grid, which is the section's actual call to action.
  */
 export function DomainGrid({
   score,
   severity,
-  onHowToImprove,
-  onUnlock,
 }: {
   score: number | null;
   severity: SeverityVisual;
-  onHowToImprove: () => void;
-  onUnlock: () => void;
 }) {
   return (
     <div className="grid grid-cols-2 gap-3">
@@ -43,7 +42,7 @@ export function DomainGrid({
         <p className="mt-1 text-[11.5px] leading-snug text-quizSecondary">
           How quickly your brain reacts to information
         </p>
-        <div className="mt-3 flex-1">
+        <div className="mt-3">
           <p className="text-[11px] font-bold uppercase tracking-wider text-quizOutline">Score</p>
           <p className="font-display text-[22px] font-extrabold leading-none text-charcoal">
             {score ?? "—"}
@@ -55,15 +54,6 @@ export function DomainGrid({
             </span>
           </p>
         </div>
-        {/* Orange, not the severity colour: on a weak result a blood-red
-            button reads as an alarm rather than the next step. */}
-        <button
-          type="button"
-          onClick={onHowToImprove}
-          className="mt-3 w-full rounded-full bg-quizPrimary px-3 py-2.5 text-[13px] font-bold text-quizPrimary-on transition-all hover:brightness-105 active:scale-[0.98]"
-        >
-          How to improve?
-        </button>
       </div>
 
       {LOCKED_DOMAINS.map((domain) => (
@@ -76,7 +66,7 @@ export function DomainGrid({
             {domain.name}
           </h3>
           <p className="mt-1 text-[11.5px] leading-snug text-quizOutline">{domain.blurb}</p>
-          <div className="mt-3 flex-1">
+          <div className="mt-3">
             <p className="text-[11px] font-bold uppercase tracking-wider text-quizOutline">Score</p>
             <p className="font-display text-[22px] font-extrabold leading-none text-quizOutline-variant">
               —
@@ -85,13 +75,6 @@ export function DomainGrid({
               </span>
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onUnlock}
-            className="mt-3 w-full rounded-full border border-quizOutline-variant bg-quizSurface-lowest px-3 py-2.5 text-[13px] font-bold text-quizSecondary transition-all hover:bg-quizSurface-low active:scale-[0.98]"
-          >
-            Take the full test
-          </button>
         </div>
       ))}
     </div>
