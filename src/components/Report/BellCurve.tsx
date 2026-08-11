@@ -20,6 +20,19 @@ export const severityVisuals: Record<Severity, SeverityVisual> = {
   High: { label: "STRONG", color: "#97c459", softBg: "rgba(151,196,89,0.12)" },
 };
 
+/**
+ * /lite-one's band palette: weak red, adequate blue, strong green.
+ *
+ * Adequate moves off the shared orange because on this page orange is the CTA
+ * colour — a mid-range result marked in it reads as a warning rather than as
+ * "fine". Kept as a separate record so /demo-report, which renders the same
+ * chart, keeps the palette it was designed with.
+ */
+export const liteSeverityVisuals: Record<Severity, SeverityVisual> = {
+  ...severityVisuals,
+  Medium: { label: "ADEQUATE", color: "#2f6fd0", softBg: "rgba(47,111,208,0.10)" },
+};
+
 const BC_W = 500, BC_H = 260, BC_P = 20, BC_LS = 40, BC_N = 1000;
 const BC_RANGE = { min: -4, max: 4 };
 const BC_PDF_MAX = 1 / Math.sqrt(2 * Math.PI);

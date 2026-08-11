@@ -50,6 +50,9 @@ export interface Question {
   showIf?: ShowCondition;
   citation?: CitationTag;
   multiSelect?: boolean;
+  /** Render hint for ordinal scales: "slider" swaps the option tiles for a
+      discrete slider across the options. */
+  control?: "slider";
 }
 
 export type AnswerValue = string | number | string[];

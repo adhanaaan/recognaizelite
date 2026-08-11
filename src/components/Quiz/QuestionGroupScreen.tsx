@@ -1,6 +1,7 @@
 import type { Answers, AnswerValue, Question, CitationTag } from "src/types/quiz";
 import { CompactOption, optionColsClass } from "./OptionButton";
 import { CitationPill } from "./CitationPill";
+import { OptionSlider } from "./OptionSlider";
 
 interface QuestionGroupScreenProps {
   title: string;
@@ -30,7 +31,11 @@ export function QuestionGroupScreen({
   onBack,
   labels,
 }: QuestionGroupScreenProps) {
-  const allAnswered = questions.every((q) => typeof answers[q.id] === "string");
+  // A slider always sits on a valid option, so it never gates Continue; button
+  // questions still have to be answered explicitly.
+  const allAnswered = questions.every(
+    (q) => q.control === "slider" || typeof answers[q.id] === "string"
+  );
 
   const groupCitation = (() => {
     const citations: CitationTag[] = questions.map((q) => q.citation ?? null);
@@ -57,16 +62,24 @@ export function QuestionGroupScreen({
               {q.helpText && (
                 <p className="mt-1 text-[12.5px] text-quizSecondary font-jakarta">{q.helpText}</p>
               )}
-              <div className={`mt-3 grid gap-2 ${cols}`}>
-                {q.options?.map((opt) => (
-                  <CompactOption
-                    key={opt.id}
-                    label={opt.label}
-                    selected={selected === opt.id}
-                    onClick={() => onAnswer(q.id, opt.id)}
-                  />
-                ))}
-              </div>
+              {q.control === "slider" ? (
+                <OptionSlider
+                  question={q}
+                  value={selected}
+                  onChange={(optionId) => onAnswer(q.id, optionId)}
+                />
+              ) : (
+                <div className={`mt-3 grid gap-2 ${cols}`}>
+                  {q.options?.map((opt) => (
+                    <CompactOption
+                      key={opt.id}
+                      label={opt.label}
+                      selected={selected === opt.id}
+                      onClick={() => onAnswer(q.id, opt.id)}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}

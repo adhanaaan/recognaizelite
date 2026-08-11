@@ -211,6 +211,7 @@ export const QUESTIONS: Question[] = [
     axis: "symptom",
     prompt: "How often do you have trouble concentrating on meetings or sustained tasks?",
     citation: "scd",
+    control: "slider",
     options: [
       { id: "almostDaily", label: "Almost daily", score: 4 },
       { id: "severalWeek", label: "Several times a week", score: 2 },
@@ -224,6 +225,7 @@ export const QUESTIONS: Question[] = [
     axis: "symptom",
     prompt: "Compared to a few years ago, how often do you have problems with judgement or decision-making?",
     citation: "scd",
+    control: "slider",
     options: [
       { id: "almostDaily", label: "Almost daily", score: 4 },
       { id: "severalWeek", label: "Several times a week", score: 2 },
@@ -237,6 +239,7 @@ export const QUESTIONS: Question[] = [
     axis: "symptom",
     prompt: "How often do you experience forgetfulness, such as where you put things or what you meant to do?",
     citation: "scd",
+    control: "slider",
     options: [
       { id: "almostDaily", label: "Almost daily", score: 4 },
       { id: "severalWeek", label: "Several times a week", score: 2 },

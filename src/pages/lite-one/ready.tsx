@@ -140,9 +140,6 @@ export default function LiteOneReady() {
               <LiteButton onClick={() => Router.push("/lite-one/challenge")}>
                 I&apos;m ready!
               </LiteButton>
-              <p className="mt-3 text-center text-[11.5px] text-quizOutline">
-                No sign-up until you&apos;ve seen your score
-              </p>
             </div>
           </div>
         </div>

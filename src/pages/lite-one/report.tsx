@@ -1,22 +1,18 @@
 import Head from "next/head";
 import Router from "next/router";
 import React from "react";
-import { BellCurve, severityVisuals } from "src/components/Report/BellCurve";
+import { BellCurve, liteSeverityVisuals } from "src/components/Report/BellCurve";
 import { DomainGrid } from "src/components/LiteOne/DomainGrid";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { LiteModal } from "src/components/LiteOne/LiteModal";
-import { OfferCard } from "src/components/LiteOne/OfferCard";
 import { SampleReportMock } from "src/components/LiteOne/SampleReportMock";
-import { QuoteBubbles, TestimonialRail } from "src/components/LiteOne/Testimonials";
 import { RiskFactorDropdown } from "src/components/LiteOne/RiskFactorDropdown";
 import { Reveal } from "src/components/LiteOne/useInView";
 import { improveIconPaths } from "src/constants/improveIcons";
-import { OFFER, PROOF_POINTS, RESEARCH_LINE } from "src/data/liteOneContent";
-import { useCumulativeCounter } from "src/hooks/useCumulativeCounter";
+import { OFFER, RESEARCH_LINE } from "src/data/liteOneContent";
 import { resetResults, useResultStore } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import type { DomainReport } from "src/types/report";
-import { CLINICAL_DISCLAIMER } from "src/utils/disclaimers";
 import {
   AGE_LABELS,
   clearLiteSession,
@@ -27,10 +23,11 @@ import {
   ordinal,
 } from "src/utils/liteOne";
 
-const OFFER_ANCHOR = "lite-offer";
+/** Page two carries the offer, the proof and the commerce pitch. */
+const UPSELL_PATH = "/lite-one/report-full";
 
-function scrollToOffer() {
-  document.getElementById(OFFER_ANCHOR)?.scrollIntoView({ behavior: "smooth", block: "center" });
+function goToUpsell() {
+  Router.push(UPSELL_PATH);
 }
 
 const sectionClass =
@@ -46,16 +43,6 @@ export default function LiteOneReport() {
   const [profile, setProfile] = React.useState<{ ageRange: string; score: number | null } | null>(
     null
   );
-
-  const testedCountRaw = useCumulativeCounter({
-    anchorDate: "2025-10-01",
-    baseCount: 98_400,
-    dailyMin: 40,
-    dailyMax: 90,
-  });
-  // Rounded down to the nearest thousand — an exact live figure reads as a
-  // fake-precise vanity metric on a marketing page.
-  const testedCount = Math.floor(testedCountRaw / 1000) * 1000;
 
   React.useEffect(() => {
     const stashedProfile = readLiteProfile();
@@ -124,7 +111,7 @@ export default function LiteOneReport() {
     );
   }
 
-  const severity = severityVisuals[report.severity];
+  const severity = liteSeverityVisuals[report.severity];
   const percentile = Math.round(report.percentile);
   const ageLabel = profile?.ageRange ? AGE_LABELS[profile.ageRange] ?? profile.ageRange : null;
   const peerGroup = ageLabel ? `people aged ${ageLabel}` : "people in your age band";
@@ -207,13 +194,13 @@ export default function LiteOneReport() {
             score={score}
             severity={severity}
             onHowToImprove={() => setImproveOpen(true)}
-            onUnlock={scrollToOffer}
+            onUnlock={goToUpsell}
           />
         </div>
 
         <button
           type="button"
-          onClick={scrollToOffer}
+          onClick={goToUpsell}
           className="mt-4 flex w-full items-center justify-between gap-3 rounded-xl bg-quizPrimary px-4 py-3 text-left transition-all hover:brightness-105 active:scale-[0.99]"
         >
           <span className="text-[13.5px] font-bold leading-snug text-white">{OFFER.ribbon}</span>
@@ -239,77 +226,19 @@ export default function LiteOneReport() {
         <p className="mt-6 text-center text-[13px] leading-relaxed text-quizSecondary">
           {RESEARCH_LINE}
         </p>
-      </Reveal>
 
-      {/* 4 — why the test holds up, plus what people said */}
-      <Reveal className={sectionClass}>
-        <h2 className="font-display text-[24px] font-extrabold leading-tight text-charcoal">
-          Why this test is worth your time
-        </h2>
-
-        <ul className="mt-4 space-y-4">
-          {PROOF_POINTS.map((point) => (
-            <li key={point.title} className="flex gap-3">
-              <span className="mt-0.5 shrink-0 text-quizPrimary">
-                <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
-              </span>
-              <span>
-                <span className="block text-[14.5px] font-bold text-charcoal">{point.title}</span>
-                <span className="mt-1 block text-[13px] leading-relaxed text-quizSecondary">
-                  {point.body}
-                </span>
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-6">
-          <QuoteBubbles />
+        <div className="mt-5">
+          <LiteButton onClick={goToUpsell}>Unlock Now →</LiteButton>
         </div>
       </Reveal>
 
-      {/* 5 — the offer */}
-      <Reveal delay={40}>
-        <OfferCard id={OFFER_ANCHOR} />
-      </Reveal>
-
-      {/* 6 — social proof rail */}
-      <Reveal className={sectionClass}>
-        <h2 className="font-display text-[22px] font-extrabold leading-tight text-charcoal">
-          What {testedCount.toLocaleString()}+ people say about the test
-        </h2>
-
-        <div className="mt-4 grid grid-cols-3 gap-2 rounded-xl bg-quizSurface-low p-3 text-center">
-          <div>
-            <p className="font-display text-[18px] font-extrabold text-charcoal">
-              {testedCount.toLocaleString()}+
-            </p>
-            <p className="mt-0.5 text-[10.5px] uppercase tracking-wider text-quizOutline">Tests run</p>
-          </div>
-          <div>
-            <p className="font-display text-[18px] font-extrabold text-charcoal">4.8/5</p>
-            <p className="mt-0.5 text-[10.5px] uppercase tracking-wider text-quizOutline">Average rating</p>
-          </div>
-          <div>
-            <p className="font-display text-[18px] font-extrabold text-charcoal">12</p>
-            <p className="mt-0.5 text-[10.5px] uppercase tracking-wider text-quizOutline">Countries</p>
-          </div>
-        </div>
-
-        <div className="mt-4">
-          <TestimonialRail />
-        </div>
-      </Reveal>
-
-      {/* footer */}
-      <Reveal className="pb-4 pt-2 text-center">
-        <p className="text-[11px] leading-relaxed text-quizOutline">{CLINICAL_DISCLAIMER}</p>
+      {/* The retake link used to sit in a footer below the offer; that whole
+          block now lives on page two, so it lands here instead. */}
+      <Reveal className="pb-4 pt-1 text-center">
         <button
           type="button"
           onClick={handleRetake}
-          className="mt-4 text-[13px] font-semibold text-quizSecondary underline underline-offset-4 transition-colors hover:text-charcoal"
+          className="text-[13px] font-semibold text-quizSecondary underline underline-offset-4 transition-colors hover:text-charcoal"
         >
           Retake the test
         </button>
@@ -344,9 +273,7 @@ export default function LiteOneReport() {
           type="button"
           onClick={() => {
             setImproveOpen(false);
-            // Let the modal unmount before scrolling, or the restored body
-            // overflow fights the smooth scroll.
-            setTimeout(scrollToOffer, 60);
+            goToUpsell();
           }}
           className="mt-5 w-full rounded-full bg-quizPrimary px-6 py-3.5 text-[15px] font-bold text-quizPrimary-on transition-all hover:brightness-105 active:scale-[0.98]"
         >

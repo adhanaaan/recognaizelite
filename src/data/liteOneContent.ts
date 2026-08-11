@@ -38,22 +38,31 @@ export const PROOF_POINTS = [
   },
 ] as const;
 
+/**
+ * `headline` is only read by the landing page's review cards, which follow
+ * b2cfunnel's headline-above-quote layout. The report's QuoteBubbles ignores
+ * it, so the same three people carry the funnel end to end rather than the
+ * landing page introducing a second, near-identical cast.
+ */
 export const TESTIMONIALS = [
   {
     name: "Priya S.",
     age: "48",
+    headline: "Worth every minute",
     quote:
       "Ten minutes, on my phone, and the games were genuinely fun. I've never finished a health check that fast.",
   },
   {
     name: "Marcus L.",
     age: "61",
+    headline: "No more guessing",
     quote:
       "The tips were practical. I finally know what to actually do about my brain health instead of just worrying.",
   },
   {
     name: "Wei Ling T.",
     age: "39",
+    headline: "We caught it early",
     quote:
       "It picked up a change in my mum before her dementia reached mid-stage. We got her assessed months earlier than we would have.",
   },
@@ -85,6 +94,127 @@ export const RAIL_TESTIMONIALS = [
     quote: "Booked a proper screening after seeing my memory score. Glad I did.",
   },
 ] as const;
+
+/* ---------------------------------------------------------------------------
+ * Landing page (/lite-one)
+ *
+ * Ported from b2cfunnel's short homepage (`public/landing/index.html`), which
+ * is plain HTML rather than React — the section copy is lifted verbatim except
+ * where it quoted the sibling funnel's own timings. b2cfunnel sells a
+ * 15-minute quiz; /lite-one is a 60-second game plus a 3-minute quiz, so the
+ * durations are corrected here rather than shipped wrong.
+ * ------------------------------------------------------------------------- */
+
+/** Risk factors fanning out around the face in the problem diagram. */
+export const LANDING_RISK_CUES = {
+  left: ["Blood pressure", "Diet", "Diabetes"],
+  right: ["Exercise", "Family history"],
+} as const;
+
+export const LANDING_STATS = [
+  {
+    figure: "45%",
+    label: "of dementia risk is tied to modifiable factors",
+    source: "Lancet Commission, 2024",
+  },
+  {
+    figure: "1 in 11",
+    label: "Singaporeans aged 60 and over live with dementia",
+    source: "IMH WiSE Study",
+  },
+  {
+    figure: "Age 45",
+    label: "is when processing speed can begin to slow",
+    source: "Whitehall II, BMJ",
+  },
+] as const;
+
+export const LANDING_STEPS = [
+  {
+    title: "Take the 3-minute check",
+    body: "A 60-second cognitive game, then a medically-backed quiz on the 14 things that shape brain health, from blood pressure and sleep to family history.",
+  },
+  {
+    title: "Get your Brain Health Score",
+    body: "See where you stand across the risk factors you can change, and which ones to focus on first.",
+  },
+  {
+    title: "Go deeper with the full assessment",
+    body: "If you want the complete picture, upgrade to the full ReCOGnAIze assessment across all four cognitive domains.",
+  },
+] as const;
+
+export const LANDING_GET = [
+  "Your Brain Health Score based on your answers",
+  "The factors driving it, so you can see what's helping and what isn't",
+  "A short set of recommendations on what to focus on first",
+] as const;
+
+export const LANDING_FOOTER_COLS = [
+  {
+    title: "Trust",
+    body: "By Gray Matter Solutions, a spin-off from NTU Singapore.",
+  },
+  {
+    title: "Research",
+    body: "Livingston G, et al. (2024). Lancet Commission on dementia prevention, intervention and care. Kivipelto M, et al. CAIDE dementia risk score. Singh-Manoux A, et al. (2012). Whitehall II, BMJ.",
+  },
+  {
+    title: "Privacy",
+    body: "We only use your details to send your results and recommendations. You can unsubscribe any time. Your data is handled under Singapore's PDPA.",
+  },
+  {
+    title: "Disclaimer",
+    body: "This quiz estimates brain health risk based on lifestyle and health factors. It is not a diagnosis and not a substitute for medical advice. Always consult a qualified clinician about your health.",
+  },
+] as const;
+
+/* ---------------------------------------------------------------------------
+ * Report page two (/lite-one/report-full)
+ *
+ * Ported from b2cfunnel's PaywallScreen copy (`src/config/copy.ts`, `paywall`).
+ * b2cfunnel bundles a Prologue teleconsult into the purchase and closes with a
+ * WhatsApp booking; this funnel sells the assessment on its own against the
+ * World Alzheimer's Month voucher instead, so the clinician lines are dropped
+ * rather than left promising a consultation nobody would deliver.
+ * ------------------------------------------------------------------------- */
+
+export const UPSELL = {
+  eyebrow: "The full picture",
+  heading: "Take the complete brain health assessment",
+  paperNote: "Validated in peer-reviewed research",
+  paperUrl: "https://pubmed.ncbi.nlm.nih.gov/41685533/",
+  offerName: "ReCOGnAIze brain health assessment",
+  offerNote:
+    "Developed at NTU's Dementia Research Centre · Registered with Singapore's HSA",
+  includes: [
+    "Clinically-validated neuroscientific games to detect specific brain functions",
+    "All four cognitive domains: processing speed, memory, attention and executive function",
+    "Review & recommendations with a full in-depth report",
+  ],
+  faqs: [
+    {
+      q: "What is ReCOGnAIze?",
+      a: "A digital brain health assessment developed at NTU's Dementia Research Centre and registered with Singapore's HSA.",
+    },
+    {
+      q: "How is the quiz different from ReCOGnAIze?",
+      a: "This quiz is a free, educational estimate based on your modifiable risk factors. ReCOGnAIze is the full assessment, validated in peer-reviewed research, that shows how your brain is actually performing.",
+    },
+    {
+      q: "Is this assessment legit?",
+      a: "Yes. ReCOGnAIze was developed and validated at NTU's Lee Kong Chian School of Medicine, Dementia Research Centre, and is registered with Singapore's HSA.",
+    },
+    {
+      q: "Who is it for?",
+      a: "Anyone staying ahead of their brain health: whether you want to maintain peak cognitive performance, you're navigating hormonal changes, or you're supporting a loved one living with dementia.",
+    },
+    {
+      q: "What should I expect next?",
+      a: "Download your offer proof and show it at the front desk to claim the discounted assessment. The test itself runs in a browser and takes about ten minutes.",
+    },
+  ],
+} as const;
 
 export const OFFER = {
   eyebrow: "Special offer",

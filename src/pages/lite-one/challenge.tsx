@@ -66,9 +66,6 @@ export default function LiteOneChallenge() {
               <LiteButton onClick={() => Router.push("/symbol-matching/demo")}>
                 Start tutorial
               </LiteButton>
-              <p className="mt-3 text-[11.5px] text-quizOutline">
-                You&apos;ll get three practice rounds first
-              </p>
             </div>
           </div>
         </div>
