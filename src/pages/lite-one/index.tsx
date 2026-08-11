@@ -1,6 +1,20 @@
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
+import {
+  AssessmentTeaser,
+  HeroVideo,
+  HowItWorks,
+  LandingFooter,
+  PressMarquee,
+  ProblemSection,
+  ScienceBand,
+  SocialProof,
+  StatsSection,
+  TrustBand,
+  WhatYouGet,
+  type PressLogo,
+} from "src/components/LiteOne/LandingSections";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { SectionBadge } from "src/components/LiteOne/SectionBadge";
 import { setAppLanguage } from "src/lib/translations";
@@ -15,63 +29,12 @@ import {
 } from "src/utils/assessment";
 
 /** "As seen on" row. Widths differ a lot, so each height is tuned by eye. */
-const PRESS = [
+const PRESS: PressLogo[] = [
   { src: "press-alzheimers", alt: "Alzheimer's Association", h: 23 },
   { src: "press-cna", alt: "CNA", h: 29 },
   { src: "press-st", alt: "The Straits Times", h: 25 },
   { src: "press-zaobao", alt: "Lianhe Zaobao", h: 27 },
 ];
-
-/**
- * A photo in the hero collage.
- *
- * The rotation lives on an inner element: `lite-rise` animates `transform`, so
- * a tilt on the same node would be overwritten the moment the entrance runs.
- */
-function CollageCard({
-  src,
-  alt,
-  tilt,
-  delay,
-  className,
-}: {
-  src: string;
-  alt: string;
-  tilt: string;
-  delay: number;
-  className: string;
-}) {
-  return (
-    <div className={`lite-rise absolute z-10 ${className}`} style={{ animationDelay: `${delay}ms` }}>
-      <div className="overflow-hidden rounded-2xl shadow-float" style={{ transform: `rotate(${tilt})` }}>
-        <img src={`/images/lite-one/${src}.jpg`} alt={alt} className="block w-full" />
-      </div>
-    </div>
-  );
-}
-
-/** A floating symptom label over the collage. */
-function Chip({
-  label,
-  delay,
-  className,
-  bob,
-}: {
-  label: string;
-  delay: number;
-  className: string;
-  bob?: boolean;
-}) {
-  return (
-    <div className={`lite-rise absolute z-20 ${className}`} style={{ animationDelay: `${delay}ms` }}>
-      <span
-        className={`block whitespace-nowrap rounded-full bg-quizSurface-lowest px-3 py-1.5 text-[12.5px] font-medium text-charcoal shadow-card ${bob ? "lite-bob" : ""}`}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
 
 /**
  * ReCOGnAIze Lite — entry.
@@ -82,6 +45,9 @@ function Chip({
  *
  * resetTaskProgress() matters: without it a visitor who already finished a run
  * lands on the celebration screen instead of the game.
+ *
+ * The page follows b2cfunnel's short homepage (`public/landing/index.html`):
+ * a video hero over the co-branded lock-up, then the scrolling proof sections.
  */
 export default function LiteOneEntry() {
   useEffect(() => {
@@ -95,6 +61,8 @@ export default function LiteOneEntry() {
     resetQuestionnaire();
   }, []);
 
+  const start = () => Router.push("/lite-one/ready");
+
   return (
     <>
       <Head>
@@ -103,7 +71,7 @@ export default function LiteOneEntry() {
           name="description"
           content="You track your heart, your sleep, your blood sugar. This is the same idea for your brain: a 3-minute check and a score you can act on."
         />
-        <meta property="og:title" content="You tracked everything. How about your brain?" />
+        <meta property="og:title" content="You tracked everything. What about your brain?" />
         <meta
           property="og:description"
           content="Take a 3-min quiz and find out how your brain is performing."
@@ -112,79 +80,54 @@ export default function LiteOneEntry() {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
-      <LiteShell>
-        <div className="relative flex flex-1 flex-col items-center justify-center overflow-y-auto px-6 py-5">
-          <div className="w-full max-w-[440px] text-center">
-            <div className="lite-rise" style={{ animationDelay: "40ms" }}>
-              <SectionBadge label="Brain Health Check" />
-            </div>
+      <LiteShell scroll>
+        {/* LiteShell's header has no bottom padding — every other lite screen
+            centres its content in the space below it. Kept local rather than
+            added to the shared shell, which would nudge all of them. */}
+        <div aria-hidden className="h-6 sm:h-8" />
 
-            <h1
-              className="lite-rise mt-5 font-display text-[27px] leading-[1.16] text-charcoal sm:text-[30px]"
-              style={{ animationDelay: "110ms" }}
-            >
-              <span className="font-medium">You tracked </span>
-              <span className="font-medium italic">everything</span>
-              <br />
-              <span className="font-extrabold">How about your </span>
-              <span className="font-extrabold italic">brain</span>
-              <span className="font-extrabold">?</span>
-            </h1>
-
-            {/* Hero collage — two photos under three floating symptom labels. */}
-            <div className="relative mx-auto mt-7 h-[196px] w-full max-w-[326px]">
-              <CollageCard
-                src="landing-focus"
-                alt="Losing the thread in a conversation"
-                tilt="-5deg"
-                delay={220}
-                className="left-[1%] top-[13%] w-[47%]"
-              />
-              <CollageCard
-                src="landing-insomnia"
-                alt="Lying awake at night"
-                tilt="4.5deg"
-                delay={330}
-                className="right-[1%] top-[2%] w-[46%]"
-              />
-
-              <Chip label="Stress" delay={470} className="left-[22%] top-[-4%]" bob />
-              <Chip label="Lost train of thoughts" delay={550} className="left-0 bottom-[-2%]" />
-              <Chip label="Insomnia" delay={620} className="right-0 bottom-[19%]" bob />
-            </div>
-
-            <p
-              className="lite-rise mx-auto mt-7 max-w-[300px] font-display text-[17px] font-bold leading-snug text-charcoal"
-              style={{ animationDelay: "700ms" }}
-            >
-              Take a 3-min quiz and find out how your brain is performing
-            </p>
-
-            <div className="lite-rise mt-7" style={{ animationDelay: "780ms" }}>
-              <p className="text-[11.5px] font-bold text-quizSecondary">As seen on:</p>
-              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
-                {PRESS.map((logo) => (
-                  <img
-                    key={logo.src}
-                    src={`/images/lite-one/${logo.src}.png`}
-                    alt={logo.alt}
-                    style={{ height: logo.h }}
-                    className="w-auto opacity-90"
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="lite-rise mx-auto mt-8 max-w-[320px]" style={{ animationDelay: "860ms" }}>
-              <LiteButton onClick={() => Router.push("/lite-one/ready")}>
-                Get started for free
-              </LiteButton>
-              <p className="mt-3 text-[11.5px] text-quizOutline">
-                60-second test · Nothing to install
-              </p>
-            </div>
+        <HeroVideo>
+          <div className="lite-rise" style={{ animationDelay: "40ms" }}>
+            <SectionBadge label="Developed by NTU LKCMedicine" />
           </div>
-        </div>
+
+          <h1
+            className="lite-rise mt-6 font-display text-[30px] leading-[1.16] text-white sm:text-[46px]"
+            style={{ animationDelay: "110ms" }}
+          >
+            <span className="font-medium">You tracked </span>
+            <span className="font-medium italic">everything</span>
+            <br />
+            <span className="font-extrabold">What about your </span>
+            <span className="font-extrabold italic">brain</span>
+            <span className="font-extrabold">?</span>
+          </h1>
+
+          <p
+            className="lite-rise mx-auto mt-6 max-w-[420px] font-display text-[17px] font-bold leading-snug text-white/95 sm:text-[19px]"
+            style={{ animationDelay: "200ms" }}
+          >
+            Take a 3-min quiz and find out how your brain is performing
+          </p>
+
+          <div
+            className="lite-rise mx-auto mt-8 max-w-[320px]"
+            style={{ animationDelay: "280ms" }}
+          >
+            <LiteButton onClick={start}>Get started for free</LiteButton>
+          </div>
+        </HeroVideo>
+
+        <TrustBand />
+        <PressMarquee logos={PRESS} />
+        <ProblemSection />
+        <StatsSection />
+        <ScienceBand />
+        <HowItWorks />
+        <WhatYouGet onStart={start} />
+        <SocialProof />
+        <AssessmentTeaser onStart={start} />
+        <LandingFooter />
       </LiteShell>
     </>
   );

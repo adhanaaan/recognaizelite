@@ -8,7 +8,7 @@ import { StatCardScreen } from "src/components/Quiz/StatCardScreen";
 import { QUESTIONS_BY_ID } from "src/data/brainHealthQuestions";
 import { STAT_CARDS_BY_ID } from "src/data/brainHealthStatCards";
 import { computeScore } from "src/lib/brainHealthScoring";
-import type { AnswerValue, Question, Answers } from "src/types/quiz";
+import type { Question, Answers } from "src/types/quiz";
 import {
   setAnswer,
   setCurrentStep,
@@ -21,28 +21,47 @@ type StepDef =
   | { kind: "questionGroup"; title: string; questionIds: string[] }
   | { kind: "statCard"; cardId: string };
 
+/**
+ * The question path of b2cfunnel's `FULL_FLOW` (`src/config/funnelFlow.ts`),
+ * step for step. Its flow also carries the hook, email gate, analysing, result
+ * and paywall steps; in this funnel those are separate routes, so only the
+ * question and stat-card steps live here.
+ */
 const ALL_STEPS: StepDef[] = [
+  { kind: "question", questionId: "age" },
+  { kind: "question", questionId: "sex" },
+  { kind: "question", questionId: "hotFlushes" }, // pruned if sex !== female
+  { kind: "question", questionId: "familyHistory" },
+
   {
     kind: "questionGroup",
-    title: "About you",
-    questionIds: ["age", "sex", "hotFlushes", "familyHistory"],
+    title: "Some risk factors",
+    questionIds: ["highBp", "highCholesterol", "diabetes", "hearingLoss", "visionLoss"],
   },
-  {
-    kind: "questionGroup",
-    title: "Your health",
-    questionIds: ["highBp", "highCholesterol", "diabetes"],
-  },
+
+  { kind: "statCard", cardId: "lancet2024" },
+
   {
     kind: "questionGroup",
     title: "Your lifestyle",
     questionIds: ["smoking", "sleep", "exercise", "diet", "alcohol"],
   },
+
+  { kind: "statCard", cardId: "imhWise" },
+
+  { kind: "question", questionId: "tracks" },
+
+  // The three experiential symptom questions share a frequency scale, so they
+  // sit on one page as sliders.
   {
     kind: "questionGroup",
-    title: "Your day-to-day",
-    questionIds: ["concentrating", "judgement", "forgetfulness", "persistence", "someoneElseNoticed"],
+    title: "Changes you might have noticed",
+    questionIds: ["concentrating", "judgement", "forgetfulness"],
   },
-  { kind: "statCard", cardId: "imhWise" },
+  { kind: "question", questionId: "persistence" }, // pruned if forgetfulness not noticed
+  { kind: "question", questionId: "someoneElseNoticed" },
+
+  { kind: "statCard", cardId: "salthouse" },
 ];
 
 function questionVisible(question: Question, answers: Answers): boolean {
@@ -64,8 +83,22 @@ function visibleQuestionsForGroup(
     .filter((q): q is Question => Boolean(q) && questionVisible(q, answers));
 }
 
-function visibleSteps(_answers: Answers): StepDef[] {
-  return ALL_STEPS;
+/**
+ * Prunes standalone question steps whose `showIf` isn't satisfied — hot flushes
+ * when sex ≠ female, the persistence follow-up when forgetfulness was never
+ * reported. Mirrors b2cfunnel's `resolveFlow`. Questions inside a group are
+ * pruned separately, by `visibleQuestionsForGroup`.
+ *
+ * Pruning shifts the indices after the removed step, which is safe because the
+ * answer that prunes a step is always given on an earlier step: the cursor only
+ * ever moves forward into the already-recomputed array.
+ */
+function visibleSteps(answers: Answers): StepDef[] {
+  return ALL_STEPS.filter((step) => {
+    if (step.kind !== "question") return true;
+    const question = QUESTIONS_BY_ID[step.questionId];
+    return Boolean(question) && questionVisible(question, answers);
+  });
 }
 
 const isQuestionPage = (step: StepDef) =>

@@ -37,6 +37,17 @@
   animation: lite-line-draw 0.5s ease-out both;
 }
 
+/* Suspense crumb fade on the loading screen. Longer than the interval that
+   swaps the line, so a crumb fades in and is replaced while still at full
+   opacity rather than blinking out between messages. */
+@keyframes lite-crumb {
+  0%, 100% { opacity: 0; }
+  20%, 80% { opacity: 1; }
+}
+.lite-crumb {
+  animation: lite-crumb 2.4s ease-in-out;
+}
+
 /* Bell-curve reveal (BellCurve `animate` prop). */
 @keyframes bc-draw {
   from { stroke-dashoffset: 1400; }
@@ -148,6 +159,16 @@
   }
   .lite-shimmer { animation: lite-shimmer 5s ease-in-out infinite; }
 
+  /* Press-logo marquee on the landing page. The track carries two identical
+     halves, so travelling -50% lands exactly on the seam and loops with no
+     visible jump. Hovering parks it so a logo can be read. */
+  @keyframes lite-marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .lite-marquee { animation: lite-marquee 28s linear infinite; }
+  .lite-marquee-track:hover .lite-marquee { animation-play-state: paused; }
+
   /* Ambient background blobs, offset so they never move in lockstep. */
   @keyframes lite-drift-a {
     0%, 100% { transform: translate(0, 0); }
@@ -167,6 +188,7 @@
   .lite-rise,
   .lite-ring-draw,
   .lite-line-draw,
+  .lite-crumb,
   .bc-draw,
   .bc-marker {
     animation: none !important;
