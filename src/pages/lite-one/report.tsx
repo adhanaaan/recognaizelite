@@ -4,11 +4,9 @@ import React from "react";
 import { BellCurve, liteSeverityVisuals } from "src/components/Report/BellCurve";
 import { DomainGrid } from "src/components/LiteOne/DomainGrid";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
-import { LiteModal } from "src/components/LiteOne/LiteModal";
 import { SampleReportMock } from "src/components/LiteOne/SampleReportMock";
 import { RiskFactorDropdown } from "src/components/LiteOne/RiskFactorDropdown";
 import { Reveal } from "src/components/LiteOne/useInView";
-import { improveIconPaths } from "src/constants/improveIcons";
 import { OFFER, RESEARCH_LINE } from "src/data/liteOneContent";
 import { resetResults, useResultStore } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
@@ -39,7 +37,6 @@ export default function LiteOneReport() {
   const [report, setReport] = React.useState<DomainReport | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
-  const [improveOpen, setImproveOpen] = React.useState(false);
   const [profile, setProfile] = React.useState<{ ageRange: string; score: number | null } | null>(
     null
   );
@@ -115,7 +112,6 @@ export default function LiteOneReport() {
   const percentile = Math.round(report.percentile);
   const ageLabel = profile?.ageRange ? AGE_LABELS[profile.ageRange] ?? profile.ageRange : null;
   const peerGroup = ageLabel ? `people aged ${ageLabel}` : "people in your age band";
-  const improveIcons = improveIconPaths[report.title] ?? [];
 
   // "Top X%" is only worth saying when it's earned. At the 1st percentile it
   // would read as "top 99%", which is true as a rank and completely misleading
@@ -140,7 +136,12 @@ export default function LiteOneReport() {
         </h1>
 
         <div className="mt-4">
-          <BellCurve percentile={percentile} severity={severity} animate />
+          <BellCurve
+            percentile={percentile}
+            severity={severity}
+            animate
+            zonePalette={liteSeverityVisuals}
+          />
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-3">
@@ -190,12 +191,7 @@ export default function LiteOneReport() {
         </p>
 
         <div className="mt-4">
-          <DomainGrid
-            score={score}
-            severity={severity}
-            onHowToImprove={() => setImproveOpen(true)}
-            onUnlock={goToUpsell}
-          />
+          <DomainGrid score={score} severity={severity} />
         </div>
 
         <button
@@ -243,43 +239,6 @@ export default function LiteOneReport() {
           Retake the test
         </button>
       </Reveal>
-
-      {/* "How to improve?" popup */}
-      <LiteModal
-        open={improveOpen}
-        onClose={() => setImproveOpen(false)}
-        title={`Improving your ${report.title.toLowerCase()}`}
-        subtitle="Things that fit into an ordinary day. Small and repeated beats occasional and heroic."
-      >
-        <ul className="space-y-3">
-          {report.improve.map((tip, i) => (
-            <li
-              key={tip}
-              className="flex items-start gap-3 rounded-xl border border-quizOutline-variant bg-quizSurface-low p-3"
-            >
-              {improveIcons[i] ? (
-                <img src={improveIcons[i]} alt="" className="size-9 shrink-0" />
-              ) : (
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-quizPrimary/12 text-[13px] font-bold text-quizPrimary">
-                  {i + 1}
-                </span>
-              )}
-              <p className="text-[13.5px] leading-relaxed text-charcoal">{tip}</p>
-            </li>
-          ))}
-        </ul>
-
-        <button
-          type="button"
-          onClick={() => {
-            setImproveOpen(false);
-            goToUpsell();
-          }}
-          className="mt-5 w-full rounded-full bg-quizPrimary px-6 py-3.5 text-[15px] font-bold text-quizPrimary-on transition-all hover:brightness-105 active:scale-[0.98]"
-        >
-          See the full test offer
-        </button>
-      </LiteModal>
     </>
   );
 }

@@ -5,6 +5,8 @@
  * Clinical claims are worded the same way the other funnels word them.
  */
 
+import type { BandName } from "src/types/quiz";
+
 export const LOCKED_DOMAINS = [
   {
     name: "Memory",
@@ -19,6 +21,24 @@ export const LOCKED_DOMAINS = [
     blurb: "How you plan, switch tasks and decide",
   },
 ] as const;
+
+/**
+ * The one-paragraph recommendation shown with the risk factors, keyed by the
+ * quiz's Brain Health band (`ScoreResult.band`). Ported verbatim from
+ * b2cfunnel's `COPY.resultBlurbs` (`src/config/copy.ts`) so this funnel gives
+ * the same advice as brainhealthcheck at the same band.
+ *
+ * `moderate` carries a `{factors}` placeholder, filled by `formatRiskLevers`
+ * in src/components/LiteOne/RiskFactorDropdown.tsx.
+ */
+export const RISK_RECOMMENDATIONS: Record<BandName, string> = {
+  low: "Your brain health is in a strong shape with few risk factors and no major flags. The smartest move at this stage is to baseline now, while everything looks good. Measuring early gives you something to track against in years to come.",
+  moderate:
+    "A handful of modifiable factors are affecting your brain health performance. {factors} are the most movable levers, and that's where most of your risk is coming from. A clinically grounded check in now keeps every option open and tells you exactly what's worth focusing on first.",
+  elevated:
+    "Several factors in your profile are adding up, and they deserve attention. The good news is that most of them are modifiable, and many cognitive changes are reversible when caught at this stage. A proper brain health assessment now is the best next move, both to set a baseline and to flag anything that needs medical follow up.",
+  high: "Your profile carries enough risk factors that we'd encourage you to act now, not later. The earlier cognitive change is identified, the more can be done about it, and many of the underlying factors in your score respond well to treatment when caught early. Book a cognitive assessment with a certified medical professional as your next step.",
+};
 
 export const RESEARCH_LINE =
   "Built on clinical research by Nanyang Technological University and the Dementia Research Centre Singapore.";
