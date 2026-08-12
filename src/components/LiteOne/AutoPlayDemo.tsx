@@ -27,9 +27,22 @@ const T_ROUND = 2600;
 
 type Phase = "idle" | "highlight" | "hand" | "press";
 
-/** Legend order for a round: rotate so the mapping visibly changes each turn. */
+/**
+ * Which keypad slot the hand presses each round: 0, then 2, then 1. A demo
+ * that always lands on the same key looks scripted rather than illustrating
+ * "the legend reshuffles, read it every time" — the point of this component.
+ */
+const ANSWER_SLOTS = [0, 2, 1] as const;
+
+/**
+ * Legend order for a round: rotate so the mapping visibly changes each turn,
+ * chosen so the prompt symbol (which cycles 0-1-2 with the round) always lands
+ * in this round's `ANSWER_SLOTS` slot.
+ */
 function legendForRound(round: number) {
-  const shift = round % SYMBOLS.length;
+  const promptSymbol = round % SYMBOLS.length;
+  const answerSlot = ANSWER_SLOTS[round % ANSWER_SLOTS.length];
+  const shift = (promptSymbol - answerSlot + SYMBOLS.length) % SYMBOLS.length;
   return SYMBOLS.map((_, i) => (i + shift) % SYMBOLS.length);
 }
 

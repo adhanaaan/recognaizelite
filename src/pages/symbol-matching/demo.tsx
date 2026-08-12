@@ -15,7 +15,7 @@ import { demoNextStep } from "src/utils/helpers";
 import { isLiteOneMode } from "src/utils/assessment";
 import { LITE } from "src/constants/liteOneTheme";
 
-const getSteps = (isDesktop: boolean, handFill: string): DemoStep[] => [
+const getSteps = (isDesktop: boolean, handFill: string, lite: boolean): DemoStep[] => [
   {
     elements: [{ id: "sb-main-icon", className: "scale-105", instruction: t.SM["Focus on the symbol at the top of the screen."] }],
     delay: 400,
@@ -43,7 +43,10 @@ const getSteps = (isDesktop: boolean, handFill: string): DemoStep[] => [
         instruction: isDesktop
           ? t.SM["Click No. 7 on the number pad or type \u201C7\u201D on your keyboard"]
           : t.SM["Tap \u201C7\u201D in the number pad below."],
-        showPreviousBtn: true,
+        // ReCOGnAIze Lite drops the back button on this step, so the visitor's
+        // only move is the one being taught \u2014 tap 7. Every other funnel keeps
+        // it, unchanged.
+        showPreviousBtn: !lite,
         showNextBtn: false,
         arrow: false,
       },
@@ -127,7 +130,7 @@ export default function GameDemo() {
       value={{
         name: "SM",
         title: task2.title,
-        steps: getSteps(isDesktop, handFill),
+        steps: getSteps(isDesktop, handFill, lite),
         texts: {},
         colors: lite
           ? {
