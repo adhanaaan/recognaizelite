@@ -18,7 +18,6 @@ import {
   readLiteProfile,
   readStashedReport,
   readTask2Score,
-  ordinal,
 } from "src/utils/liteOne";
 
 /** Page two carries the offer, the proof and the commerce pitch. */
@@ -113,15 +112,34 @@ export default function LiteOneReport() {
   const ageLabel = profile?.ageRange ? AGE_LABELS[profile.ageRange] ?? profile.ageRange : null;
   const peerGroup = ageLabel ? `people aged ${ageLabel}` : "people in your age band";
 
-  // "Top X%" is only worth saying when it's earned. At the 1st percentile it
-  // would read as "top 99%", which is true as a rank and completely misleading
-  // as praise — so below the midpoint we state the percentile plainly instead.
-  const strongRank = percentile >= 60;
-  const rankValue = strongRank ? `Top ${Math.max(1, 100 - percentile)}%` : ordinal(percentile);
-  const rankLabel = strongRank ? "Peer rank" : "Percentile";
-  const rankSentence = strongRank
-    ? `You're in the top ${Math.max(1, 100 - percentile)}% for processing speed among ${peerGroup}.`
-    : `You scored faster than ${percentile}% of ${peerGroup}.`;
+  // Result headline — one sentence, keyed off severity rather than percentile.
+  //
+  // The previous two-tile grid displayed the percentile as an ordinal ("1st",
+  // "42nd", "95th"). On the weak end that read as an achievement ("1st" is
+  // universally best-in-context in every other place a visitor sees it), and
+  // even paired with red type it took a beat to reconcile with the "Weak"
+  // label. We drop the tiles and speak in plain comparisons instead.
+  //
+  // The weak reframe flips the subject: "most people were faster than you"
+  // states the fact honestly without letting a rank number look like a rank.
+  // The follow-up sentence names what the number is not (a diagnosis) and
+  // hands off to the sections below that make the result actionable.
+  const resultCopy =
+    report.severity === "High"
+      ? {
+          fact: `You reacted faster than ${percentile}% of ${peerGroup}.`,
+          reframe: `That puts you in the top ${Math.max(1, 100 - percentile)}% for your age band.`,
+        }
+      : report.severity === "Medium"
+        ? {
+            fact: `You reacted faster than ${percentile}% of ${peerGroup}.`,
+            reframe: "That's within the typical range for your age band.",
+          }
+        : {
+            fact: `Most ${peerGroup} reacted faster than you today.`,
+            reframe:
+              "Processing speed dips with poor sleep and slows with age. The risk factors below help explain today's score.",
+          };
 
   // Overrides the shared server copy for a domain when this funnel has its own
   // wording for it (currently just Processing Speed). Falls back cleanly, so a
@@ -149,29 +167,24 @@ export default function LiteOneReport() {
           />
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <div className="rounded-xl bg-quizSurface-low p-4 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-quizOutline">
-              Your score
-            </p>
-            <p className="mt-1 font-display text-[30px] font-extrabold leading-none text-charcoal">
-              {score ?? "—"}
-            </p>
-          </div>
-          <div className="rounded-xl p-4 text-center" style={{ backgroundColor: severity.softBg }}>
-            <p className="text-[11px] font-bold uppercase tracking-wider text-quizOutline">
-              {rankLabel}{ageLabel ? ` (${ageLabel})` : ""}
-            </p>
-            <p
-              className="mt-1 font-display text-[30px] font-extrabold leading-none"
-              style={{ color: severity.color }}
-            >
-              {rankValue}
-            </p>
-          </div>
+        <div className="mt-5 space-y-2">
+          <p className="text-[15px] font-semibold leading-snug text-charcoal">
+            {resultCopy.fact}
+          </p>
+          <p className="text-[13.5px] leading-relaxed text-quizSecondary">
+            {resultCopy.reframe}
+          </p>
         </div>
 
-        <p className="mt-4 text-[13.5px] leading-relaxed text-quizSecondary">{rankSentence}</p>
+        {/* Raw score still lives on the page for a returning visitor comparing
+            runs, but stripped of its own tile so it doesn't compete with the
+            sentence above for the "what does this mean" read. */}
+        {score !== null && (
+          <p className="mt-3 text-[11.5px] uppercase tracking-wider text-quizOutline">
+            Raw score:{" "}
+            <span className="font-bold text-charcoal">{score}</span>
+          </p>
+        )}
 
         <div className="mt-4 rounded-xl bg-quizSurface-low p-4">
           <p className="text-[11px] font-bold uppercase tracking-wider text-quizOutline">
