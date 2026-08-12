@@ -138,7 +138,7 @@ export default function LiteOneReport() {
         : {
             fact: `Most ${peerGroup} reacted faster than you today.`,
             reframe:
-              "Processing speed is one of the first things to shift with stress, sleep and age — the sections below break down what's driving it and what to do next.",
+              "Processing speed dips with poor sleep and slows with age. The risk factors below help explain today's score.",
           };
 
   // Overrides the shared server copy for a domain when this funnel has its own
