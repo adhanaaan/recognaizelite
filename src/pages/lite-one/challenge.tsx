@@ -55,14 +55,7 @@ export default function LiteOneChallenge() {
               <AutoPlayDemo />
             </div>
 
-            <p
-              className="lite-rise mx-auto mt-5 max-w-[320px] text-[12.5px] leading-relaxed text-quizOutline"
-              style={{ animationDelay: "320ms" }}
-            >
-              The symbols swap places after every turn, so check the key each time.
-            </p>
-
-            <div className="lite-rise mx-auto mt-5 max-w-[320px]" style={{ animationDelay: "380ms" }}>
+            <div className="lite-rise mx-auto mt-5 max-w-[320px]" style={{ animationDelay: "320ms" }}>
               <LiteButton onClick={() => Router.push("/symbol-matching/demo")}>
                 Start tutorial
               </LiteButton>
