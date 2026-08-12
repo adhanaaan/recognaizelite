@@ -53,7 +53,7 @@ export const RISK_RECOMMENDATIONS: Record<BandName, string> = {
 };
 
 export const RESEARCH_LINE =
-  "Built on clinical research by Nanyang Technological University and the Dementia Research Centre Singapore.";
+  "Built on clinical research by Nanyang Technological University, LKC Medicine, Dementia Research Centre Singapore.";
 
 export const PROOF_POINTS = [
   {

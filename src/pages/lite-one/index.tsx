@@ -22,20 +22,14 @@ import {
 
 /**
  * The hero's "as featured in" rail: the press mentions, plus PubMed for the
- * published research — the same mix b2cfunnel's full.html carries in this bar,
- * minus its own NTU lock-up, which is already on the hero and isn't somewhere
- * the test was featured. Widths differ a lot, so each height is tuned by eye.
- *
- * Lianhe Zaobao keeps its own colours: its mark is a filled disc, so the white
- * knockout the others take would flatten it into a plain circle. It reads
- * perfectly well in colour against the glass.
+ * published research. Widths differ a lot, so each height is tuned by eye.
  */
 const PRESS: PressLogo[] = [
-  { src: "press-cna.png", alt: "CNA", h: 26 },
-  { src: "press-st.png", alt: "The Straits Times", h: 23 },
-  { src: "press-alzheimers.png", alt: "Alzheimer's Association", h: 21 },
-  { src: "press-zaobao.png", alt: "Lianhe Zaobao", h: 24, keepColour: true },
-  { src: "logo-pubmed.svg", alt: "PubMed", h: 18 },
+  { src: "press-cna.svg", alt: "CNA", h: 30 },
+  { src: "press-st.svg", alt: "The Straits Times", h: 30 },
+  { src: "press-alzheimers-brand.svg", alt: "Alzheimer's Association", h: 22 },
+  { src: "press-zaobao.svg", alt: "Lianhe Zaobao", h: 30 },
+  { src: "logo-pubmed.svg", alt: "PubMed", h: 20 },
 ];
 
 /**
