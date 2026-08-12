@@ -36,14 +36,12 @@ export default function LiteOneReport() {
   const [report, setReport] = React.useState<DomainReport | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
-  const [profile, setProfile] = React.useState<{ ageRange: string; score: number | null } | null>(
-    null
-  );
+  const [profile, setProfile] = React.useState<{ ageRange: string } | null>(null);
 
   React.useEffect(() => {
     const stashedProfile = readLiteProfile();
     if (stashedProfile) {
-      setProfile({ ageRange: stashedProfile.ageRange, score: stashedProfile.score ?? null });
+      setProfile({ ageRange: stashedProfile.ageRange });
     }
 
     const stashed = readStashedReport();
@@ -69,7 +67,6 @@ export default function LiteOneReport() {
     Router.replace("/lite-one");
   };
 
-  const score = readTask2Score(result) ?? profile?.score ?? null;
 
   const shell = (children: React.ReactNode) => (
     <>
@@ -176,15 +173,6 @@ export default function LiteOneReport() {
           </p>
         </div>
 
-        {/* Raw score still lives on the page for a returning visitor comparing
-            runs, but stripped of its own tile so it doesn't compete with the
-            sentence above for the "what does this mean" read. */}
-        {score !== null && (
-          <p className="mt-3 text-[11.5px] uppercase tracking-wider text-quizOutline">
-            Raw score:{" "}
-            <span className="font-bold text-charcoal">{score}</span>
-          </p>
-        )}
 
         <div className="mt-4 rounded-xl bg-quizSurface-low p-4">
           <p className="text-[11px] font-bold uppercase tracking-wider text-quizOutline">
@@ -205,7 +193,7 @@ export default function LiteOneReport() {
         </p>
 
         <div className="mt-4">
-          <DomainGrid score={score} severity={severity} />
+          <DomainGrid severity={severity} />
         </div>
 
         <button

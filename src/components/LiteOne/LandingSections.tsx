@@ -17,25 +17,23 @@ import React from "react";
 const WRAP = "mx-auto w-full max-w-[1080px] px-6";
 const WRAP_NARROW = "mx-auto w-full max-w-[760px] px-6";
 
-/**
- * `src` carries its own extension — the credibility marks aren't all PNGs.
- *
- * `keepColour` exempts a mark from the white knockout. Line-art logos invert
- * cleanly; a mark that is a filled shape flattens into a plain white blob, so
- * it keeps its own colours instead of being dropped from the rail.
- */
-export type PressLogo = { src: string; alt: string; h: number; keepColour?: true };
+/** `src` carries its own extension — the credibility marks aren't all PNGs. */
+export type PressLogo = { src: string; alt: string; h: number };
 
 /**
- * One glass recipe for every panel that floats on the hero video, so the pill,
- * the lock-up and the press rail all read as the same material. Kept close to
- * b2cfunnel's `.hero .pill` / `.hero-marquee`: barely-there white over a real
- * backdrop blur, rather than a near-opaque plate.
+ * Two plate recipes for panels floating on the hero video.
+ *
+ * GLASS is the barely-there translucent pill (matches b2cfunnel's `.hero .pill`).
+ * It only carries the tiny orange GMS brain mark, which is visible against a
+ * scrim.
+ *
+ * PLATE is the opaque white surface for the lock-up and the featured-in bar.
+ * Brand marks have to be identifiable — dark-inked wordmarks on translucent
+ * glass ghost out, and knocking them to white loses the brand colours. So we
+ * give them a proper white plate and place them at their designed colours.
  */
 const GLASS = "border border-white/25 bg-white/[0.12] backdrop-blur-[10px]";
-
-/** Knocks a dark-inked mark out to white so it reads on the glass. */
-const KNOCKOUT = "brightness-0 invert drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]";
+const PLATE = "bg-white shadow-[0_8px_28px_rgba(0,0,0,0.22)]";
 
 /* ------------------------------------------------------------------ hero -- */
 
@@ -97,6 +95,11 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
 
   return (
     <section className="relative isolate flex min-h-0 flex-1 flex-col overflow-hidden bg-[#241710] text-center">
+      {/* `src` on the video rather than a nested <source> child: React's
+          hydration re-parenting of children was aborting the in-flight range
+          request (loadstart → ERR_ABORTED at ~236ms), so the video never got
+          past readyState 0. Placing the URL directly on the video attribute
+          skips that reconciliation step and lets the range request complete. */}
       <video
         ref={videoRef}
         className="absolute inset-0 -z-10 size-full object-cover"
@@ -106,9 +109,8 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
         playsInline
         preload="auto"
         poster="/images/lite-one/hero-poster.jpg"
-      >
-        <source src="/videos/lite-one/hero.mp4" type="video/mp4" />
-      </video>
+        src="/videos/lite-one/hero.mp4"
+      />
       <div
         aria-hidden
         className="absolute inset-0 -z-10 bg-gradient-to-b from-[rgba(15,10,5,0.55)] to-[rgba(15,10,5,0.74)]"
@@ -121,26 +123,23 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-[rgba(10,6,3,0.62)] to-transparent"
       />
 
-      {/* Parkway Shenton + Gray Matter, floating on the video rather than in a
-          band of their own. Both marks are dark-inked, so they are knocked out
-          to white — a plate opaque enough to carry them in their own colours
-          would stop reading as glass. */}
+      {/* Parkway Shenton + Gray Matter, floating on the video. Placed at their
+          designed colours on a white plate — the marks are dark-inked, so a
+          translucent glass plate would ghost them out. */}
       <div className="absolute inset-x-0 top-0 z-20 flex justify-center px-5 pt-5 sm:pt-6">
         <div
-          className={`flex items-center gap-5 rounded-2xl px-5 py-2.5 shadow-[0_8px_28px_rgba(0,0,0,0.22)] sm:gap-7 ${GLASS}`}
+          className={`flex items-center gap-4 rounded-2xl px-5 py-2.5 sm:gap-6 ${PLATE}`}
         >
           <img
-            src="/images/lite-one/logo-parkway-shenton.png"
+            src="/images/lite-one/logo-parkway-shenton.svg"
             alt="Parkway Shenton"
-            className={`h-[20px] w-auto sm:h-[22px] ${KNOCKOUT}`}
+            className="h-[22px] w-auto sm:h-[26px]"
           />
-          <span aria-hidden className="h-7 w-px bg-white/30" />
-          {/* The knockout variant: the shipped lock-up has an opaque near-white
-              plate behind the brain that flattens into a blob when inverted. */}
+          <span aria-hidden className="h-7 w-px bg-charcoal/12" />
           <img
-            src="/images/lite-one/logo-gray-matter-knockout.png"
+            src="/images/lite-one/logo-gray-matter.svg"
             alt="Gray Matter Solutions"
-            className={`h-[27px] w-auto sm:h-[30px] ${KNOCKOUT}`}
+            className="h-[26px] w-auto sm:h-[30px]"
           />
         </div>
       </div>
@@ -182,25 +181,20 @@ export function HeroPill({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * "As featured in" — b2cfunnel's `.hero-marquee` from full.html: a frosted
- * panel inside the hero rather than a separate band below it.
- *
- * The marks are knocked out to white, as b2cfunnel does. Anything that can't
- * take that treatment — a mark that is a filled shape rather than line work
- * flattens into a plain white blob — belongs somewhere other than this rail.
+ * "As featured in" — b2cfunnel's `.hero-marquee` from full.html: a panel
+ * inside the hero rather than a separate band below it. White plate so the
+ * dark-inked press marks stay legible in their designed colours.
  */
 export function HeroFeaturedIn({ logos }: { logos: readonly PressLogo[] }) {
   const half = [...logos, ...logos];
   const track = [...half, ...half];
 
   return (
-    <div
-      className={`mx-auto w-full max-w-[720px] rounded-2xl px-2 pb-4 pt-4 shadow-[0_12px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.12)] ${GLASS}`}
-    >
-      <p className="flex items-center justify-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.22em] text-white/85">
-        <span aria-hidden className="h-px w-[22px] bg-white/40" />
+    <div className={`mx-auto w-full max-w-[720px] rounded-2xl px-2 pb-4 pt-4 ${PLATE}`}>
+      <p className="flex items-center justify-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.22em] text-quizSecondary">
+        <span aria-hidden className="h-px w-[22px] bg-charcoal/25" />
         As featured in
-        <span aria-hidden className="h-px w-[22px] bg-white/40" />
+        <span aria-hidden className="h-px w-[22px] bg-charcoal/25" />
       </p>
       <div
         className="lite-marquee-track relative mt-3.5 overflow-hidden"
@@ -217,7 +211,7 @@ export function HeroFeaturedIn({ logos }: { logos: readonly PressLogo[] }) {
               alt={i < logos.length ? logo.alt : ""}
               aria-hidden={i >= logos.length}
               style={{ height: logo.h }}
-              className={`w-auto shrink-0 ${logo.keepColour ? "" : KNOCKOUT}`}
+              className="w-auto shrink-0"
             />
           ))}
         </div>

@@ -61,7 +61,7 @@ export function RiskFactorDropdown() {
   return (
     <div className="rounded-2xl border border-quizOutline-variant bg-quizSurface-lowest p-5 shadow-card sm:p-6">
       <h2 className="font-display text-[24px] font-extrabold leading-tight text-charcoal">
-        Your risk factors
+        Your risk factor
       </h2>
 
       {/*
@@ -88,9 +88,7 @@ export function RiskFactorDropdown() {
       {/* A profile with nothing movable still gets its recommendation above. */}
       {count > 0 && (
         <>
-          <p className="mt-4 text-[13.5px] text-quizSecondary">
-            {count} aspect{count !== 1 ? "s" : ""} to improve:
-          </p>
+          <p className="mt-4 text-[13.5px] text-quizSecondary">What&apos;s driving this</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {factors.map((f) => (
               <span

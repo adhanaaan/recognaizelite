@@ -20,16 +20,11 @@ const LockGlyph = (
  * 60-second test can't see. The locked cards are the argument for the full
  * test, so they carry real descriptions rather than a blurred placeholder.
  *
- * The cards are read-only. Four buttons here competed with the offer banner
- * directly beneath the grid, which is the section's actual call to action.
+ * The cards are read-only, and the raw score has been removed — the sentence
+ * above the grid already carries the "how did I do" message, so a numeric
+ * tally per tile just competed with it.
  */
-export function DomainGrid({
-  score,
-  severity,
-}: {
-  score: number | null;
-  severity: SeverityVisual;
-}) {
+export function DomainGrid({ severity }: { severity: SeverityVisual }) {
   return (
     <div className="grid grid-cols-2 gap-3">
       {/* unlocked */}
@@ -42,18 +37,12 @@ export function DomainGrid({
         <p className="mt-1 text-[11.5px] leading-snug text-quizSecondary">
           How quickly your brain reacts to information
         </p>
-        <div className="mt-3">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-quizOutline">Score</p>
-          <p className="font-display text-[22px] font-extrabold leading-none text-charcoal">
-            {score ?? "—"}
-            <span
-              className="ml-1.5 align-middle text-[11px] font-bold uppercase tracking-wider"
-              style={{ color: severity.color }}
-            >
-              {severity.label}
-            </span>
-          </p>
-        </div>
+        <span
+          className="mt-3 self-start rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider"
+          style={{ color: severity.color, backgroundColor: "rgba(255,255,255,0.6)" }}
+        >
+          {severity.label}
+        </span>
       </div>
 
       {LOCKED_DOMAINS.map((domain) => (
@@ -66,15 +55,9 @@ export function DomainGrid({
             {domain.name}
           </h3>
           <p className="mt-1 text-[11.5px] leading-snug text-quizOutline">{domain.blurb}</p>
-          <div className="mt-3">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-quizOutline">Score</p>
-            <p className="font-display text-[22px] font-extrabold leading-none text-quizOutline-variant">
-              —
-              <span className="ml-1.5 align-middle text-[11px] font-bold uppercase tracking-wider text-quizOutline">
-                Locked
-              </span>
-            </p>
-          </div>
+          <span className="mt-3 self-start rounded-full bg-white/60 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-quizOutline">
+            Locked
+          </span>
         </div>
       ))}
     </div>
