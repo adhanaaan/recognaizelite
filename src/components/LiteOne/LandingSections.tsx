@@ -29,6 +29,9 @@ const WRAP_NARROW = "mx-auto w-full max-w-[760px] px-6";
 const SECTION_Y = "py-14 sm:py-[72px]";
 const SECTION_B = "pb-14 sm:pb-[72px]";
 
+/** `src` carries its own extension — the credibility marks aren't all PNGs. */
+export type PressLogo = { src: string; alt: string; h: number };
+
 /* ------------------------------------------------------------------ hero -- */
 
 /**
@@ -84,7 +87,7 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <section className="relative isolate flex min-h-[82vh] items-center justify-center overflow-hidden bg-[#241710] text-center">
+    <section className="relative isolate flex min-h-[86vh] items-center justify-center overflow-hidden bg-[#241710] text-center">
       <video
         ref={videoRef}
         className="absolute inset-0 -z-10 size-full object-cover"
@@ -101,12 +104,97 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
         aria-hidden
         className="absolute inset-0 -z-10 bg-gradient-to-b from-[rgba(15,10,5,0.55)] to-[rgba(15,10,5,0.74)]"
       />
+      {/* Extra shade at the very top. The lock-up sits on the video rather than
+          in a band of its own, and the first video frames are bright enough to
+          swallow it without this. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-[rgba(10,6,3,0.62)] to-transparent"
+      />
+
+      {/* Parkway Shenton + Gray Matter, floating on the video rather than in a
+          band of their own. Both marks are dark-inked and one is a filled
+          shape, so knocking them out to white turns them into blobs — they keep
+          their real colours and sit on a light frosted plate instead. */}
+      <div className="absolute inset-x-0 top-0 z-20 flex justify-center px-5 pt-5 sm:pt-6">
+        <div className="flex items-center gap-5 rounded-2xl border border-white/50 bg-white/80 px-5 py-2.5 shadow-[0_8px_28px_rgba(0,0,0,0.22)] backdrop-blur-md sm:gap-7">
+          <img
+            src="/images/lite-one/logo-parkway-shenton.png"
+            alt="Parkway Shenton"
+            className="h-[20px] w-auto sm:h-[22px]"
+          />
+          <span aria-hidden className="h-7 w-px bg-charcoal/15" />
+          <img
+            src="/images/lite-one/logo-gray-matter.png"
+            alt="Gray Matter Solutions"
+            className="h-[27px] w-auto sm:h-[30px]"
+          />
+        </div>
+      </div>
+
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-b from-transparent to-quizSurface-container"
       />
-      <div className={`relative z-20 ${WRAP_NARROW} py-16`}>{children}</div>
+      <div className={`relative z-20 ${WRAP_NARROW} py-20`}>{children}</div>
     </section>
+  );
+}
+
+/**
+ * The hero's credibility pill — b2cfunnel's `.hero .pill`. Translucent rather
+ * than the solid white `SectionBadge`, so it sits on the video instead of
+ * punching a hole in it. The brain mark deliberately keeps its orange.
+ */
+export function HeroPill({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-[12px] font-semibold text-white backdrop-blur-sm sm:text-[13px]">
+      <img src="/images/lite-one/logo-gms-mark.png" alt="" aria-hidden className="h-[18px] w-auto" />
+      {children}
+    </span>
+  );
+}
+
+/**
+ * "As featured in" — b2cfunnel's `.hero-marquee` from full.html: a frosted
+ * panel inside the hero rather than a separate band below it.
+ *
+ * b2cfunnel knocks these logos out to white. Ours can't take that treatment —
+ * CNA's mark is a filled disc that flattens into a plain white circle — so the
+ * plate is light and the logos keep their own colours.
+ */
+export function HeroFeaturedIn({ logos }: { logos: readonly PressLogo[] }) {
+  const half = [...logos, ...logos];
+  const track = [...half, ...half];
+
+  return (
+    <div className="mx-auto mt-5 w-full max-w-[720px] rounded-2xl border border-white/50 bg-white/80 px-2 pb-4 pt-4 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-md">
+      <p className="flex items-center justify-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.22em] text-quizSecondary">
+        <span aria-hidden className="h-px w-[22px] bg-charcoal/25" />
+        As featured in
+        <span aria-hidden className="h-px w-[22px] bg-charcoal/25" />
+      </p>
+      <div
+        className="lite-marquee-track relative mt-3.5 overflow-hidden"
+        style={{
+          maskImage: "linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)",
+          WebkitMaskImage: "linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)",
+        }}
+      >
+        <div className="lite-marquee flex w-max items-center gap-12">
+          {track.map((logo, i) => (
+            <img
+              key={`${logo.src}-${i}`}
+              src={`/images/lite-one/${logo.src}`}
+              alt={i < logos.length ? logo.alt : ""}
+              aria-hidden={i >= logos.length}
+              style={{ height: logo.h }}
+              className="w-auto shrink-0 opacity-90"
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -143,47 +231,6 @@ export function TrustBand() {
   );
 }
 
-/* ----------------------------------------------------------- press strip -- */
-
-export type PressLogo = { src: string; alt: string; h: number };
-
-/**
- * "As seen on" marquee. The track holds the logo list twice so the -50%
- * translation lands on the seam; reduced-motion visitors get the same row,
- * static (the animation only exists inside a no-preference block).
- */
-export function PressMarquee({ logos }: { logos: readonly PressLogo[] }) {
-  const half = [...logos, ...logos, ...logos];
-  const track = [...half, ...half];
-
-  return (
-    <section className="border-b border-quizOutline-variant/60 bg-quizSurface-lowest py-7">
-      <p className="text-center text-[11px] font-bold uppercase tracking-[0.22em] text-quizOutline">
-        As seen on
-      </p>
-      <div
-        className="lite-marquee-track relative mt-4 overflow-hidden"
-        style={{
-          maskImage: "linear-gradient(90deg,transparent,#000 11%,#000 89%,transparent)",
-          WebkitMaskImage: "linear-gradient(90deg,transparent,#000 11%,#000 89%,transparent)",
-        }}
-      >
-        <div className="lite-marquee flex w-max items-center gap-12">
-          {track.map((logo, i) => (
-            <img
-              key={`${logo.src}-${i}`}
-              src={`/images/lite-one/${logo.src}.png`}
-              alt={i < logos.length ? logo.alt : ""}
-              aria-hidden={i >= logos.length}
-              style={{ height: logo.h }}
-              className="w-auto shrink-0 opacity-85"
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* --------------------------------------------------------------- problem -- */
 
