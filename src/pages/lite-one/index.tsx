@@ -3,10 +3,11 @@ import Router from "next/router";
 import { useEffect } from "react";
 import {
   AssessmentTeaser,
+  HeroFeaturedIn,
+  HeroPill,
   HeroVideo,
   HowItWorks,
   LandingFooter,
-  PressMarquee,
   ProblemSection,
   ScienceBand,
   SocialProof,
@@ -16,7 +17,6 @@ import {
   type PressLogo,
 } from "src/components/LiteOne/LandingSections";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
-import { SectionBadge } from "src/components/LiteOne/SectionBadge";
 import { setAppLanguage } from "src/lib/translations";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
@@ -28,12 +28,18 @@ import {
   setHookReportPath,
 } from "src/utils/assessment";
 
-/** "As seen on" row. Widths differ a lot, so each height is tuned by eye. */
+/**
+ * The hero's "as featured in" rail: the press mentions, plus PubMed for the
+ * published research — the same mix b2cfunnel's full.html carries in this bar,
+ * minus its own NTU lock-up, which is already on the hero and isn't somewhere
+ * the test was featured. Widths differ a lot, so each height is tuned by eye.
+ */
 const PRESS: PressLogo[] = [
-  { src: "press-alzheimers", alt: "Alzheimer's Association", h: 23 },
-  { src: "press-cna", alt: "CNA", h: 29 },
-  { src: "press-st", alt: "The Straits Times", h: 25 },
-  { src: "press-zaobao", alt: "Lianhe Zaobao", h: 27 },
+  { src: "press-cna.png", alt: "CNA", h: 26 },
+  { src: "press-st.png", alt: "The Straits Times", h: 23 },
+  { src: "press-alzheimers.png", alt: "Alzheimer's Association", h: 21 },
+  { src: "press-zaobao.png", alt: "Lianhe Zaobao", h: 24 },
+  { src: "logo-pubmed.svg", alt: "PubMed", h: 18 },
 ];
 
 /**
@@ -80,15 +86,12 @@ export default function LiteOneEntry() {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
-      <LiteShell scroll>
-        {/* LiteShell's header has no bottom padding — every other lite screen
-            centres its content in the space below it. Kept local rather than
-            added to the shared shell, which would nudge all of them. */}
-        <div aria-hidden className="h-6 sm:h-8" />
-
+      {/* No shell header: the co-branded lock-up sits on the video itself, so a
+          separate band above it would state the same thing twice. */}
+      <LiteShell scroll showHeader={false}>
         <HeroVideo>
           <div className="lite-rise" style={{ animationDelay: "40ms" }}>
-            <SectionBadge label="Developed by NTU LKCMedicine" />
+            <HeroPill>Clinically validated at NTU LKCMedicine</HeroPill>
           </div>
 
           <h1
@@ -116,10 +119,13 @@ export default function LiteOneEntry() {
           >
             <LiteButton onClick={start}>Get started for free</LiteButton>
           </div>
+
+          <div className="lite-rise" style={{ animationDelay: "360ms" }}>
+            <HeroFeaturedIn logos={PRESS} />
+          </div>
         </HeroVideo>
 
         <TrustBand />
-        <PressMarquee logos={PRESS} />
         <ProblemSection />
         <StatsSection />
         <ScienceBand />
