@@ -2,18 +2,10 @@ import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
 import {
-  AssessmentTeaser,
   HeroFeaturedIn,
   HeroPill,
   HeroVideo,
-  HowItWorks,
-  LandingFooter,
-  ProblemSection,
-  ScienceBand,
-  SocialProof,
-  StatsSection,
   TrustBand,
-  WhatYouGet,
   type PressLogo,
 } from "src/components/LiteOne/LandingSections";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
@@ -56,8 +48,9 @@ const PRESS: PressLogo[] = [
  * resetTaskProgress() matters: without it a visitor who already finished a run
  * lands on the celebration screen instead of the game.
  *
- * The page follows b2cfunnel's short homepage (`public/landing/index.html`):
- * a video hero over the co-branded lock-up, then the scrolling proof sections.
+ * Everything lives above the fold: the video hero and the trust line are the
+ * whole page, deliberately — b2cfunnel's longer proof sections (stats,
+ * how-it-works, testimonials, footer) are cut rather than kept off-screen.
  */
 export default function LiteOneEntry() {
   useEffect(() => {
@@ -93,51 +86,53 @@ export default function LiteOneEntry() {
       {/* No shell header: the co-branded lock-up sits on the video itself, so a
           separate band above it would state the same thing twice. */}
       <LiteShell scroll showHeader={false}>
-        <HeroVideo>
-          <div className="lite-rise" style={{ animationDelay: "40ms" }}>
-            <HeroPill>Clinically validated at NTU LKCMedicine</HeroPill>
-          </div>
+        {/*
+         * The whole page is meant to sit above the fold, so the hero has no
+         * fixed height of its own — `flex flex-col` here plus `flex-1` on
+         * HeroVideo makes it fill exactly whatever the trust band doesn't
+         * need, on any viewport, with no dead space and no cropping.
+         * `min-h-[100dvh]` is a floor, not a fixed height: on a viewport
+         * taller than the content needs, the hero simply grows to fill it.
+         */}
+        <div className="flex min-h-[100dvh] flex-col">
+          <HeroVideo>
+            <div className="lite-rise" style={{ animationDelay: "40ms" }}>
+              <HeroPill>Clinically validated at NTU LKCMedicine</HeroPill>
+            </div>
 
-          <h1
-            className="lite-rise mt-6 font-display text-[30px] leading-[1.16] text-white sm:text-[46px]"
-            style={{ animationDelay: "110ms" }}
-          >
-            <span className="font-medium">You tracked </span>
-            <span className="font-medium italic">everything</span>
-            <br />
-            <span className="font-extrabold">What about your </span>
-            <span className="font-extrabold italic">brain</span>
-            <span className="font-extrabold">?</span>
-          </h1>
+            <h1
+              className="lite-rise mt-6 font-display text-[30px] leading-[1.16] text-white sm:text-[46px]"
+              style={{ animationDelay: "110ms" }}
+            >
+              <span className="font-medium">You tracked </span>
+              <span className="font-medium italic">everything</span>
+              <br />
+              <span className="font-extrabold">What about your </span>
+              <span className="font-extrabold italic">brain</span>
+              <span className="font-extrabold">?</span>
+            </h1>
 
-          <p
-            className="lite-rise mx-auto mt-6 max-w-[420px] font-display text-[17px] font-bold leading-snug text-white/95 sm:text-[19px]"
-            style={{ animationDelay: "200ms" }}
-          >
-            Take a 3-min quiz and find out how your brain is performing
-          </p>
+            <p
+              className="lite-rise mx-auto mt-6 max-w-[420px] font-display text-[17px] font-bold leading-snug text-white/95 sm:text-[19px]"
+              style={{ animationDelay: "200ms" }}
+            >
+              Take a 3-min quiz and find out how your brain is performing
+            </p>
 
-          <div
-            className="lite-rise mx-auto mt-8 max-w-[320px]"
-            style={{ animationDelay: "280ms" }}
-          >
-            <LiteButton onClick={start}>Get started for free</LiteButton>
-          </div>
+            <div
+              className="lite-rise mx-auto mt-8 max-w-[320px]"
+              style={{ animationDelay: "280ms" }}
+            >
+              <LiteButton onClick={start}>Get started for free</LiteButton>
+            </div>
 
-          <div className="lite-rise" style={{ animationDelay: "360ms" }}>
-            <HeroFeaturedIn logos={PRESS} />
-          </div>
-        </HeroVideo>
+            <div className="lite-rise" style={{ animationDelay: "360ms" }}>
+              <HeroFeaturedIn logos={PRESS} />
+            </div>
+          </HeroVideo>
 
-        <TrustBand />
-        <ProblemSection />
-        <StatsSection />
-        <ScienceBand />
-        <HowItWorks />
-        <WhatYouGet onStart={start} />
-        <SocialProof />
-        <AssessmentTeaser onStart={start} />
-        <LandingFooter />
+          <TrustBand />
+        </div>
       </LiteShell>
     </>
   );
