@@ -1,5 +1,5 @@
 import React from "react";
-import { computeScore } from "src/lib/brainHealthScoring";
+import { BAND_LABELS, BAND_TAG_VISUALS, computeScore } from "src/lib/brainHealthScoring";
 import { useQuestionnaireStore } from "src/stores/useQuestionnaireStore";
 import { readStashedQuizResult } from "src/utils/liteOne";
 import { RISK_RECOMMENDATIONS } from "src/data/liteOneContent";
@@ -55,12 +55,35 @@ export function RiskFactorDropdown() {
     formatRiskLevers(factors)
   );
 
+  const tag = BAND_TAG_VISUALS[score.band];
+  const tagLabel = `${BAND_LABELS[score.band]} risk`;
+
   return (
     <div className="rounded-2xl border border-quizOutline-variant bg-quizSurface-lowest p-5 shadow-card sm:p-6">
       <h2 className="font-display text-[24px] font-extrabold leading-tight text-charcoal">
         Your risk factors
       </h2>
-      <p className="mt-2 text-[13.5px] leading-relaxed text-quizSecondary">{recommendation}</p>
+
+      {/*
+       * Band tag + one-line context. The tag ink and plate follow the band's
+       * own colour so a green "Low risk" reads as positive, a red "High risk"
+       * as an alert. The trailing text stays outside the pill on mobile via
+       * flex-wrap rather than being nested inside it, so a long band label
+       * plus a long clarifier can never overflow their container.
+       */}
+      <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5">
+        <span
+          className="rounded-full px-3 py-1 text-[12.5px] font-extrabold uppercase tracking-wider"
+          style={{ color: tag.color, backgroundColor: tag.softBg }}
+        >
+          {tagLabel}
+        </span>
+        <span className="text-[12.5px] text-quizOutline">
+          from your modifiable brain-health factors
+        </span>
+      </div>
+
+      <p className="mt-3 text-[13.5px] leading-relaxed text-quizSecondary">{recommendation}</p>
 
       {/* A profile with nothing movable still gets its recommendation above. */}
       {count > 0 && (

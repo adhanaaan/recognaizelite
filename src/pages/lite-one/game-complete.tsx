@@ -9,8 +9,6 @@ import { readTask2Score } from "src/utils/liteOne";
 const ICONS = [
   { src: "/images/task-2/sun.png", alt: "", className: "absolute -left-2 top-[18%] size-16 lite-bob", delay: 0 },
   { src: "/images/task-2/flash.png", alt: "", className: "absolute -right-1 top-[14%] size-14 lite-rock", delay: 400 },
-  { src: "/images/task-2/setting.png", alt: "", className: "absolute -left-3 top-[52%] size-14 lite-bob", delay: 800 },
-  { src: "/images/task-2/moon.png", alt: "", className: "absolute -right-2 top-[56%] size-16 lite-rock", delay: 200 },
 ];
 
 export default function LiteOneGameComplete() {

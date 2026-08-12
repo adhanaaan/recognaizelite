@@ -96,34 +96,41 @@ export default function LiteOneEntry() {
          */}
         <div className="flex min-h-[100dvh] flex-col">
           <HeroVideo>
+            {/*
+             * Three groups, spread by HeroVideo's `justify-between`: the pill
+             * near the top under the lock-up, the headline stack in the middle,
+             * and the featured-in bar at the bottom above the cream fade.
+             */}
             <div className="lite-rise" style={{ animationDelay: "40ms" }}>
               <HeroPill>Clinically validated at NTU LKCMedicine</HeroPill>
             </div>
 
-            <h1
-              className="lite-rise mt-6 font-display text-[30px] leading-[1.16] text-white sm:text-[46px]"
-              style={{ animationDelay: "110ms" }}
-            >
-              <span className="font-medium">You tracked </span>
-              <span className="font-medium italic">everything</span>
-              <br />
-              <span className="font-extrabold">What about your </span>
-              <span className="font-extrabold italic">brain</span>
-              <span className="font-extrabold">?</span>
-            </h1>
+            <div className="flex flex-col items-center">
+              <h1
+                className="lite-rise font-display text-[30px] leading-[1.16] text-white sm:text-[46px]"
+                style={{ animationDelay: "110ms" }}
+              >
+                <span className="font-medium">You tracked </span>
+                <span className="font-medium italic">everything</span>
+                <br />
+                <span className="font-extrabold">What about your </span>
+                <span className="font-extrabold italic">brain</span>
+                <span className="font-extrabold">?</span>
+              </h1>
 
-            <p
-              className="lite-rise mx-auto mt-6 max-w-[420px] font-display text-[17px] font-bold leading-snug text-white/95 sm:text-[19px]"
-              style={{ animationDelay: "200ms" }}
-            >
-              Take a 3-min quiz and find out how your brain is performing
-            </p>
+              <p
+                className="lite-rise mt-6 max-w-[420px] font-display text-[17px] font-bold leading-snug text-white/95 sm:text-[19px]"
+                style={{ animationDelay: "200ms" }}
+              >
+                Take a 3-min quiz and find out how your brain is performing
+              </p>
 
-            <div
-              className="lite-rise mx-auto mt-8 max-w-[320px]"
-              style={{ animationDelay: "280ms" }}
-            >
-              <LiteButton onClick={start}>Get started for free</LiteButton>
+              <div
+                className="lite-rise mt-8 w-full max-w-[320px]"
+                style={{ animationDelay: "280ms" }}
+              >
+                <LiteButton onClick={start}>Get started for free</LiteButton>
+              </div>
             </div>
 
             <div className="lite-rise" style={{ animationDelay: "360ms" }}>

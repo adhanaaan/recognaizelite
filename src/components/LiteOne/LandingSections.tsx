@@ -96,7 +96,7 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <section className="relative isolate flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-[#241710] text-center">
+    <section className="relative isolate flex min-h-0 flex-1 flex-col overflow-hidden bg-[#241710] text-center">
       <video
         ref={videoRef}
         className="absolute inset-0 -z-10 size-full object-cover"
@@ -149,7 +149,18 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-b from-transparent to-quizSurface-container"
       />
-      <div className={`relative z-20 ${WRAP_NARROW} py-20`}>{children}</div>
+      {/*
+       * `flex-1 flex-col` lets `HeroContent` spread its three groups — the
+       * pill, the headline stack, the featured-in bar — across the whole hero.
+       * The `py` values clear the lock-up above (~52px) and the cream fade
+       * below (h-24 = 96px), so the top group sits just under the lock-up and
+       * the featured-in panel lands just above the fade instead of behind it.
+       */}
+      <div
+        className={`relative z-20 flex flex-1 flex-col justify-between ${WRAP_NARROW} pb-28 pt-24`}
+      >
+        {children}
+      </div>
     </section>
   );
 }
@@ -184,7 +195,7 @@ export function HeroFeaturedIn({ logos }: { logos: readonly PressLogo[] }) {
 
   return (
     <div
-      className={`mx-auto mt-5 w-full max-w-[720px] rounded-2xl px-2 pb-4 pt-4 shadow-[0_12px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.12)] ${GLASS}`}
+      className={`mx-auto w-full max-w-[720px] rounded-2xl px-2 pb-4 pt-4 shadow-[0_12px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.12)] ${GLASS}`}
     >
       <p className="flex items-center justify-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.22em] text-white/85">
         <span aria-hidden className="h-px w-[22px] bg-white/40" />

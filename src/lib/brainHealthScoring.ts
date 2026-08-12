@@ -206,6 +206,18 @@ export const BAND_LABELS: Record<BandName, string> = {
   high: "High",
 };
 
+/**
+ * Ink + soft plate per band, for the risk-level tag on the report. Shares its
+ * hex values with `BANDS[…].colour` so the tag never disagrees with anything
+ * else drawn from the same band.
+ */
+export const BAND_TAG_VISUALS: Record<BandName, { color: string; softBg: string }> = {
+  low: { color: "#6b9c31", softBg: "rgba(151,196,89,0.18)" },
+  moderate: { color: "#a76b18", softBg: "rgba(250,199,117,0.28)" },
+  elevated: { color: "#a35f12", softBg: "rgba(239,159,39,0.20)" },
+  high: { color: "#c14747", softBg: "rgba(240,149,149,0.22)" },
+};
+
 export const PERSONA_LABELS: Record<Persona, string> = {
   neutral: "General",
   highPerformer: "High performer",

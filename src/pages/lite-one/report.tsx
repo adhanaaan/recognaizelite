@@ -7,7 +7,7 @@ import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { SampleReportMock } from "src/components/LiteOne/SampleReportMock";
 import { RiskFactorDropdown } from "src/components/LiteOne/RiskFactorDropdown";
 import { Reveal } from "src/components/LiteOne/useInView";
-import { OFFER, RESEARCH_LINE } from "src/data/liteOneContent";
+import { LITE_DOMAIN_DEFINITIONS, OFFER, RESEARCH_LINE } from "src/data/liteOneContent";
 import { resetResults, useResultStore } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import type { DomainReport } from "src/types/report";
@@ -123,6 +123,11 @@ export default function LiteOneReport() {
     ? `You're in the top ${Math.max(1, 100 - percentile)}% for processing speed among ${peerGroup}.`
     : `You scored faster than ${percentile}% of ${peerGroup}.`;
 
+  // Overrides the shared server copy for a domain when this funnel has its own
+  // wording for it (currently just Processing Speed). Falls back cleanly, so a
+  // new domain the server adds later renders with whatever the server sent.
+  const definition = LITE_DOMAIN_DEFINITIONS[report.title] ?? report.definition;
+
   return shell(
     <>
       {/* 1 — the result they earned */}
@@ -172,16 +177,12 @@ export default function LiteOneReport() {
           <p className="text-[11px] font-bold uppercase tracking-wider text-quizOutline">
             What is {report.title.toLowerCase()}?
           </p>
-          <p className="mt-2 text-[13.5px] leading-relaxed text-quizSecondary">{report.definition}</p>
+          <p className="mt-2 text-[13.5px] leading-relaxed text-quizSecondary">{definition}</p>
         </div>
       </Reveal>
 
-      {/* 1b — brain health risk factor quiz results */}
-      <Reveal>
-        <RiskFactorDropdown />
-      </Reveal>
-
-      {/* 2 — room for improvement */}
+      {/* 2 — room for improvement (moved above the risk-factors block, so the
+          domain grid sits next to the game result that made it relevant) */}
       <Reveal className={sectionClass}>
         <h2 className="font-display text-[24px] font-extrabold leading-tight text-charcoal">
           There is room for improvement
@@ -204,6 +205,11 @@ export default function LiteOneReport() {
             See offer
           </span>
         </button>
+      </Reveal>
+
+      {/* 3 — brain health risk factor quiz results */}
+      <Reveal>
+        <RiskFactorDropdown />
       </Reveal>
 
       {/* 3 — unlock the full picture */}

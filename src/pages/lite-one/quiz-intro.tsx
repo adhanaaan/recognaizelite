@@ -76,37 +76,46 @@ export default function LiteOneQuizIntro() {
       </Head>
 
       <LiteShell>
-        <div className="relative flex flex-1 flex-col justify-center overflow-y-auto px-6 py-5">
-          <div className="mx-auto w-full max-w-[440px]">
+        {/*
+         * Five groups distributed by `justify-between` so the whole intro sits
+         * in one viewport: badge, top photo row, headline stack, bottom photo
+         * row, CTA. The middle stack takes the slack via `flex-1`, so a tall
+         * screen fills naturally and a short one compresses the gap instead of
+         * spilling below the fold.
+         */}
+        <div className="relative flex flex-1 flex-col px-6 pb-6 pt-4">
+          <div className="mx-auto flex w-full max-w-[440px] flex-1 flex-col">
             <div className="lite-rise" style={{ animationDelay: "40ms" }}>
               <SectionBadge label="2 | Brain Health Quiz" />
             </div>
 
-            <div className="mt-5">
+            <div className="mt-4">
               <PhotoRow items={TOP_ROW} baseDelay={140} />
             </div>
 
-            <h1
-              className="lite-rise mt-8 text-center font-display text-[27px] font-extrabold leading-[1.15] text-charcoal sm:text-[30px]"
-              style={{ animationDelay: "430ms" }}
-            >
-              Is your brain at its peak performance?
-            </h1>
+            <div className="flex flex-1 flex-col items-center justify-center py-4">
+              <h1
+                className="lite-rise text-center font-display text-[26px] font-extrabold leading-[1.15] text-charcoal sm:text-[30px]"
+                style={{ animationDelay: "430ms" }}
+              >
+                Is your brain at its peak performance?
+              </h1>
 
-            <p
-              className="lite-rise mx-auto mt-3.5 max-w-[330px] text-center text-[14px] leading-relaxed text-quizSecondary"
-              style={{ animationDelay: "500ms" }}
-            >
-              Take a medically-backed quiz built on 14 modifiable risk factors to see how
-              healthy your brain is.
-            </p>
+              <p
+                className="lite-rise mx-auto mt-3 max-w-[330px] text-center text-[14px] leading-relaxed text-quizSecondary"
+                style={{ animationDelay: "500ms" }}
+              >
+                Take a medically-backed quiz built on 14 modifiable risk factors to see how
+                healthy your brain is.
+              </p>
+            </div>
 
-            <div className="mt-8">
+            <div>
               <PhotoRow items={BOTTOM_ROW} baseDelay={560} />
             </div>
 
             <div
-              className="lite-rise mx-auto mt-9 max-w-[320px]"
+              className="lite-rise mx-auto mt-6 w-full max-w-[320px]"
               style={{ animationDelay: "840ms" }}
             >
               <LiteButton onClick={() => Router.push("/lite-one/quiz")}>Start quiz</LiteButton>

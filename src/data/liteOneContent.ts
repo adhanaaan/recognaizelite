@@ -7,6 +7,18 @@
 
 import type { BandName } from "src/types/quiz";
 
+/**
+ * /lite-one's own copy for a cognitive domain's "What is this?" definition,
+ * overriding what `src/server/data/report_data.json` returns from the API. The
+ * server copy is shared across every clinic, so overriding on the client keeps
+ * the rewrite scoped to this funnel instead of quietly restyling every other
+ * report page that renders the same data.
+ */
+export const LITE_DOMAIN_DEFINITIONS: Record<string, string> = {
+  "Processing Speed":
+    "It's how quickly your brain takes in information and responds, the engine behind quick thinking. It's also one of the first things to shift as the brain ages.",
+};
+
 export const LOCKED_DOMAINS = [
   {
     name: "Memory",
@@ -135,7 +147,7 @@ export const UPSELL = {
       a: "A digital brain health assessment developed at NTU's Dementia Research Centre and registered with Singapore's HSA.",
     },
     {
-      q: "How is the quiz different from ReCOGnAIze?",
+      q: "How is this 3-minute quiz different from ReCOGnAIze?",
       a: "This quiz is a free, educational estimate based on your modifiable risk factors. ReCOGnAIze is the full assessment, validated in peer-reviewed research, that shows how your brain is actually performing.",
     },
     {
