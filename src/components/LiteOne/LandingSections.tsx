@@ -29,8 +29,25 @@ const WRAP_NARROW = "mx-auto w-full max-w-[760px] px-6";
 const SECTION_Y = "py-14 sm:py-[72px]";
 const SECTION_B = "pb-14 sm:pb-[72px]";
 
-/** `src` carries its own extension — the credibility marks aren't all PNGs. */
-export type PressLogo = { src: string; alt: string; h: number };
+/**
+ * `src` carries its own extension — the credibility marks aren't all PNGs.
+ *
+ * `keepColour` exempts a mark from the white knockout. Line-art logos invert
+ * cleanly; a mark that is a filled shape flattens into a plain white blob, so
+ * it keeps its own colours instead of being dropped from the rail.
+ */
+export type PressLogo = { src: string; alt: string; h: number; keepColour?: true };
+
+/**
+ * One glass recipe for every panel that floats on the hero video, so the pill,
+ * the lock-up and the press rail all read as the same material. Kept close to
+ * b2cfunnel's `.hero .pill` / `.hero-marquee`: barely-there white over a real
+ * backdrop blur, rather than a near-opaque plate.
+ */
+const GLASS = "border border-white/25 bg-white/[0.12] backdrop-blur-[10px]";
+
+/** Knocks a dark-inked mark out to white so it reads on the glass. */
+const KNOCKOUT = "brightness-0 invert drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]";
 
 /* ------------------------------------------------------------------ hero -- */
 
@@ -113,21 +130,25 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
       />
 
       {/* Parkway Shenton + Gray Matter, floating on the video rather than in a
-          band of their own. Both marks are dark-inked and one is a filled
-          shape, so knocking them out to white turns them into blobs — they keep
-          their real colours and sit on a light frosted plate instead. */}
+          band of their own. Both marks are dark-inked, so they are knocked out
+          to white — a plate opaque enough to carry them in their own colours
+          would stop reading as glass. */}
       <div className="absolute inset-x-0 top-0 z-20 flex justify-center px-5 pt-5 sm:pt-6">
-        <div className="flex items-center gap-5 rounded-2xl border border-white/50 bg-white/80 px-5 py-2.5 shadow-[0_8px_28px_rgba(0,0,0,0.22)] backdrop-blur-md sm:gap-7">
+        <div
+          className={`flex items-center gap-5 rounded-2xl px-5 py-2.5 shadow-[0_8px_28px_rgba(0,0,0,0.22)] sm:gap-7 ${GLASS}`}
+        >
           <img
             src="/images/lite-one/logo-parkway-shenton.png"
             alt="Parkway Shenton"
-            className="h-[20px] w-auto sm:h-[22px]"
+            className={`h-[20px] w-auto sm:h-[22px] ${KNOCKOUT}`}
           />
-          <span aria-hidden className="h-7 w-px bg-charcoal/15" />
+          <span aria-hidden className="h-7 w-px bg-white/30" />
+          {/* The knockout variant: the shipped lock-up has an opaque near-white
+              plate behind the brain that flattens into a blob when inverted. */}
           <img
-            src="/images/lite-one/logo-gray-matter.png"
+            src="/images/lite-one/logo-gray-matter-knockout.png"
             alt="Gray Matter Solutions"
-            className="h-[27px] w-auto sm:h-[30px]"
+            className={`h-[27px] w-auto sm:h-[30px] ${KNOCKOUT}`}
           />
         </div>
       </div>
@@ -148,7 +169,9 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
  */
 export function HeroPill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-[12px] font-semibold text-white backdrop-blur-sm sm:text-[13px]">
+    <span
+      className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[12px] font-semibold text-white sm:text-[13px] ${GLASS}`}
+    >
       <img src="/images/lite-one/logo-gms-mark.png" alt="" aria-hidden className="h-[18px] w-auto" />
       {children}
     </span>
@@ -159,20 +182,22 @@ export function HeroPill({ children }: { children: React.ReactNode }) {
  * "As featured in" — b2cfunnel's `.hero-marquee` from full.html: a frosted
  * panel inside the hero rather than a separate band below it.
  *
- * b2cfunnel knocks these logos out to white. Ours can't take that treatment —
- * CNA's mark is a filled disc that flattens into a plain white circle — so the
- * plate is light and the logos keep their own colours.
+ * The marks are knocked out to white, as b2cfunnel does. Anything that can't
+ * take that treatment — a mark that is a filled shape rather than line work
+ * flattens into a plain white blob — belongs somewhere other than this rail.
  */
 export function HeroFeaturedIn({ logos }: { logos: readonly PressLogo[] }) {
   const half = [...logos, ...logos];
   const track = [...half, ...half];
 
   return (
-    <div className="mx-auto mt-5 w-full max-w-[720px] rounded-2xl border border-white/50 bg-white/80 px-2 pb-4 pt-4 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-md">
-      <p className="flex items-center justify-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.22em] text-quizSecondary">
-        <span aria-hidden className="h-px w-[22px] bg-charcoal/25" />
+    <div
+      className={`mx-auto mt-5 w-full max-w-[720px] rounded-2xl px-2 pb-4 pt-4 shadow-[0_12px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.12)] ${GLASS}`}
+    >
+      <p className="flex items-center justify-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.22em] text-white/85">
+        <span aria-hidden className="h-px w-[22px] bg-white/40" />
         As featured in
-        <span aria-hidden className="h-px w-[22px] bg-charcoal/25" />
+        <span aria-hidden className="h-px w-[22px] bg-white/40" />
       </p>
       <div
         className="lite-marquee-track relative mt-3.5 overflow-hidden"
@@ -189,7 +214,7 @@ export function HeroFeaturedIn({ logos }: { logos: readonly PressLogo[] }) {
               alt={i < logos.length ? logo.alt : ""}
               aria-hidden={i >= logos.length}
               style={{ height: logo.h }}
-              className="w-auto shrink-0 opacity-90"
+              className={`w-auto shrink-0 ${logo.keepColour ? "" : KNOCKOUT}`}
             />
           ))}
         </div>

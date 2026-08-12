@@ -33,12 +33,16 @@ import {
  * published research — the same mix b2cfunnel's full.html carries in this bar,
  * minus its own NTU lock-up, which is already on the hero and isn't somewhere
  * the test was featured. Widths differ a lot, so each height is tuned by eye.
+ *
+ * Lianhe Zaobao keeps its own colours: its mark is a filled disc, so the white
+ * knockout the others take would flatten it into a plain circle. It reads
+ * perfectly well in colour against the glass.
  */
 const PRESS: PressLogo[] = [
   { src: "press-cna.png", alt: "CNA", h: 26 },
   { src: "press-st.png", alt: "The Straits Times", h: 23 },
   { src: "press-alzheimers.png", alt: "Alzheimer's Association", h: 21 },
-  { src: "press-zaobao.png", alt: "Lianhe Zaobao", h: 24 },
+  { src: "press-zaobao.png", alt: "Lianhe Zaobao", h: 24, keepColour: true },
   { src: "logo-pubmed.svg", alt: "PubMed", h: 18 },
 ];
 
