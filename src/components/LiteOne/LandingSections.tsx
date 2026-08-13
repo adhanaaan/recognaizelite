@@ -123,23 +123,15 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-[rgba(10,6,3,0.62)] to-transparent"
       />
 
-      {/* Parkway Shenton + Gray Matter, floating on the video. Placed at their
-          designed colours on a white plate — the marks are dark-inked, so a
-          translucent glass plate would ghost them out. */}
+      {/* Gray Matter logo floating on the video on a white plate. */}
       <div className="absolute inset-x-0 top-0 z-20 flex justify-center px-5 pt-5 sm:pt-6">
         <div
-          className={`flex items-center gap-4 rounded-2xl px-5 py-2.5 sm:gap-6 ${PLATE}`}
+          className={`flex items-center rounded-2xl px-5 py-2.5 ${PLATE}`}
         >
-          <img
-            src="/images/lite-one/logo-parkway-shenton.svg"
-            alt="Parkway Shenton"
-            className="h-[22px] w-auto sm:h-[26px]"
-          />
-          <span aria-hidden className="h-7 w-px bg-charcoal/12" />
           <img
             src="/images/lite-one/logo-gray-matter.svg"
             alt="Gray Matter Solutions"
-            className="h-[26px] w-auto sm:h-[30px]"
+            className="h-[28px] w-auto sm:h-[32px]"
           />
         </div>
       </div>
