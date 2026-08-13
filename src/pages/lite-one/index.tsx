@@ -33,7 +33,7 @@ const PRESS: PressLogo[] = [
 ];
 
 /**
- * ReCOGnAIze Lite — entry.
+ * BrainScan Testing — entry.
  *
  * Sets hookClinic to "LiteOne" so the shared Symbol Matching components render
  * in the orange Clinical Empathy palette, and points the post-game hand-off at
@@ -63,7 +63,7 @@ export default function LiteOneEntry() {
   return (
     <>
       <Head>
-        <title>Brain Health Check | ReCOGnAIze Lite</title>
+        <title>Brain Health Check | BrainScan Testing</title>
         <meta
           name="description"
           content="You track your heart, your sleep, your blood sugar. This is the same idea for your brain: a 3-minute check and a score you can act on."

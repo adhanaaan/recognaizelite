@@ -64,7 +64,7 @@ const CLINIC_OPTIONS: { value: string; label: string }[] = [
   { value: "healthtechx", label: "HealthTechX" },
   { value: "tcmbrain", label: "TCM Brain" },
   { value: "novi", label: "Novi" },
-  { value: "liteone", label: "ReCOGnAIze Lite" },
+  { value: "liteone", label: "BrainScan Testing" },
 ];
 
 const ROLE_LABELS: Record<string, string> = {

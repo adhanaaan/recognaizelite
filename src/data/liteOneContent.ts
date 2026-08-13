@@ -133,7 +133,7 @@ export const UPSELL = {
   heading: "Take the complete brain health assessment",
   paperNote: "Validated in peer-reviewed research",
   paperUrl: "https://pubmed.ncbi.nlm.nih.gov/41685533/",
-  offerName: "ReCOGnAIze brain health assessment",
+  offerName: "BrainScan brain health assessment",
   offerNote:
     "Developed at NTU's Dementia Research Centre · Registered with Singapore's HSA",
   includes: [
@@ -143,16 +143,16 @@ export const UPSELL = {
   ],
   faqs: [
     {
-      q: "What is ReCOGnAIze?",
+      q: "What is BrainScan?",
       a: "A digital brain health assessment developed at NTU's Dementia Research Centre and registered with Singapore's HSA.",
     },
     {
-      q: "How is this 3-minute quiz different from ReCOGnAIze?",
-      a: "This quiz is a free, educational estimate based on your modifiable risk factors. ReCOGnAIze is the full assessment, validated in peer-reviewed research, that shows how your brain is actually performing.",
+      q: "How is this 3-minute quiz different from BrainScan?",
+      a: "This quiz is a free, educational estimate based on your modifiable risk factors. BrainScan is the full assessment, validated in peer-reviewed research, that shows how your brain is actually performing.",
     },
     {
       q: "Is this assessment legit?",
-      a: "Yes. ReCOGnAIze was developed and validated at NTU's Lee Kong Chian School of Medicine, Dementia Research Centre, and is registered with Singapore's HSA.",
+      a: "Yes. BrainScan was developed and validated at NTU's Lee Kong Chian School of Medicine, Dementia Research Centre, and is registered with Singapore's HSA.",
     },
     {
       q: "Who is it for?",
@@ -169,7 +169,7 @@ export const OFFER = {
   eyebrow: "Special offer",
   title: "World Alzheimer's Month",
   window: "1 – 30 September 2026",
-  productName: "ReCOGnAIze Cognitive Test",
+  productName: "BrainScan Cognitive Test",
   productSub: "4 cognitive domains",
   domains: ["Processing Speed", "Executive Function", "Memory", "Attention"],
   normalPrice: 65,

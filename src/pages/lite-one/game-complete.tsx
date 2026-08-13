@@ -18,7 +18,7 @@ export default function LiteOneGameComplete() {
   return (
     <>
       <Head>
-        <title>Game complete | ReCOGnAIze Lite</title>
+        <title>Game complete | BrainScan Testing</title>
       </Head>
 
       <LiteShell>

@@ -72,7 +72,7 @@ export default function LiteOneQuizIntro() {
   return (
     <>
       <Head>
-        <title>Brain Health Quiz | ReCOGnAIze Lite</title>
+        <title>Brain Health Quiz | BrainScan Testing</title>
       </Head>
 
       <LiteShell>

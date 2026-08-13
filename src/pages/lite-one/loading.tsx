@@ -92,7 +92,7 @@ export default function LiteOneLoading() {
   return (
     <>
       <Head>
-        <title>Building your profile | ReCOGnAIze Lite</title>
+        <title>Building your profile | BrainScan Testing</title>
       </Head>
 
       <LiteShell>

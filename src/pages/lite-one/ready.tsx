@@ -102,7 +102,7 @@ export default function LiteOneReady() {
   return (
     <>
       <Head>
-        <title>What happens next | ReCOGnAIze Lite</title>
+        <title>What happens next | BrainScan Testing</title>
       </Head>
 
       <LiteShell>

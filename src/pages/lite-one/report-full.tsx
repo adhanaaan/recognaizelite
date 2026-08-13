@@ -40,7 +40,7 @@ export default function LiteOneReportFull() {
   return (
     <>
       <Head>
-        <title>The full picture | ReCOGnAIze Lite</title>
+        <title>The full picture | BrainScan Testing</title>
       </Head>
 
       <LiteShell scroll className="px-5 pb-16 sm:px-8">

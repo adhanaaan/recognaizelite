@@ -1,5 +1,5 @@
 /**
- * Game-side tokens for the ReCOGnAIze Lite funnel (/lite-one).
+ * Game-side tokens for the BrainScan Testing funnel (/lite-one).
  *
  * The lite pages themselves use the Tailwind `quiz*` scale directly. The
  * Symbol Matching game components, though, set colours through inline

@@ -25,7 +25,7 @@ export default function LiteOneChallenge() {
   return (
     <>
       <Head>
-        <title>Reaction time challenge | ReCOGnAIze Lite</title>
+        <title>Reaction time challenge | BrainScan Testing</title>
       </Head>
 
       <LiteShell>
