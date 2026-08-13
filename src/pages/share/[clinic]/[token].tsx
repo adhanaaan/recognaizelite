@@ -81,9 +81,9 @@ const BRAND: Record<string, BrandTheme> = {
     pillText: "#2C4A3F",
   },
   liteone: {
-    name: "ReCOGnAIze Lite",
+    name: "BrainScan Testing",
     partnerLogoSrc: null,
-    partnerLogoAlt: "ReCOGnAIze Lite",
+    partnerLogoAlt: "BrainScan Testing",
     pageBg: "linear-gradient(180deg, #fff4ee 0%, #FFFFFF 100%)",
     cardBg: "#ffffff",
     cardBorder: "#d8c2b9",

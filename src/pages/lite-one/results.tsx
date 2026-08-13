@@ -150,7 +150,7 @@ export default function LiteOneResults() {
   return (
     <>
       <Head>
-        <title>Where should we send your results? | ReCOGnAIze Lite</title>
+        <title>Where should we send your results? | BrainScan Testing</title>
       </Head>
 
       <LiteShell scroll className="px-5 pb-12 sm:px-8">

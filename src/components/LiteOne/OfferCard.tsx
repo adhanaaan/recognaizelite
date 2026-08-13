@@ -53,7 +53,7 @@ function voucherSvg(code: string, issued: string) {
   <text x="250" y="556" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="25" font-weight="700" letter-spacing="2" fill="#b8480f">${code}</text>
 
   <text x="900" y="544" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="19" fill="#85736b">Issued ${issued}</text>
-  <text x="900" y="570" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="19" fill="#85736b">ReCOGnAIze by Gray Matter Solutions</text>
+  <text x="900" y="570" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="19" fill="#85736b">BrainScan by Gray Matter Solutions</text>
 </svg>`;
 }
 
@@ -102,12 +102,12 @@ export function OfferCard({ id }: { id?: string }) {
       });
 
       const url = URL.createObjectURL(png);
-      download(url, `recognaize-offer-${claim}.png`);
+      download(url, `brainscan-offer-${claim}.png`);
       setTimeout(() => URL.revokeObjectURL(url), 5000);
     } catch {
       // Canvas path blocked (older Safari, strict CSP) — the SVG is still a
       // perfectly showable file.
-      download(svgUrl, `recognaize-offer-${claim}.svg`);
+      download(svgUrl, `brainscan-offer-${claim}.svg`);
     } finally {
       setBusy(false);
     }
