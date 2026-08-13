@@ -2,11 +2,6 @@ const path = require("path");
 
 /** @type {import('next').NextConfig} */
 module.exports = {
-  async redirects() {
-    if (process.env.VERCEL_URL?.includes("brainscantesting"))
-      return [{ source: "/", destination: "/lite-one", permanent: false }];
-    return [];
-  },
   headers: async () => {
     if (process.env.NODE_ENV === "production")
       return [
