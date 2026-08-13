@@ -172,12 +172,12 @@ export const OFFER = {
   productName: "ReCOGnAIze Cognitive Test",
   productSub: "4 cognitive domains",
   domains: ["Processing Speed", "Executive Function", "Memory", "Attention"],
-  normalPrice: 29.0,
-  discount: 10.5,
+  normalPrice: 65,
+  discount: 45,
   get total() {
     return this.normalPrice - this.discount;
   },
   currency: "$",
   redeemNote: "Show this at the front desk to claim it.",
-  ribbon: "Claim 35% off the full cognitive test",
+  ribbon: "Claim 70% off the full cognitive test",
 } as const;
