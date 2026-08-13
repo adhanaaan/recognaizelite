@@ -88,7 +88,7 @@ export default function LiteOneReportFull() {
           <Reveal className={sectionClass}>
             <div className="flex items-center gap-3">
               <img
-                src="/images/lite-one/logo-gray-matter.png"
+                src="/images/lite-one/logo-gray-matter.svg"
                 alt=""
                 aria-hidden
                 className="h-11 w-auto shrink-0 object-contain"
