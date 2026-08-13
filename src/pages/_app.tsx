@@ -6,6 +6,7 @@ import Script from "next/script";
 import ErrorBoundary from "src/components/Layout/ErrorBoundary";
 import "src/lib/init";
 import { hydrateTranslationsFromStorage } from "src/lib/translations";
+import { useMazeTesting } from "src/utils/maze";
 
 // Styles
 import "src/styles/globals.css";
@@ -18,6 +19,8 @@ import "src/styles/nprogress.css";
 
 function App({ Component, pageProps }: AppProps) {
   const [, setLanguageVersion] = useState(0);
+
+  useMazeTesting();
 
   useEffect(() => {
     if (hydrateTranslationsFromStorage()) {
