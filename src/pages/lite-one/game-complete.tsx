@@ -69,7 +69,7 @@ export default function LiteOneGameComplete() {
               className="lite-rise mx-auto mt-8 max-w-[320px]"
               style={{ animationDelay: "420ms" }}
             >
-              <LiteButton onClick={() => Router.push("/lite-one/quiz-intro")}>
+              <LiteButton onClick={() => Router.push("/lite-one/quiz")}>
                 Continue
               </LiteButton>
             </div>
