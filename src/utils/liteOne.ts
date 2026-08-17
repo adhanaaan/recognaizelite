@@ -12,11 +12,51 @@ import type { ScoreResult } from "src/types/quiz";
  */
 
 export const LITE_CLINIC = "liteone";
+export const WORLDALZ_CLINIC = "liteworldalz";
 
-const REPORT_KEY = "recognaize-lite-report";
-const PROFILE_KEY = "recognaize-lite-profile";
-const ATTEMPT_KEY = "recognaize-lite-attempt";
-const QUIZ_RESULT_KEY = "recognaize-lite-quiz";
+/**
+ * One entry per funnel built on the lite flow. /lite-worldalzmonth is a copy of
+ * /lite-one aimed at an email audience: same game, same quiz, same report, its
+ * own routes and its own leads table so campaign numbers never blend into the
+ * /lite-one baseline.
+ *
+ * Everything that differs between the two lives here, so the pages stay pure
+ * copy and the util layer isn't forked.
+ */
+export type LiteVariant = {
+  /** `clinic` sent to /api/*, and the key that picks the Supabase table. */
+  clinic: string;
+  /** hookClinic value written to localStorage; drives shared game theming. */
+  hookClinic: string;
+  /** Route prefix, no trailing slash. */
+  basePath: string;
+  /** utm_campaign fallback when the inbound link carries none. */
+  defaultCampaign: string;
+  /** sessionStorage namespace, so the two funnels can't clobber each other. */
+  storagePrefix: string;
+};
+
+export const LITE_ONE: LiteVariant = {
+  clinic: LITE_CLINIC,
+  hookClinic: "LiteOne",
+  basePath: "/lite-one",
+  defaultCampaign: "lite-one",
+  // Unchanged from before the variant split — /lite-one's keys must stay put.
+  storagePrefix: "recognaize-lite",
+};
+
+export const LITE_WORLDALZ: LiteVariant = {
+  clinic: WORLDALZ_CLINIC,
+  hookClinic: "LiteWorldAlz",
+  basePath: "/lite-worldalzmonth",
+  defaultCampaign: "worldalzmonth",
+  storagePrefix: "recognaize-walz",
+};
+
+const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;
+const profileKey = (v: LiteVariant) => `${v.storagePrefix}-profile`;
+const attemptKey = (v: LiteVariant) => `${v.storagePrefix}-attempt`;
+const quizResultKey = (v: LiteVariant) => `${v.storagePrefix}-quiz`;
 
 export type LiteProfile = {
   name: string;
@@ -48,23 +88,28 @@ function writeJson(key: string, value: unknown) {
   }
 }
 
-export const readStashedReport = () => readJson<DomainReport>(REPORT_KEY);
-export const stashReport = (report: DomainReport) => writeJson(REPORT_KEY, report);
+export const readStashedReport = (v: LiteVariant = LITE_ONE) =>
+  readJson<DomainReport>(reportKey(v));
+export const stashReport = (report: DomainReport, v: LiteVariant = LITE_ONE) =>
+  writeJson(reportKey(v), report);
 
-export const readLiteProfile = () => readJson<LiteProfile>(PROFILE_KEY);
-export const stashLiteProfile = (profile: LiteProfile) => writeJson(PROFILE_KEY, profile);
+export const readLiteProfile = (v: LiteVariant = LITE_ONE) => readJson<LiteProfile>(profileKey(v));
+export const stashLiteProfile = (profile: LiteProfile, v: LiteVariant = LITE_ONE) =>
+  writeJson(profileKey(v), profile);
 
-export const readStashedQuizResult = () => readJson<ScoreResult>(QUIZ_RESULT_KEY);
-export const stashQuizResult = (result: ScoreResult) => writeJson(QUIZ_RESULT_KEY, result);
+export const readStashedQuizResult = (v: LiteVariant = LITE_ONE) =>
+  readJson<ScoreResult>(quizResultKey(v));
+export const stashQuizResult = (result: ScoreResult, v: LiteVariant = LITE_ONE) =>
+  writeJson(quizResultKey(v), result);
 
-export function clearLiteSession() {
+export function clearLiteSession(v: LiteVariant = LITE_ONE) {
   if (typeof window === "undefined") return;
-  sessionStorage.removeItem(REPORT_KEY);
-  sessionStorage.removeItem(PROFILE_KEY);
-  sessionStorage.removeItem(QUIZ_RESULT_KEY);
+  sessionStorage.removeItem(reportKey(v));
+  sessionStorage.removeItem(profileKey(v));
+  sessionStorage.removeItem(quizResultKey(v));
   // Cleared on retake, so the next run opens a fresh attempt rather than
   // overwriting the previous one's row.
-  sessionStorage.removeItem(ATTEMPT_KEY);
+  sessionStorage.removeItem(attemptKey(v));
 }
 
 /**
@@ -93,15 +138,15 @@ function randomUuidV4(): string {
  * opening a second attempt, and so a retake (which clears the session) gets a
  * new one.
  */
-export function readOrCreateAttemptId(): string {
+export function readOrCreateAttemptId(v: LiteVariant = LITE_ONE): string {
   if (typeof window === "undefined") return "";
-  const existing = sessionStorage.getItem(ATTEMPT_KEY);
+  const existing = sessionStorage.getItem(attemptKey(v));
   if (existing) return existing;
 
   const id = randomUuidV4();
 
   try {
-    sessionStorage.setItem(ATTEMPT_KEY, id);
+    sessionStorage.setItem(attemptKey(v), id);
   } catch {
     // Private mode: the id still works for this page's two calls.
   }
@@ -112,18 +157,21 @@ export function readOrCreateAttemptId(): string {
  * Records that the game was finished, before any contact details exist.
  * Best-effort — a failure here must never block the visitor from submitting.
  */
-export async function recordLiteAttempt(payload: {
-  attemptId: string;
-  score: number | null;
-  percentile: number | null;
-  severity: string | null;
-}) {
-  const { utm, referrer } = readAttribution();
+export async function recordLiteAttempt(
+  payload: {
+    attemptId: string;
+    score: number | null;
+    percentile: number | null;
+    severity: string | null;
+  },
+  v: LiteVariant = LITE_ONE
+) {
+  const { utm, referrer } = readAttribution(v);
   try {
     await fetch("/api/lite-attempt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...payload, utm, referrer }),
+      body: JSON.stringify({ ...payload, clinic: v.clinic, utm, referrer }),
     });
   } catch {
     // Offline or blocked. save-lead falls back to an insert if this row is
@@ -137,11 +185,14 @@ export function readTask2Score(result: any): number | null {
   return typeof raw === "number" ? raw : null;
 }
 
-export async function fetchLiteReport(result: unknown): Promise<DomainReport> {
+export async function fetchLiteReport(
+  result: unknown,
+  v: LiteVariant = LITE_ONE
+): Promise<DomainReport> {
   const res = await fetch("/api/generate-report", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ result, clinic: LITE_CLINIC }),
+    body: JSON.stringify({ result, clinic: v.clinic }),
   });
   if (!res.ok) {
     const payload = await res.json().catch(() => null);
@@ -153,7 +204,7 @@ export async function fetchLiteReport(result: unknown): Promise<DomainReport> {
 }
 
 /** UTM + referrer attribution, shared by the lead payload. */
-export function readAttribution() {
+export function readAttribution(v: LiteVariant = LITE_ONE) {
   const params = new URLSearchParams(
     typeof window !== "undefined" ? window.location.search : ""
   );
@@ -161,7 +212,7 @@ export function readAttribution() {
     utm: {
       source: params.get("utm_source"),
       medium: params.get("utm_medium"),
-      campaign: params.get("utm_campaign") ?? "lite-one",
+      campaign: params.get("utm_campaign") ?? v.defaultCampaign,
     },
     referrer: typeof document !== "undefined" ? document.referrer || null : null,
   };

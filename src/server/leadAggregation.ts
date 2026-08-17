@@ -8,7 +8,7 @@ import { getSupabaseAdmin, LeadRow } from "src/utils/supabase";
  * this from client code — it relies on the Supabase service-role key.
  */
 
-export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi", "liteone"] as const;
+export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi", "liteone", "liteworldalz"] as const;
 export type KnownClinic = (typeof KNOWN_CLINICS)[number];
 
 export interface LeadStats {
@@ -188,17 +188,21 @@ function normalizeTcmbrainRow(row: any): LeadRow {
 }
 
 /**
- * ReCOGnAIze Lite. The table has no `clinic` column — it holds one funnel — and
- * unlike every sibling table a row can exist with no email at all: /api/lite-attempt
- * writes one the moment the game ends, and `completed_at` is filled in later if the
- * visitor actually submits the form.
+ * ReCOGnAIze Lite and its campaign copies (liteone_leads, liteworldalz_leads).
+ * These tables have no `clinic` column — each holds exactly one funnel, so the
+ * caller supplies the label — and unlike every sibling table a row can exist
+ * with no email at all: /api/lite-attempt writes one the moment the game ends,
+ * and `completed_at` is filled in later if the visitor submits the form.
+ *
+ * The two tables share a column layout on purpose (see migration 012), so one
+ * normalizer serves both.
  */
-function normalizeLiteoneRow(row: any): LeadRow {
+function normalizeLiteRow(row: any, clinic: string): LeadRow {
   return {
     id: row.id,
     email: row.email ?? null,
     email_lower: row.email_lower ?? null,
-    clinic: "liteone",
+    clinic,
     age_range: row.age_range ?? null,
     gender: row.gender ?? null,
     whatsapp: row.whatsapp ?? null,
@@ -240,6 +244,7 @@ export interface ClinicLeadsResult {
  * - "tcmbrain" → public.tcmbrain_leads
  * - "novi" → public.leads WHERE clinic = 'novi'
  * - "liteone" → public.liteone_leads (own table; rows may have no email yet)
+ * - "liteworldalz" → public.liteworldalz_leads (same shape as liteone_leads)
  * - unknown clinic → empty result (caller decides 404 vs. permissive empty)
  */
 export async function fetchClinicLeads(clinic: string): Promise<ClinicLeadsResult> {
@@ -268,7 +273,11 @@ export async function fetchClinicLeads(clinic: string): Promise<ClinicLeadsResul
       // that it has its own table it has to be named here or it drops out of "All".
       supabase.from("liteone_leads").select("*").then(({ data, error }) => {
         if (error) throw error;
-        return (data ?? []).map(normalizeLiteoneRow);
+        return (data ?? []).map((row) => normalizeLiteRow(row, "liteone"));
+      }),
+      supabase.from("liteworldalz_leads").select("*").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map((row) => normalizeLiteRow(row, "liteworldalz"));
       }),
     );
   } else if (clinic === "sjmc") {
@@ -314,7 +323,14 @@ export async function fetchClinicLeads(clinic: string): Promise<ClinicLeadsResul
     sources.push(
       supabase.from("liteone_leads").select("*").then(({ data, error }) => {
         if (error) throw error;
-        return (data ?? []).map(normalizeLiteoneRow);
+        return (data ?? []).map((row) => normalizeLiteRow(row, "liteone"));
+      }),
+    );
+  } else if (clinic === "liteworldalz") {
+    sources.push(
+      supabase.from("liteworldalz_leads").select("*").then(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map((row) => normalizeLiteRow(row, "liteworldalz"));
       }),
     );
   } else {

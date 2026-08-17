@@ -2,9 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getSupabaseAdmin } from "src/utils/supabase";
 
 /**
- * Records a finished /lite-one game before any contact details exist.
+ * Records a finished lite-funnel game before any contact details exist.
  *
- * The visitor lands on /lite-one/results the moment the 60-second clock runs
+ * The visitor lands on the results form the moment the 60-second clock runs
  * out, so a row here means "played the game and saw the form". `completed_at`
  * is filled in later by save-lead when they actually submit. The gap between
  * the two is the funnel's drop-off.
@@ -13,6 +13,13 @@ import { getSupabaseAdmin } from "src/utils/supabase";
  */
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Each lite funnel owns a table. Callers that predate /lite-worldalzmonth send
+// no `clinic` at all, so an absent value has to keep meaning /lite-one.
+const LITE_TABLES: Record<string, string> = {
+  liteone: "liteone_leads",
+  liteworldalz: "liteworldalz_leads",
+};
 
 function str(value: unknown): string | null {
   if (typeof value !== "string") return null;
@@ -45,6 +52,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const body = (req.body ?? {}) as Record<string, unknown>;
 
+  const clinicRaw = str(body.clinic) ?? "liteone";
+  const table = LITE_TABLES[clinicRaw];
+  if (!table) {
+    return res.status(400).json({ error: "Unsupported clinic" });
+  }
+
   // attempt_id is the update key save-lead will target later, and it lands in
   // a uuid column — reject anything that isn't one rather than letting Postgres
   // throw a type error.
@@ -74,7 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Lead storage is not configured" });
   }
 
-  const { error } = await supabase.from("liteone_leads").insert({
+  const { error } = await supabase.from(table).insert({
     attempt_id: attemptId,
     email: null,
     score: num(body.score),
@@ -95,7 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (error.code === "23505") {
       return res.status(200).json({ success: true, duplicate: true });
     }
-    console.error("Supabase insert (liteone_leads attempt) failed:", error);
+    console.error(`Supabase insert (${table} attempt) failed:`, error);
     return res.status(500).json({ error: "Failed to record attempt", detail: error.message });
   }
 

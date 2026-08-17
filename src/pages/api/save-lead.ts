@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { deliverLiteResultEmail, emailEnabledForClinic } from "src/server/liteLeadEmail";
 import { AGE_RANGES, GENDERS, getSupabaseAdmin } from "src/utils/supabase";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,7 +17,17 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 //                                           that only `leads` still carries. Rows are
 //                                           created by /api/lite-attempt at game end and
 //                                           updated here when contact details arrive.)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone"]);
+//   liteworldalz→ public.liteworldalz_leads(World Alzheimer's Month email campaign; a copy
+//                                           of the liteone funnel with an identical row
+//                                           shape, kept apart so campaign traffic never
+//                                           blends into the /lite-one baseline.)
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone", "liteworldalz"]);
+
+// Lite funnels share one code path; only the destination table differs.
+const LITE_TABLES: Record<string, string> = {
+  liteone: "liteone_leads",
+  liteworldalz: "liteworldalz_leads",
+};
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;
@@ -272,7 +283,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: "Invalid health goal" });
   }
 
-  if (clinic === "liteone") {
+  if (LITE_TABLES[clinic]) {
+    const liteTable = LITE_TABLES[clinic];
     // The row usually already exists: /api/lite-attempt wrote it when the game
     // finished. Attaching contact details to that row is what turns an attempt
     // into a lead, and it keeps the game's own `created_at` rather than
@@ -327,9 +339,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       completed_at: new Date().toISOString(),
     };
 
+    /**
+     * Mails the visitor their result and adds them to the campaign Audience.
+     *
+     * Called only on a path that already wrote the row — the lead is the
+     * deliverable, the email is the follow-up. It is awaited rather than
+     * fired-and-forgotten because a serverless function may be frozen the
+     * moment the response is sent; deliverLiteResultEmail bounds its own
+     * network calls so the visitor never waits long on it, and it swallows its
+     * own failures so nothing here can turn a saved lead into a 500.
+     */
+    const deliverResultEmail = async (rowAttemptId: string) => {
+      if (!emailRaw || !emailEnabledForClinic(clinic)) return;
+      try {
+        await deliverLiteResultEmail({
+          supabase,
+          table: liteTable,
+          attemptId: rowAttemptId,
+          email: emailRaw,
+          name: nameVal,
+          percentile,
+          severity,
+          brainHealthScore,
+          band,
+          campaign: utm_campaign,
+        });
+      } catch (err) {
+        console.error("Resend delivery threw unexpectedly:", err);
+      }
+    };
+
     if (attemptId && UUID_RE.test(attemptId)) {
       let { data, error } = await supabase
-        .from("liteone_leads")
+        .from(liteTable)
         .update(contactRow)
         .eq("attempt_id", attemptId)
         .select("id");
@@ -337,40 +379,47 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (error && error.message?.includes("schema cache")) {
         const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, ...legacyRow } = contactRow;
         void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
-        const retry = await supabase.from("liteone_leads").update(legacyRow).eq("attempt_id", attemptId).select("id");
+        const retry = await supabase.from(liteTable).update(legacyRow).eq("attempt_id", attemptId).select("id");
         data = retry.data;
         error = retry.error;
       }
 
       if (error) {
-        console.error("Supabase update (liteone_leads) failed:", error);
+        console.error(`Supabase update (${liteTable}) failed:`, error);
         return res.status(500).json({ error: "Failed to save lead", detail: error.message });
       }
       if (data && data.length > 0) {
+        await deliverResultEmail(attemptId);
         return res.status(200).json({ success: true });
       }
     }
 
+    // The update either didn't apply or there was no usable attempt id, so the
+    // lead becomes its own row. Resolved once, because the email step needs the
+    // same key the row was written under.
+    const resolvedAttemptId = attemptId && UUID_RE.test(attemptId) ? attemptId : randomUUID();
+
     const fullRow = {
       ...sharedRow,
       ...contactRow,
-      attempt_id: attemptId && UUID_RE.test(attemptId) ? attemptId : randomUUID(),
+      attempt_id: resolvedAttemptId,
     };
 
-    let { error } = await supabase.from("liteone_leads").insert(fullRow);
+    let { error } = await supabase.from(liteTable).insert(fullRow);
 
     if (error && error.message?.includes("schema cache")) {
       const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, ...legacyRow } = fullRow;
       void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
-      const retry = await supabase.from("liteone_leads").insert(legacyRow);
+      const retry = await supabase.from(liteTable).insert(legacyRow);
       error = retry.error;
     }
 
     if (error) {
-      console.error("Supabase insert (liteone_leads) failed:", error);
+      console.error(`Supabase insert (${liteTable}) failed:`, error);
       return res.status(500).json({ error: "Failed to save lead", detail: error.message });
     }
 
+    await deliverResultEmail(resolvedAttemptId);
     return res.status(200).json({ success: true });
   }
 
