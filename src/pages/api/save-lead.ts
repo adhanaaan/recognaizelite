@@ -354,6 +354,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         await deliverLiteResultEmail({
           supabase,
+          clinic,
           table: liteTable,
           attemptId: rowAttemptId,
           email: emailRaw,

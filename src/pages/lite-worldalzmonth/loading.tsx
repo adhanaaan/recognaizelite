@@ -93,7 +93,7 @@ export default function WorldAlzLoading() {
   return (
     <>
       <Head>
-        <title>Building your profile | BrainScan Testing</title>
+        <title>Building your profile | Recog-Lite</title>
       </Head>
 
       <LiteShell>

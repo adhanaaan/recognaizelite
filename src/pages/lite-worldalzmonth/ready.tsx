@@ -108,7 +108,7 @@ export default function WorldAlzReady() {
   return (
     <>
       <Head>
-        <title>What happens next | BrainScan Testing</title>
+        <title>What happens next | Recog-Lite</title>
       </Head>
 
       <LiteShell>

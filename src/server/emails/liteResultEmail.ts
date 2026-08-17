@@ -19,6 +19,13 @@ type SpeedKey = "low" | "moderate" | "high";
 type BandKey = "low" | "moderate" | "elevated" | "high";
 
 export type LiteResultEmailInput = {
+  /**
+   * The funnel's public name, e.g. "Recog-Lite". Passed in rather than fixed
+   * here: the two lite funnels are not branded alike, and a shared constant
+   * would silently mail one of them under the other's name the day a second
+   * one is enabled in EMAIL_CLINICS.
+   */
+  brand: string;
   name: string | null;
   percentile: number | null;
   /**
@@ -31,7 +38,6 @@ export type LiteResultEmailInput = {
   band: BandKey | string | null;
 };
 
-const BRAND = "BrainScan Testing";
 const ORANGE = "#f77528";
 const INK = "#2d2d2d";
 const MUTED = "#7d5747";
@@ -120,6 +126,7 @@ function speedCopy(percentile: number | null, severity: string | null) {
 export type RenderedEmail = { subject: string; html: string; text: string };
 
 export function renderLiteResultEmail(input: LiteResultEmailInput): RenderedEmail {
+  const BRAND = input.brand;
   const first = firstName(input.name);
   const greeting = first ? `Hi ${first},` : "Hi,";
   const subject = first ? `${first}, your brain speed result` : "Your brain speed result";

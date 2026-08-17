@@ -29,7 +29,7 @@ export default function WorldAlzChallenge() {
   return (
     <>
       <Head>
-        <title>Reaction time challenge | BrainScan Testing</title>
+        <title>Reaction time challenge | Recog-Lite</title>
       </Head>
 
       <LiteShell>
