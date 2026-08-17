@@ -89,12 +89,20 @@ export function isNoviMode(): boolean {
 }
 
 /**
- * ReCOGnAIze Lite (/lite-one). Runs the same Symbol Matching game as every
- * other funnel but re-skinned in the orange "Clinical Empathy" palette that
- * /demo uses, so the whole flow reads as one surface.
+ * ReCOGnAIze Lite (/lite-one) and its campaign copies (/lite-worldalzmonth).
+ * They run the same Symbol Matching game as every other funnel but re-skinned
+ * in the orange "Clinical Empathy" palette that /demo uses, so the whole flow
+ * reads as one surface.
+ *
+ * Every lite funnel shares this palette, so they all answer true here — the
+ * per-funnel split (routes, leads table, campaign) is carried by
+ * hookReportPath and LiteVariant in src/utils/liteOne.ts, not by theming.
  */
+const LITE_HOOK_CLINICS = new Set(["LiteOne", "LiteWorldAlz"]);
+
 export function isLiteOneMode(): boolean {
-  return getHookClinic() === "LiteOne";
+  const clinic = getHookClinic();
+  return clinic !== null && LITE_HOOK_CLINICS.has(clinic);
 }
 
 /** Returns true for any clinic that uses dark-themed game UI */

@@ -16,7 +16,17 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 //                                           that only `leads` still carries. Rows are
 //                                           created by /api/lite-attempt at game end and
 //                                           updated here when contact details arrive.)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone"]);
+//   liteworldalz→ public.liteworldalz_leads(World Alzheimer's Month email campaign; a copy
+//                                           of the liteone funnel with an identical row
+//                                           shape, kept apart so campaign traffic never
+//                                           blends into the /lite-one baseline.)
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone", "liteworldalz"]);
+
+// Lite funnels share one code path; only the destination table differs.
+const LITE_TABLES: Record<string, string> = {
+  liteone: "liteone_leads",
+  liteworldalz: "liteworldalz_leads",
+};
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;
@@ -272,7 +282,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: "Invalid health goal" });
   }
 
-  if (clinic === "liteone") {
+  if (LITE_TABLES[clinic]) {
+    const liteTable = LITE_TABLES[clinic];
     // The row usually already exists: /api/lite-attempt wrote it when the game
     // finished. Attaching contact details to that row is what turns an attempt
     // into a lead, and it keeps the game's own `created_at` rather than
@@ -329,7 +340,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (attemptId && UUID_RE.test(attemptId)) {
       let { data, error } = await supabase
-        .from("liteone_leads")
+        .from(liteTable)
         .update(contactRow)
         .eq("attempt_id", attemptId)
         .select("id");
@@ -337,13 +348,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (error && error.message?.includes("schema cache")) {
         const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, ...legacyRow } = contactRow;
         void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
-        const retry = await supabase.from("liteone_leads").update(legacyRow).eq("attempt_id", attemptId).select("id");
+        const retry = await supabase.from(liteTable).update(legacyRow).eq("attempt_id", attemptId).select("id");
         data = retry.data;
         error = retry.error;
       }
 
       if (error) {
-        console.error("Supabase update (liteone_leads) failed:", error);
+        console.error(`Supabase update (${liteTable}) failed:`, error);
         return res.status(500).json({ error: "Failed to save lead", detail: error.message });
       }
       if (data && data.length > 0) {
@@ -357,17 +368,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       attempt_id: attemptId && UUID_RE.test(attemptId) ? attemptId : randomUUID(),
     };
 
-    let { error } = await supabase.from("liteone_leads").insert(fullRow);
+    let { error } = await supabase.from(liteTable).insert(fullRow);
 
     if (error && error.message?.includes("schema cache")) {
       const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, ...legacyRow } = fullRow;
       void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
-      const retry = await supabase.from("liteone_leads").insert(legacyRow);
+      const retry = await supabase.from(liteTable).insert(legacyRow);
       error = retry.error;
     }
 
     if (error) {
-      console.error("Supabase insert (liteone_leads) failed:", error);
+      console.error(`Supabase insert (${liteTable}) failed:`, error);
       return res.status(500).json({ error: "Failed to save lead", detail: error.message });
     }
 

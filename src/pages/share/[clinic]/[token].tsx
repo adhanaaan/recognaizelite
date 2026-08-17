@@ -94,6 +94,22 @@ const BRAND: Record<string, BrandTheme> = {
     pillBg: "rgba(247,117,40,0.12)",
     pillText: "#b8480f",
   },
+  // Same palette as liteone — it is the same product, shown to a campaign
+  // audience. Only the name distinguishes the two on a partner's screen.
+  liteworldalz: {
+    name: "BrainScan Testing · World Alzheimer's Month",
+    partnerLogoSrc: null,
+    partnerLogoAlt: "BrainScan Testing",
+    pageBg: "linear-gradient(180deg, #fff4ee 0%, #FFFFFF 100%)",
+    cardBg: "#ffffff",
+    cardBorder: "#d8c2b9",
+    textPrimary: "#2d2d2d",
+    textMuted: "#7d5747",
+    accent: "#f77528",
+    accentDark: "#b8480f",
+    pillBg: "rgba(247,117,40,0.12)",
+    pillText: "#b8480f",
+  },
   novi: {
     name: "NOVI Health",
     partnerLogoSrc: null,
