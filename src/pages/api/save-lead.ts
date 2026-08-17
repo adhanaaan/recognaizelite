@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { deliverLiteResultEmail, emailEnabledForClinic } from "src/server/liteLeadEmail";
 import { AGE_RANGES, GENDERS, getSupabaseAdmin } from "src/utils/supabase";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -338,6 +339,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       completed_at: new Date().toISOString(),
     };
 
+    /**
+     * Mails the visitor their result and adds them to the campaign Audience.
+     *
+     * Called only on a path that already wrote the row — the lead is the
+     * deliverable, the email is the follow-up. It is awaited rather than
+     * fired-and-forgotten because a serverless function may be frozen the
+     * moment the response is sent; deliverLiteResultEmail bounds its own
+     * network calls so the visitor never waits long on it, and it swallows its
+     * own failures so nothing here can turn a saved lead into a 500.
+     */
+    const deliverResultEmail = async (rowAttemptId: string) => {
+      if (!emailRaw || !emailEnabledForClinic(clinic)) return;
+      try {
+        await deliverLiteResultEmail({
+          supabase,
+          table: liteTable,
+          attemptId: rowAttemptId,
+          email: emailRaw,
+          name: nameVal,
+          percentile,
+          severity,
+          brainHealthScore,
+          band,
+          campaign: utm_campaign,
+        });
+      } catch (err) {
+        console.error("Resend delivery threw unexpectedly:", err);
+      }
+    };
+
     if (attemptId && UUID_RE.test(attemptId)) {
       let { data, error } = await supabase
         .from(liteTable)
@@ -358,14 +389,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(500).json({ error: "Failed to save lead", detail: error.message });
       }
       if (data && data.length > 0) {
+        await deliverResultEmail(attemptId);
         return res.status(200).json({ success: true });
       }
     }
 
+    // The update either didn't apply or there was no usable attempt id, so the
+    // lead becomes its own row. Resolved once, because the email step needs the
+    // same key the row was written under.
+    const resolvedAttemptId = attemptId && UUID_RE.test(attemptId) ? attemptId : randomUUID();
+
     const fullRow = {
       ...sharedRow,
       ...contactRow,
-      attempt_id: attemptId && UUID_RE.test(attemptId) ? attemptId : randomUUID(),
+      attempt_id: resolvedAttemptId,
     };
 
     let { error } = await supabase.from(liteTable).insert(fullRow);
@@ -382,6 +419,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: "Failed to save lead", detail: error.message });
     }
 
+    await deliverResultEmail(resolvedAttemptId);
     return res.status(200).json({ success: true });
   }
 
