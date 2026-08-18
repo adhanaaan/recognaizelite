@@ -220,7 +220,7 @@ export function DomainRadar({
 
   return (
     <div ref={ref} className="mx-auto w-full max-w-[330px]">
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Cognitive profile radar with one of five domains measured">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Baseline radar: two of five parts measured, three still empty">
         <defs>
           <radialGradient id="rl-radar" cx="50%" cy="50%">
             <stop offset="0%" stopColor="#FFB55C" stopOpacity="0.75" />

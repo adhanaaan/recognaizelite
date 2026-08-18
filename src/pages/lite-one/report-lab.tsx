@@ -2,6 +2,8 @@ import Head from "next/head";
 import Router from "next/router";
 import React from "react";
 import { SampleReportMock } from "src/components/LiteOne/SampleReportMock";
+import { BAND_LABELS, computeScore } from "src/lib/brainHealthScoring";
+import { useQuestionnaireStore } from "src/stores/useQuestionnaireStore";
 import {
   Band,
   BaselineSteps,
@@ -14,8 +16,14 @@ import {
   ShareIcon,
   ShieldIcon,
 } from "src/components/LiteOne/ReportLab/visuals";
+import type { ScoreResult } from "src/types/quiz";
 import type { DomainReport } from "src/types/report";
-import { AGE_LABELS, readLiteProfile, readStashedReport } from "src/utils/liteOne";
+import {
+  AGE_LABELS,
+  readLiteProfile,
+  readStashedQuizResult,
+  readStashedReport,
+} from "src/utils/liteOne";
 
 /**
  * Report redesign, parked outside the funnel.
@@ -27,8 +35,12 @@ import { AGE_LABELS, readLiteProfile, readStashedReport } from "src/utils/liteOn
  * for reassurance about decline, so the page is ordered accordingly:
  *
  *   rank -> what the rank means in a normal day -> one thing to try
- *   -> what else we saw -> how much is still unmeasured -> why a baseline
+ *   -> the risk-factor result -> how much is still unmeasured -> why a baseline
  *   -> the full test -> the quiet exit
+ *
+ * The baseline is five pieces: processing speed, risk factors, and the three
+ * locked domains (memory, attention, executive function). The 60-second funnel
+ * measures the first two, so the radar fills two axes and leaves three hollow.
  *
  * With no finished game on the device it renders a sample result so the layout
  * can be reviewed and tested on its own.
@@ -55,7 +67,29 @@ const DAY_TO_DAY = [
 /** Stand-in band for preview mode, so the curve header never reads "All ages". */
 const SAMPLE_AGE = "26-35";
 
-const RADAR_AXES = ["Speed", "Memory", "Attention", "Executive", "Accuracy"];
+/** Short labels so the side axes never clip inside the radar frame. */
+const RADAR_AXES = ["Speed", "Memory", "Attention", "Executive", "Risk"];
+
+/** Preview-mode stand-in for the quiz result. */
+const SAMPLE_RISK = {
+  band: "Moderate",
+  fill: 0.58,
+  factors: ["Sleep", "Physical activity", "Stress"],
+};
+
+/** Why each flagged factor matters to the number they just scored. */
+const FACTOR_NOTES: Record<string, string> = {
+  sleep: "The biggest same-day swing in reaction time",
+  "physical activity": "Raises blood flow to the areas timing this task",
+  stress: "Steals attention before it reaches your reaction",
+  diet: "Feeds the same vascular system your speed runs on",
+  smoking: "Narrows the vessels supplying oxygen to the brain",
+  alcohol: "Disrupts the deep sleep that restores speed",
+  "blood pressure": "Strains the small vessels behind processing speed",
+  hearing: "Extra effort spent decoding sound leaves less for the task",
+  "social contact": "Conversation is the everyday workout for fast thinking",
+  mood: "Low mood slows decisions before the body reacts",
+};
 
 const TRUST = [
   { icon: ShieldIcon, label: "Clinically validated tasks" },
@@ -67,6 +101,7 @@ export default function ReportLab() {
   const [report, setReport] = React.useState<DomainReport>(SAMPLE);
   const [ageRange, setAgeRange] = React.useState<string | null>(SAMPLE_AGE);
   const [isSample, setIsSample] = React.useState(true);
+  const [quiz, setQuiz] = React.useState<ScoreResult | null>(null);
   const [shared, setShared] = React.useState(false);
 
   React.useEffect(() => {
@@ -81,6 +116,13 @@ export default function ReportLab() {
     } else if (stashed) {
       setAgeRange(null);
     }
+
+    // Same source the live report reads: live answers if the quiz is still in
+    // memory, otherwise whatever this device stashed.
+    const answers = useQuestionnaireStore.getState().answers;
+    const scored =
+      Object.keys(answers).length > 0 ? computeScore(answers) : readStashedQuizResult();
+    if (scored) setQuiz(scored);
   }, []);
 
   const percentile = Math.round(report.percentile);
@@ -88,6 +130,16 @@ export default function ReportLab() {
   const topBand = Math.max(1, 100 - percentile);
   const strong = report.severity === "High";
   const domain = report.title.toLowerCase();
+
+  // Risk sits on the radar inverted: a clean profile fills the axis, a loaded
+  // one pulls it in. Floored so a high-risk profile still reads as measured.
+  const riskBand = quiz ? BAND_LABELS[quiz.band] : SAMPLE_RISK.band;
+  const riskFill = quiz
+    ? Math.min(1, Math.max(0.22, 1 - quiz.total / Math.max(1, quiz.maxTotal)))
+    : SAMPLE_RISK.fill;
+  const riskFactors = quiz
+    ? quiz.drivingFactors.map((factor) => factor.label)
+    : SAMPLE_RISK.factors;
 
   const share = async () => {
     const text = `I reacted faster than ${percentile}% of ${peers} on a 60-second cognitive test.`;
@@ -260,32 +312,41 @@ export default function ReportLab() {
           </div>
         </Band>
 
-        {/* 4 — the other thing the test measured */}
+        {/* 4 — the second thing measured: the risk-factor result */}
         <Band className="pt-16 sm:pt-20">
-          <div className="rounded-[28px] border border-[#DCE7F2] bg-gradient-to-br from-[#F3F8FD] to-[#E8F1FA] p-6 sm:p-7">
-            <Eyebrow>While we had you</Eyebrow>
-            <h2 className="mt-3 font-display text-[clamp(24px,6.6vw,31px)] font-extrabold leading-[1.1] tracking-[-0.02em] text-[#13232F]">
+          <div className="rounded-[28px] border border-[#DCE7F2] bg-gradient-to-br from-[#F3F8FD] to-[#E7F0FA] p-6 sm:p-7">
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
+              <Eyebrow>Also measured</Eyebrow>
+              <span className="rounded-full bg-[#13232F] px-2.5 py-1 text-[10.5px] font-extrabold uppercase tracking-[0.12em] text-white">
+                {riskBand} risk
+              </span>
+            </div>
+            <h2 className="mt-3.5 font-display text-[clamp(24px,6.6vw,31px)] font-extrabold leading-[1.1] tracking-[-0.02em] text-[#13232F]">
               Speed was not the only thing we looked at.
             </h2>
             <p className="mt-3.5 text-[15px] leading-[1.6] text-[#41586B]">
-              Your quiz answers flagged habits that pull reaction time down before age does. Sleep
-              and cardio move the number in weeks. Both are yours to change.
+              Your quiz answers put your risk profile in the {riskBand.toLowerCase()} band. These
+              are the factors pulling reaction time down before age gets a say, and they move in
+              weeks rather than years.
             </p>
-            <div className="mt-5 space-y-2.5">
-              {[
-                { label: "Sleep", note: "The single biggest same-day swing in speed" },
-                { label: "Cardio", note: "Raises blood flow to the areas timing this task" },
-                { label: "Stress load", note: "Steals attention before it reaches your reaction" },
-              ].map(({ label, note }) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-3 rounded-xl border border-white bg-white/80 px-4 py-3"
-                >
-                  <span className="text-[13px] font-extrabold text-[#13232F]">{label}</span>
-                  <span className="text-[12.5px] leading-snug text-[#5A7180]">{note}</span>
-                </div>
-              ))}
-            </div>
+
+            {riskFactors.length > 0 && (
+              <div className="mt-5 space-y-2.5">
+                {riskFactors.slice(0, 4).map((label) => (
+                  <div
+                    key={label}
+                    className="flex items-start gap-3 rounded-xl border border-white bg-white/80 px-4 py-3"
+                  >
+                    <span className="shrink-0 text-[13px] font-extrabold text-[#13232F]">
+                      {label}
+                    </span>
+                    <span className="text-[12.5px] leading-snug text-[#5A7180]">
+                      {FACTOR_NOTES[label.toLowerCase()] ?? "One of the levers you can still move"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </Band>
 
@@ -293,26 +354,33 @@ export default function ReportLab() {
         <Band className="pt-16 sm:pt-20">
           <Eyebrow>Your baseline so far</Eyebrow>
           <h2 className="mt-3 font-display text-[clamp(27px,7.4vw,36px)] font-extrabold leading-[1.08] tracking-[-0.025em]">
-            One of five domains, measured.
+            Two of five, measured.
           </h2>
           <p className="mt-4 text-[15.5px] leading-[1.6] text-[#6B5245]">
-            Sixty seconds bought you the speed axis. The four still hollow are where most people
-            find their gap, and a strong score on one says nothing about the rest.
+            Sixty seconds bought you the speed axis, and the quiz filled in your risk profile. The
+            three still hollow are where most people find their gap, and a strong score on one axis
+            says nothing about the rest.
           </p>
 
           <div className="mt-8 rounded-[26px] border border-[#F2DDCE] bg-white p-5 pb-6 shadow-[0_18px_46px_-30px_rgba(90,40,10,0.26)] sm:p-7">
             <div className="flex items-center justify-between">
               <p className="text-[12px] font-extrabold uppercase tracking-[0.16em] text-[#B4653C]">
-                Cognitive profile
+                Your baseline
               </p>
-              <p className="text-[12px] font-bold text-[#B79C8E]">1 of 5 done</p>
+              <p className="text-[12px] font-bold text-[#B79C8E]">2 of 5 done</p>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#F6E4D8]">
-              <div className="h-full w-1/5 rounded-full" style={{ background: RANK_GRADIENT }} />
+              <div className="h-full w-2/5 rounded-full" style={{ background: RANK_GRADIENT }} />
             </div>
 
             <div className="mt-6">
-              <DomainRadar axes={RADAR_AXES} filled={{ Speed: Math.max(0.25, percentile / 100) }} />
+              <DomainRadar
+                axes={RADAR_AXES}
+                filled={{
+                  Speed: Math.max(0.25, percentile / 100),
+                  Risk: riskFill,
+                }}
+              />
             </div>
           </div>
         </Band>
@@ -354,11 +422,11 @@ export default function ReportLab() {
         <Band className="pt-16 sm:pt-20">
           <Eyebrow>The full picture</Eyebrow>
           <h2 className="mt-3 font-display text-[clamp(27px,7.4vw,36px)] font-extrabold leading-[1.08] tracking-[-0.025em]">
-            Ready to challenge the other four?
+            Ready to challenge the other three?
           </h2>
           <p className="mt-4 text-[15.5px] leading-[1.6] text-[#6B5245]">
-            The full assessment adds memory, attention, executive function and accuracy, then plots
-            all five against your age group in one report.
+            The full assessment measures memory, attention and executive function, then plots every
+            axis against your age group in one report.
           </p>
 
           <div className="mt-9">
@@ -386,8 +454,8 @@ export default function ReportLab() {
             </h3>
             <p className="mt-3 text-[14.5px] leading-[1.6] text-[#6B5245]">
               Your score is already in your inbox, along with a short set of strategies for pushing
-              it up. Nothing else is coming. When you want the other four numbers, you know where we
-              are.
+              it up. Nothing else is coming. When you want the other three numbers, you know where
+              we are.
             </p>
             <button
               type="button"
