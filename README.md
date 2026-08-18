@@ -60,10 +60,34 @@ Notes:
 - The result email carries the numbers **inline**. The report page reads from
   `sessionStorage`, so a link opened on another device — the normal case for
   email — would show the empty state rather than their result.
-- Only `liteworldalz` sends, signed as **Recog-Lite**. `/lite-one` is
-  deliberately excluded so its existing audience isn't mailed as a side effect;
-  see `EMAIL_CLINICS` in `src/server/liteLeadEmail.ts`, which carries each
-  funnel's brand next to its key.
+- Only `liteworldalz` sends, signed as **Recog-Lite**. `/lite-one` and
+  `/lite-clinician` are deliberately excluded — the first so its existing
+  audience isn't mailed as a side effect, the second until the clinician-facing
+  email is written. See `EMAIL_CLINICS` in `src/server/liteLeadEmail.ts`, which
+  carries each funnel's brand next to its key.
+
+## Lite funnels
+
+`/lite-one` and its copies share one game, quiz, report and set of components,
+and differ only in routes, leads table, brand and campaign. Two registries hold
+that difference:
+
+- `LITE_VARIANTS` (`src/utils/liteOne.ts`) — client side: routes, storage
+  namespace, default campaign, `hookClinic`.
+- `LITE_TABLES` (`src/server/liteFunnels.ts`) — server side: clinic → Supabase
+  table. `/api/lite-attempt`, `/api/save-lead` and `leadAggregation` all resolve
+  through it.
+
+| Funnel | Clinic | Table | Migration |
+| --- | --- | --- | --- |
+| `/lite-one` | `liteone` | `liteone_leads` | 010, 011 |
+| `/lite-worldalzmonth` | `liteworldalz` | `liteworldalz_leads` | 012, 013 |
+| `/lite-clinician` | `liteclinician` | `liteclinician_leads` | 014 |
+
+Adding one means: a migration, an entry in each registry, the `hookClinic` value
+in `LITE_HOOK_CLINICS` (`src/utils/assessment.ts`), the clinic allowlists in
+`/api/save-lead` + `/api/generate-report` + `LONG_SHORT_CLINICS`, `KNOWN_CLINICS`,
+the admin filter, the partner share theme, and the nine pages.
 - Coverage query — leads that were captured but never mailed:
   `select count(*) from liteworldalz_leads where completed_at is not null and email_sent_at is null;`
 

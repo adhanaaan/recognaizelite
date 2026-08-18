@@ -1,3 +1,5 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { LITE_TABLES, liteTableFor } from "src/server/liteFunnels";
 import { getSupabaseAdmin, LeadRow } from "src/utils/supabase";
 
 /**
@@ -8,7 +10,7 @@ import { getSupabaseAdmin, LeadRow } from "src/utils/supabase";
  * this from client code — it relies on the Supabase service-role key.
  */
 
-export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi", "liteone", "liteworldalz"] as const;
+export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi", "liteone", "liteworldalz", "liteclinician"] as const;
 export type KnownClinic = (typeof KNOWN_CLINICS)[number];
 
 export interface LeadStats {
@@ -188,14 +190,14 @@ function normalizeTcmbrainRow(row: any): LeadRow {
 }
 
 /**
- * ReCOGnAIze Lite and its campaign copies (liteone_leads, liteworldalz_leads).
+ * ReCOGnAIze Lite and its copies — every table in the LITE_TABLES registry.
  * These tables have no `clinic` column — each holds exactly one funnel, so the
  * caller supplies the label — and unlike every sibling table a row can exist
  * with no email at all: /api/lite-attempt writes one the moment the game ends,
  * and `completed_at` is filled in later if the visitor submits the form.
  *
- * The two tables share a column layout on purpose (see migration 012), so one
- * normalizer serves both.
+ * They share a column layout on purpose (migrations 010/012/014), so one
+ * normalizer serves all of them.
  */
 function normalizeLiteRow(row: any, clinic: string): LeadRow {
   return {
@@ -233,6 +235,28 @@ export interface ClinicLeadsResult {
   stats: LeadStats;
 }
 
+/** One lite funnel's table, normalized under its own clinic label. */
+function liteSource(
+  supabase: SupabaseClient,
+  clinic: string,
+  table: string
+): PromiseLike<LeadRow[]> {
+  return supabase
+    .from(table)
+    .select("*")
+    .then(({ data, error }) => {
+      if (error) throw error;
+      return (data ?? []).map((row) => normalizeLiteRow(row, clinic));
+    });
+}
+
+/** Every lite funnel's table, for the unfiltered "All" view. */
+function liteSources(supabase: SupabaseClient): PromiseLike<LeadRow[]>[] {
+  return Object.entries(LITE_TABLES).map(([clinic, table]) =>
+    liteSource(supabase, clinic, table)
+  );
+}
+
 /**
  * Fetch leads + stats for a given clinic filter.
  *
@@ -243,8 +267,8 @@ export interface ClinicLeadsResult {
  * - "healthtechx" → public.demo_leads
  * - "tcmbrain" → public.tcmbrain_leads
  * - "novi" → public.leads WHERE clinic = 'novi'
- * - "liteone" → public.liteone_leads (own table; rows may have no email yet)
- * - "liteworldalz" → public.liteworldalz_leads (same shape as liteone_leads)
+ * - any lite funnel ("liteone", "liteworldalz", "liteclinician") → its own
+ *   table from the LITE_TABLES registry; rows may have no email yet
  * - unknown clinic → empty result (caller decides 404 vs. permissive empty)
  */
 export async function fetchClinicLeads(clinic: string): Promise<ClinicLeadsResult> {
@@ -270,15 +294,10 @@ export async function fetchClinicLeads(clinic: string): Promise<ClinicLeadsResul
         return (data ?? []).map(normalizeTcmbrainRow);
       }),
       // liteone used to ride along in the unfiltered `leads` select above. Now
-      // that it has its own table it has to be named here or it drops out of "All".
-      supabase.from("liteone_leads").select("*").then(({ data, error }) => {
-        if (error) throw error;
-        return (data ?? []).map((row) => normalizeLiteRow(row, "liteone"));
-      }),
-      supabase.from("liteworldalz_leads").select("*").then(({ data, error }) => {
-        if (error) throw error;
-        return (data ?? []).map((row) => normalizeLiteRow(row, "liteworldalz"));
-      }),
+      // that the lite funnels have their own tables they have to be named here
+      // or they drop out of "All" — driven off the registry so a new funnel
+      // appears in the union the moment it is added there.
+      ...liteSources(supabase),
     );
   } else if (clinic === "sjmc") {
     sources.push(
@@ -319,20 +338,8 @@ export async function fetchClinicLeads(clinic: string): Promise<ClinicLeadsResul
         return (data ?? []).map(normalizeLegacyLeadsRow);
       }),
     );
-  } else if (clinic === "liteone") {
-    sources.push(
-      supabase.from("liteone_leads").select("*").then(({ data, error }) => {
-        if (error) throw error;
-        return (data ?? []).map((row) => normalizeLiteRow(row, "liteone"));
-      }),
-    );
-  } else if (clinic === "liteworldalz") {
-    sources.push(
-      supabase.from("liteworldalz_leads").select("*").then(({ data, error }) => {
-        if (error) throw error;
-        return (data ?? []).map((row) => normalizeLiteRow(row, "liteworldalz"));
-      }),
-    );
+  } else if (liteTableFor(clinic)) {
+    sources.push(liteSource(supabase, clinic, liteTableFor(clinic)!));
   } else {
     return { leads: [], stats: computeStats([]) };
   }

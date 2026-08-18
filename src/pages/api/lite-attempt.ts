@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { liteTableFor } from "src/server/liteFunnels";
 import { getSupabaseAdmin } from "src/utils/supabase";
 
 /**
@@ -13,13 +14,6 @@ import { getSupabaseAdmin } from "src/utils/supabase";
  */
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-// Each lite funnel owns a table. Callers that predate /lite-worldalzmonth send
-// no `clinic` at all, so an absent value has to keep meaning /lite-one.
-const LITE_TABLES: Record<string, string> = {
-  liteone: "liteone_leads",
-  liteworldalz: "liteworldalz_leads",
-};
 
 function str(value: unknown): string | null {
   if (typeof value !== "string") return null;
@@ -52,8 +46,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const body = (req.body ?? {}) as Record<string, unknown>;
 
-  const clinicRaw = str(body.clinic) ?? "liteone";
-  const table = LITE_TABLES[clinicRaw];
+  // Callers that predate the multi-funnel split send no `clinic` at all, so an
+  // absent value has to keep meaning /lite-one.
+  const table = liteTableFor(str(body.clinic) ?? "liteone");
   if (!table) {
     return res.status(400).json({ error: "Unsupported clinic" });
   }
