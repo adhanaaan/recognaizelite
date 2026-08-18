@@ -24,7 +24,7 @@ export default function WorldAlzGameComplete() {
   return (
     <>
       <Head>
-        <title>Game complete | BrainScan Testing</title>
+        <title>Game complete | Recog-Lite</title>
       </Head>
 
       <LiteShell>

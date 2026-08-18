@@ -51,7 +51,7 @@ Setup:
    | Variable | Required | Notes |
    | --- | --- | --- |
    | `RESEND_API_KEY` | yes | `re_...` from Resend → API Keys. Sending permission is enough. |
-   | `RESEND_FROM` | yes | e.g. `BrainScan Testing <results@yourdomain.com>`. Domain must be verified. |
+   | `RESEND_FROM` | yes | e.g. `Recog-Lite <results@yourdomain.com>`. Domain must be verified. |
    | `RESEND_AUDIENCE_ID` | no | Without it, emails still send; contacts aren't synced. |
    | `RESEND_REPLY_TO` | no | Where replies and bounces land. |
 
@@ -60,9 +60,10 @@ Notes:
 - The result email carries the numbers **inline**. The report page reads from
   `sessionStorage`, so a link opened on another device — the normal case for
   email — would show the empty state rather than their result.
-- Only `liteworldalz` sends. `/lite-one` is deliberately excluded so its
-  existing audience isn't mailed as a side effect; see `EMAIL_ENABLED_CLINICS`
-  in `src/server/liteLeadEmail.ts`.
+- Only `liteworldalz` sends, signed as **Recog-Lite**. `/lite-one` is
+  deliberately excluded so its existing audience isn't mailed as a side effect;
+  see `EMAIL_CLINICS` in `src/server/liteLeadEmail.ts`, which carries each
+  funnel's brand next to its key.
 - Coverage query — leads that were captured but never mailed:
   `select count(*) from liteworldalz_leads where completed_at is not null and email_sent_at is null;`
 

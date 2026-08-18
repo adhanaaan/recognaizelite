@@ -21,13 +21,19 @@ import {
   readTask2Score,
 } from "src/utils/liteOne";
 
-/** Page two carries the offer, the proof and the commerce pitch. */
-const UPSELL_PATH = `${LITE_WORLDALZ.basePath}/report-full`;
-
-function goToUpsell() {
-  Router.push(UPSELL_PATH);
-}
-
+/**
+ * This funnel does not drive to the voucher page.
+ *
+ * /lite-one sends both of this page's CTAs to /report-full, which ends in a
+ * downloadable claim code. For the World Alzheimer's Month run that page is
+ * test-only, and the assessment is set up in person anyway — so both CTAs are
+ * informational panels here, pointing at a member of staff instead.
+ *
+ * `${LITE_WORLDALZ.basePath}/report-full` still exists and still renders; it is
+ * simply unreachable from this page, so it can be opened directly to test.
+ * Nothing below navigates, which is why these are divs rather than disabled
+ * buttons — a button that visibly does nothing when tapped reads as broken.
+ */
 const sectionClass =
   "rounded-2xl border border-quizOutline-variant bg-quizSurface-lowest p-5 shadow-card sm:p-6";
 
@@ -72,7 +78,7 @@ export default function WorldAlzReport() {
   const shell = (children: React.ReactNode) => (
     <>
       <Head>
-        <title>Your brain speed result | BrainScan Testing</title>
+        <title>Your brain speed result | Recog-Lite</title>
       </Head>
       <LiteShell scroll className="px-5 pb-16 sm:px-8">
         <div className="relative mx-auto w-full max-w-[520px] space-y-5 pt-6">{children}</div>
@@ -197,16 +203,13 @@ export default function WorldAlzReport() {
           <DomainGrid severity={severity} />
         </div>
 
-        <button
-          type="button"
-          onClick={goToUpsell}
-          className="mt-4 flex w-full items-center justify-between gap-3 rounded-xl bg-quizPrimary px-4 py-3 text-left transition-all hover:brightness-105 active:scale-[0.99]"
-        >
-          <span className="text-[13.5px] font-bold leading-snug text-white">{OFFER.ribbon}</span>
-          <span className="shrink-0 rounded-full bg-white/20 px-3 py-1 text-[12px] font-bold text-white">
-            See offer
-          </span>
-        </button>
+        {/* The offer still stands — it is claimed at the desk, not on screen. */}
+        <div className="mt-4 rounded-xl bg-quizPrimary px-4 py-3">
+          <p className="text-[13.5px] font-bold leading-snug text-white">{OFFER.ribbon}</p>
+          <p className="mt-1 text-[12.5px] leading-snug text-white/85">
+            Ask a member of our team to claim it.
+          </p>
+        </div>
       </Reveal>
 
       {/* 3 — brain health risk factor quiz results */}
@@ -231,8 +234,14 @@ export default function WorldAlzReport() {
           {RESEARCH_LINE}
         </p>
 
-        <div className="mt-5">
-          <LiteButton onClick={goToUpsell}>Unlock Now →</LiteButton>
+        <div className="mt-5 rounded-xl border border-quizPrimary/40 bg-quizSurface-low p-4 text-center">
+          <p className="font-display text-[16px] font-extrabold text-charcoal">
+            Ask our team to unlock it
+          </p>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-quizSecondary">
+            Show this screen to a member of our team and they&apos;ll set up the full
+            assessment for you.
+          </p>
         </div>
       </Reveal>
 

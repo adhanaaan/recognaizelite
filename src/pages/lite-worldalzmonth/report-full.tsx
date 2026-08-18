@@ -41,7 +41,7 @@ export default function WorldAlzReportFull() {
   return (
     <>
       <Head>
-        <title>The full picture | BrainScan Testing</title>
+        <title>The full picture | Recog-Lite</title>
       </Head>
 
       <LiteShell scroll className="px-5 pb-16 sm:px-8">

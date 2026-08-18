@@ -70,7 +70,7 @@ export default function WorldAlzEntry() {
   return (
     <>
       <Head>
-        <title>Brain Health Check | BrainScan Testing</title>
+        <title>Brain Health Check | Recog-Lite</title>
         <meta
           name="description"
           content="You track your heart, your sleep, your blood sugar. This is the same idea for your brain: a 3-minute check and a score you can act on."

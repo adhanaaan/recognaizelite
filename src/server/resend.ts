@@ -21,7 +21,7 @@ const REQUEST_TIMEOUT_MS = 4000;
 
 export type ResendConfig = {
   apiKey: string;
-  /** e.g. "BrainScan Testing <results@yourdomain.com>". Domain must be verified. */
+  /** e.g. "Recog-Lite <results@yourdomain.com>". Domain must be verified. */
   from: string;
   /** Optional: without it, contacts are not synced and sends still work. */
   audienceId: string | null;

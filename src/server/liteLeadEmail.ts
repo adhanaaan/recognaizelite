@@ -16,19 +16,27 @@ import { renderLiteResultEmail } from "src/server/emails/liteResultEmail";
 import { addContactToAudience, getResendConfig, sendEmail } from "src/server/resend";
 
 /**
- * Clinics whose leads get the result email. Deliberately just the campaign
- * funnel: /lite-one has been running without it, and silently starting to mail
- * its existing audience is not a change to make as a side effect of this one.
- * Adding "liteone" here is all it would take.
+ * Clinics whose leads get the result email, and the name each one signs it
+ * with. Deliberately just the campaign funnel: /lite-one has been running
+ * without it, and silently starting to mail its existing audience is not a
+ * change to make as a side effect of this one.
+ *
+ * Adding a funnel here is all it takes to enable it — and because the brand
+ * lives beside the key rather than in a shared constant, doing so forces a
+ * decision about what that funnel's mail is signed with.
  */
-const EMAIL_ENABLED_CLINICS = new Set(["liteworldalz"]);
+const EMAIL_CLINICS: Record<string, { brand: string }> = {
+  liteworldalz: { brand: "Recog-Lite" },
+};
 
 export function emailEnabledForClinic(clinic: string): boolean {
-  return EMAIL_ENABLED_CLINICS.has(clinic);
+  return clinic in EMAIL_CLINICS;
 }
 
 export type LiteLeadEmailParams = {
   supabase: SupabaseClient;
+  /** Funnel key, used to resolve the brand the mail is signed with. */
+  clinic: string;
   /** Table the lead row lives in, e.g. "liteworldalz_leads". */
   table: string;
   /** Row key. The same attempt id the lead was written under. */
@@ -58,6 +66,9 @@ export async function deliverLiteResultEmail(params: LiteLeadEmailParams): Promi
   const config = getResendConfig();
   if (!config) return; // Integration not configured — nothing to do.
 
+  const funnel = EMAIL_CLINICS[params.clinic];
+  if (!funnel) return; // Not a sending funnel; the caller normally screens this.
+
   const { supabase, table, attemptId, email } = params;
 
   // Idempotency guard. `email_sent_at` is the only thing preventing a resubmit
@@ -83,6 +94,7 @@ export async function deliverLiteResultEmail(params: LiteLeadEmailParams): Promi
   if (existing.email_sent_at) return; // Already mailed this attempt.
 
   const { subject, html, text } = renderLiteResultEmail({
+    brand: funnel.brand,
     name: params.name,
     percentile: params.percentile,
     severity: params.severity,
@@ -97,7 +109,7 @@ export async function deliverLiteResultEmail(params: LiteLeadEmailParams): Promi
     html,
     text,
     tags: [
-      { name: "funnel", value: "liteworldalz" },
+      { name: "funnel", value: safeTagValue(params.clinic) ?? "lite" },
       ...(campaignTag ? [{ name: "campaign", value: campaignTag }] : []),
     ],
   });

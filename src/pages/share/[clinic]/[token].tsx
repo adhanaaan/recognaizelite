@@ -97,9 +97,9 @@ const BRAND: Record<string, BrandTheme> = {
   // Same palette as liteone — it is the same product, shown to a campaign
   // audience. Only the name distinguishes the two on a partner's screen.
   liteworldalz: {
-    name: "BrainScan Testing · World Alzheimer's Month",
+    name: "Recog-Lite · World Alzheimer's Month",
     partnerLogoSrc: null,
-    partnerLogoAlt: "BrainScan Testing",
+    partnerLogoAlt: "Recog-Lite",
     pageBg: "linear-gradient(180deg, #fff4ee 0%, #FFFFFF 100%)",
     cardBg: "#ffffff",
     cardBorder: "#d8c2b9",

@@ -152,7 +152,7 @@ export default function WorldAlzResults() {
   return (
     <>
       <Head>
-        <title>Where should we send your results? | BrainScan Testing</title>
+        <title>Where should we send your results? | Recog-Lite</title>
       </Head>
 
       <LiteShell scroll className="px-5 pb-12 sm:px-8">
