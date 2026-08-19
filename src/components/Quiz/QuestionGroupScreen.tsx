@@ -5,6 +5,9 @@ import { OptionSlider } from "./OptionSlider";
 
 interface QuestionGroupScreenProps {
   title: string;
+  /** Optional clarifying line under the title — e.g. disambiguating "your
+      own health" from a question block that immediately preceded it. */
+  description?: string;
   questions: Question[];
   answers: Answers;
   canGoBack: boolean;
@@ -23,6 +26,7 @@ interface QuestionGroupScreenProps {
  */
 export function QuestionGroupScreen({
   title,
+  description,
   questions,
   answers,
   canGoBack,
@@ -49,6 +53,11 @@ export function QuestionGroupScreen({
       <h1 className="font-display text-[24px] sm:text-[28px] font-bold leading-snug text-charcoal">
         {title}
       </h1>
+      {description && (
+        <p className="mt-2 text-[13.5px] leading-snug text-quizSecondary font-jakarta">
+          {description}
+        </p>
+      )}
 
       <div className="mt-6 divide-y divide-quizOutline-variant">
         {questions.map((q) => {

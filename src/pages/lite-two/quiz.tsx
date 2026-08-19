@@ -18,8 +18,31 @@ import { LITE_TWO, stashQuizResult } from "src/utils/liteOne";
 
 type StepDef =
   | { kind: "question"; questionId: string }
-  | { kind: "questionGroup"; title: string; questionIds: string[] }
+  | { kind: "questionGroup"; title: string; description?: string; questionIds: string[] }
   | { kind: "statCard"; cardId: string };
+
+/**
+ * Per-funnel wording tweaks on top of the shared question bank
+ * (src/data/brainHealthQuestions.ts), scoped to /lite-two only — testers on
+ * this funnel flagged two prompts as ambiguous, and the fix is worded
+ * specifically for this audience rather than pushed into the bank every
+ * other lite funnel shares.
+ */
+const QUESTION_OVERRIDES: Partial<Record<string, Partial<Question>>> = {
+  hotFlushes: {
+    prompt: "Have you noticed hot flushes, night sweats, or changes to your menstrual cycle?",
+  },
+  someoneElseNoticed: {
+    prompt:
+      "Have family or friends mentioned noticing changes in your behaviour or habits, even if you haven't?",
+  },
+};
+
+function questionFor(id: string): Question | undefined {
+  const base = QUESTIONS_BY_ID[id];
+  const override = QUESTION_OVERRIDES[id];
+  return base && override ? { ...base, ...override } : base;
+}
 
 /**
  * The question path of b2cfunnel's `FULL_FLOW` (`src/config/funnelFlow.ts`),
@@ -36,6 +59,9 @@ const ALL_STEPS: StepDef[] = [
   {
     kind: "questionGroup",
     title: "Some risk factors",
+    // The previous question was about family history — this one is not, and
+    // testers assumed it still was without this line.
+    description: "These are about your own health, not your family's.",
     questionIds: ["highBp", "highCholesterol", "diabetes", "hearingLoss", "visionLoss"],
   },
 
@@ -78,8 +104,8 @@ function visibleQuestionsForGroup(
   answers: Answers
 ): Question[] {
   return questionIds
-    .map((id) => QUESTIONS_BY_ID[id])
-    .filter((q): q is Question => Boolean(q) && questionVisible(q, answers));
+    .map((id) => questionFor(id))
+    .filter((q): q is Question => q != null && questionVisible(q, answers));
 }
 
 /**
@@ -95,8 +121,8 @@ function visibleQuestionsForGroup(
 function visibleSteps(answers: Answers): StepDef[] {
   return ALL_STEPS.filter((step) => {
     if (step.kind !== "question") return true;
-    const question = QUESTIONS_BY_ID[step.questionId];
-    return Boolean(question) && questionVisible(question, answers);
+    const question = questionFor(step.questionId);
+    return question != null && questionVisible(question, answers);
   });
 }
 
@@ -196,7 +222,7 @@ export default function LiteTwoQuizPage() {
             {step.kind === "question" && (
               <QuestionStep
                 key={step.questionId}
-                question={QUESTIONS_BY_ID[step.questionId]}
+                question={questionFor(step.questionId)!}
                 value={answers[step.questionId]}
                 canGoBack={canGoBack}
                 onAnswer={(value) => setAnswer(step.questionId, value)}
@@ -208,6 +234,7 @@ export default function LiteTwoQuizPage() {
               <QuestionGroupScreen
                 key={step.title}
                 title={step.title}
+                description={step.description}
                 questions={visibleQuestionsForGroup(step.questionIds, answers)}
                 answers={answers}
                 canGoBack={canGoBack}
