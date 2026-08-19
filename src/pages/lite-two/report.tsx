@@ -27,13 +27,11 @@ import {
   rise,
   stagger,
 } from "src/components/LiteOne/ReportV2/motion";
-import { ScratchCard } from "src/components/LiteOne/ReportV2/ScratchCard";
 import { useReportData } from "src/components/LiteOne/ReportV2/useReportData";
 import {
   LockIcon,
   PeopleIcon,
   RANK_GRADIENT,
-  ShareIcon,
   ShieldIcon,
 } from "src/components/LiteOne/ReportLab/visuals";
 import { SampleReportMock } from "src/components/LiteOne/SampleReportMock";
@@ -76,7 +74,6 @@ const DARK_BAND = "linear-gradient(168deg,#2A1206 0%,#5C1E07 46%,#B23A0C 100%)";
 const SECTIONS = [
   { id: "rank", label: "Your rank" },
   { id: "meaning", label: "What it means" },
-  { id: "tip", label: "Your tip" },
   { id: "risk", label: "Risk factors" },
   { id: "baseline", label: "Your baseline" },
   { id: "recognaize", label: "The test" },
@@ -448,39 +445,7 @@ export default function LiteTwoReport() {
               </Cascade>
             </SnapSection>
 
-            {/* ------------------------------------------- 3 · the tip --- */}
-            <SnapSection id="tip">
-              <Cascade amount={0.2}>
-                <motion.h2
-                  variants={rise}
-                  className="font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.15] tracking-[-0.025em] text-[#1C110A]"
-                >
-                  {copy.tip.h2(ctx)}
-                </motion.h2>
-
-                <motion.div variants={rise} className="mt-8">
-                  <ScratchCard
-                    chip={copy.tip.chip}
-                    chipClassName={copy.tip.chipClassName}
-                    headline={copy.tip.headline}
-                    ruleColor={copy.tip.ruleColor}
-                    body={copy.tip.body}
-                  />
-                </motion.div>
-
-                <motion.button
-                  variants={rise}
-                  type="button"
-                  onClick={() => share(copy.tip.shareText)}
-                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border border-[#F2DDCE] bg-[#FFF6EF] py-3.5 text-[13.5px] font-bold text-[#8A4A22] transition-colors hover:bg-[#FFEFE3]"
-                >
-                  <ShareIcon />
-                  {shared ? "Copied" : "Send this to someone who also needs it"}
-                </motion.button>
-              </Cascade>
-            </SnapSection>
-
-            {/* -------------------------------------- 4 · risk factors --- */}
+            {/* -------------------------------------- 3 · risk factors --- */}
             <SnapSection id="risk">
               <Cascade amount={0.15}>
                 <EyebrowV2>Also measured</EyebrowV2>
@@ -621,6 +586,17 @@ export default function LiteTwoReport() {
                   {copy.product.bodyLead}
                   <Serif>Alzheimer&apos;s &amp; Dementia</Serif>.
                 </motion.p>
+
+                <motion.button
+                  variants={rise}
+                  type="button"
+                  onClick={() => Router.push(`${LITE_TWO.basePath}/report-full`)}
+                  whileTap={{ scale: 0.98 }}
+                  className="mt-6 w-full rounded-full py-4 text-[16px] font-extrabold tracking-wide text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06]"
+                  style={{ background: RANK_GRADIENT }}
+                >
+                  Unlock Now
+                </motion.button>
 
                 <motion.div
                   variants={rise}
@@ -855,7 +831,7 @@ export default function LiteTwoReport() {
                   className="mt-7 w-full rounded-full py-4 text-[16px] font-extrabold tracking-wide text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06]"
                   style={{ background: RANK_GRADIENT }}
                 >
-                  Claim now
+                  Take the full test
                 </motion.button>
                 <motion.p variants={rise} className="mt-3 text-center text-[12.5px] text-[#A98D7D]">
                   {OFFER.window} · Takes about 15 minutes. Same tasks clinicians use.
@@ -896,14 +872,6 @@ export default function LiteTwoReport() {
                   <p className="mt-2 text-[14.5px] leading-[1.6] text-[#6B5245]">
                     {copy.exit.body2}
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => Router.replace(LITE_TWO.basePath)}
-                    className="mt-5 text-[13.5px] font-bold text-[#8A4A22] underline underline-offset-4 transition-colors hover:text-[#C4400E]"
-                  >
-                    Retake the 60-second test
-                  </button>
-
                   <motion.div
                     variants={stagger}
                     className="pointer-events-none absolute -top-5 right-5 flex gap-2"
