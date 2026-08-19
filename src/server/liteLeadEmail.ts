@@ -12,21 +12,28 @@
  */
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { renderClinicianResultEmail } from "src/server/emails/clinicianResultEmail";
 import { renderLiteResultEmail } from "src/server/emails/liteResultEmail";
+import type { LiteEmailRenderer } from "src/server/emails/shared";
 import { addContactToAudience, getResendConfig, sendEmail } from "src/server/resend";
 
 /**
- * Clinics whose leads get the result email, and the name each one signs it
- * with. Deliberately just the campaign funnel: /lite-one has been running
- * without it, and silently starting to mail its existing audience is not a
- * change to make as a side effect of this one.
+ * Clinics whose leads get a result email: the name each one signs it with, and
+ * which template it uses. /lite-one is deliberately absent — it has been
+ * running without email, and silently starting to mail its existing audience
+ * is not a change to make as a side effect of another one.
  *
- * Adding a funnel here is all it takes to enable it — and because the brand
- * lives beside the key rather than in a shared constant, doing so forces a
- * decision about what that funnel's mail is signed with.
+ * Adding a funnel here is all it takes to enable it, and because the brand and
+ * template sit beside the key rather than in shared constants, doing so forces
+ * a decision about both rather than inheriting someone else's.
+ *
+ * The two templates differ in what they are for. The consumer one explains the
+ * result; the clinician one states it briefly and spends its length on the
+ * published validation and a demo ask.
  */
-const EMAIL_CLINICS: Record<string, { brand: string }> = {
-  liteworldalz: { brand: "Recog-Lite" },
+const EMAIL_CLINICS: Record<string, { brand: string; render: LiteEmailRenderer }> = {
+  liteworldalz: { brand: "Recog-Lite", render: renderLiteResultEmail },
+  liteclinician: { brand: "Recog-Lite", render: renderClinicianResultEmail },
 };
 
 export function emailEnabledForClinic(clinic: string): boolean {
@@ -82,7 +89,7 @@ export async function deliverLiteResultEmail(params: LiteLeadEmailParams): Promi
 
   if (readError) {
     console.error(
-      `Resend: cannot read send state on ${table} (run migration 013 if this mentions a missing column):`,
+      `Resend: cannot read send state on ${table} (if this mentions a missing column, that table's email-columns migration has not been run):`,
       readError.message
     );
     return;
@@ -93,13 +100,15 @@ export async function deliverLiteResultEmail(params: LiteLeadEmailParams): Promi
   }
   if (existing.email_sent_at) return; // Already mailed this attempt.
 
-  const { subject, html, text } = renderLiteResultEmail({
+  const { subject, html, text } = funnel.render({
     brand: funnel.brand,
     name: params.name,
     percentile: params.percentile,
     severity: params.severity,
     brainHealthScore: params.brainHealthScore,
     band: params.band,
+    // Only the clinician template renders this; the consumer one ignores it.
+    demoUrl: process.env.RECOGNAIZE_DEMO_URL ?? null,
   });
 
   const campaignTag = safeTagValue(params.campaign);
