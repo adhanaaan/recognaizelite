@@ -14,6 +14,7 @@ import type { ScoreResult } from "src/types/quiz";
 export const LITE_CLINIC = "liteone";
 export const WORLDALZ_CLINIC = "liteworldalz";
 export const CLINICIAN_CLINIC = "liteclinician";
+export const LITE_TWO_CLINIC = "litetwo";
 
 /**
  * One entry per funnel built on the lite flow. /lite-worldalzmonth is a copy of
@@ -62,6 +63,14 @@ export const LITE_CLINICIAN: LiteVariant = {
   storagePrefix: "recognaize-lclin",
 };
 
+export const LITE_TWO: LiteVariant = {
+  clinic: LITE_TWO_CLINIC,
+  hookClinic: "LiteTwo",
+  basePath: "/lite-two",
+  defaultCampaign: "lite-two",
+  storagePrefix: "recognaize-ltwo",
+};
+
 const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;
 const profileKey = (v: LiteVariant) => `${v.storagePrefix}-profile`;
 const attemptKey = (v: LiteVariant) => `${v.storagePrefix}-attempt`;
@@ -75,6 +84,11 @@ export type LiteProfile = {
   /** Stashed too, because the zustand result store is in-memory and a hard
       reload of the report page would otherwise lose the number. */
   score: number | null;
+  /** Raw quiz age answer ("18-29" … "60+"). `ageRange` is the leads-table
+      bucket, which QUIZ_AGE_TO_LITE shifts down a band, so pages that need
+      the visitor's real age band read this instead. Optional because
+      profiles stashed before it existed don't carry it. */
+  quizAge?: string | null;
 };
 
 function readJson<T>(key: string): T | null {
@@ -270,6 +284,20 @@ export const QUIZ_AGE_TO_LITE: Record<string, string> = {
   "50-59": "46-55",
   "60+": "56-65",
 };
+
+/** Display label per raw quiz age answer, for copy like "ages 60 and over". */
+export const QUIZ_AGE_LABELS: Record<string, string> = {
+  "18-29": "18 to 29",
+  "30-39": "30 to 39",
+  "40-49": "40 to 49",
+  "50-59": "50 to 59",
+  "60+": "60 and over",
+};
+
+/** The optimizer/senior split used by /lite-two's personalised report. */
+export function isSeniorQuizAge(quizAge: string | null | undefined): boolean {
+  return quizAge === "40-49" || quizAge === "50-59" || quizAge === "60+";
+}
 
 export const AGE_LABELS: Record<string, string> = {
   "18-25": "18–25",
