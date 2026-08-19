@@ -184,7 +184,7 @@ const SENIOR_RISK_BODY =
 
 const OPTIMIZER_PRODUCT = {
   eyebrow: "Take the test",
-  h2: "ReCOGnAIze, a digital brain performance assessment",
+  h2: "What do you do now? Take the FULL ReCOGnAIze assessment",
   bodyLead:
     "Validated against MRI scans, built on a five-year NTU study of 1,500 people and published in ",
   testimonials: OPTIMIZER_TESTIMONIALS,
@@ -192,19 +192,19 @@ const OPTIMIZER_PRODUCT = {
 
 const SENIOR_PRODUCT = {
   eyebrow: "How the test works",
-  h2: "ReCOGnAIze, the brain assessment used in clinics",
+  h2: "What do you do now? Take the FULL ReCOGnAIze assessment",
   bodyLead:
     "Validated against MRI brain scans, built on a five-year NTU study of 1,500 adults, published in ",
   testimonials: SENIOR_TESTIMONIALS,
 } as const;
 
 const OPTIMIZER_SAMPLE = {
-  h2: "Ready to challenge the other three?",
+  h2: "Ready to find out where your brain health actually stands?",
   body: "The full assessment measures memory, attention and executive function. Here's a sample of the report you will get for every domain.",
 } as const;
 
 const SENIOR_SAMPLE = {
-  h2: "Every score, explained in full detail",
+  h2: "Ready to find out where your brain health actually stands?",
   body: "This is one page from the report you receive.",
 } as const;
 
@@ -241,7 +241,7 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
     risk: { body: OPTIMIZER_RISK_BODY },
     baseline: {
       eyebrow: "Your baseline so far",
-      h2Lead: "You've covered ",
+      h2Lead: "You've only covered ",
       h2Gradient: "2 out of 5",
       paragraphs: [
         "The speed game and your quiz answers gave us two axes — speed and risk.",
@@ -301,7 +301,7 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
     risk: { body: OPTIMIZER_RISK_BODY },
     baseline: {
       eyebrow: "Your baseline so far",
-      h2Lead: "You've covered ",
+      h2Lead: "You've only covered ",
       h2Gradient: "2 out of 5",
       paragraphs: [
         "The speed game and your quiz answers gave us two axes: speed and risk. Today speed came in low, and one game on one day is a noisy signal.",
@@ -363,7 +363,7 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
     risk: { body: SENIOR_RISK_BODY },
     baseline: {
       eyebrow: "What we covered today",
-      h2Lead: "You've covered ",
+      h2Lead: "You've only covered ",
       h2Gradient: "2 of 5",
       paragraphs: [
         "Today's game measured one thing: how fast you take in information and respond. Your quiz answers gave us the second: your risk profile.",
@@ -420,7 +420,7 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
     risk: { body: SENIOR_RISK_BODY },
     baseline: {
       eyebrow: "What we covered today",
-      h2Lead: "You've covered ",
+      h2Lead: "You've only covered ",
       h2Gradient: "2 of 5",
       paragraphs: [
         "Today's game measured one thing: how fast you take in information and respond. A slower result on a single day can come from tiredness, medication, or simply an unfamiliar game.",
