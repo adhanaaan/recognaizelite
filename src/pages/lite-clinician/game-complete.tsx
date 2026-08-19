@@ -24,14 +24,14 @@ export default function ClinicianGameComplete() {
   return (
     <>
       <Head>
-        <title>Game complete | Recog-Lite</title>
+        <title>Task complete | Recog-Lite</title>
       </Head>
 
       <LiteShell>
         <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 py-8">
           <div className="relative mx-auto w-full max-w-[440px] text-center">
             <div className="lite-rise" style={{ animationDelay: "0ms" }}>
-              <SectionBadge label="1 | Cognitive Game" />
+              <SectionBadge label="1 | Cognitive task" />
             </div>
 
             {ICONS.map((icon) => (
@@ -49,14 +49,14 @@ export default function ClinicianGameComplete() {
               className="lite-rise mt-14 font-display text-[32px] font-extrabold leading-[1.08] text-charcoal sm:text-[38px]"
               style={{ animationDelay: "100ms" }}
             >
-              Game complete!
+              Task complete
             </h1>
 
             <p
               className="lite-rise mt-4 text-[18px] font-semibold text-charcoal"
               style={{ animationDelay: "180ms" }}
             >
-              Correct symbols: {score ?? "—"}
+              {score ?? "—"} correct substitutions in 60 s
             </p>
 
             <div
@@ -67,7 +67,8 @@ export default function ClinicianGameComplete() {
                 Next
               </p>
               <p className="mt-2 text-[15px] leading-relaxed text-quizSecondary">
-                Take a medically-backed quiz on brain health risk factors
+                Modifiable risk factor questionnaire, structured on the 2024 Lancet
+                Commission risk factors.
               </p>
             </div>
 

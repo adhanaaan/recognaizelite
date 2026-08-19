@@ -7,7 +7,8 @@ import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { SampleReportMock } from "src/components/LiteOne/SampleReportMock";
 import { RiskFactorDropdown } from "src/components/LiteOne/RiskFactorDropdown";
 import { Reveal } from "src/components/LiteOne/useInView";
-import { LITE_DOMAIN_DEFINITIONS, RESEARCH_LINE } from "src/data/liteOneContent";
+import { Citations } from "src/components/LiteClinician/Citations";
+import { LITE_DOMAIN_DEFINITIONS } from "src/data/liteOneContent";
 import { resetResults, useResultStore } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import type { DomainReport } from "src/types/report";
@@ -78,7 +79,7 @@ export default function ClinicianReport() {
   const shell = (children: React.ReactNode) => (
     <>
       <Head>
-        <title>Your brain speed result | Recog-Lite</title>
+        <title>Result | Recog-Lite</title>
       </Head>
       <LiteShell scroll className="px-5 pb-16 sm:px-8">
         <div className="relative mx-auto w-full max-w-[520px] space-y-5 pt-6">{children}</div>
@@ -90,7 +91,7 @@ export default function ClinicianReport() {
     return shell(
       <div className="py-24 text-center">
         <div className="mx-auto size-10 animate-spin rounded-full border-[3px] border-quizOutline-variant border-t-quizPrimary" />
-        <p className="mt-5 text-[14px] text-quizSecondary">Working out your result…</p>
+        <p className="mt-5 text-[14px] text-quizSecondary">Scoring…</p>
       </div>
     );
   }
@@ -99,13 +100,13 @@ export default function ClinicianReport() {
     return shell(
       <div className={`${sectionClass} text-center`}>
         <h1 className="font-display text-[22px] font-extrabold text-charcoal">
-          We couldn&apos;t load your result
+          No scored result on this device
         </h1>
         <p className="mt-3 text-[14px] leading-relaxed text-quizSecondary">
-          {error ?? "We don't have a finished game on this device. Take the 60-second test and your score will appear here."}
+          {error ?? "This device has no completed task to score. Results are held for the session only and are not retrievable after it ends."}
         </p>
         <div className="mx-auto mt-6 max-w-[280px]">
-          <LiteButton onClick={handleRetake}>Take the test</LiteButton>
+          <LiteButton onClick={handleRetake}>Start the assessment</LiteButton>
         </div>
       </div>
     );
@@ -113,6 +114,18 @@ export default function ClinicianReport() {
 
   const severity = liteSeverityVisuals[report.severity];
   const percentile = Math.round(report.percentile);
+
+  // The shared palette labels the bands WEAK / ADEQUATE / STRONG, which reads as
+  // a grade awarded to the person. Against an age-matched distribution the
+  // defensible statement is where the score sits, so this funnel keeps the
+  // colours and replaces the words. Bands are ±1 SD — see calculateSeverity in
+  // src/server/report.ts.
+  const BAND_WORDING: Record<string, string> = {
+    Low: "below",
+    Medium: "within",
+    High: "above",
+  };
+  const bandWord = BAND_WORDING[report.severity] ?? "within";
   const ageLabel = profile?.ageRange ? AGE_LABELS[profile.ageRange] ?? profile.ageRange : null;
   const peerGroup = ageLabel ? `people aged ${ageLabel}` : "people in your age band";
 
@@ -131,18 +144,18 @@ export default function ClinicianReport() {
   const resultCopy =
     report.severity === "High"
       ? {
-          fact: `You reacted faster than ${percentile}% of ${peerGroup}.`,
-          reframe: `That puts you in the top ${Math.max(1, 100 - percentile)}% for your age band.`,
+          fact: `${percentile}th percentile against ${peerGroup}.`,
+          reframe: "More than one standard deviation above the age-matched mean.",
         }
       : report.severity === "Medium"
         ? {
-            fact: `You reacted faster than ${percentile}% of ${peerGroup}.`,
-            reframe: "That's within the typical range for your age band.",
+            fact: `${percentile}th percentile against ${peerGroup}.`,
+            reframe: "Within one standard deviation of the age-matched mean.",
           }
         : {
-            fact: `Most ${peerGroup} reacted faster than you today.`,
+            fact: `${percentile}th percentile against ${peerGroup}.`,
             reframe:
-              "Processing speed dips with poor sleep and slows with age. The risk factors below help explain today's score.",
+              "More than one standard deviation below the age-matched mean. A single-session screen is sensitive to sleep, alertness and testing conditions; it is not a diagnosis.",
           };
 
   // Overrides the shared server copy for a domain when this funnel has its own
@@ -155,11 +168,11 @@ export default function ClinicianReport() {
       {/* 1 — the result they earned */}
       <Reveal className={sectionClass}>
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-quizOutline">
-          Game result
+          Task result — symbol–digit substitution
         </p>
         <h1 className="mt-2 font-display text-[27px] font-extrabold leading-[1.12] text-charcoal sm:text-[31px]">
-          Your speed is in the{" "}
-          <span style={{ color: severity.color }}>{severity.label.toLowerCase()}</span> range
+          Your score is <span style={{ color: severity.color }}>{bandWord}</span> the
+          expected range for your age
         </h1>
 
         <div className="mt-4">
@@ -193,10 +206,11 @@ export default function ClinicianReport() {
           domain grid sits next to the game result that made it relevant) */}
       <Reveal className={sectionClass}>
         <h2 className="font-display text-[24px] font-extrabold leading-tight text-charcoal">
-          There is room for improvement
+          One domain of four
         </h2>
         <p className="mt-2 text-[13.5px] leading-relaxed text-quizSecondary">
-          Speed is one of four domains. The 60-second test can&apos;t see the other three.
+          This screen samples processing speed only. Memory, attention and executive
+          function are not measured by a 60-second task.
         </p>
 
         <div className="mt-4">
@@ -224,9 +238,9 @@ export default function ClinicianReport() {
           <SampleReportMock />
         </div>
 
-        <p className="mt-6 text-center text-[13px] leading-relaxed text-quizSecondary">
-          {RESEARCH_LINE}
-        </p>
+        <div className="mt-6">
+          <Citations compact />
+        </div>
 
       </Reveal>
 
@@ -238,7 +252,7 @@ export default function ClinicianReport() {
           onClick={handleRetake}
           className="text-[13px] font-semibold text-quizSecondary underline underline-offset-4 transition-colors hover:text-charcoal"
         >
-          Retake the test
+          Retake
         </button>
       </Reveal>
     </>

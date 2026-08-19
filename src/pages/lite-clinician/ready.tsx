@@ -16,12 +16,12 @@ function GameArt() {
       <img
         src="/images/task-2/flash.png"
         alt=""
-        className="lite-bob absolute right-0 top-0 size-[36px] drop-shadow"
+        className="absolute right-0 top-0 size-[36px] drop-shadow"
       />
       <img
         src="/images/task-2/setting.png"
         alt=""
-        className="lite-rock absolute bottom-0 left-0 size-[32px] drop-shadow"
+        className="absolute bottom-0 left-0 size-[32px] drop-shadow"
         style={{ animationDelay: "500ms" }}
       />
     </span>
@@ -96,19 +96,19 @@ function CurveArt() {
 }
 
 const STEPS = [
-  { label: "Play a 60-second cognitive game", illustration: <GameArt /> },
+  { label: "Symbol–digit substitution task, 60 seconds", illustration: <GameArt /> },
   {
-    label: "Take a medically-backed quiz on brain health risk factors",
+    label: "Modifiable risk factor questionnaire (2024 Lancet Commission)",
     illustration: <QuizArt />,
   },
-  { label: "See how you compare to people your age", illustration: <CurveArt /> },
+  { label: "Your score against an age-matched reference distribution", illustration: <CurveArt /> },
 ];
 
 export default function ClinicianReady() {
   return (
     <>
       <Head>
-        <title>What happens next | Recog-Lite</title>
+        <title>Protocol | Recog-Lite</title>
       </Head>
 
       <LiteShell>
@@ -119,10 +119,10 @@ export default function ClinicianReady() {
               style={{ animationDelay: "40ms" }}
             >
               <span className="font-display text-[21px] font-medium leading-none text-charcoal sm:text-[23px]">
-                In the next
+                Three components,
               </span>
               <span className="font-display text-[29px] font-extrabold leading-none text-charcoal sm:text-[32px]">
-                3 mins
+                ~3 min
               </span>
             </div>
 
@@ -130,21 +130,12 @@ export default function ClinicianReady() {
               <StepList steps={STEPS} />
             </div>
 
-            <div className="lite-rise mt-9 text-center" style={{ animationDelay: "600ms" }}>
-              <p className="font-display text-[16px] font-semibold italic text-quizSecondary">
-                And most importantly,
-              </p>
-              <p className="mt-1 font-display text-[22px] font-extrabold leading-tight text-charcoal sm:text-[24px]">
-                Learn how you can improve
-              </p>
-            </div>
-
             <div
               className="lite-rise mx-auto mt-9 max-w-[320px]"
               style={{ animationDelay: "680ms" }}
             >
               <LiteButton onClick={() => Router.push(`${LITE_CLINICIAN.basePath}/challenge`)}>
-                I&apos;m ready!
+                Start
               </LiteButton>
             </div>
           </div>

@@ -177,7 +177,7 @@ export default function ClinicianQuizPage() {
   return (
     <>
       <Head>
-        <title>Brain Health Quiz | Recog-Lite</title>
+        <title>Risk factor questionnaire | Recog-Lite</title>
         <meta name="theme-color" content="#fff4ee" />
       </Head>
       <main className="relative flex min-h-[100dvh] flex-col items-center overflow-hidden bg-gradient-to-b from-[#fff4ee] via-quizSurface to-quizSurface-container px-4 py-8 sm:py-12">

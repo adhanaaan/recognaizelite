@@ -29,7 +29,7 @@ export default function ClinicianChallenge() {
   return (
     <>
       <Head>
-        <title>Reaction time challenge | Recog-Lite</title>
+        <title>Symbol–digit substitution | Recog-Lite</title>
       </Head>
 
       <LiteShell>
@@ -45,14 +45,15 @@ export default function ClinicianChallenge() {
               className="lite-rise mt-3 font-display text-[30px] font-extrabold leading-[1.08] text-charcoal sm:text-[34px]"
               style={{ animationDelay: "80ms" }}
             >
-              Reaction time challenge
+              Symbol–digit substitution
             </h1>
             <p
               className="lite-rise mt-3 text-[14.5px] leading-relaxed text-quizSecondary"
               style={{ animationDelay: "150ms" }}
             >
-              How <span className="font-bold text-charcoal">fast</span> does your brain process?
-              Match as many symbols to their numbers as you can in 60 seconds.
+              Match each symbol to its digit using the on-screen key. The score is the
+              number of correct substitutions in 60 seconds — a standard index of
+              processing speed.
             </p>
 
             <div className="lite-rise mt-5" style={{ animationDelay: "230ms" }}>
@@ -61,7 +62,7 @@ export default function ClinicianChallenge() {
 
             <div className="lite-rise mx-auto mt-5 max-w-[320px]" style={{ animationDelay: "320ms" }}>
               <LiteButton onClick={() => Router.push("/symbol-matching/demo")}>
-                Start tutorial
+                Practice round
               </LiteButton>
             </div>
           </div>
