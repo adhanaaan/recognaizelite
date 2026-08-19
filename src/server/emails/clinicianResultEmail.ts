@@ -18,9 +18,11 @@
  *   tinted panel, everything around it quiet.
  *
  *   Skiff's transactional mail — restraint. No coloured masthead band, one
- *   primary button, a hairline rule before a small footer. The previous version
- *   opened on a solid orange bar and set the AUCs at 34px in orange; that reads
- *   as a campaign. Here the brand is a line of text and the figures are ink.
+ *   primary button, a hairline rule before a small footer.
+ *
+ * Set in Georgia. Clinical and academic correspondence is serif; a product-UI
+ * sans stack reads as a product. The only colour left is the reference strip's
+ * three tints — brand, figures and marker are all ink.
  *
  * The numbers are inline rather than behind a link: the report page reads
  * sessionStorage, so a link opened on another device shows the empty state.
@@ -33,7 +35,6 @@ import {
   BAND_PRESENTATION,
   INK,
   MUTED,
-  ORANGE,
   bandKeyOf,
   escapeHtml,
   professionalName,
@@ -52,34 +53,76 @@ import {
  * citations for the web pages.
  */
 export const STUDY = {
+  /**
+   * References are set in AMA style: authors, article title, abbreviated
+   * journal title (NLM), year, DOI. The abbreviation and the punctuation are
+   * what tell a clinical reader whether the sender works in that world, so
+   * they are not decorative.
+   *
+   * `volumeIssuePages` is unset on both because neither pagination was to hand
+   * when this was written. AMA permits year + DOI for an article without them,
+   * but a complete citation carries them — fill them in and the renderer
+   * places them automatically.
+   */
   validation: {
     title:
       "ReCOGnAIze app to detect vascular cognitive impairment and mild cognitive impairment",
     authors: "Mohammed AA, et al.",
-    journal: "Alzheimer's & Dementia",
+    /** NLM abbreviation for Alzheimer's & Dementia. */
+    journalAbbrev: "Alzheimers Dement",
     year: "2026",
+    volumeIssuePages: null as string | null,
     doi: "10.1002/alz.70992",
     /** Version of record. PubMed record for the same paper is 41685533. */
     url: "https://alz-journals.onlinelibrary.wiley.com/doi/10.1002/alz.70992",
   },
   cohort: {
     title:
-      "Biomarkers and Cognition Study, Singapore (BIOCIS): Protocol, Study Design, and Preliminary Findings",
+      "Biomarkers and Cognition Study, Singapore (BIOCIS): protocol, study design, and preliminary findings",
     authors: "Chong JR, et al.",
-    journal: "The Journal of Prevention of Alzheimer's Disease",
+    /** NLM abbreviation for The Journal of Prevention of Alzheimer's Disease. */
+    journalAbbrev: "J Prev Alzheimers Dis",
     year: "2024",
+    volumeIssuePages: null as string | null,
     doi: "10.14283/jpad.2024.89",
     url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11266377/",
   },
   institution:
     "Dementia Research Centre · Lee Kong Chian School of Medicine, NTU Singapore",
+  /**
+   * A bare AUC is the first thing a clinical reader marks down: without a
+   * confidence interval and an n it reads as a marketing figure rather than a
+   * reported one. `ci` and `n` are null until those are taken from the paper;
+   * the renderer omits what it does not have rather than inventing it.
+   */
   figures: [
-    { value: "0.85", caption: "AUC — vascular cognitive impairment" },
-    { value: "0.90", caption: "AUC — mild cognitive impairment" },
+    {
+      value: "0.85",
+      caption: "AUC — vascular cognitive impairment",
+      ci: null as string | null,
+      n: null as string | null,
+    },
+    {
+      value: "0.90",
+      caption: "AUC — mild cognitive impairment",
+      ci: null as string | null,
+      n: null as string | null,
+    },
   ],
   comparator:
     "Differentiated vascular from non-vascular cognitive impairment, outperforming the MoCA on the same cohort.",
 } as const;
+
+/**
+ * Clinical and academic correspondence is set in serif; the previous
+ * -apple-system/Segoe/Roboto stack is a product-UI stack and reads as one.
+ * Georgia is the safe choice — present on effectively every mail client, and
+ * its numerals are legible at the small sizes the reference strip uses.
+ */
+const SERIF = "Georgia, 'Times New Roman', Times, serif";
+
+/** The brand line. Ink rather than the consumer orange. */
+const BRAND_INK = "#1f2933";
 
 /**
  * Band edges as percentiles. calculateSeverity in src/server/report.ts splits
@@ -148,20 +191,31 @@ function referenceStrip(percentile: number, accent: string): string {
     </table>`;
 }
 
-function citationHtml(c: {
+type Reference = {
   title: string;
   authors: string;
-  journal: string;
+  journalAbbrev: string;
   year: string;
+  volumeIssuePages: string | null;
   doi: string;
   url: string;
-}): string {
+};
+
+/** AMA reference, as plain text. Shared by both parts of the mail. */
+function citationText(c: Reference): string {
+  const locator = c.volumeIssuePages ? `${c.year};${c.volumeIssuePages}` : c.year;
+  return `${c.authors} ${c.title}. ${c.journalAbbrev}. ${locator}. doi:${c.doi}`;
+}
+
+function citationHtml(c: Reference): string {
+  const locator = c.volumeIssuePages ? `${c.year};${c.volumeIssuePages}` : c.year;
   return `
-    <p style="margin:0 0 14px 0;font-size:12.5px;line-height:1.5;color:${MUTED};">
-      <a href="${escapeHtml(c.url)}" style="color:${INK};font-weight:600;text-decoration:none;">${escapeHtml(
-        c.title
-      )}</a><br />
-      ${escapeHtml(c.authors)} <em>${escapeHtml(c.journal)}</em>, ${c.year}. doi:${escapeHtml(c.doi)}
+    <p style="margin:0 0 12px 0;font-family:${SERIF};font-size:13px;line-height:1.55;color:${INK};">
+      ${escapeHtml(c.authors)} ${escapeHtml(c.title)}.
+      <em>${escapeHtml(c.journalAbbrev)}</em>. ${escapeHtml(locator)}.
+      <a href="${escapeHtml(c.url)}" style="color:${INK};text-decoration:underline;">doi:${escapeHtml(
+        c.doi
+      )}</a>
     </p>`;
 }
 
@@ -195,8 +249,8 @@ export function renderClinicianResultEmail(input: LiteEmailInput): RenderedEmail
   const textLines = [
     greeting,
     "",
-    "Your result from the symbol–digit substitution task, and the published",
-    "validation behind it.",
+    "You completed the symbol–digit substitution task. Your result and the",
+    "published validation for the instrument follow.",
     "",
     "RESULT — PROCESSING SPEED",
     positionLine,
@@ -208,19 +262,20 @@ export function renderClinicianResultEmail(input: LiteEmailInput): RenderedEmail
       : []),
     "",
     "VALIDATION",
-    ...STUDY.figures.map((f) => `  ${f.value}  ${f.caption}`),
+    ...STUDY.figures.map((f) => {
+      const ci = f.ci ? ` (95% CI ${f.ci})` : "";
+      const n = f.n ? `; n = ${f.n}` : "";
+      return `  ${f.value}${ci}  ${f.caption}${n}`;
+    }),
     "",
     STUDY.comparator,
     STUDY.institution,
     "",
     "REFERENCES",
-    `${STUDY.validation.title}`,
-    `${STUDY.validation.authors} ${STUDY.validation.journal}, ${STUDY.validation.year}. doi:${STUDY.validation.doi}`,
-    STUDY.validation.url,
-    "",
-    `${STUDY.cohort.title}`,
-    `${STUDY.cohort.authors} ${STUDY.cohort.journal}, ${STUDY.cohort.year}. doi:${STUDY.cohort.doi}`,
-    STUDY.cohort.url,
+    `1. ${citationText(STUDY.validation)}`,
+    `   ${STUDY.validation.url}`,
+    `2. ${citationText(STUDY.cohort)}`,
+    `   ${STUDY.cohort.url}`,
     "",
     "This task samples processing speed only. The full assessment covers memory,",
     "attention and executive function alongside it.",
@@ -253,7 +308,7 @@ export function renderClinicianResultEmail(input: LiteEmailInput): RenderedEmail
       ? ""
       : `<tr>
            <td style="padding:18px 0 0 0;">
-             ${referenceStrip(percentile, ORANGE)}
+             ${referenceStrip(percentile, BRAND_INK)}
            </td>
          </tr>
          <tr>
@@ -269,8 +324,12 @@ export function renderClinicianResultEmail(input: LiteEmailInput): RenderedEmail
     .map(
       (f) => `
               <td width="50%" valign="top" style="padding:0 10px 0 0;">
-                <p style="margin:0;font-size:26px;font-weight:bold;line-height:1;color:${INK};">${f.value}</p>
-                <p style="margin:5px 0 0 0;font-size:12px;line-height:1.45;color:${MUTED};">${f.caption}</p>
+                <p style="margin:0;font-family:${SERIF};font-size:26px;line-height:1;color:${INK};">${f.value}${
+                  f.ci ? `<span style="font-size:12px;color:${MUTED};"> (95% CI ${f.ci})</span>` : ""
+                }</p>
+                <p style="margin:5px 0 0 0;font-family:${SERIF};font-size:12.5px;line-height:1.45;color:${MUTED};">${
+                  f.caption
+                }${f.n ? `; n = ${f.n}` : ""}</p>
               </td>`
     )
     .join("");
@@ -317,18 +376,18 @@ export function renderClinicianResultEmail(input: LiteEmailInput): RenderedEmail
   <tr>
     <td align="center">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
-             style="max-width:560px;background:#ffffff;border:1px solid #ece2dc;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+             style="max-width:560px;background:#ffffff;border:1px solid #ece2dc;border-radius:10px;font-family:${SERIF};">
         <tr>
           <td style="padding:30px 30px 0 30px;">
             <!-- Brand as a line of type, not a coloured band. -->
-            <p style="margin:0;font-size:12px;font-weight:bold;letter-spacing:1.6px;text-transform:uppercase;color:${ORANGE};">
+            <p style="margin:0;font-family:${SERIF};font-size:12.5px;letter-spacing:2px;text-transform:uppercase;color:${BRAND_INK};">
               ${escapeHtml(BRAND)}
             </p>
 
             <p style="margin:24px 0 0 0;font-size:15.5px;color:${INK};">${escapeHtml(greeting)}</p>
             <p style="margin:10px 0 0 0;font-size:14.5px;line-height:1.6;color:${MUTED};">
-              Your result from the symbol–digit substitution task, and the published
-              validation behind it.
+              You completed the symbol–digit substitution task. Your result and the
+              published validation for the instrument follow.
             </p>
           </td>
         </tr>
