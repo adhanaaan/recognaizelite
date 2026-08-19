@@ -691,9 +691,9 @@ export default function LiteTwoReport() {
                   </blockquote>
                   <figcaption className="mt-5 flex items-center gap-3">
                     <img
-                      src="/images/lite-one/prof-nagaendran.jpg"
+                      src="/images/lite-one/prof-nagaendran.png"
                       alt="A/Prof Nagaendran Kandiah"
-                      className="h-10 w-10 rounded-full object-cover"
+                      className="h-12 w-12 shrink-0 rounded-full object-cover"
                     />
                     <div>
                       <p className="text-[14px] font-extrabold text-[#1C110A]">
