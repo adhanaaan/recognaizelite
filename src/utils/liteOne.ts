@@ -13,6 +13,7 @@ import type { ScoreResult } from "src/types/quiz";
 
 export const LITE_CLINIC = "liteone";
 export const WORLDALZ_CLINIC = "liteworldalz";
+export const CLINICIAN_CLINIC = "liteclinician";
 
 /**
  * One entry per funnel built on the lite flow. /lite-worldalzmonth is a copy of
@@ -51,6 +52,14 @@ export const LITE_WORLDALZ: LiteVariant = {
   basePath: "/lite-worldalzmonth",
   defaultCampaign: "worldalzmonth",
   storagePrefix: "recognaize-walz",
+};
+
+export const LITE_CLINICIAN: LiteVariant = {
+  clinic: CLINICIAN_CLINIC,
+  hookClinic: "LiteClinician",
+  basePath: "/lite-clinician",
+  defaultCampaign: "clinician",
+  storagePrefix: "recognaize-lclin",
 };
 
 const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;

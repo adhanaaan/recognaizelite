@@ -35,7 +35,7 @@ const LONG_SHORT_SCORE_STATS = {
 // Clinics whose Symbol Matching game runs for the full 60 seconds.
 // They share the same scoring algorithm as the 30s funnels; only the
 // norm dataset differs.
-const LONG_SHORT_CLINICS = new Set(["healthtechx", "tcmbrain", "novi", "liteone", "liteworldalz"]);
+const LONG_SHORT_CLINICS = new Set(["healthtechx", "tcmbrain", "novi", "liteone", "liteworldalz", "liteclinician"]);
 
 function erf(x: number) {
   const sign = x >= 0 ? 1 : -1;

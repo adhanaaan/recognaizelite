@@ -66,6 +66,7 @@ const CLINIC_OPTIONS: { value: string; label: string }[] = [
   { value: "novi", label: "Novi" },
   { value: "liteone", label: "BrainScan Testing" },
   { value: "liteworldalz", label: "Recog-Lite · World Alz Month" },
+  { value: "liteclinician", label: "Recog-Lite · Clinician" },
 ];
 
 const ROLE_LABELS: Record<string, string> = {

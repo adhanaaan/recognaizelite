@@ -12,88 +12,26 @@
  */
 
 import { CLINICAL_DISCLAIMER } from "src/utils/disclaimers";
+import {
+  BAND_PRESENTATION,
+  INK,
+  MUTED,
+  ORANGE,
+  SPEED_PRESENTATION,
+  SURFACE,
+  bandKeyOf,
+  escapeHtml,
+  firstName,
+  speedKeyOf,
+  type LiteEmailInput,
+  type RenderedEmail,
+} from "src/server/emails/shared";
 
-/** Brain speed severity as stored in the leads tables. */
-type SpeedKey = "low" | "moderate" | "high";
-/** Brain Health Quiz band as stored in the leads tables. */
-type BandKey = "low" | "moderate" | "elevated" | "high";
-
-export type LiteResultEmailInput = {
-  /**
-   * The funnel's public name, e.g. "Recog-Lite". Passed in rather than fixed
-   * here: the two lite funnels are not branded alike, and a shared constant
-   * would silently mail one of them under the other's name the day a second
-   * one is enabled in EMAIL_CLINICS.
-   */
-  brand: string;
-  name: string | null;
-  percentile: number | null;
-  /**
-   * NOTE the polarity trap: for speed, "high" is the good end (STRONG) and
-   * "low" is the weak end. For `band` below it is the reverse — "high" means
-   * high risk. They are different scales that happen to share key names.
-   */
-  severity: SpeedKey | string | null;
-  brainHealthScore: number | null;
-  band: BandKey | string | null;
-};
-
-const ORANGE = "#f77528";
-const INK = "#2d2d2d";
-const MUTED = "#7d5747";
-const SURFACE = "#fff8f6";
-
-/** Matches liteSeverityVisuals in src/components/Report/BellCurve.tsx. */
-const SPEED_PRESENTATION: Record<SpeedKey, { label: string; color: string }> = {
-  low: { label: "weak", color: "#ba1a1a" },
-  moderate: { label: "adequate", color: "#2f6fd0" },
-  high: { label: "strong", color: "#97c459" },
-};
-
-/** Matches BANDS in src/lib/brainHealthScoring.ts. */
-const BAND_PRESENTATION: Record<BandKey, { label: string; color: string }> = {
-  low: { label: "Low risk", color: "#97c459" },
-  moderate: { label: "Moderate risk", color: "#fac775" },
-  elevated: { label: "Elevated risk", color: "#ef9f27" },
-  high: { label: "High risk", color: "#f09595" },
-};
-
-/**
- * The recipient's name reaches this template straight from a public form, so
- * it is escaped before it touches the markup. `&` runs first or it would
- * double-escape the entities the later replacements introduce.
- */
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-/**
- * Name-shaped tokens only: letters (any script, so 美玲 and Zoë pass), combining
- * marks, and the apostrophes/hyphens/periods real names carry.
- *
- * escapeHtml already makes the body safe, but the subject line is not HTML and
- * is not escaped — anything odd in it renders verbatim in the inbox list. A
- * name with markup in it would read as a phishing attempt even though it is
- * inert, so an implausible name is dropped entirely and the mail falls back to
- * a plain "Hi,". Nothing of value is lost: we simply don't greet by name.
- */
-const NAME_TOKEN = /^[\p{L}\p{M}'’.-]+$/u;
-
-function firstName(name: string | null): string | null {
-  if (!name) return null;
-  const first = name.replace(/[\r\n]+/g, " ").trim().split(/\s+/)[0];
-  if (!first || first.length > 40) return null;
-  return NAME_TOKEN.test(first) ? first : null;
-}
+/** Retained as the public name of this template's input. */
+export type LiteResultEmailInput = LiteEmailInput;
 
 function speedCopy(percentile: number | null, severity: string | null) {
-  const key: SpeedKey =
-    severity === "low" || severity === "moderate" || severity === "high" ? severity : "moderate";
+  const key = speedKeyOf(severity);
   const presentation = SPEED_PRESENTATION[key];
 
   if (percentile === null) {
@@ -123,8 +61,6 @@ function speedCopy(percentile: number | null, severity: string | null) {
   };
 }
 
-export type RenderedEmail = { subject: string; html: string; text: string };
-
 export function renderLiteResultEmail(input: LiteResultEmailInput): RenderedEmail {
   const BRAND = input.brand;
   const first = firstName(input.name);
@@ -133,10 +69,7 @@ export function renderLiteResultEmail(input: LiteResultEmailInput): RenderedEmai
 
   const speed = speedCopy(input.percentile, typeof input.severity === "string" ? input.severity : null);
 
-  const bandKey =
-    input.band === "low" || input.band === "moderate" || input.band === "elevated" || input.band === "high"
-      ? (input.band as BandKey)
-      : null;
+  const bandKey = bandKeyOf(input.band);
   const bandPresentation = bandKey ? BAND_PRESENTATION[bandKey] : null;
   const hasQuiz = input.brainHealthScore !== null && bandPresentation !== null;
 

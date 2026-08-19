@@ -27,12 +27,22 @@ Server (API routes only — never exposed to the browser):
 - `ADMIN_PASSWORD` / `ADMIN_COOKIE_SECRET`: the `/admin` dashboard.
 - `RESEND_API_KEY`, `RESEND_FROM`: result emails — see below.
 - `RESEND_AUDIENCE_ID`, `RESEND_REPLY_TO`: optional, see below.
+- `RECOGNAIZE_DEMO_URL`: where the clinician email's "See the full assessment" button points. Omitted from the email when unset.
 
 ## Resend (result emails + campaign audience)
 
-`/lite-worldalzmonth` mails each lead their result on submit and adds them to a
-Resend Audience for campaign broadcasts. Both happen server-side in
-`/api/save-lead`, after the lead row is written.
+`/lite-worldalzmonth` and `/lite-clinician` mail each lead their result on
+submit and add them to a Resend Audience for campaign broadcasts. Both happen
+server-side in `/api/save-lead`, after the lead row is written.
+
+The two use different templates, chosen per funnel in `EMAIL_CLINICS`:
+
+- **consumer** (`liteResultEmail.ts`) — explains the result. Used by `liteworldalz`.
+- **clinician** (`clinicianResultEmail.ts`) — states the result briefly, then the
+  peer-reviewed validation (*Alzheimer's & Dementia*, 2026, doi:10.1002/alz.70992)
+  and a single demo CTA. Used by `liteclinician`. Every claim it makes lives in
+  the `STUDY` constant at the top of that file, so the figures can be reviewed as
+  one block.
 
 The integration is **off unless configured**. With `RESEND_API_KEY` or
 `RESEND_FROM` missing, leads are still captured and nothing is sent — so local
@@ -42,10 +52,12 @@ Setup:
 
 1. Verify your sending domain in Resend (Domains → Add Domain, then the DNS records).
 2. Create an Audience if you want the campaign list; copy its id.
-3. Run `db/migrations/013_liteworldalz_email.sql` in the Supabase SQL editor.
-   Sending **fails closed** without it — the idempotency guard reads
-   `email_sent_at`, and if that column is missing nothing is sent (a duplicate
-   email to a real inbox is worse than a missing one). The function log says so.
+3. Run the sending funnel's email-columns migration in the Supabase SQL editor:
+   `013_liteworldalz_email.sql` for `liteworldalz`; `liteclinician` already has
+   the columns from `014`. Sending **fails closed** without them — the
+   idempotency guard reads `email_sent_at`, and if that column is missing
+   nothing is sent (a duplicate email to a real inbox is worse than a missing
+   one). The function log says so.
 4. Set the variables in Vercel:
 
    | Variable | Required | Notes |
@@ -60,12 +72,43 @@ Notes:
 - The result email carries the numbers **inline**. The report page reads from
   `sessionStorage`, so a link opened on another device — the normal case for
   email — would show the empty state rather than their result.
-- Only `liteworldalz` sends, signed as **Recog-Lite**. `/lite-one` is
-  deliberately excluded so its existing audience isn't mailed as a side effect;
-  see `EMAIL_CLINICS` in `src/server/liteLeadEmail.ts`, which carries each
-  funnel's brand next to its key.
+- `/lite-one` is deliberately excluded, so its existing audience isn't mailed
+  as a side effect of another change. See `EMAIL_CLINICS` in
+  `src/server/liteLeadEmail.ts`, which carries each funnel's brand and template
+  next to its key.
+- Names are greeted differently per template. The clinician one keeps a title
+  ("Hi Dr Tan Wei Ming,") because picking the personal part of a titled name is
+  not reliable when family name can come first; the consumer one uses the first
+  name.
 - Coverage query — leads that were captured but never mailed:
   `select count(*) from liteworldalz_leads where completed_at is not null and email_sent_at is null;`
+
+## Lite funnels
+
+`/lite-one` and its copies share one game, quiz, report and set of components,
+and differ only in routes, leads table, brand and campaign. Two registries hold
+that difference:
+
+- `LITE_VARIANTS` (`src/utils/liteOne.ts`) — client side: routes, storage
+  namespace, default campaign, `hookClinic`.
+- `LITE_TABLES` (`src/server/liteFunnels.ts`) — server side: clinic → Supabase
+  table. `/api/lite-attempt`, `/api/save-lead` and `leadAggregation` all resolve
+  through it.
+
+| Funnel | Clinic | Table | Migration |
+| --- | --- | --- | --- |
+| `/lite-one` | `liteone` | `liteone_leads` | 010, 011 |
+| `/lite-worldalzmonth` | `liteworldalz` | `liteworldalz_leads` | 012, 013 |
+| `/lite-clinician` | `liteclinician` | `liteclinician_leads` | 014 |
+
+`/lite-clinician` has eight pages, not nine: it carries no voucher page and no
+commerce CTA, so `report-full` does not exist for it. The clinician next step is
+still undecided; it lands at the foot of that funnel's `report.tsx`.
+
+Adding one means: a migration, an entry in each registry, the `hookClinic` value
+in `LITE_HOOK_CLINICS` (`src/utils/assessment.ts`), the clinic allowlists in
+`/api/save-lead` + `/api/generate-report` + `LONG_SHORT_CLINICS`, `KNOWN_CLINICS`,
+the admin filter, the partner share theme, and the funnel's pages.
 
 ## Scripts
 
