@@ -100,10 +100,18 @@ that difference:
 | `/lite-one` | `liteone` | `liteone_leads` | 010, 011 |
 | `/lite-worldalzmonth` | `liteworldalz` | `liteworldalz_leads` | 012, 013 |
 | `/lite-clinician` | `liteclinician` | `liteclinician_leads` | 014 |
+| `/lite-two` | `litetwo` | `litetwo_leads` | 015 |
 
 `/lite-clinician` has eight pages, not nine: it carries no voucher page and no
 commerce CTA, so `report-full` does not exist for it. The clinician next step is
 still undecided; it lands at the foot of that funnel's `report.tsx`.
+
+`/lite-two` is `/lite-one`'s flow with the report swapped for the v2
+scroll-snapped design, personalised per the RevitalAIze v2 comps: the copy
+splits by audience (optimizers vs seniors, cut at quiz age 40) and by how the
+speed score came out (severity High vs the rest). The four copy sets live in
+`src/data/liteTwoReportContent.ts`; `?persona=` and `?band=` on
+`/lite-two/report` force a variant for design review.
 
 Adding one means: a migration, an entry in each registry, the `hookClinic` value
 in `LITE_HOOK_CLINICS` (`src/utils/assessment.ts`), the clinic allowlists in
