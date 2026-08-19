@@ -27,7 +27,8 @@ Server (API routes only — never exposed to the browser):
 - `ADMIN_PASSWORD` / `ADMIN_COOKIE_SECRET`: the `/admin` dashboard.
 - `RESEND_API_KEY`, `RESEND_FROM`: result emails — see below.
 - `RESEND_AUDIENCE_ID`, `RESEND_REPLY_TO`: optional, see below.
-- `RECOGNAIZE_DEMO_URL`: where the clinician email's "See the full assessment" button points. Omitted from the email when unset.
+- `RECOGNAIZE_CALENDLY_URL`: booking link. Becomes the clinician email's primary button. Omitted when unset.
+- `RECOGNAIZE_DEMO_URL`: the full-assessment link. Primary button when there is no booking link, a secondary text link when there is. Omitted when unset.
 
 ## Resend (result emails + campaign audience)
 
@@ -38,11 +39,14 @@ server-side in `/api/save-lead`, after the lead row is written.
 The two use different templates, chosen per funnel in `EMAIL_CLINICS`:
 
 - **consumer** (`liteResultEmail.ts`) — explains the result. Used by `liteworldalz`.
-- **clinician** (`clinicianResultEmail.ts`) — states the result briefly, then the
-  peer-reviewed validation (*Alzheimer's & Dementia*, 2026, doi:10.1002/alz.70992)
-  and a single demo CTA. Used by `liteclinician`. Every claim it makes lives in
-  the `STUDY` constant at the top of that file, so the figures can be reviewed as
-  one block.
+- **clinician** (`clinicianResultEmail.ts`) — reads as a short report: the
+  percentile plotted against its reference range, the validation figures, both
+  citations (`alz.70992` and `jpad.2024.89`), then one action. Used by
+  `liteclinician`. Every claim lives in the `STUDY` constant at the top of that
+  file, so the figures can be reviewed as one block.
+
+  The reference-range strip is built from nested tables and `bgcolor`, not SVG
+  or background images — both are stripped or blocked by common clients.
 
 The integration is **off unless configured**. With `RESEND_API_KEY` or
 `RESEND_FROM` missing, leads are still captured and nothing is sent — so local

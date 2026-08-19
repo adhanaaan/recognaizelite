@@ -34,6 +34,8 @@ export type LiteEmailInput = {
   band: BandKey | string | null;
   /** Where "see a demo" points. Omitted from the mail when null. */
   demoUrl?: string | null;
+  /** Booking link (Calendly or equivalent). Omitted from the mail when null. */
+  bookingUrl?: string | null;
 };
 
 /** Every template renders from the same input, so funnels can swap templates. */

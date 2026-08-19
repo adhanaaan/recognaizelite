@@ -107,8 +107,9 @@ export async function deliverLiteResultEmail(params: LiteLeadEmailParams): Promi
     severity: params.severity,
     brainHealthScore: params.brainHealthScore,
     band: params.band,
-    // Only the clinician template renders this; the consumer one ignores it.
+    // Only the clinician template renders these; the consumer one ignores them.
     demoUrl: process.env.RECOGNAIZE_DEMO_URL ?? null,
+    bookingUrl: process.env.RECOGNAIZE_CALENDLY_URL ?? null,
   });
 
   const campaignTag = safeTagValue(params.campaign);
