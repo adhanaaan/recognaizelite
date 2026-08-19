@@ -84,6 +84,10 @@ that difference:
 | `/lite-worldalzmonth` | `liteworldalz` | `liteworldalz_leads` | 012, 013 |
 | `/lite-clinician` | `liteclinician` | `liteclinician_leads` | 014 |
 
+`/lite-clinician` has eight pages, not nine: it carries no voucher page and no
+commerce CTA, so `report-full` does not exist for it. The clinician next step is
+still undecided; it lands at the foot of that funnel's `report.tsx`.
+
 Adding one means: a migration, an entry in each registry, the `hookClinic` value
 in `LITE_HOOK_CLINICS` (`src/utils/assessment.ts`), the clinic allowlists in
 `/api/save-lead` + `/api/generate-report` + `LONG_SHORT_CLINICS`, `KNOWN_CLINICS`,

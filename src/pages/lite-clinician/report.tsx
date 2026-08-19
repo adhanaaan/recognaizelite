@@ -7,7 +7,7 @@ import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { SampleReportMock } from "src/components/LiteOne/SampleReportMock";
 import { RiskFactorDropdown } from "src/components/LiteOne/RiskFactorDropdown";
 import { Reveal } from "src/components/LiteOne/useInView";
-import { LITE_DOMAIN_DEFINITIONS, OFFER, RESEARCH_LINE } from "src/data/liteOneContent";
+import { LITE_DOMAIN_DEFINITIONS, RESEARCH_LINE } from "src/data/liteOneContent";
 import { resetResults, useResultStore } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import type { DomainReport } from "src/types/report";
@@ -21,22 +21,19 @@ import {
   readTask2Score,
 } from "src/utils/liteOne";
 
-/** Page two carries the offer, the proof and the commerce pitch. */
-const UPSELL_PATH = `${LITE_CLINICIAN.basePath}/report-full`;
-
 /**
- * Both CTAs navigate here, as on /lite-one.
+ * This funnel carries no commerce pitch.
  *
- * /lite-worldalzmonth replaced them with "ask our team" panels, but that was
- * specific to an in-person event where staff set the assessment up at a desk.
- * A clinician reading this in their own time has nobody to ask, so the working
- * buttons are the right default until the clinician-facing next step is
- * decided.
+ * /lite-one closes with a "Claim 70% off" ribbon and an "Unlock Now" button
+ * into a voucher page that discounts the assessment to $20. None of that
+ * belongs here: the voucher page is test-only, and a consumer discount is the
+ * wrong ask of a clinician regardless. The report ends on the result and the
+ * evidence.
+ *
+ * There is deliberately no CTA in its place. The clinician next step — refer a
+ * patient, offer it in practice, talk to us — hasn't been decided, and an
+ * invented one would be worse than none. This is where it goes when it is.
  */
-function goToUpsell() {
-  Router.push(UPSELL_PATH);
-}
-
 const sectionClass =
   "rounded-2xl border border-quizOutline-variant bg-quizSurface-lowest p-5 shadow-card sm:p-6";
 
@@ -206,16 +203,6 @@ export default function ClinicianReport() {
           <DomainGrid severity={severity} />
         </div>
 
-        <button
-          type="button"
-          onClick={goToUpsell}
-          className="mt-4 flex w-full items-center justify-between gap-3 rounded-xl bg-quizPrimary px-4 py-3 text-left transition-all hover:brightness-105 active:scale-[0.99]"
-        >
-          <span className="text-[13.5px] font-bold leading-snug text-white">{OFFER.ribbon}</span>
-          <span className="shrink-0 rounded-full bg-white/20 px-3 py-1 text-[12px] font-bold text-white">
-            See offer
-          </span>
-        </button>
       </Reveal>
 
       {/* 3 — brain health risk factor quiz results */}
@@ -223,10 +210,11 @@ export default function ClinicianReport() {
         <RiskFactorDropdown />
       </Reveal>
 
-      {/* 3 — unlock the full picture */}
+      {/* 3 — what the full assessment reports. Informational, not a pitch:
+          "Unlock" was the wording when this section ended in a buy button. */}
       <Reveal className={sectionClass}>
         <h2 className="text-center font-display text-[24px] font-extrabold leading-tight text-charcoal">
-          Unlock the complete picture of your brain performance
+          What the full assessment reports
         </h2>
         <p className="mt-2 text-center text-[12px] font-bold uppercase tracking-[0.16em] text-quizOutline">
           Sample report
@@ -240,13 +228,10 @@ export default function ClinicianReport() {
           {RESEARCH_LINE}
         </p>
 
-        <div className="mt-5">
-          <LiteButton onClick={goToUpsell}>Unlock Now →</LiteButton>
-        </div>
       </Reveal>
 
-      {/* The retake link used to sit in a footer below the offer; that whole
-          block now lives on page two, so it lands here instead. */}
+      {/* Retake. With no offer block and no page two, this is the report's
+          only remaining action. */}
       <Reveal className="pb-4 pt-1 text-center">
         <button
           type="button"
