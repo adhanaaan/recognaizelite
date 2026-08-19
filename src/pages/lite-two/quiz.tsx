@@ -39,14 +39,15 @@ const ALL_STEPS: StepDef[] = [
     questionIds: ["highBp", "highCholesterol", "diabetes", "hearingLoss", "visionLoss"],
   },
 
-  { kind: "statCard", cardId: "lancet2024" },
-
   {
     kind: "questionGroup",
     title: "Your lifestyle",
     questionIds: ["smoking", "sleep", "exercise", "diet", "alcohol"],
   },
 
+  // The only stat card this funnel keeps — the rest (lancet2024, salthouse)
+  // are dropped so the quiz carries a single credibility beat instead of
+  // three, at the position IMH WiSE already had.
   { kind: "statCard", cardId: "imhWise" },
 
   { kind: "question", questionId: "tracks" },
@@ -60,8 +61,6 @@ const ALL_STEPS: StepDef[] = [
   },
   { kind: "question", questionId: "persistence" }, // pruned if forgetfulness not noticed
   { kind: "question", questionId: "someoneElseNoticed" },
-
-  { kind: "statCard", cardId: "salthouse" },
 ];
 
 function questionVisible(question: Question, answers: Answers): boolean {
