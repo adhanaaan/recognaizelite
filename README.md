@@ -65,6 +65,8 @@ Notes:
   audience isn't mailed as a side effect, the second until the clinician-facing
   email is written. See `EMAIL_CLINICS` in `src/server/liteLeadEmail.ts`, which
   carries each funnel's brand next to its key.
+- Coverage query — leads that were captured but never mailed:
+  `select count(*) from liteworldalz_leads where completed_at is not null and email_sent_at is null;`
 
 ## Lite funnels
 
@@ -91,9 +93,7 @@ still undecided; it lands at the foot of that funnel's `report.tsx`.
 Adding one means: a migration, an entry in each registry, the `hookClinic` value
 in `LITE_HOOK_CLINICS` (`src/utils/assessment.ts`), the clinic allowlists in
 `/api/save-lead` + `/api/generate-report` + `LONG_SHORT_CLINICS`, `KNOWN_CLINICS`,
-the admin filter, the partner share theme, and the nine pages.
-- Coverage query — leads that were captured but never mailed:
-  `select count(*) from liteworldalz_leads where completed_at is not null and email_sent_at is null;`
+the admin filter, the partner share theme, and the funnel's pages.
 
 ## Scripts
 
