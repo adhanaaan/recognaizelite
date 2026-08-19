@@ -93,7 +93,7 @@ export default function ClinicianLoading() {
   return (
     <>
       <Head>
-        <title>Building your profile | Recog-Lite</title>
+        <title>Scoring | Recog-Lite</title>
       </Head>
 
       <LiteShell>

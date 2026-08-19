@@ -152,7 +152,7 @@ export default function ClinicianResults() {
   return (
     <>
       <Head>
-        <title>Where should we send your results? | Recog-Lite</title>
+        <title>Where to send your results | Recog-Lite</title>
       </Head>
 
       <LiteShell scroll className="px-5 pb-12 sm:px-8">
@@ -171,7 +171,8 @@ export default function ClinicianResults() {
             className="lite-rise mt-4 text-[14.5px] leading-relaxed text-quizSecondary"
             style={{ animationDelay: "120ms" }}
           >
-            Tell us your name and email, and we&apos;ll send you a copy
+            We&apos;ll send your scored result, along with the published validation
+            data it is referenced against.
           </p>
 
           <form
@@ -223,12 +224,12 @@ export default function ClinicianResults() {
             )}
 
             <LiteButton type="submit" disabled={submitting}>
-              {submitting ? "Saving…" : "Reveal my score"}
+              {submitting ? "Saving…" : "Send my result"}
             </LiteButton>
 
             <p className="text-center text-[11.5px] leading-relaxed text-quizOutline">
-              We&apos;ll only use your details to share your result and brain health
-              recommendations. Unsubscribe any time.
+              Used only to send your result and related research updates.
+              Unsubscribe any time.
             </p>
           </form>
         </div>
