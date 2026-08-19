@@ -66,8 +66,6 @@ export type LiteTwoReportCopy = {
   };
   risk: {
     body: string;
-    actionablesIntro: string;
-    actionables: readonly string[];
   };
   baseline: {
     eyebrow: string;
@@ -81,6 +79,18 @@ export type LiteTwoReportCopy = {
     h2: string;
     /** The page appends the italicised journal name after this. */
     bodyLead: string;
+    testimonials: readonly { name: string; age: string; quote: string }[];
+  };
+  whyNow: {
+    /** h2 splits around the serif accent: `{lead}<Serif>{serif}</Serif>{tail}` */
+    h2Lead: string;
+    h2Serif: string;
+    h2Tail: string;
+    trustMiddle: string;
+  };
+  sample: {
+    h2: string;
+    body: string;
   };
   closing: {
     quote: readonly string[];
@@ -126,6 +136,46 @@ const SPEED_CHIP = {
   ruleColor: "#F97316",
 } as const;
 
+/** The consumer quotes, reworded for an audience that reads them at 60. */
+const SENIOR_TESTIMONIALS = [
+  {
+    name: "Priya S.",
+    age: "48",
+    quote: "Only 10 to 15 minutes, on any device, and the games are short and simple.",
+  },
+  {
+    name: "Marcus L.",
+    age: "61",
+    quote: "The report explained what each score meant, so I knew what to do next.",
+  },
+  {
+    name: "Wei Ling T.",
+    age: "39",
+    quote: "It picked up my mum's memory changes before mid-stage dementia.",
+  },
+] as const;
+
+const OPTIMIZER_TESTIMONIALS = [
+  {
+    name: "Priya S.",
+    age: "48",
+    quote:
+      "Ten minutes, on my phone, and the games were genuinely fun. I've never finished a health check that fast.",
+  },
+  {
+    name: "Marcus L.",
+    age: "61",
+    quote:
+      "The tips were practical. I finally know what to actually do about my brain health instead of just worrying.",
+  },
+  {
+    name: "Wei Ling T.",
+    age: "39",
+    quote:
+      "It picked up a change in my mum before her dementia reached mid-stage. We got her assessed months earlier than we would have.",
+  },
+] as const;
+
 const OPTIMIZER_RISK_BODY =
   "We looked at your risk factors too — health and lifestyle habits like high blood pressure, poor sleep, or not enough exercise can slow your brain down over time.";
 
@@ -137,6 +187,7 @@ const OPTIMIZER_PRODUCT = {
   h2: "What do you do now? Take the FULL ReCOGnAIze assessment",
   bodyLead:
     "Validated against MRI scans, built on a five-year NTU study of 1,500 people and published in ",
+  testimonials: OPTIMIZER_TESTIMONIALS,
 } as const;
 
 const SENIOR_PRODUCT = {
@@ -144,6 +195,17 @@ const SENIOR_PRODUCT = {
   h2: "What do you do now? Take the FULL ReCOGnAIze assessment",
   bodyLead:
     "Validated against MRI brain scans, built on a five-year NTU study of 1,500 adults, published in ",
+  testimonials: SENIOR_TESTIMONIALS,
+} as const;
+
+const OPTIMIZER_SAMPLE = {
+  h2: "Ready to find out where your brain health actually stands?",
+  body: "The full assessment measures memory, attention and executive function. Here's a sample of the report you will get for every domain.",
+} as const;
+
+const SENIOR_SAMPLE = {
+  h2: "Ready to find out where your brain health actually stands?",
+  body: "This is one page from the report you receive.",
 } as const;
 
 const withName = (name: string | null, line: string) =>
@@ -176,15 +238,7 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
       shareText:
         "My tip from a 60-second brain speed test: recall a friend's kopi order without checking. Try yours:",
     },
-    risk: {
-      body: OPTIMIZER_RISK_BODY,
-      actionablesIntro: "Here are 3 actionables you can do right now",
-      actionables: [
-        "Keep doing what you're doing — your speed is strong, so protect it with consistent sleep and regular exercise.",
-        "Challenge your brain daily — try a new route to work, learn a new skill, or switch up your routine.",
-        "Track your baseline — take the full assessment so you have a reference point to compare against over time.",
-      ],
-    },
+    risk: { body: OPTIMIZER_RISK_BODY },
     baseline: {
       eyebrow: "Your baseline so far",
       h2Lead: "You've only covered ",
@@ -196,6 +250,13 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
       ],
     },
     product: OPTIMIZER_PRODUCT,
+    whyNow: {
+      h2Lead: "The best time to set a baseline is while you are ",
+      h2Serif: "sharp",
+      h2Tail: ".",
+      trustMiddle: "Age-normed comparison",
+    },
+    sample: OPTIMIZER_SAMPLE,
     closing: {
       quote: [
         "Tomorrow's meeting is a tough one, and if I don't have my attention covered, I can't perform well. Thanks to checking my brain, I'm aware of how to optimize it now. Glad I found ReCOGnAIze!",
@@ -237,15 +298,7 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
       shareText:
         "My tip from a 60-second brain speed test: skim one email and act on it in a single pass. Try yours:",
     },
-    risk: {
-      body: OPTIMIZER_RISK_BODY,
-      actionablesIntro: "Here are 3 actionables you can do right now",
-      actionables: [
-        "Prioritise sleep — aim for 7-9 hours; even one extra hour can sharpen reaction time the next day.",
-        "Move for 20 minutes — a brisk walk or any cardio boosts blood flow to the brain and improves processing speed.",
-        "Take the full assessment — find out which domain is actually holding you back so you fix the real bottleneck.",
-      ],
-    },
+    risk: { body: OPTIMIZER_RISK_BODY },
     baseline: {
       eyebrow: "Your baseline so far",
       h2Lead: "You've only covered ",
@@ -257,6 +310,13 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
       ],
     },
     product: OPTIMIZER_PRODUCT,
+    whyNow: {
+      h2Lead: "You can't optimize what you haven't ",
+      h2Serif: "measured",
+      h2Tail: ".",
+      trustMiddle: "Age-normed comparison",
+    },
+    sample: OPTIMIZER_SAMPLE,
     closing: {
       quote: [
         "Speed was my worst of the five, which stung. Turns out speed wasn't the problem — my executive function was, and that's why my afternoons fell apart. Fixed the right thing. Glad I found ReCOGnAIze!",
@@ -300,15 +360,7 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
       shareText:
         "My tip from a 60-second brain speed check: recall a friend's kopi order without checking. Try yours:",
     },
-    risk: {
-      body: SENIOR_RISK_BODY,
-      actionablesIntro: "Here are 3 actionables you can do right now",
-      actionables: [
-        "Take a gentle walk every day — even 15 minutes helps blood flow to the brain and supports long-term cognitive health.",
-        "Stay socially active — regular conversations and group activities keep your brain engaged across multiple domains.",
-        "Set a baseline with the full assessment — so you and your doctor have numbers to compare against over time.",
-      ],
-    },
+    risk: { body: SENIOR_RISK_BODY },
     baseline: {
       eyebrow: "What we covered today",
       h2Lead: "You've only covered ",
@@ -320,6 +372,13 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
       ],
     },
     product: SENIOR_PRODUCT,
+    whyNow: {
+      h2Lead: "A baseline now makes any change easier to ",
+      h2Serif: "spot later",
+      h2Tail: ".",
+      trustMiddle: "Compared to your age",
+    },
+    sample: SENIOR_SAMPLE,
     closing: {
       quote: [
         "I kept losing the thread in conversations and blamed my age. The report showed it was my attention that had slipped, not my memory.",
@@ -358,15 +417,7 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
       shareText:
         "My tip from a 60-second brain speed check: read one page, then say the main idea out loud. Try yours:",
     },
-    risk: {
-      body: SENIOR_RISK_BODY,
-      actionablesIntro: "Here are 3 actionables you can do right now",
-      actionables: [
-        "Take a gentle walk every day — even 15 minutes helps blood flow to the brain and supports thinking speed.",
-        "Keep a simple routine — regular meals, consistent sleep, and familiar structure all reduce cognitive load.",
-        "Take the full assessment — share the results with your doctor so they have numbers to work with, not just symptoms.",
-      ],
-    },
+    risk: { body: SENIOR_RISK_BODY },
     baseline: {
       eyebrow: "What we covered today",
       h2Lead: "You've only covered ",
@@ -378,6 +429,13 @@ export const LITE_TWO_REPORT_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> 
       ],
     },
     product: SENIOR_PRODUCT,
+    whyNow: {
+      h2Lead: "A single test is a starting point, ",
+      h2Serif: "not a conclusion",
+      h2Tail: ".",
+      trustMiddle: "Compared to your age",
+    },
+    sample: SENIOR_SAMPLE,
     closing: {
       quote: [
         "My first score came back slower than I expected, and it worried me.",
