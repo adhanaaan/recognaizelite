@@ -70,7 +70,6 @@ const SECTIONS = [
   { id: "risk", label: "Risk factors" },
   { id: "baseline", label: "Your baseline" },
   { id: "recognaize", label: "The test" },
-  { id: "how-it-works", label: "How it works" },
   { id: "offer", label: "The offer" },
   { id: "closing", label: "Wrap up" },
 ];
@@ -91,10 +90,6 @@ const HOW_IT_WORKS_STEPS = [
     step: "Step 3",
     title: "Hop on a teleconsult",
     body: "A certified doctor analyses your report with you over a telehealth consultation and explains it in detail with clear next steps.",
-    doctor: {
-      name: "Dr Christopher Tan Ee Chong",
-      credentials: "MBBS (Singapore), MRCS, GCFM",
-    },
   },
 ];
 
@@ -536,6 +531,7 @@ export default function LiteTwoReport() {
                   className="mt-3 font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-[#1C110A]"
                 >
                   {copy.baseline.h2Lead}
+                  <br />
                   <span
                     className="bg-clip-text text-transparent"
                     style={{ backgroundImage: RANK_GRADIENT }}
@@ -600,17 +596,6 @@ export default function LiteTwoReport() {
                   <Serif>Alzheimer&apos;s &amp; Dementia</Serif>.
                 </motion.p>
 
-                <motion.button
-                  variants={rise}
-                  type="button"
-                  onClick={() => Router.push(`${LITE_TWO.basePath}/report-full`)}
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-6 w-full rounded-full py-4 text-[16px] font-extrabold tracking-wide text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06]"
-                  style={{ background: RANK_GRADIENT }}
-                >
-                  Unlock Now
-                </motion.button>
-
                 <motion.div
                   variants={rise}
                   className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-6 rounded-2xl border border-[#F2DDCE] bg-white/70 px-4 py-4 sm:px-5"
@@ -637,13 +622,9 @@ export default function LiteTwoReport() {
                   />
                 </motion.div>
 
-              </Cascade>
-            </SnapSection>
-
-            {/* ---------------------------------- 7 · how it works --- */}
-            <SnapSection id="how-it-works">
-              <Cascade amount={0.15}>
-                <EyebrowV2>How it works</EyebrowV2>
+                <div className="mt-9">
+                  <EyebrowV2>How it works</EyebrowV2>
+                </div>
                 <motion.h2
                   variants={rise}
                   className="mt-3 font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-[#1C110A]"
@@ -652,7 +633,7 @@ export default function LiteTwoReport() {
                 </motion.h2>
 
                 <motion.ol variants={stagger} className="mt-8 space-y-6">
-                  {HOW_IT_WORKS_STEPS.map(({ step, title, body, domains, doctor }, i) => (
+                  {HOW_IT_WORKS_STEPS.map(({ step, title, body, domains }, i) => (
                     <motion.li key={title} variants={rise}>
                       <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#B4653C]">
                         {step}
@@ -672,13 +653,6 @@ export default function LiteTwoReport() {
                               {d}
                             </span>
                           ))}
-                        </div>
-                      )}
-
-                      {doctor && (
-                        <div className="mt-4 rounded-2xl border border-[#F2DDCE] bg-white p-4">
-                          <p className="text-[14px] font-extrabold text-[#1C110A]">{doctor.name}</p>
-                          <p className="mt-0.5 text-[12px] text-[#8A6A58]">{doctor.credentials}</p>
                         </div>
                       )}
 
@@ -717,9 +691,9 @@ export default function LiteTwoReport() {
                   </blockquote>
                   <figcaption className="mt-5 flex items-center gap-3">
                     <img
-                      src="/images/lite-one/logo-gray-matter.svg"
-                      alt=""
-                      className="h-10 w-10 rounded-full object-contain"
+                      src="/images/lite-one/prof-nagaendran.png"
+                      alt="A/Prof Nagaendran Kandiah"
+                      className="h-12 w-12 shrink-0 rounded-full object-cover"
                     />
                     <div>
                       <p className="text-[14px] font-extrabold text-[#1C110A]">
