@@ -22,29 +22,6 @@ type StepDef =
   | { kind: "statCard"; cardId: string };
 
 /**
- * Per-funnel wording tweaks on top of the shared question bank
- * (src/data/brainHealthQuestions.ts), scoped to /lite-two only — testers on
- * this funnel flagged two prompts as ambiguous, and the fix is worded
- * specifically for this audience rather than pushed into the bank every
- * other lite funnel shares.
- */
-const QUESTION_OVERRIDES: Partial<Record<string, Partial<Question>>> = {
-  hotFlushes: {
-    prompt: "Have you noticed hot flushes, night sweats, or changes to your menstrual cycle?",
-  },
-  someoneElseNoticed: {
-    prompt:
-      "Have family or friends mentioned noticing changes in your behaviour or habits, even if you haven't?",
-  },
-};
-
-function questionFor(id: string): Question | undefined {
-  const base = QUESTIONS_BY_ID[id];
-  const override = QUESTION_OVERRIDES[id];
-  return base && override ? { ...base, ...override } : base;
-}
-
-/**
  * The question path of b2cfunnel's `FULL_FLOW` (`src/config/funnelFlow.ts`),
  * step for step. Its flow also carries the hook, email gate, analysing, result
  * and paywall steps; in this funnel those are separate routes, so only the
@@ -104,8 +81,8 @@ function visibleQuestionsForGroup(
   answers: Answers
 ): Question[] {
   return questionIds
-    .map((id) => questionFor(id))
-    .filter((q): q is Question => q != null && questionVisible(q, answers));
+    .map((id) => QUESTIONS_BY_ID[id])
+    .filter((q): q is Question => Boolean(q) && questionVisible(q, answers));
 }
 
 /**
@@ -121,8 +98,8 @@ function visibleQuestionsForGroup(
 function visibleSteps(answers: Answers): StepDef[] {
   return ALL_STEPS.filter((step) => {
     if (step.kind !== "question") return true;
-    const question = questionFor(step.questionId);
-    return question != null && questionVisible(question, answers);
+    const question = QUESTIONS_BY_ID[step.questionId];
+    return Boolean(question) && questionVisible(question, answers);
   });
 }
 
@@ -222,7 +199,7 @@ export default function LiteTwoQuizPage() {
             {step.kind === "question" && (
               <QuestionStep
                 key={step.questionId}
-                question={questionFor(step.questionId)!}
+                question={QUESTIONS_BY_ID[step.questionId]}
                 value={answers[step.questionId]}
                 canGoBack={canGoBack}
                 onAnswer={(value) => setAnswer(step.questionId, value)}
