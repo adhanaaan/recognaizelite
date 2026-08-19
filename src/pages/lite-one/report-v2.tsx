@@ -578,22 +578,27 @@ export default function ReportV2() {
 
                 <motion.div
                   variants={rise}
-                  className="mt-6 flex items-center justify-center gap-6 rounded-2xl border border-[#F2DDCE] bg-white/70 px-5 py-4"
+                  className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-6 rounded-2xl border border-[#F2DDCE] bg-white/70 px-4 py-4 sm:px-5"
                 >
+                  {/* Three real logos at their native aspect ratio, so the
+                      row is wide even scaled down — h-9/h-6 (the desktop
+                      sizing) overflowed a 375-430px phone card by ~70px.
+                      Smaller by default, full size from sm: up; flex-wrap
+                      is a safety net for anything narrower still. */}
                   <img
                     src="/images/lite-one/logo-gms-ntu.png"
                     alt="Nanyang Technological University"
-                    className="h-9 w-auto opacity-80"
+                    className="h-6 w-auto shrink-0 opacity-80 sm:h-9"
                   />
                   <img
                     src="/images/lite-one/logo-lkc-drc.png"
                     alt="LKC Medicine Dementia Research Centre"
-                    className="h-9 w-auto opacity-80"
+                    className="h-6 w-auto shrink-0 opacity-80 sm:h-9"
                   />
                   <img
                     src="/images/lite-one/logo-pubmed.svg"
                     alt="PubMed"
-                    className="h-6 w-auto opacity-80"
+                    className="h-4 w-auto shrink-0 opacity-80 sm:h-6"
                   />
                 </motion.div>
 
