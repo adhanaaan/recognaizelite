@@ -18,7 +18,7 @@ import { LITE_TWO, stashQuizResult } from "src/utils/liteOne";
 
 type StepDef =
   | { kind: "question"; questionId: string }
-  | { kind: "questionGroup"; title: string; questionIds: string[] }
+  | { kind: "questionGroup"; title: string; description?: string; questionIds: string[] }
   | { kind: "statCard"; cardId: string };
 
 /**
@@ -36,6 +36,9 @@ const ALL_STEPS: StepDef[] = [
   {
     kind: "questionGroup",
     title: "Some risk factors",
+    // The previous question was about family history — this one is not, and
+    // testers assumed it still was without this line.
+    description: "These are about your own health, not your family's.",
     questionIds: ["highBp", "highCholesterol", "diabetes", "hearingLoss", "visionLoss"],
   },
 
@@ -208,6 +211,7 @@ export default function LiteTwoQuizPage() {
               <QuestionGroupScreen
                 key={step.title}
                 title={step.title}
+                description={step.description}
                 questions={visibleQuestionsForGroup(step.questionIds, answers)}
                 answers={answers}
                 canGoBack={canGoBack}

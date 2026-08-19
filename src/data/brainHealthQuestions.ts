@@ -41,7 +41,7 @@ export const QUESTIONS: Question[] = [
     id: "hotFlushes",
     type: "single-select",
     axis: "risk",
-    prompt: "Have you noticed hot flushes, night sweats, or changes to your cycle?",
+    prompt: "Have you noticed hot flushes, night sweats, or changes to your menstrual cycle?",
     citation: "straw10",
     showIf: { questionId: "sex", equals: "female" },
     options: [
@@ -263,7 +263,8 @@ export const QUESTIONS: Question[] = [
     id: "someoneElseNoticed",
     type: "single-select",
     axis: "symptom",
-    prompt: "Has anyone else noticed these changes in your behaviour or habits?",
+    prompt:
+      "Have family or friends mentioned noticing changes in your behaviour or habits, even if you haven't?",
     citation: "scd",
     options: [
       { id: "yes", label: "Yes", score: 8 },
