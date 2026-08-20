@@ -610,9 +610,12 @@ export default function Act4HealthReport() {
                 >
                   {copy.product.h2}
                 </motion.h2>
+                {/* The shared lite-two copy cites the publishing journal;
+                    this funnel's clinic asked for the plainer research-credit
+                    line instead, dropping that citation clause. */}
                 <motion.p variants={rise} className="mt-4 text-[15.5px] leading-[1.6] text-[#6B5245]">
-                  {copy.product.bodyLead}
-                  <Serif>Alzheimer&apos;s &amp; Dementia</Serif>.
+                  Built on 5 years of research from Nanyang Technological University and validated
+                  against MRI brain scans.
                 </motion.p>
 
                 <motion.div
@@ -642,13 +645,13 @@ export default function Act4HealthReport() {
                 </motion.div>
 
                 <div className="mt-9">
-                  <EyebrowV2>How it works</EyebrowV2>
+                  <EyebrowV2>What happens next</EyebrowV2>
                 </div>
                 <motion.h2
                   variants={rise}
                   className="mt-3 font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-[#1C110A]"
                 >
-                  From booking to clear next steps in three steps
+                  From screening to answers
                 </motion.h2>
 
                 <motion.ol variants={stagger} className="mt-8 space-y-6">
