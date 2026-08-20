@@ -89,6 +89,17 @@ export function isNoviMode(): boolean {
 }
 
 /**
+ * The /act4health partner funnel. A strict subset of isLiteOneMode() (which
+ * every lite funnel, including this one, answers true for) — this one is for
+ * the handful of spots that need to diverge from the rest of the lite family,
+ * such as the larger touch targets its older audience needs on the game's
+ * number pad.
+ */
+export function isAct4HealthMode(): boolean {
+  return getHookClinic() === "Act4Health";
+}
+
+/**
  * ReCOGnAIze Lite (/lite-one) and its campaign copies (/lite-worldalzmonth).
  * They run the same Symbol Matching game as every other funnel but re-skinned
  * in the orange "Clinical Empathy" palette that /demo uses, so the whole flow

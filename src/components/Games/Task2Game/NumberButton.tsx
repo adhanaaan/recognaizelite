@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { isDarkHookMode, isLiteOneMode, isNoviMode, isSjmcMode } from "src/utils/assessment";
+import { isAct4HealthMode, isDarkHookMode, isLiteOneMode, isNoviMode, isSjmcMode } from "src/utils/assessment";
 import { LITE } from "src/constants/liteOneTheme";
 
 interface Props extends React.PropsWithChildren {
@@ -20,6 +20,7 @@ export function NumberButton({ onClick, className, children, id, desktopDemo = f
   const ikigai = isDarkHookMode();
   const sjmc = isSjmcMode();
   const lite = isLiteOneMode();
+  const act4health = isAct4HealthMode();
   const defaultBg = lite ? LITE.padGradient : novi ? NoviBgColor : ikigai ? IkigaiBgColor : sjmc ? SjmcBgColor : InitialBgColor;
   const [background, setBackground] = useState(defaultBg);
 
@@ -35,7 +36,13 @@ export function NumberButton({ onClick, className, children, id, desktopDemo = f
         `bg-gradient-to-b font-extrabold ${novi ? "text-[#1B2130]" : "text-white"} rounded-full shadow-md ${lite ? "shadow-[#e8a583]/50" : novi ? "shadow-black/30" : ikigai ? "shadow-black/30" : sjmc ? "shadow-[#C4A48F]/40" : "shadow-gray-400"} c last:col-span-3 last:mx-auto`,
         desktopDemo
           ? "w-[85.86px] h-[85.86px] text-[48px] leading-none"
-          : "size-11 tall:h-14 tall:w-14 tall-lg:size-16 text-[24px] tall:text-[32px] leading-[32px] tall:leading-[40px]",
+          // Act4Health's audience is 60s-80s, so the shared mobile size (44px,
+          // scaling to 64px on tall screens) is bumped up a tier for bigger
+          // touch targets and more legible digits — every other funnel that
+          // shares this component (lite-one, novi, sjmc, ikigai) is unaffected.
+          : act4health
+            ? "h-[64px] w-[64px] tall:h-[80px] tall:w-[80px] tall-lg:h-[96px] tall-lg:w-[96px] text-[28px] tall:text-[36px] tall-lg:text-[42px] leading-[36px] tall:leading-[44px] tall-lg:leading-[50px]"
+            : "size-11 tall:h-14 tall:w-14 tall-lg:size-16 text-[24px] tall:text-[32px] leading-[32px] tall:leading-[40px]",
         className,
       ].join(" ")}
       onClick={() =>
