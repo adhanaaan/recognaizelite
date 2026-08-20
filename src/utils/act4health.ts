@@ -13,4 +13,10 @@ export const ACT4HEALTH_LOGO = {
 };
 
 /** The clinic's WhatsApp booking line. */
-export const ACT4HEALTH_WHATSAPP_URL = "https://wa.me/60182542580";
+const ACT4HEALTH_WHATSAPP_NUMBER = "60182542580";
+
+/** Prefilled so a visitor can just hit send rather than typing an opener. */
+const ACT4HEALTH_WHATSAPP_DRAFT =
+  "Hello! I would like to know more about the comprehensive cognitive assessment with Recognaize.";
+
+export const ACT4HEALTH_WHATSAPP_URL = `https://wa.me/${ACT4HEALTH_WHATSAPP_NUMBER}?text=${encodeURIComponent(ACT4HEALTH_WHATSAPP_DRAFT)}`;
