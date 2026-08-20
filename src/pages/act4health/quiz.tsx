@@ -50,8 +50,10 @@ const ALL_STEPS: StepDef[] = [
 
   // The only stat card this funnel keeps — the rest (lancet2024, salthouse)
   // are dropped so the quiz carries a single credibility beat instead of
-  // three, at the position IMH WiSE already had.
-  { kind: "statCard", cardId: "imhWise" },
+  // three, at the position IMH WiSE already had. The stat itself is the
+  // Malaysian NHMS figure rather than the Singapore one the other lite
+  // funnels show, since this clinic's visitors are local to Petaling Jaya.
+  { kind: "statCard", cardId: "nhmsMalaysia" },
 
   { kind: "question", questionId: "tracks" },
 
