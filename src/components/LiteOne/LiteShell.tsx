@@ -86,11 +86,13 @@ export function LiteShell({
               />
               {partnerLogo && (
                 <>
-                  <span aria-hidden className="h-6 w-px shrink-0 bg-charcoal/20" />
+                  <span aria-hidden className="h-8 w-px shrink-0 bg-charcoal/20" />
+                  {/* Taller than the Gray Matter mark on purpose — see the
+                      matching note in LandingSections' hero lock-up. */}
                   <img
                     src={partnerLogo.src}
                     alt={partnerLogo.alt}
-                    className="h-[20px] w-auto"
+                    className="h-[46px] w-auto"
                   />
                 </>
               )}

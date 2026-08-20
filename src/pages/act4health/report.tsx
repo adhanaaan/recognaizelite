@@ -246,11 +246,15 @@ export default function Act4HealthReport() {
                   alt="Gray Matter Solutions"
                   className="h-[22px] w-auto shrink-0"
                 />
-                <span aria-hidden className="h-4 w-px shrink-0 bg-[#241610]/20" />
+                <span aria-hidden className="h-7 w-px shrink-0 bg-[#241610]/20" />
+                {/* The stacked lock-up carries its wordmark in the bottom
+                    third, so it needs more height than the Gray Matter mark
+                    to stay readable — still narrow enough to leave the share
+                    button its room at 390px. */}
                 <img
                   src={ACT4HEALTH_LOGO.src}
                   alt={ACT4HEALTH_LOGO.alt}
-                  className="h-[13px] w-auto min-w-0 object-contain object-left"
+                  className="h-[38px] w-auto min-w-0 object-contain object-left"
                 />
               </div>
               <button
@@ -764,7 +768,7 @@ export default function Act4HealthReport() {
                   <img
                     src={ACT4HEALTH_LOGO.src}
                     alt={ACT4HEALTH_LOGO.alt}
-                    className="h-[22px] w-auto"
+                    className="h-[76px] w-auto"
                   />
                   <p className="mt-4 font-display text-[19px] font-extrabold tracking-[-0.01em] text-[#1C110A]">
                     Full cognitive screening &amp; consultation

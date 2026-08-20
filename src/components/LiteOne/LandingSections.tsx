@@ -143,11 +143,14 @@ export function HeroVideo({
           />
           {partnerLogo && (
             <>
-              <span aria-hidden className="h-6 w-px shrink-0 bg-charcoal/20" />
+              <span aria-hidden className="h-8 w-px shrink-0 bg-charcoal/20" />
+              {/* Taller than the Gray Matter mark on purpose: this one is a
+                  stacked lock-up, so its own wordmark is only the bottom third
+                  of the image and matching heights would leave it unreadable. */}
               <img
                 src={partnerLogo.src}
                 alt={partnerLogo.alt}
-                className="h-[19px] w-auto sm:h-[22px]"
+                className="h-[44px] w-auto sm:h-[50px]"
               />
             </>
           )}
