@@ -68,6 +68,7 @@ const CLINIC_OPTIONS: { value: string; label: string }[] = [
   { value: "liteworldalz", label: "Recog-Lite · World Alz Month" },
   { value: "liteclinician", label: "Recog-Lite · Clinician" },
   { value: "litetwo", label: "BrainScan Testing · Lite Two" },
+  { value: "act4health", label: "Act4Health" },
 ];
 
 const ROLE_LABELS: Record<string, string> = {

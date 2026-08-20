@@ -126,6 +126,22 @@ const BRAND: Record<string, BrandTheme> = {
     pillBg: "rgba(247,117,40,0.12)",
     pillText: "#b8480f",
   },
+  // Same palette as liteone — /act4health is /lite-two's flow co-branded for
+  // the ACT4Health clinic, so it reads the same on a partner's screen.
+  act4health: {
+    name: "Act4Health",
+    partnerLogoSrc: "/images/act4health/logo-act4health.png",
+    partnerLogoAlt: "Act4Health",
+    pageBg: "linear-gradient(180deg, #fff4ee 0%, #FFFFFF 100%)",
+    cardBg: "#ffffff",
+    cardBorder: "#d8c2b9",
+    textPrimary: "#2d2d2d",
+    textMuted: "#7d5747",
+    accent: "#f77528",
+    accentDark: "#b8480f",
+    pillBg: "rgba(247,117,40,0.12)",
+    pillText: "#b8480f",
+  },
   liteworldalz: {
     name: "Recog-Lite · World Alzheimer's Month",
     partnerLogoSrc: null,

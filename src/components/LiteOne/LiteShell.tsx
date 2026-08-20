@@ -15,11 +15,14 @@ export function LiteShell({
   scroll = false,
   className = "",
   showHeader = true,
+  partnerLogo,
 }: {
   children: React.ReactNode;
   scroll?: boolean;
   className?: string;
   showHeader?: boolean;
+  /** Co-branded funnels show the partner's mark beside the Gray Matter logo. */
+  partnerLogo?: { src: string; alt: string };
 }) {
   React.useEffect(() => {
     if (!scroll) return;
@@ -75,12 +78,22 @@ export function LiteShell({
 
         {showHeader && (
           <header className="relative shrink-0 pt-7 sm:pt-9">
-            <div className="flex justify-center px-6">
+            <div className="flex items-center justify-center gap-3 px-6">
               <img
                 src="/images/lite-one/logo-gray-matter.svg"
                 alt="Gray Matter Solutions"
                 className="h-[30px] w-auto"
               />
+              {partnerLogo && (
+                <>
+                  <span aria-hidden className="h-6 w-px shrink-0 bg-charcoal/20" />
+                  <img
+                    src={partnerLogo.src}
+                    alt={partnerLogo.alt}
+                    className="h-[20px] w-auto"
+                  />
+                </>
+              )}
             </div>
           </header>
         )}

@@ -50,7 +50,14 @@ const PLATE = "bg-white shadow-[0_8px_28px_rgba(0,0,0,0.22)]";
  * browsers ignore the attribute — so playback is also kicked from the media
  * events, on tab re-focus, and on the visitor's first interaction.
  */
-export function HeroVideo({ children }: { children: React.ReactNode }) {
+export function HeroVideo({
+  children,
+  partnerLogo,
+}: {
+  children: React.ReactNode;
+  /** Co-branded funnels show the partner's mark beside the Gray Matter logo. */
+  partnerLogo?: { src: string; alt: string };
+}) {
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
   React.useEffect(() => {
@@ -123,16 +130,27 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-[rgba(10,6,3,0.62)] to-transparent"
       />
 
-      {/* Gray Matter logo floating on the video on a white plate. */}
+      {/* Gray Matter logo floating on the video on a white plate — with the
+          partner's mark beside it when the funnel is co-branded. */}
       <div className="absolute inset-x-0 top-0 z-20 flex justify-center px-5 pt-5 sm:pt-6">
         <div
-          className={`flex items-center rounded-2xl px-5 py-2.5 ${PLATE}`}
+          className={`flex items-center gap-3 rounded-2xl px-5 py-2.5 ${PLATE}`}
         >
           <img
             src="/images/lite-one/logo-gray-matter.svg"
             alt="Gray Matter Solutions"
             className="h-[28px] w-auto sm:h-[32px]"
           />
+          {partnerLogo && (
+            <>
+              <span aria-hidden className="h-6 w-px shrink-0 bg-charcoal/20" />
+              <img
+                src={partnerLogo.src}
+                alt={partnerLogo.alt}
+                className="h-[19px] w-auto sm:h-[22px]"
+              />
+            </>
+          )}
         </div>
       </div>
 

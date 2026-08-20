@@ -30,7 +30,10 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 //                                           the personalised v2 report; own table so its
 //                                           numbers never blend into the /lite-one
 //                                           baseline.)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo"]);
+//   act4health  → public.act4health_leads   (the ACT4Health partner funnel: /lite-two's
+//                                           flow co-branded for the clinic; own table so
+//                                           partner traffic reads clean.)
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo", "act4health"]);
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;

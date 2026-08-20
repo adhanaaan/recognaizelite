@@ -15,6 +15,7 @@ export const LITE_CLINIC = "liteone";
 export const WORLDALZ_CLINIC = "liteworldalz";
 export const CLINICIAN_CLINIC = "liteclinician";
 export const LITE_TWO_CLINIC = "litetwo";
+export const ACT4HEALTH_CLINIC = "act4health";
 
 /**
  * One entry per funnel built on the lite flow. /lite-worldalzmonth is a copy of
@@ -69,6 +70,20 @@ export const LITE_TWO: LiteVariant = {
   basePath: "/lite-two",
   defaultCampaign: "lite-two",
   storagePrefix: "recognaize-ltwo",
+};
+
+/**
+ * The Act4Health partner funnel — /lite-two's flow co-branded for ACT4Health,
+ * the University of Malaya geriatric clinic in Petaling Jaya. Same game, quiz
+ * and personalised report; the report's conversion path books a consultation
+ * over the clinic's WhatsApp instead of selling the online assessment.
+ */
+export const ACT4HEALTH: LiteVariant = {
+  clinic: ACT4HEALTH_CLINIC,
+  hookClinic: "Act4Health",
+  basePath: "/act4health",
+  defaultCampaign: "act4health",
+  storagePrefix: "recognaize-a4h",
 };
 
 const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;
