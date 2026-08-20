@@ -734,7 +734,15 @@ export default function Act4HealthReport() {
             {/* ------------------------------- 9 · book a consultation --- */}
             <SnapSection id="offer">
               <Cascade amount={0.15}>
-                <EyebrowV2>Your next step</EyebrowV2>
+                {/* EyebrowV2's 10.5px was too small for this funnel's older
+                    audience — the clinic asked for it to be readable, so this
+                    one eyebrow is set a step larger by hand. */}
+                <motion.p
+                  variants={rise}
+                  className="text-[14px] font-extrabold uppercase tracking-[0.24em] text-[#B4653C]"
+                >
+                  Your next step
+                </motion.p>
                 <motion.h2
                   variants={rise}
                   className="mt-3 font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.12] tracking-[-0.025em] text-[#1C110A]"
@@ -742,8 +750,8 @@ export default function Act4HealthReport() {
                   Book a consultation with Act4Health
                 </motion.h2>
                 <motion.p variants={rise} className="mt-4 text-[15.5px] leading-[1.6] text-[#6B5245]">
-                  With our mission to advance preventive cognitive health, everyone should treat
-                  their brain the same as their body — as early as possible.
+                  Your brain carries you through every part of life. Understand how it&apos;s
+                  doing today, and what you can do to protect it for the years ahead.
                 </motion.p>
 
                 <motion.div
@@ -764,7 +772,7 @@ export default function Act4HealthReport() {
 
                   <ul className="mt-5 space-y-3 border-t border-[#F2DDCE] pt-5">
                     {[
-                      "Full cognitive screening with the specialist team",
+                      "Comprehensive cognitive screening with the specialist team",
                       "A walkthrough of this report and what it means for you",
                       "Clear, personalised next steps for your brain health",
                     ].map((item) => (
@@ -865,7 +873,9 @@ export default function Act4HealthReport() {
                   </motion.div>
                 </motion.div>
 
-                <motion.p variants={rise} className="mt-8 pb-20 text-center text-[11px] leading-[1.6] text-[#C9B4A6]">
+                {/* Larger and solid rather than the usual faded footnote — the
+                    clinic's older readers were missing it at 11px. */}
+                <motion.p variants={rise} className="mt-8 pb-20 text-center text-[13.5px] font-semibold leading-[1.6] text-[#6B5245]">
                   Built on clinical research by Nanyang Technological University, LKC Medicine,
                   Dementia Research Centre Singapore.
                 </motion.p>
