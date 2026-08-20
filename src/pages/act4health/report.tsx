@@ -90,7 +90,9 @@ const HOW_IT_WORKS_STEPS = [
   {
     step: "Step 3",
     title: "Get your report and next steps",
-    body: "Your overall risk level for mild cognitive impairment, a breakdown across the four domains, and a specialist who walks you through it with clear next steps.",
+    // "a doctor", not "a specialist": under CKAPS the clinic is registered as
+    // a GP practice, so it must not describe its team as specialists.
+    body: "Your overall risk level for mild cognitive impairment, a breakdown across the four domains, and a doctor who walks you through it with clear next steps.",
   },
 ];
 
@@ -773,13 +775,16 @@ export default function Act4HealthReport() {
                   <p className="mt-4 font-display text-[19px] font-extrabold tracking-[-0.01em] text-[#1C110A]">
                     Full cognitive screening &amp; consultation
                   </p>
+                  {/* Under CKAPS the clinic is registered as a GP practice, not
+                      a specialist clinic, so neither it nor its team can be
+                      described as "specialist" anywhere on this page. */}
                   <p className="mt-1 text-[13px] font-bold text-[#B79C8E]">
-                    Specialist clinic for healthy ageing · Petaling Jaya
+                    GP Clinic for Healthy Ageing and Older Adults · Petaling Jaya
                   </p>
 
                   <ul className="mt-5 space-y-3 border-t border-[#F2DDCE] pt-5">
                     {[
-                      "Comprehensive cognitive screening with the specialist team",
+                      "Comprehensive cognitive screening with the Act4Health team",
                       "A walkthrough of this report and what it means for you",
                       "Clear, personalised next steps for your brain health",
                     ].map((item) => (
