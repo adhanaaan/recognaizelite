@@ -16,6 +16,7 @@ export const LITE_TABLES: Record<string, string> = {
   liteone: "liteone_leads",
   liteworldalz: "liteworldalz_leads",
   liteclinician: "liteclinician_leads",
+  litebcgolf: "litebcgolf_leads",
 };
 
 /** Table for a lite clinic, or null if the clinic isn't a lite funnel. */

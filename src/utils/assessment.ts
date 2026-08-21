@@ -98,7 +98,7 @@ export function isNoviMode(): boolean {
  * per-funnel split (routes, leads table, campaign) is carried by
  * hookReportPath and LiteVariant in src/utils/liteOne.ts, not by theming.
  */
-const LITE_HOOK_CLINICS = new Set(["LiteOne", "LiteWorldAlz", "LiteClinician"]);
+const LITE_HOOK_CLINICS = new Set(["LiteOne", "LiteWorldAlz", "LiteClinician", "LiteBcGolf"]);
 
 export function isLiteOneMode(): boolean {
   const clinic = getHookClinic();

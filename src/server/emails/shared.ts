@@ -132,6 +132,26 @@ export function professionalName(name: string | null): string | null {
   return firstName(cleaned);
 }
 
+/**
+ * Ordinal suffix for a percentile. Hardcoding "th" produces "71th" and "1th";
+ * the teens are the exception that makes a naive `% 10` wrong (11th, 12th,
+ * 13th, and then 111th, 112th, 113th).
+ */
+export function ordinalSuffix(n: number): string {
+  const mod100 = Math.abs(n) % 100;
+  if (mod100 >= 11 && mod100 <= 13) return "th";
+  switch (Math.abs(n) % 10) {
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
+  }
+}
+
 export function speedKeyOf(severity: string | null | undefined): SpeedKey {
   return severity === "low" || severity === "moderate" || severity === "high"
     ? severity

@@ -34,7 +34,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   // Allowlist clinic to known values; anything else is dropped silently so
   // the request still succeeds (falls back to default 30s norms).
-  const ALLOWED_CLINICS = new Set(['sjmc', 'hookikigai', 'healthtechx', 'tcmbrain', 'novi', 'liteone', 'liteworldalz', 'liteclinician']);
+  const ALLOWED_CLINICS = new Set(['sjmc', 'hookikigai', 'healthtechx', 'tcmbrain', 'novi', 'liteone', 'liteworldalz', 'liteclinician', 'litebcgolf']);
   const safeClinic =
     typeof clinic === 'string' && ALLOWED_CLINICS.has(clinic) ? clinic : undefined;
 

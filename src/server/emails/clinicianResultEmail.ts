@@ -37,6 +37,7 @@ import {
   MUTED,
   bandKeyOf,
   escapeHtml,
+  ordinalSuffix,
   professionalName,
   safeHttpUrl,
   speedKeyOf,
@@ -243,7 +244,7 @@ export function renderClinicianResultEmail(input: LiteEmailInput): RenderedEmail
   const positionLine =
     percentile === null
       ? "Your task was recorded but could not be scored against the reference sample."
-      : `${percentile}th percentile — ${bandWord} the expected range for your age.`;
+      : `${percentile}${ordinalSuffix(percentile)} percentile — ${bandWord} the expected range for your age.`;
 
   // --- Plain text. Some clients show only this, so it carries the same facts. ---
   const textLines = [
@@ -403,7 +404,7 @@ export function renderClinicianResultEmail(input: LiteEmailInput): RenderedEmail
                     Processing speed
                   </p>
                   <p style="margin:10px 0 0 0;font-size:30px;font-weight:bold;line-height:1.05;color:${INK};">
-                    ${percentile === null ? "—" : `${percentile}<span style="font-size:16px;color:${MUTED};">th percentile</span>`}
+                    ${percentile === null ? "—" : `${percentile}<span style="font-size:16px;color:${MUTED};">${ordinalSuffix(percentile)} percentile</span>`}
                   </p>
                   <p style="margin:6px 0 0 0;font-size:14px;line-height:1.5;color:${INK};">
                     ${escapeHtml(bandWord)} the expected range for your age

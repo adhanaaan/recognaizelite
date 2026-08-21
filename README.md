@@ -32,13 +32,16 @@ Server (API routes only — never exposed to the browser):
 
 ## Resend (result emails + campaign audience)
 
-`/lite-worldalzmonth` and `/lite-clinician` mail each lead their result on
-submit and add them to a Resend Audience for campaign broadcasts. Both happen
+`/lite-worldalzmonth`, `/lite-clinician` and `/lite-bcgolf` mail each lead
+their result on submit and add them to a Resend Audience. All of it happens
 server-side in `/api/save-lead`, after the lead row is written.
 
-The two use different templates, chosen per funnel in `EMAIL_CLINICS`:
+Each uses a different template, chosen per funnel in `EMAIL_CLINICS`:
 
 - **consumer** (`liteResultEmail.ts`) — explains the result. Used by `liteworldalz`.
+- **event** (`eventResultEmail.ts`) — a courtesy note to a guest at a
+  fundraiser: the result stated once and large, one gold rule, one action. Used
+  by `litebcgolf`.
 - **clinician** (`clinicianResultEmail.ts`) — reads as a short report: the
   percentile plotted against its reference range, the validation figures, both
   citations (`alz.70992` and `jpad.2024.89`), then one action. Used by
@@ -57,8 +60,8 @@ Setup:
 1. Verify your sending domain in Resend (Domains → Add Domain, then the DNS records).
 2. Create an Audience if you want the campaign list; copy its id.
 3. Run the sending funnel's email-columns migration in the Supabase SQL editor:
-   `013_liteworldalz_email.sql` for `liteworldalz`; `liteclinician` already has
-   the columns from `014`. Sending **fails closed** without them — the
+   `013_liteworldalz_email.sql` for `liteworldalz`; `liteclinician` and
+   `litebcgolf` already carry the columns, from `014` and `015`. Sending **fails closed** without them — the
    idempotency guard reads `email_sent_at`, and if that column is missing
    nothing is sent (a duplicate email to a real inbox is worse than a missing
    one). The function log says so.
@@ -104,6 +107,7 @@ that difference:
 | `/lite-one` | `liteone` | `liteone_leads` | 010, 011 |
 | `/lite-worldalzmonth` | `liteworldalz` | `liteworldalz_leads` | 012, 013 |
 | `/lite-clinician` | `liteclinician` | `liteclinician_leads` | 014 |
+| `/lite-bcgolf` | `litebcgolf` | `litebcgolf_leads` | 015 |
 
 `/lite-clinician` has eight pages, not nine: it carries no voucher page and no
 commerce CTA, so `report-full` does not exist for it. The clinician next step is

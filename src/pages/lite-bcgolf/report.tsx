@@ -7,15 +7,13 @@ import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { SampleReportMock } from "src/components/LiteOne/SampleReportMock";
 import { RiskFactorDropdown } from "src/components/LiteOne/RiskFactorDropdown";
 import { Reveal } from "src/components/LiteOne/useInView";
-import { Citations } from "src/components/LiteClinician/Citations";
-import { LITE_DOMAIN_DEFINITIONS } from "src/data/liteOneContent";
+import { LITE_DOMAIN_DEFINITIONS, RESEARCH_LINE } from "src/data/liteOneContent";
 import { resetResults, useResultStore } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import type { DomainReport } from "src/types/report";
-import { ordinalSuffix } from "src/utils/ordinal";
 import {
   AGE_LABELS,
-  LITE_CLINICIAN,
+  LITE_BCGOLF,
   clearLiteSession,
   fetchLiteReport,
   readLiteProfile,
@@ -24,22 +22,23 @@ import {
 } from "src/utils/liteOne";
 
 /**
- * This funnel carries no commerce pitch.
+ * This funnel does not drive to the voucher page.
  *
- * /lite-one closes with a "Claim 70% off" ribbon and an "Unlock Now" button
- * into a voucher page that discounts the assessment to $20. None of that
- * belongs here: the voucher page is test-only, and a consumer discount is the
- * wrong ask of a clinician regardless. The report ends on the result and the
- * evidence.
+ * /lite-one sends both of this page's CTAs to /report-full, which ends in a
+ * downloadable claim code. At a fundraiser that is the wrong move twice over:
+ * the voucher page is test-only, and pushing a discount at someone attending a
+ * charity tournament reads badly. Both CTAs are informational panels pointing
+ * at a member of staff instead.
  *
- * There is deliberately no CTA in its place. The clinician next step — refer a
- * patient, offer it in practice, talk to us — hasn't been decided, and an
- * invented one would be worse than none. This is where it goes when it is.
+ * `${LITE_BCGOLF.basePath}/report-full` still exists and still renders; it is
+ * simply unreachable from this page, so it can be opened directly to test.
+ * Nothing below navigates, which is why these are divs rather than disabled
+ * buttons — a button that visibly does nothing when tapped reads as broken.
  */
 const sectionClass =
   "rounded-2xl border border-quizOutline-variant bg-quizSurface-lowest p-5 shadow-card sm:p-6";
 
-export default function ClinicianReport() {
+export default function BcGolfReport() {
   const { result } = useResultStore();
 
   const [report, setReport] = React.useState<DomainReport | null>(null);
@@ -48,12 +47,12 @@ export default function ClinicianReport() {
   const [profile, setProfile] = React.useState<{ ageRange: string } | null>(null);
 
   React.useEffect(() => {
-    const stashedProfile = readLiteProfile(LITE_CLINICIAN);
+    const stashedProfile = readLiteProfile(LITE_BCGOLF);
     if (stashedProfile) {
       setProfile({ ageRange: stashedProfile.ageRange });
     }
 
-    const stashed = readStashedReport(LITE_CLINICIAN);
+    const stashed = readStashedReport(LITE_BCGOLF);
     if (stashed) {
       setReport(stashed);
       setLoading(false);
@@ -63,24 +62,24 @@ export default function ClinicianReport() {
       setLoading(false);
       return;
     }
-    fetchLiteReport(result, LITE_CLINICIAN)
+    fetchLiteReport(result, LITE_BCGOLF)
       .then(setReport)
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false));
   }, [result]);
 
   const handleRetake = () => {
-    clearLiteSession(LITE_CLINICIAN);
+    clearLiteSession(LITE_BCGOLF);
     resetResults();
     resetTaskProgress();
-    Router.replace(LITE_CLINICIAN.basePath);
+    Router.replace(LITE_BCGOLF.basePath);
   };
 
 
   const shell = (children: React.ReactNode) => (
     <>
       <Head>
-        <title>Result | Recog-Lite</title>
+        <title>Your brain speed result | Recog-Lite</title>
       </Head>
       <LiteShell scroll className="px-5 pb-16 sm:px-8">
         <div className="relative mx-auto w-full max-w-[520px] space-y-5 pt-6">{children}</div>
@@ -92,7 +91,7 @@ export default function ClinicianReport() {
     return shell(
       <div className="py-24 text-center">
         <div className="mx-auto size-10 animate-spin rounded-full border-[3px] border-quizOutline-variant border-t-quizPrimary" />
-        <p className="mt-5 text-[14px] text-quizSecondary">Scoring…</p>
+        <p className="mt-5 text-[14px] text-quizSecondary">Working out your result…</p>
       </div>
     );
   }
@@ -101,13 +100,13 @@ export default function ClinicianReport() {
     return shell(
       <div className={`${sectionClass} text-center`}>
         <h1 className="font-display text-[22px] font-extrabold text-charcoal">
-          No scored result on this device
+          We couldn&apos;t load your result
         </h1>
         <p className="mt-3 text-[14px] leading-relaxed text-quizSecondary">
-          {error ?? "This device has no completed task to score. Results are held for the session only and are not retrievable after it ends."}
+          {error ?? "We don't have a finished game on this device. Take the 60-second test and your score will appear here."}
         </p>
         <div className="mx-auto mt-6 max-w-[280px]">
-          <LiteButton onClick={handleRetake}>Start the assessment</LiteButton>
+          <LiteButton onClick={handleRetake}>Take the test</LiteButton>
         </div>
       </div>
     );
@@ -115,18 +114,6 @@ export default function ClinicianReport() {
 
   const severity = liteSeverityVisuals[report.severity];
   const percentile = Math.round(report.percentile);
-
-  // The shared palette labels the bands WEAK / ADEQUATE / STRONG, which reads as
-  // a grade awarded to the person. Against an age-matched distribution the
-  // defensible statement is where the score sits, so this funnel keeps the
-  // colours and replaces the words. Bands are ±1 SD — see calculateSeverity in
-  // src/server/report.ts.
-  const BAND_WORDING: Record<string, string> = {
-    Low: "below",
-    Medium: "within",
-    High: "above",
-  };
-  const bandWord = BAND_WORDING[report.severity] ?? "within";
   const ageLabel = profile?.ageRange ? AGE_LABELS[profile.ageRange] ?? profile.ageRange : null;
   const peerGroup = ageLabel ? `people aged ${ageLabel}` : "people in your age band";
 
@@ -145,18 +132,18 @@ export default function ClinicianReport() {
   const resultCopy =
     report.severity === "High"
       ? {
-          fact: `${percentile}${ordinalSuffix(percentile)} percentile against ${peerGroup}.`,
-          reframe: "More than one standard deviation above the age-matched mean.",
+          fact: `You reacted faster than ${percentile}% of ${peerGroup}.`,
+          reframe: `That puts you in the top ${Math.max(1, 100 - percentile)}% for your age band.`,
         }
       : report.severity === "Medium"
         ? {
-            fact: `${percentile}${ordinalSuffix(percentile)} percentile against ${peerGroup}.`,
-            reframe: "Within one standard deviation of the age-matched mean.",
+            fact: `You reacted faster than ${percentile}% of ${peerGroup}.`,
+            reframe: "That's within the typical range for your age band.",
           }
         : {
-            fact: `${percentile}${ordinalSuffix(percentile)} percentile against ${peerGroup}.`,
+            fact: `Most ${peerGroup} reacted faster than you today.`,
             reframe:
-              "More than one standard deviation below the age-matched mean. A single-session screen is sensitive to sleep, alertness and testing conditions; it is not a diagnosis.",
+              "Processing speed dips with poor sleep and slows with age. The risk factors below help explain today's score.",
           };
 
   // Overrides the shared server copy for a domain when this funnel has its own
@@ -169,11 +156,11 @@ export default function ClinicianReport() {
       {/* 1 — the result they earned */}
       <Reveal className={sectionClass}>
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-quizOutline">
-          Task result — symbol–digit substitution
+          Game result
         </p>
         <h1 className="mt-2 font-display text-[27px] font-extrabold leading-[1.12] text-charcoal sm:text-[31px]">
-          Your score is <span style={{ color: severity.color }}>{bandWord}</span> the
-          expected range for your age
+          Your speed is in the{" "}
+          <span style={{ color: severity.color }}>{severity.label.toLowerCase()}</span> range
         </h1>
 
         <div className="mt-4">
@@ -207,17 +194,26 @@ export default function ClinicianReport() {
           domain grid sits next to the game result that made it relevant) */}
       <Reveal className={sectionClass}>
         <h2 className="font-display text-[24px] font-extrabold leading-tight text-charcoal">
-          One domain of four
+          There is room for improvement
         </h2>
         <p className="mt-2 text-[13.5px] leading-relaxed text-quizSecondary">
-          This screen samples processing speed only. Memory, attention and executive
-          function are not measured by a 60-second task.
+          Speed is one of four domains. The 60-second test can&apos;t see the other three.
         </p>
 
         <div className="mt-4">
           <DomainGrid severity={severity} />
         </div>
 
+        {/* No discount ribbon at a fundraiser. The consumer funnels lead with
+            "Claim 70% off"; here the same space just says who to talk to. */}
+        <div className="mt-4 rounded-xl border border-quizOutline-variant bg-quizSurface-low px-4 py-3">
+          <p className="text-[13.5px] font-semibold leading-snug text-charcoal">
+            The full assessment covers all four domains.
+          </p>
+          <p className="mt-1 text-[12.5px] leading-snug text-quizSecondary">
+            Our team is here today if you would like to know more.
+          </p>
+        </div>
       </Reveal>
 
       {/* 3 — brain health risk factor quiz results */}
@@ -225,11 +221,10 @@ export default function ClinicianReport() {
         <RiskFactorDropdown />
       </Reveal>
 
-      {/* 3 — what the full assessment reports. Informational, not a pitch:
-          "Unlock" was the wording when this section ended in a buy button. */}
+      {/* 3 — unlock the full picture */}
       <Reveal className={sectionClass}>
         <h2 className="text-center font-display text-[24px] font-extrabold leading-tight text-charcoal">
-          What the full assessment reports
+          Unlock the complete picture of your brain performance
         </h2>
         <p className="mt-2 text-center text-[12px] font-bold uppercase tracking-[0.16em] text-quizOutline">
           Sample report
@@ -239,21 +234,30 @@ export default function ClinicianReport() {
           <SampleReportMock />
         </div>
 
-        <div className="mt-6">
-          <Citations compact />
-        </div>
+        <p className="mt-6 text-center text-[13px] leading-relaxed text-quizSecondary">
+          {RESEARCH_LINE}
+        </p>
 
+        <div className="mt-5 rounded-xl border border-quizPrimary/40 bg-quizSurface-low p-4 text-center">
+          <p className="font-display text-[16px] font-extrabold text-charcoal">
+            Ask our team to unlock it
+          </p>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-quizSecondary">
+            Show this screen to a member of our team and they&apos;ll set up the full
+            assessment for you.
+          </p>
+        </div>
       </Reveal>
 
-      {/* Retake. With no offer block and no page two, this is the report's
-          only remaining action. */}
+      {/* The retake link used to sit in a footer below the offer; that whole
+          block now lives on page two, so it lands here instead. */}
       <Reveal className="pb-4 pt-1 text-center">
         <button
           type="button"
           onClick={handleRetake}
           className="text-[13px] font-semibold text-quizSecondary underline underline-offset-4 transition-colors hover:text-charcoal"
         >
-          Retake
+          Retake the test
         </button>
       </Reveal>
     </>
