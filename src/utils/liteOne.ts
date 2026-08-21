@@ -14,6 +14,8 @@ import type { ScoreResult } from "src/types/quiz";
 export const LITE_CLINIC = "liteone";
 export const WORLDALZ_CLINIC = "liteworldalz";
 export const CLINICIAN_CLINIC = "liteclinician";
+export const LITE_TWO_CLINIC = "litetwo";
+export const ACT4HEALTH_CLINIC = "act4health";
 export const BCGOLF_CLINIC = "litebcgolf";
 
 /**
@@ -63,6 +65,28 @@ export const LITE_CLINICIAN: LiteVariant = {
   storagePrefix: "recognaize-lclin",
 };
 
+export const LITE_TWO: LiteVariant = {
+  clinic: LITE_TWO_CLINIC,
+  hookClinic: "LiteTwo",
+  basePath: "/lite-two",
+  defaultCampaign: "lite-two",
+  storagePrefix: "recognaize-ltwo",
+};
+
+/**
+ * The Act4Health partner funnel — /lite-two's flow co-branded for ACT4Health,
+ * the University of Malaya geriatric clinic in Petaling Jaya. Same game, quiz
+ * and personalised report; the report's conversion path books a consultation
+ * over the clinic's WhatsApp instead of selling the online assessment.
+ */
+export const ACT4HEALTH: LiteVariant = {
+  clinic: ACT4HEALTH_CLINIC,
+  hookClinic: "Act4Health",
+  basePath: "/act4health",
+  defaultCampaign: "act4health",
+  storagePrefix: "recognaize-a4h",
+};
+
 /** Business China Fundraising Golf Tournament, 21 August 2026. */
 export const LITE_BCGOLF: LiteVariant = {
   clinic: BCGOLF_CLINIC,
@@ -85,6 +109,11 @@ export type LiteProfile = {
   /** Stashed too, because the zustand result store is in-memory and a hard
       reload of the report page would otherwise lose the number. */
   score: number | null;
+  /** Raw quiz age answer ("18-29" … "60+"). `ageRange` is the leads-table
+      bucket, which QUIZ_AGE_TO_LITE shifts down a band, so pages that need
+      the visitor's real age band read this instead. Optional because
+      profiles stashed before it existed don't carry it. */
+  quizAge?: string | null;
 };
 
 function readJson<T>(key: string): T | null {
@@ -280,6 +309,20 @@ export const QUIZ_AGE_TO_LITE: Record<string, string> = {
   "50-59": "46-55",
   "60+": "56-65",
 };
+
+/** Display label per raw quiz age answer, for copy like "ages 60 and over". */
+export const QUIZ_AGE_LABELS: Record<string, string> = {
+  "18-29": "18 to 29",
+  "30-39": "30 to 39",
+  "40-49": "40 to 49",
+  "50-59": "50 to 59",
+  "60+": "60 and over",
+};
+
+/** The optimizer/senior split used by /lite-two's personalised report. */
+export function isSeniorQuizAge(quizAge: string | null | undefined): boolean {
+  return quizAge === "40-49" || quizAge === "50-59" || quizAge === "60+";
+}
 
 export const AGE_LABELS: Record<string, string> = {
   "18-25": "18–25",

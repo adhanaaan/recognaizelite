@@ -2,9 +2,10 @@
 -- Event: Friday 21 August 2026, Singapore Island Country Club (The Island Course).
 -- Run once in the Supabase SQL editor BEFORE the event. Submits 500 without it.
 --
--- Identical in shape to liteone_leads (010 + 011), liteworldalz_leads (012 + 013)
--- and liteclinician_leads (014). One normalizer in leadAggregation.ts serves all
--- four, so the columns must stay in lockstep.
+-- Identical in shape to liteone_leads (010 + 011), liteworldalz_leads (012 + 013),
+-- liteclinician_leads (014), litetwo_leads (015) and act4health_leads (016). One
+-- normalizer in leadAggregation.ts serves all of them, so the columns must stay
+-- in lockstep.
 --
 -- Why its own table: a one-day event is the clearest case for separation. Its
 -- traffic arrives in a few hours from a captive audience, which would distort

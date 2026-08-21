@@ -16,6 +16,8 @@ export const LITE_TABLES: Record<string, string> = {
   liteone: "liteone_leads",
   liteworldalz: "liteworldalz_leads",
   liteclinician: "liteclinician_leads",
+  litetwo: "litetwo_leads",
+  act4health: "act4health_leads",
   litebcgolf: "litebcgolf_leads",
 };
 

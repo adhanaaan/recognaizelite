@@ -67,6 +67,8 @@ const CLINIC_OPTIONS: { value: string; label: string }[] = [
   { value: "liteone", label: "BrainScan Testing" },
   { value: "liteworldalz", label: "Recog-Lite · World Alz Month" },
   { value: "liteclinician", label: "Recog-Lite · Clinician" },
+  { value: "litetwo", label: "BrainScan Testing · Lite Two" },
+  { value: "act4health", label: "Act4Health" },
   { value: "litebcgolf", label: "Business China Golf 2026" },
 ];
 

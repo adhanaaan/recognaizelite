@@ -26,7 +26,17 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 //                                           funnel; own table so a clinician
 //                                           audience never dilutes the consumer
 //                                           funnels' conversion numbers.)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone", "liteworldalz", "liteclinician", "litebcgolf"]);
+//   litetwo     → public.litetwo_leads      (the /lite-two funnel: /lite-one's flow with
+//                                           the personalised v2 report; own table so its
+//                                           numbers never blend into the /lite-one
+//                                           baseline.)
+//   act4health  → public.act4health_leads   (the ACT4Health partner funnel: /lite-two's
+//                                           flow co-branded for the clinic; own table so
+//                                           partner traffic reads clean.)
+//   litebcgolf  → public.litebcgolf_leads   (the Business China golf tournament funnel:
+//                                           a one-day event link, so its numbers are a
+//                                           single afternoon rather than a campaign.)
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo", "act4health", "litebcgolf"]);
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;

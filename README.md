@@ -61,7 +61,7 @@ Setup:
 2. Create an Audience if you want the campaign list; copy its id.
 3. Run the sending funnel's email-columns migration in the Supabase SQL editor:
    `013_liteworldalz_email.sql` for `liteworldalz`; `liteclinician` and
-   `litebcgolf` already carry the columns, from `014` and `015`. Sending **fails closed** without them — the
+   `litebcgolf` already carry the columns, from `014` and `017`. Sending **fails closed** without them — the
    idempotency guard reads `email_sent_at`, and if that column is missing
    nothing is sent (a duplicate email to a real inbox is worse than a missing
    one). The function log says so.
@@ -107,11 +107,20 @@ that difference:
 | `/lite-one` | `liteone` | `liteone_leads` | 010, 011 |
 | `/lite-worldalzmonth` | `liteworldalz` | `liteworldalz_leads` | 012, 013 |
 | `/lite-clinician` | `liteclinician` | `liteclinician_leads` | 014 |
-| `/lite-bcgolf` | `litebcgolf` | `litebcgolf_leads` | 015 |
+| `/lite-two` | `litetwo` | `litetwo_leads` | 015 |
+| `/act4health` | `act4health` | `act4health_leads` | 016 |
+| `/lite-bcgolf` | `litebcgolf` | `litebcgolf_leads` | 017 |
 
 `/lite-clinician` has eight pages, not nine: it carries no voucher page and no
 commerce CTA, so `report-full` does not exist for it. The clinician next step is
 still undecided; it lands at the foot of that funnel's `report.tsx`.
+
+`/lite-two` is `/lite-one`'s flow with the report swapped for the v2
+scroll-snapped design, personalised per the RevitalAIze v2 comps: the copy
+splits by audience (optimizers vs seniors, cut at quiz age 40) and by how the
+speed score came out (severity High vs the rest). The four copy sets live in
+`src/data/liteTwoReportContent.ts`; `?persona=` and `?band=` on
+`/lite-two/report` force a variant for design review.
 
 Adding one means: a migration, an entry in each registry, the `hookClinic` value
 in `LITE_HOOK_CLINICS` (`src/utils/assessment.ts`), the clinic allowlists in

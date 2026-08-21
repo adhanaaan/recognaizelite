@@ -10,6 +10,10 @@ interface BrandTheme {
   name: string;
   partnerLogoSrc: string | null;
   partnerLogoAlt: string;
+  /** Display height for the partner mark. Defaults to 28px, which suits a
+      one-line wordmark; stacked lock-ups need more or their own wordmark —
+      the bottom third of the image — comes out unreadable. */
+  partnerLogoClassName?: string;
   pageBg: string;
   cardBg: string;
   cardBorder: string;
@@ -114,6 +118,39 @@ const BRAND: Record<string, BrandTheme> = {
     name: "Recog-Lite · Clinician",
     partnerLogoSrc: null,
     partnerLogoAlt: "Recog-Lite",
+    pageBg: "linear-gradient(180deg, #fff4ee 0%, #FFFFFF 100%)",
+    cardBg: "#ffffff",
+    cardBorder: "#d8c2b9",
+    textPrimary: "#2d2d2d",
+    textMuted: "#7d5747",
+    accent: "#f77528",
+    accentDark: "#b8480f",
+    pillBg: "rgba(247,117,40,0.12)",
+    pillText: "#b8480f",
+  },
+  // Same palette as liteone — /lite-two is that funnel's flow with the
+  // personalised v2 report, so it reads the same on a partner's screen.
+  litetwo: {
+    name: "BrainScan Testing · Lite Two",
+    partnerLogoSrc: null,
+    partnerLogoAlt: "BrainScan Testing",
+    pageBg: "linear-gradient(180deg, #fff4ee 0%, #FFFFFF 100%)",
+    cardBg: "#ffffff",
+    cardBorder: "#d8c2b9",
+    textPrimary: "#2d2d2d",
+    textMuted: "#7d5747",
+    accent: "#f77528",
+    accentDark: "#b8480f",
+    pillBg: "rgba(247,117,40,0.12)",
+    pillText: "#b8480f",
+  },
+  // Same palette as liteone — /act4health is /lite-two's flow co-branded for
+  // the ACT4Health clinic, so it reads the same on a partner's screen.
+  act4health: {
+    name: "Act4Health",
+    partnerLogoSrc: "/images/act4health/logo-act4health.png",
+    partnerLogoAlt: "Act4Health",
+    partnerLogoClassName: "h-[52px]",
     pageBg: "linear-gradient(180deg, #fff4ee 0%, #FFFFFF 100%)",
     cardBg: "#ffffff",
     cardBorder: "#d8c2b9",
@@ -427,7 +464,7 @@ export default function PartnerSharePage({ status, clinic, label, leads, stats, 
                     <img
                       src={theme.partnerLogoSrc}
                       alt={theme.partnerLogoAlt}
-                      className="h-[28px] rounded"
+                      className={`${theme.partnerLogoClassName ?? "h-[28px]"} rounded`}
                     />
                   </>
                 )}

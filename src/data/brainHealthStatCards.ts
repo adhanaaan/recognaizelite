@@ -31,6 +31,17 @@ export const STAT_CARDS: StatCard[] = [
     citation: "imhWise",
   },
   {
+    // Malaysia's counterpart to the imhWise card, for the /act4health funnel —
+    // its audience is local to Petaling Jaya, so the Singapore prevalence
+    // figure doesn't land the same way. `citation` is null because the stat
+    // card screen renders `source` directly and NHMS has no citation pill.
+    id: "nhmsMalaysia",
+    stat: "1 in 10",
+    body: "Malaysians aged 60 and over live with dementia.",
+    source: "National Health and Morbidity Survey (NHMS) 2025",
+    citation: null,
+  },
+  {
     id: "salthouse",
     stat: "From age 45",
     body: "Processing speed, which is how quickly the brain handles information, can begin to gradually slow down from around age 45.",
