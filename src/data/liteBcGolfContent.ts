@@ -69,7 +69,7 @@ export const HERO = {
 export const ABOUT = {
   heading: "What ReCOGnAIze is",
   body:
-    "A tablet-based cognitive assessment that measures brain performance through four games rather than a questionnaire. It was developed and validated in a Singapore community cohort of 2,500 adults, and it detects cognitive impairment earlier than the screening tools most clinics use today.",
+    "A tablet-based cognitive assessment that measures brain performance through four games rather than a questionnaire. It was developed and validated in a Singapore community cohort of 2,500 adults, and validated against the screening tools clinics use today.",
   domains: ["Processing speed", "Memory", "Attention", "Executive function"],
   /** The same list as a sentence: "a, b, c and d". */
   get domainsProse() {
@@ -80,6 +80,25 @@ export const ABOUT = {
   evidence:
     "Published in Alzheimer's & Dementia (2026). Registered with Singapore's HSA.",
   paperUrl: "https://alz-journals.onlinelibrary.wiley.com/doi/10.1002/alz.70992",
+} as const;
+
+/**
+ * Why any of this matters, for a guest who came to play golf.
+ *
+ * The three cards are pulled from src/data/brainHealthStatCards.ts rather than
+ * rewritten here — they are already cited, already used inside the quiz, and a
+ * second copy would be a second thing to keep true.
+ *
+ * The order is the argument: what the local risk actually is, why it applies to
+ * this room specifically, and then what can be done about it. Ending on the
+ * Lancet figure matters — a page that only states the stakes is frightening
+ * rather than useful, and 45% preventable is the reason to measure at all.
+ */
+export const EDUCATION = {
+  heading: "Why measure this at all",
+  cardIds: ["imhWise", "salthouse", "lancet2024"] as const,
+  closer:
+    "Cognitive change is gradual and easy to miss, and the risk factors that drive it respond best to being caught early. A baseline is how you notice a change later.",
 } as const;
 
 /** What today's three minutes actually consists of. */

@@ -2,8 +2,10 @@ import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
+import { STAT_CARDS_BY_ID } from "src/data/brainHealthStatCards";
 import {
   ABOUT,
+  EDUCATION,
   EVENT,
   HERO,
   PRIVACY_NOTE,
@@ -30,11 +32,21 @@ import { LITE_BCGOLF } from "src/utils/liteOne";
  * drink needs four things fast: who we are, what this is, how long it takes,
  * and where to tap.
  *
- * The first version of this page led with the event and never named ReCOGnAIze
- * or Gray Matter Solutions anywhere in the visible copy — only in the browser
- * tab. That inverted the point of attending: the event is the room, not the
- * product. The lock-up, the product name and a plain "what ReCOGnAIze is"
- * section now come first, with the event as the line underneath.
+ * The first version led with the event and never named ReCOGnAIze or Gray
+ * Matter Solutions in any visible copy — only in the browser tab. That
+ * inverted the point of attending: the event is the room, not the product.
+ *
+ * The page now teaches rather than just introducing. Order is deliberate:
+ * lock-up and product name, the offer and the button for whoever is already
+ * sold, then "why measure this at all" — 1 in 11 Singaporeans over 60, speed
+ * declining from 45, 45% of cases preventable — then what ReCOGnAIze is, then
+ * what the next three minutes consist of. Stakes before spec sheet: a guest
+ * who came to play golf has no reason to care about processing speed until
+ * that section, and ending on the preventable figure rather than the
+ * prevalence one leaves them with something to do.
+ *
+ * The three statistics come from src/data/brainHealthStatCards.ts, cited and
+ * already used inside the quiz, rather than being written fresh here.
  *
  * Still absent, deliberately: Business China's mark, any claim of partnership,
  * and the Guest of Honour. See the note in src/data/liteBcGolfContent.ts.
@@ -125,11 +137,46 @@ export default function BcGolfEntry() {
             {EVENT.date} · {EVENT.venue}
           </p>
 
+          {/* Why any of this matters. A guest who came to play golf has no
+              reason to care about processing speed until this section. */}
+          <div className="lite-rise mt-11" style={{ animationDelay: "330ms" }}>
+            <h2 className="font-display text-[19px] font-bold leading-tight text-charcoal">
+              {EDUCATION.heading}
+            </h2>
+
+            <div className="mt-5 space-y-3">
+              {EDUCATION.cardIds.map((id) => {
+                const card = STAT_CARDS_BY_ID[id];
+                if (!card) return null;
+                return (
+                  <div
+                    key={id}
+                    className="rounded-2xl border border-quizOutline-variant bg-quizSurface-lowest p-5"
+                  >
+                    <p className="font-display text-[26px] font-extrabold leading-none text-quizPrimary">
+                      {card.stat}
+                    </p>
+                    <p className="mt-2.5 text-[13.5px] leading-relaxed text-charcoal">
+                      {card.body}
+                    </p>
+                    <p className="mt-2.5 text-[11px] leading-snug text-quizOutline">
+                      {card.source}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+
+            <p className="mt-5 text-[13.5px] leading-relaxed text-quizSecondary">
+              {EDUCATION.closer}
+            </p>
+          </div>
+
           {/* What ReCOGnAIze is, for a guest who has never heard of us —
               which is most of the room. */}
           <div
             className="lite-rise mt-10 rounded-2xl border border-quizOutline-variant bg-quizSurface-lowest p-5 sm:p-6"
-            style={{ animationDelay: "340ms" }}
+            style={{ animationDelay: "400ms" }}
           >
             <h2 className="font-display text-[19px] font-bold leading-tight text-charcoal">
               {ABOUT.heading}
@@ -171,7 +218,7 @@ export default function BcGolfEntry() {
           </div>
 
           {/* What the next three minutes consist of. */}
-          <div className="lite-rise mt-8" style={{ animationDelay: "400ms" }}>
+          <div className="lite-rise mt-8" style={{ animationDelay: "460ms" }}>
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-quizOutline">
               Today
             </p>
@@ -196,7 +243,7 @@ export default function BcGolfEntry() {
 
           <div
             className="lite-rise mt-8 space-y-2.5 border-t border-quizOutline-variant pt-6"
-            style={{ animationDelay: "460ms" }}
+            style={{ animationDelay: "520ms" }}
           >
             <p className="text-[12.5px] leading-relaxed text-quizSecondary">{SCOPE_NOTE}</p>
             <p className="text-[12.5px] leading-relaxed text-quizSecondary">{PRIVACY_NOTE}</p>
