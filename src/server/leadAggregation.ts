@@ -10,7 +10,7 @@ import { getSupabaseAdmin, LeadRow } from "src/utils/supabase";
  * this from client code — it relies on the Supabase service-role key.
  */
 
-export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo", "act4health"] as const;
+export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo", "act4health", "litebcgolf"] as const;
 export type KnownClinic = (typeof KNOWN_CLINICS)[number];
 
 export interface LeadStats {
@@ -267,7 +267,8 @@ function liteSources(supabase: SupabaseClient): PromiseLike<LeadRow[]>[] {
  * - "healthtechx" → public.demo_leads
  * - "tcmbrain" → public.tcmbrain_leads
  * - "novi" → public.leads WHERE clinic = 'novi'
- * - any lite funnel ("liteone", "liteworldalz", "liteclinician", "litetwo", "act4health") →
+ * - any lite funnel ("liteone", "liteworldalz", "liteclinician", "litetwo",
+ *   "act4health", "litebcgolf") →
  *   its own table from the LITE_TABLES registry; rows may have no email yet
  * - unknown clinic → empty result (caller decides 404 vs. permissive empty)
  */

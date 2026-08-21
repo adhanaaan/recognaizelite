@@ -109,7 +109,14 @@ export function isAct4HealthMode(): boolean {
  * per-funnel split (routes, leads table, campaign) is carried by
  * hookReportPath and LiteVariant in src/utils/liteOne.ts, not by theming.
  */
-const LITE_HOOK_CLINICS = new Set(["LiteOne", "LiteWorldAlz", "LiteClinician", "LiteTwo", "Act4Health"]);
+const LITE_HOOK_CLINICS = new Set([
+  "LiteOne",
+  "LiteWorldAlz",
+  "LiteClinician",
+  "LiteTwo",
+  "Act4Health",
+  "LiteBcGolf",
+]);
 
 export function isLiteOneMode(): boolean {
   const clinic = getHookClinic();

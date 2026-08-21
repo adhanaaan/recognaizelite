@@ -13,6 +13,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { renderClinicianResultEmail } from "src/server/emails/clinicianResultEmail";
+import { renderEventResultEmail } from "src/server/emails/eventResultEmail";
 import { renderLiteResultEmail } from "src/server/emails/liteResultEmail";
 import type { LiteEmailRenderer } from "src/server/emails/shared";
 import { addContactToAudience, getResendConfig, sendEmail } from "src/server/resend";
@@ -27,13 +28,14 @@ import { addContactToAudience, getResendConfig, sendEmail } from "src/server/res
  * template sit beside the key rather than in shared constants, doing so forces
  * a decision about both rather than inheriting someone else's.
  *
- * The two templates differ in what they are for. The consumer one explains the
- * result; the clinician one states it briefly and spends its length on the
- * published validation and a demo ask.
+ * The three templates differ in what they are for. The consumer one explains
+ * the result; the clinician one spends its length on the published validation;
+ * the event one is a courtesy note to a guest at a fundraiser.
  */
 const EMAIL_CLINICS: Record<string, { brand: string; render: LiteEmailRenderer }> = {
   liteworldalz: { brand: "Recog-Lite", render: renderLiteResultEmail },
   liteclinician: { brand: "Recog-Lite", render: renderClinicianResultEmail },
+  litebcgolf: { brand: "ReCOGnAIze Lite", render: renderEventResultEmail },
 };
 
 export function emailEnabledForClinic(clinic: string): boolean {
@@ -107,8 +109,10 @@ export async function deliverLiteResultEmail(params: LiteLeadEmailParams): Promi
     severity: params.severity,
     brainHealthScore: params.brainHealthScore,
     band: params.band,
-    // Only the clinician template renders this; the consumer one ignores it.
+    // Rendered by the clinician and event templates; the consumer one ignores
+    // them.
     demoUrl: process.env.RECOGNAIZE_DEMO_URL ?? null,
+    bookingUrl: process.env.RECOGNAIZE_CALENDLY_URL ?? null,
   });
 
   const campaignTag = safeTagValue(params.campaign);

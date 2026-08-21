@@ -16,6 +16,7 @@ export const WORLDALZ_CLINIC = "liteworldalz";
 export const CLINICIAN_CLINIC = "liteclinician";
 export const LITE_TWO_CLINIC = "litetwo";
 export const ACT4HEALTH_CLINIC = "act4health";
+export const BCGOLF_CLINIC = "litebcgolf";
 
 /**
  * One entry per funnel built on the lite flow. /lite-worldalzmonth is a copy of
@@ -84,6 +85,15 @@ export const ACT4HEALTH: LiteVariant = {
   basePath: "/act4health",
   defaultCampaign: "act4health",
   storagePrefix: "recognaize-a4h",
+};
+
+/** Business China Fundraising Golf Tournament, 21 August 2026. */
+export const LITE_BCGOLF: LiteVariant = {
+  clinic: BCGOLF_CLINIC,
+  hookClinic: "LiteBcGolf",
+  basePath: "/lite-bcgolf",
+  defaultCampaign: "bcgolf",
+  storagePrefix: "recognaize-bcg",
 };
 
 const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;
