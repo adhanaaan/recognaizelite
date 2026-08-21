@@ -52,8 +52,12 @@ export default function BcGolfLoading() {
 
   React.useEffect(() => {
     let cancelled = false;
+    // report-v2 is the scroll-snapped report ported from /lite-two. The older
+    // card-stack report is still built and still correct at
+    // `${LITE_BCGOLF.basePath}/report`; changing this one path back is the
+    // whole revert if the new one misbehaves in front of a guest.
     const go = () => {
-      if (!cancelled) Router.replace(`${LITE_BCGOLF.basePath}/report`);
+      if (!cancelled) Router.replace(`${LITE_BCGOLF.basePath}/report-v2`);
     };
 
     const stashed = readStashedReport(LITE_BCGOLF);
