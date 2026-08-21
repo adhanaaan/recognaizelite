@@ -29,7 +29,7 @@ export default function BcGolfChallenge() {
   return (
     <>
       <Head>
-        <title>Reaction time challenge | Recog-Lite</title>
+        <title>Reaction time challenge | ReCOGnAIze Lite</title>
       </Head>
 
       <LiteShell>

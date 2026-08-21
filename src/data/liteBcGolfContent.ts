@@ -2,31 +2,48 @@
  * Copy for the /lite-bcgolf funnel — the Business China Fundraising Golf
  * Tournament, Friday 21 August 2026, Singapore Island Country Club.
  *
- * Two constraints shaped this copy, both deliberate.
+ * The first version of this page named the event, the venue and the research
+ * centre, and never once named ReCOGnAIze or Gray Matter Solutions. That was
+ * backwards: the reason for being at the tournament is that guests leave
+ * knowing who we are and what we make. Restraint about someone else's brand is
+ * not a reason to be silent about our own.
  *
- * We name the event because we are appearing at it, and a guest scanning a QR
- * code at the registration desk needs to know they are in the right place. We
- * do not use Business China's mark, describe them as a partner, or imply they
- * endorse the assessment — naming an event you attend is not the same claim,
- * and the difference matters for someone else's fundraiser.
+ * So the page now leads with the product — what ReCOGnAIze is, what it
+ * measures, what this three-minute version is an extract of — and treats the
+ * event as context rather than the headline.
  *
- * The Guest of Honour is deliberately absent. The invitation names a sitting
- * Minister for Health; his name on a commercial brain-screening page would read
- * as government endorsement whether or not that is intended, and his own event
- * is the worst possible place to be wrong about that.
+ * What we still do not do: use Business China's mark, describe them as a
+ * partner, or imply they endorse the assessment. Naming an event you appear at
+ * is not that claim.
+ *
+ * The Guest of Honour is also deliberately absent. The invitation names a
+ * sitting Minister for Health; his name on a commercial brain-screening page
+ * would read as government endorsement, and his own event is the worst place
+ * to be wrong about that.
  */
+
+export const PRODUCT = {
+  /** The validated assessment. Capitalisation is the product's own. */
+  name: "ReCOGnAIze",
+  company: "Gray Matter Solutions",
+  /** This three-minute extract of it. */
+  liteName: "ReCOGnAIze Lite",
+  logoSrc: "/images/lite-one/logo-gray-matter.svg",
+  logoAlt: "Gray Matter Solutions",
+  /** Dementia Research Centre / LKCMedicine lock-up. */
+  researchLogoSrc: "/images/lite-one/logo-lkc-drc.png",
+  researchLogoAlt: "Dementia Research Centre, Lee Kong Chian School of Medicine",
+} as const;
 
 export const EVENT = {
   name: "Business China Fundraising Golf Tournament",
-  /** Short form, for places where the full name will not fit. */
   shortName: "Business China Golf 2026",
   date: "Friday 21 August 2026",
   venue: "Singapore Island Country Club · The Island Course",
 } as const;
 
 /**
- * The two windows in the day where a three-minute assessment actually fits:
- * registration and lunch before the shotgun start, and the gala afterwards.
+ * The two windows in the day where a three-minute assessment actually fits.
  * Used as the suggested utm_campaign values so the two can be told apart.
  */
 export const EVENT_WINDOWS = [
@@ -35,18 +52,55 @@ export const EVENT_WINDOWS = [
 ] as const;
 
 export const HERO = {
-  eyebrow: "At the Business China Fundraising Golf Tournament",
-  heading: "Three minutes. One measure of how fast your brain is working today.",
+  /** Who we are comes first; the event is the context line beneath it. */
+  eyebrow: "ReCOGnAIze · Gray Matter Solutions",
+  eventLine: "At the Business China Fundraising Golf Tournament",
+  heading: "Check how fast your brain is working today.",
   standfirst:
-    "A short cognitive assessment developed and validated at the Dementia Research Centre, Lee Kong Chian School of Medicine, NTU Singapore. Published in Alzheimer's & Dementia.",
+    "ReCOGnAIze is a clinically validated cognitive assessment, built at the Dementia Research Centre, Lee Kong Chian School of Medicine, NTU Singapore. This is a three-minute extract of it — one game and a short questionnaire.",
   cta: "Begin",
-  /** Sits under the CTA. Sets expectations before a guest commits their time. */
-  timeNote: "No app, no sign-up to start. Your result is shown on screen at the end.",
+  timeNote: "Three minutes. No app, no sign-up to start.",
 } as const;
+
+/**
+ * What ReCOGnAIze actually is, for a guest who has never heard of us. The
+ * previous version of this page assumed they had.
+ */
+export const ABOUT = {
+  heading: "What ReCOGnAIze is",
+  body:
+    "A tablet-based cognitive assessment that measures brain performance through four games rather than a questionnaire. It was developed and validated in a Singapore community cohort of 2,500 adults, and it detects cognitive impairment earlier than the screening tools most clinics use today.",
+  domains: ["Processing speed", "Memory", "Attention", "Executive function"],
+  /** The same list as a sentence: "a, b, c and d". */
+  get domainsProse() {
+    const lower = this.domains.map((d) => d.toLowerCase());
+    return `${lower.slice(0, -1).join(", ")} and ${lower[lower.length - 1]}`;
+  },
+  /** The published evidence, in one line for a non-clinical reader. */
+  evidence:
+    "Published in Alzheimer's & Dementia (2026). Registered with Singapore's HSA.",
+  paperUrl: "https://alz-journals.onlinelibrary.wiley.com/doi/10.1002/alz.70992",
+} as const;
+
+/** What today's three minutes actually consists of. */
+export const TODAY = [
+  {
+    label: "A 60-second game",
+    detail: "Match symbols to digits as fast as you can. This measures processing speed.",
+  },
+  {
+    label: "A short questionnaire",
+    detail: "Modifiable risk factors, based on the 2024 Lancet Commission on dementia.",
+  },
+  {
+    label: "Your result on screen",
+    detail: "How you compare with people your age, and what moves the number.",
+  },
+] as const;
 
 /** Reassurance a guest at someone else's fundraiser is entitled to. */
 export const PRIVACY_NOTE =
-  "We ask for your name and email only at the end, and only to send your result. Nothing is shared with the organisers.";
+  "We ask for your name and email only at the end, and only to send your result. Nothing is shared with the event organisers.";
 
 export const SCOPE_NOTE =
-  "This measures processing speed — one of four cognitive domains, and a screen rather than a diagnosis.";
+  "Today measures processing speed — one of the four domains — and is a screen, not a diagnosis.";

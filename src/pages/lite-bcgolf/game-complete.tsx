@@ -24,7 +24,7 @@ export default function BcGolfGameComplete() {
   return (
     <>
       <Head>
-        <title>Game complete | Recog-Lite</title>
+        <title>Game complete | ReCOGnAIze Lite</title>
       </Head>
 
       <LiteShell>

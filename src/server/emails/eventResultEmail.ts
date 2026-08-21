@@ -29,7 +29,7 @@
  * Server-only: imported from the save-lead API route.
  */
 
-import { EVENT } from "src/data/liteBcGolfContent";
+import { ABOUT, EVENT, PRODUCT } from "src/data/liteBcGolfContent";
 import { CLINICAL_DISCLAIMER } from "src/utils/disclaimers";
 import {
   BAND_PRESENTATION,
@@ -61,7 +61,7 @@ const FAINT = "#8c8c85";
 /** Provenance, in one line. A gala guest does not want a bibliography. */
 const PAPER_URL = "https://alz-journals.onlinelibrary.wiley.com/doi/10.1002/alz.70992";
 const PROVENANCE =
-  "Developed and validated at the Dementia Research Centre, Lee Kong Chian School of Medicine, NTU Singapore, and published in Alzheimer's & Dementia (2026).";
+  "ReCOGnAIze was developed and validated at the Dementia Research Centre, Lee Kong Chian School of Medicine, NTU Singapore, and published in Alzheimer's & Dementia (2026).";
 
 const BAND_WORDING: Record<string, string> = {
   low: "below",
@@ -78,8 +78,8 @@ export function renderEventResultEmail(input: LiteEmailInput): RenderedEmail {
   const percentile = input.percentile;
 
   const subject = named
-    ? `${named} — your brain health result from ${EVENT.shortName}`
-    : `Your brain health result from ${EVENT.shortName}`;
+    ? `${named} — your ${PRODUCT.name} result`
+    : `Your ${PRODUCT.name} result`;
 
   const bandKey = bandKeyOf(input.band);
   const bandPresentation = bandKey ? BAND_PRESENTATION[bandKey] : null;
@@ -121,8 +121,9 @@ export function renderEventResultEmail(input: LiteEmailInput): RenderedEmail {
         ]
       : []),
     "",
-    "This measured processing speed, one of four cognitive domains, and is a",
-    "screen rather than a diagnosis.",
+    `Today measured processing speed. The full ${PRODUCT.name} assessment covers`,
+    `${ABOUT.domainsProse} across four games — today was an`,
+    "extract of it, and a screen rather than a diagnosis.",
     "",
     PROVENANCE,
     PAPER_URL,
@@ -131,7 +132,7 @@ export function renderEventResultEmail(input: LiteEmailInput): RenderedEmail {
     "",
     CLINICAL_DISCLAIMER,
     "",
-    "— Recog-Lite, Gray Matter Solutions",
+    `— ${PRODUCT.liteName}, ${PRODUCT.company}`,
     "You are receiving this because you asked us to send your result.",
   ];
 
@@ -194,11 +195,14 @@ export function renderEventResultEmail(input: LiteEmailInput): RenderedEmail {
 
         <tr>
           <td style="padding:40px 44px 0 44px;" align="center">
-            <p style="margin:0;font-family:${SERIF};font-size:10.5px;letter-spacing:2.4px;text-transform:uppercase;color:${GOLD};">
-              ${escapeHtml(EVENT.shortName)}
+            <p style="margin:0;font-family:${SERIF};font-size:13px;letter-spacing:2.8px;text-transform:uppercase;color:${GREEN};">
+              ${escapeHtml(PRODUCT.name)}
             </p>
-            <p style="margin:10px 0 0 0;font-family:${SERIF};font-size:12px;line-height:1.6;color:${FAINT};">
-              ${escapeHtml(EVENT.date)}<br />${escapeHtml(EVENT.venue)}
+            <p style="margin:6px 0 0 0;font-family:${SERIF};font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:${GOLD};">
+              ${escapeHtml(PRODUCT.company)}
+            </p>
+            <p style="margin:14px 0 0 0;font-family:${SERIF};font-size:12px;line-height:1.6;color:${FAINT};">
+              ${escapeHtml(EVENT.name)}<br />${escapeHtml(EVENT.date)} · ${escapeHtml(EVENT.venue)}
             </p>
           </td>
         </tr>
@@ -249,8 +253,9 @@ ${quizBlock}
         <tr>
           <td style="padding:28px 44px 0 44px;">
             <p style="margin:0;font-family:${SERIF};font-size:13.5px;line-height:1.75;color:${BODY};">
-              This measured processing speed — one of four cognitive domains — and is a screen
-              rather than a diagnosis.
+              Today measured processing speed. The full ${escapeHtml(PRODUCT.name)} assessment
+              covers ${escapeHtml(ABOUT.domainsProse)} across four games —
+              today was an extract of it, and a screen rather than a diagnosis.
             </p>
             <p style="margin:14px 0 0 0;font-family:${SERIF};font-size:12.5px;line-height:1.7;color:${FAINT};">
               ${escapeHtml(PROVENANCE)}
@@ -266,8 +271,8 @@ ${ctaBlock}
                 ${escapeHtml(CLINICAL_DISCLAIMER)}
               </p>
               <p style="margin:14px 0 0 0;font-family:${SERIF};font-size:10.5px;line-height:1.7;color:#a9a9a1;">
-                Recog-Lite · Gray Matter Solutions. You are receiving this because you asked us
-                to send your result.
+                ${escapeHtml(PRODUCT.liteName)} · ${escapeHtml(PRODUCT.company)}. You are receiving
+                this because you asked us to send your result.
               </p>
             </div>
           </td>

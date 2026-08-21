@@ -152,7 +152,7 @@ export default function BcGolfResults() {
   return (
     <>
       <Head>
-        <title>Where should we send your results? | Recog-Lite</title>
+        <title>Where should we send your results? | ReCOGnAIze Lite</title>
       </Head>
 
       <LiteShell scroll className="px-5 pb-12 sm:px-8">

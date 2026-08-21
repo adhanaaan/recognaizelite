@@ -93,7 +93,7 @@ export default function BcGolfLoading() {
   return (
     <>
       <Head>
-        <title>Building your profile | Recog-Lite</title>
+        <title>Building your profile | ReCOGnAIze Lite</title>
       </Head>
 
       <LiteShell>

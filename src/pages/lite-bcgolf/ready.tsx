@@ -108,7 +108,7 @@ export default function BcGolfReady() {
   return (
     <>
       <Head>
-        <title>What happens next | Recog-Lite</title>
+        <title>What happens next | ReCOGnAIze Lite</title>
       </Head>
 
       <LiteShell>

@@ -35,7 +35,7 @@ import { addContactToAudience, getResendConfig, sendEmail } from "src/server/res
 const EMAIL_CLINICS: Record<string, { brand: string; render: LiteEmailRenderer }> = {
   liteworldalz: { brand: "Recog-Lite", render: renderLiteResultEmail },
   liteclinician: { brand: "Recog-Lite", render: renderClinicianResultEmail },
-  litebcgolf: { brand: "Recog-Lite", render: renderEventResultEmail },
+  litebcgolf: { brand: "ReCOGnAIze Lite", render: renderEventResultEmail },
 };
 
 export function emailEnabledForClinic(clinic: string): boolean {
