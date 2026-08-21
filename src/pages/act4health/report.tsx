@@ -40,8 +40,7 @@ import { ACT4HEALTH_LOGO, ACT4HEALTH_WHATSAPP_URL } from "src/utils/act4health";
 import { ACT4HEALTH } from "src/utils/liteOne";
 
 /**
- * /act4health's report — /lite-two's v2 scroll-snapped story, personalised the
- * same way (persona × band via src/data/liteTwoReportContent.ts), with the
+ * /act4health's report — /lite-two's v2 story, personalised the same way (persona × band via src/data/liteTwoReportContent.ts), with the
  * conversion path swapped for the partner clinic's:
  *
  *   - the price-breakdown offer is a consultation card whose CTA opens the
@@ -51,9 +50,11 @@ import { ACT4HEALTH } from "src/utils/liteOne";
  *
  * globals.css pins html/body/#__next to 100dvh with overflow hidden for the
  * game screens. This page scrolls inside its own 100dvh container, which is
- * also what the scroll-snapping and every scroll-linked animation are
- * anchored to. Nothing global is touched, so the game screens and the other
- * report pages are unaffected.
+ * also what every scroll-linked animation is anchored to. Nothing global is
+ * touched, so the game screens and the other report pages are unaffected.
+ *
+ * Unlike /lite-two this page does not snap-scroll and only the hero fills a
+ * viewport; see the padding constants below for why.
  *
  * With no finished game on the device it renders a sample result plus a
  * preview banner. For design review, ?persona=senior|optimizer and
@@ -64,6 +65,30 @@ const DARK_BAND = "linear-gradient(168deg,#2A1206 0%,#5C1E07 46%,#B23A0C 100%)";
 
 /** WhatsApp brand green — every booking CTA reads as "this opens a chat". */
 const WHATSAPP_GREEN = "#1FAF57";
+
+/**
+ * Section rhythm.
+ *
+ * Two sticky elements eat into every section: the co-brand header (~66px) at
+ * the top and the WhatsApp booking bar (~80px including its bottom offset) at
+ * the foot. Padding has to clear both, or content ends up underneath them —
+ * which is exactly how the hero's scroll cue was disappearing behind the CTA.
+ *
+ * HERO_PADDING clears each sticky element and adds the same ~32px gutter on
+ * top of it, so the visible breathing room reads as even top and bottom rather
+ * than measuring even in raw pixels.
+ *
+ * BODY_PADDING is a single even value used by every section after the hero.
+ * Those sections size to their content instead of each filling a viewport, so
+ * the gap between one section's last line and the next section's first is
+ * always the same 2x56px — the previous full-height-and-centred treatment left
+ * short sections floating in whitespace and tall ones running edge to edge,
+ * which is what made the scroll feel uneven.
+ */
+const HERO_PADDING = "pt-24 pb-28";
+const BODY_PADDING = "py-14";
+/** The last section also clears the booking bar, which floats above it. */
+const CLOSING_PADDING = "pt-14 pb-32";
 
 const SECTIONS = [
   { id: "rank", label: "Your rank" },
@@ -237,7 +262,16 @@ export default function Act4HealthReport() {
   const glowY = useTransform(heroGone, [0, 1], [0, -110]);
   const triangleY = useTransform(heroGone, [0, 1], [0, 140]);
   const triangleRotate = useTransform(heroGone, [0, 1], [0, 24]);
-  const cueOpacity = useTransform(heroGone, [0, 0.18], [1, 0]);
+  /**
+   * The cue fades late on purpose. On a short phone the hero is taller than the
+   * viewport, so the cue starts below the fold and the reader has to scroll a
+   * third of the hero just to reach it — on the original 0 to 0.18 window it had
+   * already faded to nothing by then, which is why it read as missing. Holding
+   * full opacity until the hero is most of the way gone means it is opaque
+   * whenever it is actually on screen, on every size, and still clears out
+   * before the next section arrives.
+   */
+  const cueOpacity = useTransform(heroGone, [0.55, 0.9], [1, 0]);
 
   return (
     <>
@@ -257,7 +291,11 @@ export default function Act4HealthReport() {
         <ScrollerContext.Provider value={scrollerRef}>
           <div
             ref={scrollerRef}
-            className="scroll-hidden h-[100dvh] w-full snap-y snap-proximity overflow-y-auto overflow-x-hidden overscroll-contain bg-[#FFF8F3] font-jakarta text-[#241610] antialiased"
+            /* No scroll snapping on this funnel: its sections are taller than a
+               short phone screen, and snap points fighting a slow scroll is the
+               opposite of seamless for an older reader. Plain continuous
+               scrolling instead. */
+            className="scroll-hidden h-[100dvh] w-full overflow-y-auto overflow-x-hidden overscroll-contain bg-[#FFF8F3] font-jakarta text-[#241610] antialiased"
           >
             {/* ------------------------------------------------ header --- */}
             <motion.header
@@ -305,7 +343,7 @@ export default function Act4HealthReport() {
             <div ref={heroRef}>
               <SnapSection
                 id="rank"
-                snapAlways
+                paddingClassName={HERO_PADDING}
                 className="-mt-[65px]"
                 backdrop={
                   <>
@@ -384,7 +422,7 @@ export default function Act4HealthReport() {
 
                   <motion.div
                     variants={rise}
-                    className="mt-7 rounded-[26px] border border-[#F2DDCE] bg-white p-5 shadow-[0_18px_46px_-28px_rgba(90,40,10,0.28)] sm:p-6"
+                    className="mt-5 rounded-[26px] border border-[#F2DDCE] bg-white p-5 shadow-[0_18px_46px_-28px_rgba(90,40,10,0.28)] tall:mt-7 sm:p-6"
                   >
                     <div className="flex items-baseline justify-between">
                       <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#B4653C]">
@@ -404,7 +442,7 @@ export default function Act4HealthReport() {
                 </Cascade>
 
                 <motion.div
-                  className="mt-10 flex flex-col items-center gap-1 text-center"
+                  className="mt-6 flex flex-col items-center gap-1 text-center tall:mt-10"
                   style={{ opacity: reduced ? 1 : cueOpacity }}
                 >
                   <Serif className="text-[20px] text-[#B4653C]">{copy.hero.scrollCue}</Serif>
@@ -434,6 +472,8 @@ export default function Act4HealthReport() {
             {/* -------------------------------------- 2 · what it means --- */}
             <SnapSection
               id="meaning"
+              fill={false}
+              paddingClassName={BODY_PADDING}
               className="text-white"
               backdrop={
                 <>
@@ -487,7 +527,7 @@ export default function Act4HealthReport() {
             </SnapSection>
 
             {/* -------------------------------------- 3 · risk factors --- */}
-            <SnapSection id="risk">
+            <SnapSection id="risk" fill={false} paddingClassName={BODY_PADDING}>
               <Cascade amount={0.15}>
                 <EyebrowV2>Also measured</EyebrowV2>
                 <motion.h2
@@ -578,7 +618,7 @@ export default function Act4HealthReport() {
             </SnapSection>
 
             {/* ------------------------------------- 5 · your baseline --- */}
-            <SnapSection id="baseline">
+            <SnapSection id="baseline" fill={false} paddingClassName={BODY_PADDING}>
               <Cascade amount={0.2}>
                 <EyebrowV2>{copy.baseline.eyebrow}</EyebrowV2>
                 <motion.h2
@@ -637,7 +677,7 @@ export default function Act4HealthReport() {
             </SnapSection>
 
             {/* --------------------------------------- 6 · the product --- */}
-            <SnapSection id="recognaize">
+            <SnapSection id="recognaize" fill={false} paddingClassName={BODY_PADDING}>
               <Cascade amount={0.2}>
                 <EyebrowV2>{copy.product.eyebrow}</EyebrowV2>
                 <motion.h2
@@ -760,7 +800,7 @@ export default function Act4HealthReport() {
             </SnapSection>
 
             {/* ------------------------------- 9 · book a consultation --- */}
-            <SnapSection id="offer">
+            <SnapSection id="offer" fill={false} paddingClassName={BODY_PADDING}>
               <Cascade amount={0.15}>
                 {/* EyebrowV2's 10.5px was too small for this funnel's older
                     audience — the clinic asked for it to be readable, so this
@@ -848,7 +888,7 @@ export default function Act4HealthReport() {
             </SnapSection>
 
             {/* ---------------------------------------- 10 · wrap up --- */}
-            <SnapSection id="closing">
+            <SnapSection id="closing" fill={false} paddingClassName={CLOSING_PADDING}>
               <Cascade amount={0.2}>
                 <motion.figure variants={rise}>
                   <span
@@ -886,7 +926,7 @@ export default function Act4HealthReport() {
 
                 {/* Larger and solid rather than the usual faded footnote — the
                     clinic's older readers were missing it at 11px. */}
-                <motion.p variants={rise} className="mt-8 pb-20 text-center text-[13.5px] font-semibold leading-[1.6] text-[#6B5245]">
+                <motion.p variants={rise} className="mt-8 text-center text-[13.5px] font-semibold leading-[1.6] text-[#6B5245]">
                   Built on clinical research by Nanyang Technological University, LKC Medicine,
                   Dementia Research Centre Singapore.
                 </motion.p>

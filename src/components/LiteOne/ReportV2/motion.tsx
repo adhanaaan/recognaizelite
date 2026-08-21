@@ -90,6 +90,8 @@ export function SnapSection({
   snapAlways = false,
   innerClassName = "",
   backdrop,
+  paddingClassName = "pb-16 pt-24",
+  fill = true,
 }: {
   id: string;
   children: React.ReactNode;
@@ -97,13 +99,29 @@ export function SnapSection({
   snapAlways?: boolean;
   innerClassName?: string;
   backdrop?: React.ReactNode;
+  /**
+   * Vertical padding, replacing the default rather than layering on top of it.
+   * Two competing padding utilities on one element resolve by stylesheet order,
+   * not by the order they're passed, so a caller can't reliably override the
+   * default through `className` — hence its own prop.
+   */
+  paddingClassName?: string;
+  /**
+   * `true` (the default) makes every section at least a full viewport tall with
+   * its content centred — one screen per beat. `false` lets the section size to
+   * its content and align to the top, so a run of sections reads as one
+   * continuously scrolling page with an even gap between each.
+   */
+  fill?: boolean;
 }) {
   return (
     <section
       id={id}
       data-snap-section
       className={[
-        "relative flex min-h-[100dvh] snap-start flex-col justify-center overflow-hidden px-5 pb-16 pt-24 sm:px-8",
+        "relative flex snap-start flex-col overflow-hidden px-5 sm:px-8",
+        fill ? "min-h-[100dvh] justify-center" : "justify-start",
+        paddingClassName,
         snapAlways ? "snap-always" : "",
         className,
       ].join(" ")}
