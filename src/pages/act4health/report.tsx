@@ -75,24 +75,33 @@ const SECTIONS = [
   { id: "closing", label: "Wrap up" },
 ];
 
+/**
+ * The three steps, each illustrated from the design. `image` points at an asset
+ * the clinic supplies; StepImage drops itself if the file isn't in the repo
+ * yet, so the section degrades to the text-only layout rather than rendering
+ * broken images.
+ */
 const HOW_IT_WORKS_STEPS = [
   {
     step: "Step 1",
     title: "Book your full screening",
     body: "Message the Act4Health team on WhatsApp and pick a slot for your full cognitive screening.",
+    image: "/images/act4health/steps/step-1-whatsapp.png",
+    imageAlt: "Picking a screening slot in a WhatsApp chat with Act4Health Clinic",
   },
   {
     step: "Step 2",
-    title: "Take the assessment",
-    body: "Specialised games that measure how your brain handles four aspects — speed, focus, planning, and memory.",
-    domains: ["Speed", "Focus", "Planning", "Memory"],
+    title: "Play a 10 minute brain health game",
+    body: "Test your memory, attention, and decision making.",
+    image: "/images/act4health/steps/step-2-games.png",
+    imageAlt: "The brain health games running on a phone, a tablet and a laptop",
   },
   {
     step: "Step 3",
-    title: "Get your report and next steps",
-    // "a doctor", not "a specialist": under CKAPS the clinic is registered as
-    // a GP practice, so it must not describe its team as specialists.
-    body: "Your overall risk level for mild cognitive impairment, a breakdown across the four domains, and a doctor who walks you through it with clear next steps.",
+    title: "Get the full report",
+    body: "Review your brain performance with actionable ways to improve.",
+    image: "/images/act4health/steps/step-3-report.png",
+    imageAlt: "A cognitive performance report scoring four brain domains",
   },
 ];
 
@@ -108,6 +117,27 @@ function withRecognaizeSerif(text: string): React.ReactNode {
       {part}
     </React.Fragment>
   ));
+}
+
+/**
+ * One step's illustration. Removes itself if the asset 404s, so a step whose
+ * image hasn't been committed yet still reads as a normal text step instead of
+ * a broken-image placeholder.
+ */
+function StepImage({ src, alt }: { src: string; alt: string }) {
+  const [failed, setFailed] = React.useState(false);
+  if (failed) return null;
+  return (
+    <div className="mt-4 overflow-hidden rounded-[20px] border border-[#F2DDCE] bg-white">
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        onError={() => setFailed(true)}
+        className="block h-auto w-full"
+      />
+    </div>
+  );
 }
 
 function WhatsAppGlyph({ className }: { className?: string }) {
@@ -661,7 +691,7 @@ export default function Act4HealthReport() {
                 </motion.h2>
 
                 <motion.ol variants={stagger} className="mt-8 space-y-6">
-                  {HOW_IT_WORKS_STEPS.map(({ step, title, body, domains }, i) => (
+                  {HOW_IT_WORKS_STEPS.map(({ step, title, body, image, imageAlt }, i) => (
                     <motion.li key={title} variants={rise}>
                       <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#B4653C]">
                         {step}
@@ -671,18 +701,7 @@ export default function Act4HealthReport() {
                       </p>
                       <p className="mt-2 text-[14.5px] leading-[1.6] text-[#6B5245]">{body}</p>
 
-                      {domains && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {domains.map((d) => (
-                            <span
-                              key={d}
-                              className="rounded-full border border-[#E7D3C4] bg-white px-4 py-2 text-[13px] font-bold text-[#5F4638]"
-                            >
-                              {d}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                      <StepImage src={image} alt={imageAlt} />
 
                       {i < HOW_IT_WORKS_STEPS.length - 1 && (
                         <div aria-hidden className="mt-6 h-px bg-[#F2DDCE]" />
@@ -848,6 +867,8 @@ export default function Act4HealthReport() {
                   </figcaption>
                 </motion.figure>
 
+                {/* No emoji stickers on this card, unlike /lite-two: this
+                    funnel's audience reads them as clutter rather than warmth. */}
                 <motion.div
                   variants={rise}
                   className="relative mt-10 rounded-[26px] border border-[#EEDACD] bg-[#FFFDFB] p-6 sm:p-7"
@@ -861,28 +882,6 @@ export default function Act4HealthReport() {
                   <p className="mt-2 text-[14.5px] leading-[1.6] text-[#6B5245]">
                     {copy.exit.body2}
                   </p>
-                  <motion.div
-                    variants={stagger}
-                    className="pointer-events-none absolute -top-5 right-5 flex gap-2"
-                  >
-                    {["👍", "🧡"].map((sticker, i) => (
-                      <motion.span
-                        key={sticker}
-                        variants={{
-                          hidden: { opacity: 0, scale: 1.6, rotate: i === 0 ? -18 : 14 },
-                          shown: {
-                            opacity: 1,
-                            scale: 1,
-                            rotate: i === 0 ? -10 : 8,
-                            transition: { type: "spring", stiffness: 300, damping: 16 },
-                          },
-                        }}
-                        className="grid size-12 place-items-center rounded-full bg-white text-[22px] shadow-[0_10px_24px_-10px_rgba(90,40,10,0.45)]"
-                      >
-                        {sticker}
-                      </motion.span>
-                    ))}
-                  </motion.div>
                 </motion.div>
 
                 {/* Larger and solid rather than the usual faded footnote — the
