@@ -371,7 +371,13 @@ export function MotionRadar({
   const { ref, seen } = useSeen<HTMLDivElement>(0.5);
   const reduced = useReducedMotion();
   const shown = seen;
-  const W = 340;
+  // The root <svg> clips its own overflow, so a label wide enough to cross the
+  // viewBox edge (e.g. act4health's "RISK SAFETY", "DECISION MAKING") is cut
+  // off rather than just spilling into the container's padding. 40 extra units
+  // of horizontal margin fixes that; it's a small, uniform shrink of the whole
+  // chart rather than a change to the plotted shape, so lite-one/lite-two's
+  // short single-word labels render at an imperceptibly smaller size.
+  const W = 380;
   const H = 282;
   const cx = W / 2;
   const cy = 132;

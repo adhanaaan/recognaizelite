@@ -130,7 +130,7 @@ const HOW_IT_WORKS_STEPS = [
   },
 ];
 
-const RADAR_AXES = ["Speed", "Memory", "Attention", "Executive", "Risk"];
+const RADAR_AXES = ["Speed", "Memory", "Attention", "Decision Making", "Risk Safety"];
 
 /** The closing quotes name the product; keep its serif accent when they do. */
 function withRecognaizeSerif(text: string): React.ReactNode {
@@ -662,7 +662,7 @@ export default function Act4HealthReport() {
                       axes={RADAR_AXES}
                       filled={{
                         Speed: Math.max(0.25, percentile / 100),
-                        Risk: riskFill,
+                        "Risk Safety": riskFill,
                       }}
                     />
                   </div>
