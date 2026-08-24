@@ -7,7 +7,7 @@ import {
   useTransform,
 } from "framer-motion";
 import Head from "next/head";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import React from "react";
 import {
   MotionRadar,
@@ -36,8 +36,11 @@ import {
   type LiteTwoCopyCtx,
   type LiteTwoPersona,
 } from "src/data/liteTwoReportContent";
+import { resetQuestionnaire } from "src/stores/useQuestionnaireStore";
+import { resetResults } from "src/stores/useResultStore";
+import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { ACT4HEALTH_LOGO, ACT4HEALTH_WHATSAPP_URL } from "src/utils/act4health";
-import { ACT4HEALTH } from "src/utils/liteOne";
+import { ACT4HEALTH, clearLiteSession } from "src/utils/liteOne";
 
 /**
  * /act4health's report — /lite-two's v2 story, personalised the same way (persona × band via src/data/liteTwoReportContent.ts), with the
@@ -244,6 +247,21 @@ export default function Act4HealthReport() {
   };
   const shareScore = () =>
     share(`I reacted faster than ${percentile}% of ${peers} on a 60-second cognitive test.`);
+
+  /**
+   * Clears this run so the entry page's own reset (which only fires on
+   * mount) has nothing stale left to skip past — same belt-and-suspenders
+   * pattern as /lite-clinician, /hookikigai and /tcmbrain's retake handlers.
+   * Without this a visitor who already finished a run would land back on
+   * the celebration screen instead of a fresh game.
+   */
+  const handleRetake = () => {
+    clearLiteSession(ACT4HEALTH);
+    resetResults();
+    resetTaskProgress();
+    resetQuestionnaire();
+    Router.push(ACT4HEALTH.basePath);
+  };
 
   // Sticky header: transparent over the hero, frosted once the page moves.
   const { scrollY } = useScroll({ container: scrollerRef });
@@ -930,6 +948,19 @@ export default function Act4HealthReport() {
                   Built on clinical research by Nanyang Technological University, LKC Medicine,
                   Dementia Research Centre Singapore.
                 </motion.p>
+
+                {/* Underlined text, not a button: the WhatsApp booking is the
+                    one CTA this page wants taken, so retaking the test stays
+                    a quiet, secondary option rather than competing with it. */}
+                <motion.div variants={rise} className="mt-6 text-center">
+                  <button
+                    type="button"
+                    onClick={handleRetake}
+                    className="text-[13.5px] font-semibold text-[#8A6A58] underline underline-offset-4 transition-colors hover:text-[#1C110A]"
+                  >
+                    Retake the test
+                  </button>
+                </motion.div>
               </Cascade>
             </SnapSection>
 
