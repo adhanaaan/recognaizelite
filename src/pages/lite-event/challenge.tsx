@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { AutoPlayDemo } from "src/components/LiteOne/AutoPlayDemo";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import IMAGES from "src/constants/IMAGES.json";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { preloadImages } from "src/lib/image-cache";
 
 /**
@@ -17,8 +19,13 @@ import { preloadImages } from "src/lib/image-cache";
  *
  * From here the flow rejoins the shared /symbol-matching routes; which funnel
  * it returns to afterwards is carried by hookReportPath, set on the entry page.
+ * The language travels the same way — through APP_LANG, which the tutorial and
+ * game screens read via src/lib/translations.
  */
 export default function LiteEventChallenge() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
+
   useEffect(() => {
     // The tutorial and game both need the full 10-symbol set; warm it now
     // while the visitor is reading.
@@ -28,7 +35,7 @@ export default function LiteEventChallenge() {
   return (
     <>
       <Head>
-        <title>Reaction time challenge | ReCOGnAIze</title>
+        <title>{t.challenge.headTitle}</title>
       </Head>
 
       <LiteShell>
@@ -38,20 +45,21 @@ export default function LiteEventChallenge() {
               className="lite-rise text-[11px] font-bold uppercase tracking-[0.22em] text-quizPrimary"
               style={{ animationDelay: "20ms" }}
             >
-              Step 1 of 3
+              {t.challenge.step}
             </p>
             <h1
               className="lite-rise mt-3 font-display text-[30px] font-extrabold leading-[1.08] text-charcoal sm:text-[34px]"
               style={{ animationDelay: "80ms" }}
             >
-              Reaction time challenge
+              {t.challenge.h1}
             </h1>
             <p
               className="lite-rise mt-3 text-[14.5px] leading-relaxed text-quizSecondary"
               style={{ animationDelay: "150ms" }}
             >
-              How <span className="font-bold text-charcoal">fast</span> does your brain process?
-              Match as many symbols to their numbers as you can in 60 seconds.
+              {t.challenge.bodyLead}
+              <span className="font-bold text-charcoal">{t.challenge.bodyEmph}</span>
+              {t.challenge.bodyTail}
             </p>
 
             <div className="lite-rise mt-5" style={{ animationDelay: "230ms" }}>
@@ -60,7 +68,7 @@ export default function LiteEventChallenge() {
 
             <div className="lite-rise mx-auto mt-5 max-w-[320px]" style={{ animationDelay: "320ms" }}>
               <LiteButton onClick={() => Router.push("/symbol-matching/demo")}>
-                Start tutorial
+                {t.challenge.cta}
               </LiteButton>
             </div>
           </div>

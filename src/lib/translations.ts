@@ -9,7 +9,12 @@ function createLocaleProxy<T extends Record<string, Record<string, string>>>(loc
   return new Proxy({} as Record<keyof T, string>, {
     get: (_, prop) => {
       if (prop in locale) {
-        return locale[prop as keyof T][language];
+        const entry = locale[prop as keyof T];
+        // A locale file can carry a key with no translation for a language yet
+        // (several still have empty TAGALOG / MALAYALAM / BAHASA slots). Falling
+        // back to English keeps a partly-translated screen readable instead of
+        // rendering a blank line where the label should be.
+        return entry[language] || entry.ENGLISH || String(prop);
       }
       return String(prop);
     },

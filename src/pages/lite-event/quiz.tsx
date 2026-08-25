@@ -6,7 +6,14 @@ import { QuestionGroupScreen } from "src/components/Quiz/QuestionGroupScreen";
 import { QuizProgressBar } from "src/components/Quiz/ProgressBar";
 import { StatCardScreen } from "src/components/Quiz/StatCardScreen";
 import { QUESTIONS_BY_ID } from "src/data/brainHealthQuestions";
+import { QUESTIONS_MS_BY_ID } from "src/data/brainHealthQuestions.ms";
+import { QUESTIONS_ZH_BY_ID } from "src/data/brainHealthQuestions.zh";
 import { STAT_CARDS_BY_ID } from "src/data/brainHealthStatCards";
+import { STAT_CARDS_MS_BY_ID } from "src/data/brainHealthStatCards.ms";
+import { STAT_CARDS_ZH_BY_ID } from "src/data/brainHealthStatCards.zh";
+import type { StatCard } from "src/data/brainHealthStatCards";
+import { useLiteEventLang, type LiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy, type LiteEventCopy } from "src/i18n/liteEventCopy";
 import { computeScore } from "src/lib/brainHealthScoring";
 import type { Question, Answers } from "src/types/quiz";
 import {
@@ -22,49 +29,73 @@ type StepDef =
   | { kind: "statCard"; cardId: string };
 
 /**
+ * The three question banks, keyed by the funnel's language. Every bank carries
+ * the same question ids, option ids and scores — only the wording differs — so
+ * `computeScore` (which reads the English bank) grades a Chinese or Malay run
+ * exactly as it grades an English one, and the answers written to
+ * liteevent_leads stay comparable across languages.
+ */
+const QUESTION_BANKS: Record<LiteEventLang, Record<string, Question>> = {
+  en: QUESTIONS_BY_ID,
+  zh: QUESTIONS_ZH_BY_ID,
+  ms: QUESTIONS_MS_BY_ID,
+};
+
+const STAT_CARD_BANKS: Record<LiteEventLang, Record<string, StatCard>> = {
+  en: STAT_CARDS_BY_ID,
+  zh: STAT_CARDS_ZH_BY_ID,
+  ms: STAT_CARDS_MS_BY_ID,
+};
+
+/**
  * The question path of b2cfunnel's `FULL_FLOW` (`src/config/funnelFlow.ts`),
  * step for step. Its flow also carries the hook, email gate, analysing, result
  * and paywall steps; in this funnel those are separate routes, so only the
  * question and stat-card steps live here.
+ *
+ * Built from the copy set rather than declared as a constant, because the
+ * group headings are the visitor's to read and so are translated.
  */
-const ALL_STEPS: StepDef[] = [
-  { kind: "question", questionId: "age" },
-  { kind: "question", questionId: "sex" },
-  { kind: "question", questionId: "hotFlushes" }, // pruned if sex !== female
-  { kind: "question", questionId: "familyHistory" },
+function allSteps(t: LiteEventCopy): StepDef[] {
+  return [
+    { kind: "question", questionId: "age" },
+    { kind: "question", questionId: "sex" },
+    { kind: "question", questionId: "hotFlushes" }, // pruned if sex !== female
+    { kind: "question", questionId: "familyHistory" },
 
-  {
-    kind: "questionGroup",
-    title: "Some risk factors",
-    // The previous question was about family history — this one is not, and
-    // testers assumed it still was without this line.
-    description: "These are about your own health, not your family's.",
-    questionIds: ["highBp", "highCholesterol", "diabetes", "hearingLoss", "visionLoss"],
-  },
+    {
+      kind: "questionGroup",
+      title: t.quiz.groupRiskFactors,
+      // The previous question was about family history — this one is not, and
+      // testers assumed it still was without this line.
+      description: t.quiz.groupRiskFactorsNote,
+      questionIds: ["highBp", "highCholesterol", "diabetes", "hearingLoss", "visionLoss"],
+    },
 
-  {
-    kind: "questionGroup",
-    title: "Your lifestyle",
-    questionIds: ["smoking", "sleep", "exercise", "diet", "alcohol"],
-  },
+    {
+      kind: "questionGroup",
+      title: t.quiz.groupLifestyle,
+      questionIds: ["smoking", "sleep", "exercise", "diet", "alcohol"],
+    },
 
-  // The only stat card this funnel keeps — the rest (lancet2024, salthouse)
-  // are dropped so the quiz carries a single credibility beat instead of
-  // three, at the position IMH WiSE already had.
-  { kind: "statCard", cardId: "imhWise" },
+    // The only stat card this funnel keeps — the rest (lancet2024, salthouse)
+    // are dropped so the quiz carries a single credibility beat instead of
+    // three, at the position IMH WiSE already had.
+    { kind: "statCard", cardId: "imhWise" },
 
-  { kind: "question", questionId: "tracks" },
+    { kind: "question", questionId: "tracks" },
 
-  // The three experiential symptom questions share a frequency scale, so they
-  // sit on one page as sliders.
-  {
-    kind: "questionGroup",
-    title: "Changes you might have noticed",
-    questionIds: ["concentrating", "judgement", "forgetfulness"],
-  },
-  { kind: "question", questionId: "persistence" }, // pruned if forgetfulness not noticed
-  { kind: "question", questionId: "someoneElseNoticed" },
-];
+    // The three experiential symptom questions share a frequency scale, so they
+    // sit on one page as sliders.
+    {
+      kind: "questionGroup",
+      title: t.quiz.groupChanges,
+      questionIds: ["concentrating", "judgement", "forgetfulness"],
+    },
+    { kind: "question", questionId: "persistence" }, // pruned if forgetfulness not noticed
+    { kind: "question", questionId: "someoneElseNoticed" },
+  ];
+}
 
 function questionVisible(question: Question, answers: Answers): boolean {
   if (!question.showIf) return true;
@@ -78,10 +109,11 @@ function questionVisible(question: Question, answers: Answers): boolean {
 
 function visibleQuestionsForGroup(
   questionIds: readonly string[],
-  answers: Answers
+  answers: Answers,
+  bank: Record<string, Question>
 ): Question[] {
   return questionIds
-    .map((id) => QUESTIONS_BY_ID[id])
+    .map((id) => bank[id])
     .filter((q): q is Question => Boolean(q) && questionVisible(q, answers));
 }
 
@@ -95,10 +127,14 @@ function visibleQuestionsForGroup(
  * answer that prunes a step is always given on an earlier step: the cursor only
  * ever moves forward into the already-recomputed array.
  */
-function visibleSteps(answers: Answers): StepDef[] {
-  return ALL_STEPS.filter((step) => {
+function visibleSteps(
+  answers: Answers,
+  t: LiteEventCopy,
+  bank: Record<string, Question>
+): StepDef[] {
+  return allSteps(t).filter((step) => {
     if (step.kind !== "question") return true;
-    const question = QUESTIONS_BY_ID[step.questionId];
+    const question = bank[step.questionId];
     return Boolean(question) && questionVisible(question, answers);
   });
 }
@@ -119,10 +155,29 @@ function totalQuestionPages(steps: StepDef[]): number {
 }
 
 export default function LiteEventQuizPage() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
+  const bank = QUESTION_BANKS[lang];
+  const statCards = STAT_CARD_BANKS[lang];
+
   const answers = useQuestionnaireStore((s) => s.answers);
   const currentStep = useQuestionnaireStore((s) => s.currentStep);
 
-  const steps = useMemo(() => visibleSteps(answers), [answers]);
+  const steps = useMemo(() => visibleSteps(answers, t, bank), [answers, t, bank]);
+
+  const quizLabels = useMemo(
+    () => ({ back: t.quiz.back, continue: t.quiz.continue }),
+    [t]
+  );
+  const statLabels = useMemo(
+    () => ({
+      didYouKnow: t.quiz.didYouKnow,
+      source: t.quiz.source,
+      continue: t.quiz.continue,
+    }),
+    [t]
+  );
+  const progressLabels = useMemo(() => ({ questionXOfY: t.quiz.questionXOfY }), [t]);
 
   useEffect(() => {
     document.documentElement.style.overflow = "auto";
@@ -166,7 +221,7 @@ export default function LiteEventQuizPage() {
   if (currentStep >= steps.length) {
     return (
       <main className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#fff4ee] via-quizSurface to-quizSurface-container px-6">
-        <p className="text-[15px] font-jakarta text-quizSecondary">Preparing your result…</p>
+        <p className="text-[15px] font-jakarta text-quizSecondary">{t.quiz.preparing}</p>
       </main>
     );
   }
@@ -179,7 +234,7 @@ export default function LiteEventQuizPage() {
   return (
     <>
       <Head>
-        <title>Brain Health Quiz | ReCOGnAIze</title>
+        <title>{t.quiz.headTitle}</title>
         <meta name="theme-color" content="#fff4ee" />
       </Head>
       <main className="relative flex min-h-[100dvh] flex-col items-center overflow-hidden bg-gradient-to-b from-[#fff4ee] via-quizSurface to-quizSurface-container px-4 py-8 sm:py-12">
@@ -193,18 +248,19 @@ export default function LiteEventQuizPage() {
         />
 
         <div className="relative w-full max-w-lg">
-          <QuizProgressBar current={currentPage} total={totalPages} />
+          <QuizProgressBar current={currentPage} total={totalPages} labels={progressLabels} />
 
           <div className="mt-8">
             {step.kind === "question" && (
               <QuestionStep
                 key={step.questionId}
-                question={QUESTIONS_BY_ID[step.questionId]}
+                question={bank[step.questionId]}
                 value={answers[step.questionId]}
                 canGoBack={canGoBack}
                 onAnswer={(value) => setAnswer(step.questionId, value)}
                 onNext={advance}
                 onBack={goBack}
+                labels={quizLabels}
               />
             )}
             {step.kind === "questionGroup" && (
@@ -212,19 +268,21 @@ export default function LiteEventQuizPage() {
                 key={step.title}
                 title={step.title}
                 description={step.description}
-                questions={visibleQuestionsForGroup(step.questionIds, answers)}
+                questions={visibleQuestionsForGroup(step.questionIds, answers, bank)}
                 answers={answers}
                 canGoBack={canGoBack}
                 onAnswer={(qid, value) => setAnswer(qid, value)}
                 onNext={advance}
                 onBack={goBack}
+                labels={quizLabels}
               />
             )}
             {step.kind === "statCard" && (
               <StatCardScreen
                 key={step.cardId}
-                card={STAT_CARDS_BY_ID[step.cardId]}
+                card={statCards[step.cardId]}
                 onNext={advance}
+                labels={statLabels}
               />
             )}
           </div>
