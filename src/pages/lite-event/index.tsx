@@ -8,8 +8,10 @@ import {
   TrustBand,
   type PressLogo,
 } from "src/components/LiteOne/LandingSections";
+import { LanguagePicker } from "src/components/LiteOne/LanguagePicker";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
-import { setAppLanguage } from "src/lib/translations";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { resetQuestionnaire } from "src/stores/useQuestionnaireStore";
@@ -55,10 +57,19 @@ const PRESS: PressLogo[] = [
  *
  * resetTaskProgress() matters: without it a visitor who already finished a run
  * lands on the celebration screen instead of the game.
+ *
+ * Unlike its siblings this funnel can run in Chinese or Malay: the picker at
+ * the top of the hero sets the language for every screen from here to the
+ * report. See src/i18n/liteEvent.ts — including the one constant that turns the
+ * whole thing off. The app-wide language (which the shared /symbol-matching
+ * leg reads) is set by `useLiteEventLang` on mount, which is why this page no
+ * longer calls setAppLanguage("ENGLISH") the way the other entries do.
  */
 export default function LiteEventEntry() {
+  const { lang, setLang, enabled } = useLiteEventLang();
+  const t = liteEventCopy(lang);
+
   useEffect(() => {
-    setAppLanguage("ENGLISH");
     setHookClinic(LITE_EVENT.hookClinic);
     setHookEntryPath(LITE_EVENT.basePath);
     setHookReportPath(`${LITE_EVENT.basePath}/game-complete`);
@@ -73,16 +84,10 @@ export default function LiteEventEntry() {
   return (
     <>
       <Head>
-        <title>Brain Health Check | ReCOGnAIze</title>
-        <meta
-          name="description"
-          content="You track your heart, your sleep, your blood sugar. This is the same idea for your brain: a 3-minute check and a score you can act on."
-        />
-        <meta property="og:title" content="You tracked everything. What about your brain?" />
-        <meta
-          property="og:description"
-          content="Take a 3-min quiz and find out how your brain is performing."
-        />
+        <title>{t.landing.headTitle}</title>
+        <meta name="description" content={t.landing.metaDescription} />
+        <meta property="og:title" content={t.landing.ogTitle} />
+        <meta property="og:description" content={t.landing.ogDescription} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
@@ -101,12 +106,22 @@ export default function LiteEventEntry() {
         <div className="flex min-h-[100dvh] flex-col">
           <HeroVideo>
             {/*
-             * Three groups, spread by HeroVideo's `justify-between`: the pill
-             * near the top under the lock-up, the headline stack in the middle,
-             * and the featured-in bar at the bottom above the cream fade.
+             * Three groups, spread by HeroVideo's `justify-between`: the
+             * language switch and credibility pill near the top under the
+             * lock-up, the headline stack in the middle, and the featured-in
+             * bar at the bottom above the cream fade.
              */}
-            <div className="lite-rise" style={{ animationDelay: "40ms" }}>
-              <HeroPill>Clinically validated at NTU LKCMedicine</HeroPill>
+            <div
+              className="lite-rise flex flex-col items-center gap-3"
+              style={{ animationDelay: "40ms" }}
+            >
+              <LanguagePicker
+                lang={lang}
+                onChange={setLang}
+                enabled={enabled}
+                label={t.picker.label}
+              />
+              <HeroPill>{t.landing.pill}</HeroPill>
             </div>
 
             <div className="flex flex-col items-center">
@@ -114,35 +129,41 @@ export default function LiteEventEntry() {
                 className="lite-rise font-display text-[30px] leading-[1.16] text-white sm:text-[46px]"
                 style={{ animationDelay: "110ms" }}
               >
-                <span className="font-medium">You tracked </span>
-                <span className="font-medium italic">everything</span>
+                <span className="font-medium">{t.landing.heroLine1Lead}</span>
+                <span className="font-medium italic">{t.landing.heroLine1Emph}</span>
                 <br />
-                <span className="font-extrabold">What about your </span>
-                <span className="font-extrabold italic">brain</span>
-                <span className="font-extrabold">?</span>
+                <span className="font-extrabold">{t.landing.heroLine2Lead}</span>
+                <span className="font-extrabold italic">{t.landing.heroLine2Emph}</span>
+                <span className="font-extrabold">{t.landing.heroLine2Tail}</span>
               </h1>
 
               <p
                 className="lite-rise mt-6 max-w-[420px] font-display text-[17px] font-bold leading-snug text-white/95 sm:text-[19px]"
                 style={{ animationDelay: "200ms" }}
               >
-                Take a 3-min quiz and find out how your brain is performing
+                {t.landing.heroSub}
               </p>
 
               <div
                 className="lite-rise mt-8 w-full max-w-[320px]"
                 style={{ animationDelay: "280ms" }}
               >
-                <LiteButton onClick={start}>Get started for free</LiteButton>
+                <LiteButton onClick={start}>{t.landing.cta}</LiteButton>
               </div>
             </div>
 
             <div className="lite-rise" style={{ animationDelay: "360ms" }}>
-              <HeroFeaturedIn logos={PRESS} />
+              <HeroFeaturedIn logos={PRESS} label={t.landing.featuredIn} />
             </div>
           </HeroVideo>
 
-          <TrustBand />
+          <TrustBand
+            lead={t.landing.trustLead}
+            strong1={t.landing.trustStrong1}
+            mid={t.landing.trustMid}
+            strong2={t.landing.trustStrong2}
+            tail={t.landing.trustTail}
+          />
         </div>
       </LiteShell>
     </>

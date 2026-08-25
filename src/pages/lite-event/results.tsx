@@ -3,6 +3,8 @@ import Router from "next/router";
 import React from "react";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { SectionBadge } from "src/components/LiteOne/SectionBadge";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { computeScore } from "src/lib/brainHealthScoring";
 import { useQuestionnaireStore } from "src/stores/useQuestionnaireStore";
 import { useResultStore } from "src/stores/useResultStore";
@@ -30,6 +32,8 @@ const inputClass =
   "w-full rounded-xl border border-quizOutline-variant bg-quizSurface-lowest px-4 py-3.5 text-[15px] text-charcoal placeholder-quizOutline outline-none transition-colors focus:border-quizPrimary";
 
 export default function LiteEventResults() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
   const { result } = useResultStore();
   const quizAnswers = useQuestionnaireStore((s) => s.answers);
 
@@ -80,13 +84,13 @@ export default function LiteEventResults() {
 
     const trimmedName = name.trim();
     if (!trimmedName) {
-      setError("Please enter your name.");
+      setError(t.results.errName);
       return;
     }
 
     const trimmedEmail = email.trim();
     if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setError("Please enter a valid email address.");
+      setError(t.results.errEmail);
       return;
     }
 
@@ -133,7 +137,7 @@ export default function LiteEventResults() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error || "We couldn't save that. Please try again.");
+        throw new Error(data?.error || t.results.errSave);
       }
       // quizAge rides along for the report page: the optimizer/senior split is
       // made on the raw quiz band, not the shifted leads-table bucket.
@@ -147,7 +151,7 @@ export default function LiteEventResults() {
       }, LITE_EVENT);
       Router.push(`${LITE_EVENT.basePath}/loading`);
     } catch (err) {
-      setError((err as Error).message || "We couldn't save that. Please try again.");
+      setError((err as Error).message || t.results.errSave);
       setSubmitting(false);
     }
   };
@@ -155,26 +159,26 @@ export default function LiteEventResults() {
   return (
     <>
       <Head>
-        <title>Where should we send your results? | ReCOGnAIze</title>
+        <title>{t.results.headTitle}</title>
       </Head>
 
       <LiteShell scroll className="px-5 pb-12 sm:px-8">
         <div className="relative mx-auto w-full max-w-[440px] pt-8">
           <div className="lite-rise" style={{ animationDelay: "0ms" }}>
-            <SectionBadge label="3 | Result" />
+            <SectionBadge label={t.results.badge} />
           </div>
 
           <h1
             className="lite-rise mt-5 font-display text-[30px] font-extrabold leading-[1.1] text-charcoal sm:text-[34px]"
             style={{ animationDelay: "60ms" }}
           >
-            Where should we send your results?
+            {t.results.h1}
           </h1>
           <p
             className="lite-rise mt-4 text-[14.5px] leading-relaxed text-quizSecondary"
             style={{ animationDelay: "120ms" }}
           >
-            Tell us your name and email, and we&apos;ll send you a copy
+            {t.results.sub}
           </p>
 
           <form
@@ -188,13 +192,13 @@ export default function LiteEventResults() {
                 htmlFor="ltwo-name"
                 className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-quizOutline"
               >
-                Name
+                {t.results.nameLabel}
               </label>
               <input
                 id="ltwo-name"
                 type="text"
                 autoComplete="name"
-                placeholder="Your name"
+                placeholder={t.results.namePlaceholder}
                 value={name}
                 onChange={(e) => { setName(e.target.value); setError(""); }}
                 className={inputClass}
@@ -206,13 +210,13 @@ export default function LiteEventResults() {
                 htmlFor="ltwo-email"
                 className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-quizOutline"
               >
-                Email
+                {t.results.emailLabel}
               </label>
               <input
                 id="ltwo-email"
                 type="email"
                 autoComplete="email"
-                placeholder="your@email.com"
+                placeholder={t.results.emailPlaceholder}
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setError(""); }}
                 className={inputClass}
@@ -226,12 +230,11 @@ export default function LiteEventResults() {
             )}
 
             <LiteButton type="submit" disabled={submitting}>
-              {submitting ? "Saving…" : "Reveal my score"}
+              {submitting ? t.results.saving : t.results.submit}
             </LiteButton>
 
             <p className="text-center text-[11.5px] leading-relaxed text-quizOutline">
-              We&apos;ll only use your details to share your result and brain health
-              recommendations. Unsubscribe any time.
+              {t.results.privacy}
             </p>
           </form>
         </div>

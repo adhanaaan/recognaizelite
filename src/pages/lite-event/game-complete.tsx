@@ -3,6 +3,8 @@ import Router from "next/router";
 import React from "react";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { SectionBadge } from "src/components/LiteOne/SectionBadge";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { useResultStore } from "src/stores/useResultStore";
 import { LITE_EVENT, readTask2Score } from "src/utils/liteOne";
 
@@ -18,20 +20,22 @@ const ICONS = [
  * once they've all passed through /symbol-matching.
  */
 export default function LiteEventGameComplete() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
   const { result } = useResultStore();
   const score = readTask2Score(result);
 
   return (
     <>
       <Head>
-        <title>Game complete | ReCOGnAIze</title>
+        <title>{t.gameComplete.headTitle}</title>
       </Head>
 
       <LiteShell>
         <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 py-8">
           <div className="relative mx-auto w-full max-w-[440px] text-center">
             <div className="lite-rise" style={{ animationDelay: "0ms" }}>
-              <SectionBadge label="1 | Cognitive Game" />
+              <SectionBadge label={t.gameComplete.badge} />
             </div>
 
             {ICONS.map((icon) => (
@@ -49,14 +53,14 @@ export default function LiteEventGameComplete() {
               className="lite-rise mt-14 font-display text-[32px] font-extrabold leading-[1.08] text-charcoal sm:text-[38px]"
               style={{ animationDelay: "100ms" }}
             >
-              Game complete!
+              {t.gameComplete.h1}
             </h1>
 
             <p
               className="lite-rise mt-4 text-[18px] font-semibold text-charcoal"
               style={{ animationDelay: "180ms" }}
             >
-              Correct symbols: {score ?? "—"}
+              {t.gameComplete.correctSymbols} {score ?? "—"}
             </p>
 
             <div
@@ -64,10 +68,10 @@ export default function LiteEventGameComplete() {
               style={{ animationDelay: "300ms" }}
             >
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-quizOutline">
-                Next
+                {t.gameComplete.nextEyebrow}
               </p>
               <p className="mt-2 text-[15px] leading-relaxed text-quizSecondary">
-                Take a medically-backed quiz on brain health risk factors
+                {t.gameComplete.nextBody}
               </p>
             </div>
 
@@ -76,7 +80,7 @@ export default function LiteEventGameComplete() {
               style={{ animationDelay: "420ms" }}
             >
               <LiteButton onClick={() => Router.push(`${LITE_EVENT.basePath}/quiz`)}>
-                Continue
+                {t.gameComplete.cta}
               </LiteButton>
             </div>
           </div>

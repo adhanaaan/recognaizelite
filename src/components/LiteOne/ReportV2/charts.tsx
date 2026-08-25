@@ -25,13 +25,57 @@ function useSeen<T extends HTMLElement>(amount = 0.4) {
 /* Percentile curve                                                    */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Axis and marker words for the charts. Every field is optional and defaults to
+ * the English original, so only /lite-event (which can be running in Chinese or
+ * Malay) passes anything; the other report pages call these unchanged.
+ */
+export type ScoreCurveLabels = {
+  slower: string;
+  average: string;
+  faster: string;
+  you: string;
+};
+
+export type RiskTrendLabels = {
+  managed: string;
+  unmanaged: string;
+  faster: string;
+  slower: string;
+  /** Prefixed to the first age tick — "Age 30". */
+  agePrefix: string;
+  caption: string;
+  aria: string;
+};
+
+const CURVE_LABELS: ScoreCurveLabels = {
+  slower: "Slower",
+  average: "Average",
+  faster: "Faster",
+  you: "YOU",
+};
+
+const TREND_LABELS: RiskTrendLabels = {
+  managed: "Risk factors managed",
+  unmanaged: "Risk factors unmanaged",
+  faster: "Faster",
+  slower: "Slower",
+  agePrefix: "Age ",
+  caption:
+    "Illustrative trend, shaped by Jaarsma et al. 2024 and Yaffe et al. 2020 (CARDIA). Not a clinical prediction.",
+  aria: "Illustrative chart: processing speed declines gently with age when risk factors are managed, and drops steeply when they are left unmanaged",
+};
+
 export function MotionScoreCurve({
   percentile,
   gradient,
+  labels,
 }: {
   percentile: number;
   gradient: string;
+  labels?: ScoreCurveLabels;
 }) {
+  const l = labels ?? CURVE_LABELS;
   const { ref, seen } = useSeen<HTMLDivElement>(0.5);
   const reduced = useReducedMotion();
   const W = 520;
@@ -149,7 +193,7 @@ export function MotionScoreCurve({
               className="fill-white text-[11px] font-extrabold"
               style={{ letterSpacing: "0.1em" }}
             >
-              YOU
+              {l.you}
             </text>
           </g>
         </motion.g>
@@ -159,10 +203,10 @@ export function MotionScoreCurve({
         className="mt-2 flex items-baseline justify-between text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#B79C8E]"
         aria-hidden
       >
-        <span>Slower</span>
-        <span>Average</span>
+        <span>{l.slower}</span>
+        <span>{l.average}</span>
         <span style={{ backgroundImage: gradient }} className="bg-clip-text text-transparent">
-          Faster
+          {l.faster}
         </span>
       </div>
     </div>
@@ -179,7 +223,8 @@ export function MotionScoreCurve({
  * cohort curves the funnel cites), not a clinical prediction — the caption
  * under the chart says so.
  */
-export function RiskTrendChart() {
+export function RiskTrendChart({ labels }: { labels?: RiskTrendLabels } = {}) {
+  const l = labels ?? TREND_LABELS;
   const { ref, seen } = useSeen<HTMLDivElement>(0.5);
   const reduced = useReducedMotion();
   const drawn = seen;
@@ -198,7 +243,7 @@ export function RiskTrendChart() {
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[10.5px] font-bold uppercase tracking-[0.12em]">
         <span className="flex items-center gap-1.5 text-[#41586B]">
           <span aria-hidden className="h-[3px] w-5 rounded-full bg-[#41586B]" />
-          Risk factors managed
+          {l.managed}
         </span>
         <span className="flex items-center gap-1.5 text-[#D62F16]">
           <span
@@ -209,7 +254,7 @@ export function RiskTrendChart() {
                 "repeating-linear-gradient(90deg,#D62F16 0 5px,transparent 5px 9px)",
             }}
           />
-          Risk factors unmanaged
+          {l.unmanaged}
         </span>
       </div>
 
@@ -217,7 +262,7 @@ export function RiskTrendChart() {
         viewBox={`0 0 ${W} ${H}`}
         className="mt-3 w-full"
         role="img"
-        aria-label="Illustrative chart: processing speed declines gently with age when risk factors are managed, and drops steeply when they are left unmanaged"
+        aria-label={l.aria}
       >
         <defs>
           <linearGradient id="rv2-riskgap" x1="0" y1="0" x2="0" y2="1">
@@ -230,13 +275,13 @@ export function RiskTrendChart() {
         <line x1="36" y1="16" x2="36" y2={H - 28} stroke="#F2DDCE" strokeWidth="1.5" />
         <line x1="36" y1={H - 28} x2={W - 16} y2={H - 28} stroke="#F2DDCE" strokeWidth="1.5" />
         <text x="14" y="24" className="fill-[#B79C8E] text-[10px] font-bold">
-          Faster
+          {l.faster}
         </text>
         <text x="14" y={H - 36} className="fill-[#B79C8E] text-[10px] font-bold">
-          Slower
+          {l.slower}
         </text>
         {[
-          [36, "Age 30"],
+          [36, `${l.agePrefix}30`],
           [157, "45"],
           [278, "60"],
           [398, "75"],
@@ -286,10 +331,7 @@ export function RiskTrendChart() {
         />
       </svg>
 
-      <p className="mt-2 text-[10.5px] leading-snug text-[#B79C8E]">
-        Illustrative trend, shaped by Jaarsma et al. 2024 and Yaffe et al. 2020 (CARDIA).
-        Not a clinical prediction.
-      </p>
+      <p className="mt-2 text-[10.5px] leading-snug text-[#B79C8E]">{l.caption}</p>
     </div>
   );
 }
@@ -298,7 +340,18 @@ export function RiskTrendChart() {
 /* Risk meter                                                          */
 /* ------------------------------------------------------------------ */
 
-export function RiskMeter({ band }: { band: BandName }) {
+export function RiskMeter({
+  band,
+  labels,
+  ariaLabel,
+}: {
+  band: BandName;
+  /** Band name → display label. Defaults to the English band names. */
+  labels?: Record<string, string>;
+  /** Group label for screen readers. Defaults to the English sentence. */
+  ariaLabel?: string;
+}) {
+  const label = (name: string) => labels?.[name] ?? BANDS[name as BandName].name;
   const { ref, seen } = useSeen<HTMLDivElement>(0.6);
   const reduced = useReducedMotion();
   const shown = seen;
@@ -306,7 +359,11 @@ export function RiskMeter({ band }: { band: BandName }) {
 
   return (
     <div ref={ref}>
-      <div className="flex gap-1.5" role="img" aria-label={`Your risk level: ${BANDS[band].name}`}>
+      <div
+        className="flex gap-1.5"
+        role="img"
+        aria-label={ariaLabel ?? `Your risk level: ${BANDS[band].name}`}
+      >
         {BAND_ORDER.map((name, i) => {
           const active = i === activeIndex;
           return (
@@ -333,7 +390,7 @@ export function RiskMeter({ band }: { band: BandName }) {
                   active ? "text-[#5F4638]" : "text-[#C9B4A6]",
                 ].join(" ")}
               >
-                {name}
+                {label(name)}
               </motion.p>
               {active && (
                 <motion.div
@@ -364,9 +421,11 @@ export function RiskMeter({ band }: { band: BandName }) {
 export function MotionRadar({
   axes,
   filled,
+  aria = "Baseline radar: two of five parts measured, three still empty",
 }: {
-  axes: string[];
+  axes: readonly string[];
   filled: Record<string, number>;
+  aria?: string;
 }) {
   const { ref, seen } = useSeen<HTMLDivElement>(0.5);
   const reduced = useReducedMotion();
@@ -403,7 +462,7 @@ export function MotionRadar({
         viewBox={`0 0 ${W} ${H}`}
         className="w-full"
         role="img"
-        aria-label="Baseline radar: two of five parts measured, three still empty"
+        aria-label={aria}
       >
         <defs>
           <radialGradient id="rv2-radar" cx="50%" cy="50%">

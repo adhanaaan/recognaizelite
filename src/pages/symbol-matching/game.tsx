@@ -17,6 +17,8 @@ import { updateResult } from "src/stores/useResultStore";
 import { updateTaskProgress, useTaskProgress } from "src/stores/useTaskProgress";
 import { isDarkHookMode, isLiteOneMode, isNoviMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
 import { LITE } from "src/constants/liteOneTheme";
+import { APP_LANG } from "src/constants";
+import { liteEventGameCopy } from "src/i18n/liteEventCopy";
 import { getTimeLap } from "src/utils/helpers";
 import { verifyCompletedTasks } from "src/utils/task-verif";
 
@@ -88,6 +90,10 @@ const Task2Wrapper = () => {
   const ikigai = isDarkHookMode();
   const sjmcW = isSjmcMode();
   const liteW = isLiteOneMode();
+  // The lite countdown card names the task. /lite-event can be running in
+  // Chinese or Malay, which it carries here through APP_LANG; every other lite
+  // funnel leaves that at ENGLISH and gets the English lines it always had.
+  const liteCountdown = liteEventGameCopy(APP_LANG);
 
   return (
     <>
@@ -111,8 +117,8 @@ const Task2Wrapper = () => {
                 color={liteW ? LITE.accent : noviW ? "#EBB02D" : ikigai ? "#5CE0D8" : sjmcW ? "#E8793B" : task2.color}
                 backgroundColor={liteW ? LITE.surface : noviW ? "#1B2130" : ikigai ? "#0B0F1A" : sjmcW ? "#FAEEE6" : task2.color + "11"}
                 variant={liteW ? "numeric" : "dots"}
-                title={liteW ? "Reaction time challenge" : undefined}
-                subtitle={liteW ? "Match as many symbols to their numbers" : undefined}
+                title={liteW ? liteCountdown.title : undefined}
+                subtitle={liteW ? liteCountdown.subtitle : undefined}
                 titleColor={liteW ? LITE.accentDeep : undefined}
               >
                 <Task2 currLevel={currLevel} />

@@ -1,3 +1,4 @@
+import { APP_LANG } from "src/constants";
 import type { CitationTag } from "src/types/quiz";
 
 /**
@@ -51,6 +52,38 @@ const CITATION_INFO: Record<NonNullable<CitationTag>, CitationInfo> = {
   },
 };
 
+/**
+ * The descriptive half of each pill, translated. Read off the app-wide
+ * `APP_LANG` rather than a prop because the pill is rendered from inside
+ * QuestionStep and QuestionGroupScreen, several levels below any page that
+ * knows the language; /lite-event's picker keeps APP_LANG in step
+ * (src/i18n/liteEvent.ts) and every other funnel leaves it at ENGLISH.
+ *
+ * `source` is left alone in every language: those are the names of papers,
+ * cohorts and instruments, and translating them would make the citation harder
+ * to look up, not easier to read.
+ */
+const DETAIL_I18N: Record<string, Record<NonNullable<CitationTag>, string>> = {
+  MANDARIN: {
+    lancet2024: "痴呆症预防 · 2024",
+    caide: "痴呆症风险评分",
+    scd: "主观认知衰退研究文献",
+    straw10: "生殖衰老 · 2012",
+    salthouse: "《衰老神经科学前沿》",
+    imhWise: "新加坡痴呆症患病率",
+    whitehall: "英国纵向队列研究",
+  },
+  MALAY: {
+    lancet2024: "Pencegahan Demensia · 2024",
+    caide: "Skor Risiko Demensia",
+    scd: "Literatur Kemerosotan Kognitif Subjektif",
+    straw10: "Penuaan Reproduktif · 2012",
+    salthouse: "Frontiers in Aging Neuroscience",
+    imhWise: "Prevalens demensia Singapura",
+    whitehall: "Kohort longitud UK",
+  },
+};
+
 interface CitationPillProps {
   tag: CitationTag;
 }
@@ -94,12 +127,14 @@ export function CitationPill({ tag }: CitationPillProps) {
   const info = CITATION_INFO[tag];
   if (!info) return null;
 
+  const detail = DETAIL_I18N[APP_LANG]?.[tag] ?? info.detail;
+
   const content = (
     <>
       <BookIcon />
       <span className="text-left text-[11px] font-jakarta leading-tight">
         <span className="font-bold text-quizPill-text">{info.source}</span>
-        <span className="text-quizPill-text/70"> · {info.detail}</span>
+        <span className="text-quizPill-text/70"> · {detail}</span>
       </span>
       {info.href && <ExternalLinkIcon />}
     </>

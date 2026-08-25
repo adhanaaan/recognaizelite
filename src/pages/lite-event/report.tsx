@@ -30,13 +30,14 @@ import {
 import { useReportData } from "src/components/LiteOne/ReportV2/useReportData";
 import { RANK_GRADIENT } from "src/components/LiteOne/ReportLab/visuals";
 import { OFFER } from "src/data/liteOneContent";
-import {
-  LITE_TWO_REPORT_COPY,
-  liteTwoVariantKey,
-  type LiteTwoBand,
-  type LiteTwoCopyCtx,
-  type LiteTwoPersona,
+import { liteEventReportCopy } from "src/data/liteEventReportCopy";
+import type {
+  LiteTwoBand,
+  LiteTwoCopyCtx,
+  LiteTwoPersona,
 } from "src/data/liteTwoReportContent";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { LITE_EVENT } from "src/utils/liteOne";
 
 /**
@@ -64,36 +65,20 @@ import { LITE_EVENT } from "src/utils/liteOne";
 
 const DARK_BAND = "linear-gradient(168deg,#2A1206 0%,#5C1E07 46%,#B23A0C 100%)";
 
-const SECTIONS = [
-  { id: "rank", label: "Your rank" },
-  { id: "meaning", label: "What it means" },
-  { id: "risk", label: "Risk factors" },
-  { id: "baseline", label: "Your baseline" },
-  { id: "recognaize", label: "The test" },
-  { id: "offer", label: "The offer" },
-  { id: "closing", label: "Wrap up" },
-];
-
-const HOW_IT_WORKS_STEPS = [
-  {
-    step: "Step 1",
-    title: "Take an online test",
-    body: "An online assessment with specialised games that measure how your brain handles four aspects — speed, focus, planning, and memory.",
-    domains: ["Speed", "Focus", "Planning", "Memory"],
-  },
-  {
-    step: "Step 2",
-    title: "Get your full report",
-    body: "Your overall risk level for mild cognitive impairment, a breakdown across the four domains, and — where relevant — the most likely underlying cause.",
-  },
-  {
-    step: "Step 3",
-    title: "Hop on a teleconsult",
-    body: "A certified doctor analyses your report with you over a telehealth consultation and explains it in detail with clear next steps.",
-  },
-];
-
-const RADAR_AXES = ["Speed", "Memory", "Attention", "Executive", "Risk"];
+/**
+ * The scroll-dot rail's ids are structural, so they stay here; the labels beside
+ * them, the how-it-works rows and the radar axis names are all the visitor's to
+ * read, so they come from the copy set inside the component.
+ */
+const SECTION_IDS = [
+  "rank",
+  "meaning",
+  "risk",
+  "baseline",
+  "recognaize",
+  "offer",
+  "closing",
+] as const;
 
 /** The closing quotes name the product; keep its serif accent when they do. */
 function withRecognaizeSerif(text: string): React.ReactNode {
@@ -108,16 +93,26 @@ function withRecognaizeSerif(text: string): React.ReactNode {
 }
 
 export default function LiteEventReport() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
   const scrollerRef = React.useRef<HTMLDivElement>(null);
   const heroRef = React.useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const { query } = useRouter();
 
   const data = useReportData(LITE_EVENT);
-  const { peers, strong, senior, isSample, name, riskBand, riskFill } = data;
-  const domain = data.report.title.toLowerCase();
+  const { strong, senior, isSample, name, riskFill } = data;
   const meterBand = data.quiz?.band ?? "moderate";
-  const factorChips = Array.from(new Set(data.riskFactors)).slice(0, 5);
+  // `useReportData` hands back English labels (they come from the shared scoring
+  // engine and the report API); the report renders this funnel's language, so
+  // each one is looked up rather than printed as it arrives.
+  const domain = t.report.domainName;
+  const riskBand = t.report.bandLabels[meterBand] ?? data.riskBand;
+  const factorChips = Array.from(new Set(data.riskFactors))
+    .slice(0, 5)
+    .map((label) => t.report.factorLabels[label] ?? label);
+
+  const sections = SECTION_IDS.map((id, i) => ({ id, label: t.report.sections[i] }));
 
   // ?persona= and ?band= force a variant for design review; the visitor's own
   // run decides otherwise.
@@ -129,7 +124,7 @@ export default function LiteEventReport() {
         : "optimizer";
   const band: LiteTwoBand =
     query.band === "strong" || query.band === "weak" ? query.band : strong ? "strong" : "weak";
-  const copy = LITE_TWO_REPORT_COPY[liteTwoVariantKey(persona, band)];
+  const copy = liteEventReportCopy(lang, persona, band);
 
   // In preview mode the sample run is an optimizer's strong result, so a
   // variant forced by query would contradict its own numbers. Bend the sample
@@ -143,7 +138,8 @@ export default function LiteEventReport() {
       ? "1.02"
       : "0.61"
     : data.avgSeconds;
-  const ageLabel = previewSenior ? "60 and over" : data.quizAgeLabel;
+  const quizAgeLabel = data.quizAge ? t.report.quizAgeLabels[data.quizAge] ?? null : null;
+  const ageLabel = previewSenior ? t.report.quizAgeLabels["60+"] : quizAgeLabel;
 
   const ctx: LiteTwoCopyCtx = {
     name,
@@ -155,17 +151,19 @@ export default function LiteEventReport() {
   };
 
   const ageChip = ageLabel
-    ? `Aged ${ageLabel}`
+    ? t.report.agedChip(ageLabel)
     : data.ageRange
-      ? `Aged ${data.ageRange}`
-      : "All ages";
+      ? t.report.agedChip(data.ageRange)
+      : t.report.allAges;
+
+  const peers = data.ageRange ? t.report.peopleAged(data.ageRange) : t.report.peopleYourAge;
 
   const [shared, setShared] = React.useState(false);
   const share = async (text: string) => {
     const url = typeof window === "undefined" ? "" : `${window.location.origin}${LITE_EVENT.basePath}`;
     try {
       if (typeof navigator !== "undefined" && navigator.share) {
-        await navigator.share({ title: "My brain speed score", text, url });
+        await navigator.share({ title: t.report.shareSheetTitle, text, url });
         return;
       }
       await navigator.clipboard.writeText(`${text} ${url}`);
@@ -176,8 +174,7 @@ export default function LiteEventReport() {
       // error toast on a share button reads as a bug.
     }
   };
-  const shareScore = () =>
-    share(`I reacted faster than ${percentile}% of ${peers} on a 60-second cognitive test.`);
+  const shareScore = () => share(t.report.shareScore(percentile, peers));
 
   // Sticky header: transparent over the hero, frosted once the page moves.
   const { scrollY } = useScroll({ container: scrollerRef });
@@ -201,7 +198,7 @@ export default function LiteEventReport() {
   return (
     <>
       <Head>
-        <title>Your brain speed report | ReCOGnAIze</title>
+        <title>{t.report.headTitle}</title>
         <meta name="theme-color" content="#FFF8F3" />
         <meta name="robots" content="noindex" />
         {/* Lora is only used on the v2 report pages, so it loads here rather
@@ -240,11 +237,11 @@ export default function LiteEventReport() {
                 className="rounded-full px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-white shadow-[0_10px_22px_-10px_rgba(214,47,22,0.55)] transition-transform active:scale-[0.97]"
                 style={{ background: RANK_GRADIENT }}
               >
-                {shared ? "Copied" : "Share results"}
+                {shared ? t.report.shared : t.report.share}
               </button>
             </motion.header>
 
-            <SectionDots sections={SECTIONS} gradient={RANK_GRADIENT} />
+            <SectionDots sections={sections} gradient={RANK_GRADIENT} />
 
             {/* ------------------------------------------- 1 · the rank --- */}
             <div ref={heroRef}>
@@ -290,8 +287,7 @@ export default function LiteEventReport() {
                       variants={rise}
                       className="mb-5 rounded-2xl border border-[#F0D9C9] bg-white/70 px-4 py-2.5 text-[12px] leading-snug text-[#8A6A58]"
                     >
-                      Preview mode. No finished game on this device, so the numbers below are a
-                      sample.
+                      {t.report.previewNotice}
                     </motion.p>
                   )}
 
@@ -303,10 +299,10 @@ export default function LiteEventReport() {
                       className="mt-3 font-display text-[clamp(33px,9vw,46px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-[#1C110A]"
                     >
                       <motion.span variants={rise} className="inline-block">
-                        {name ? `${name}, you are` : "You are"}
+                        {name ? t.report.countupLeadNamed(name) : t.report.countupLead}
                       </motion.span>{" "}
                       <motion.span variants={rise} className="inline-block">
-                        faster than{" "}
+                        {t.report.countupMid}{" "}
                         <CountUp
                           value={percentile}
                           suffix="%"
@@ -315,7 +311,7 @@ export default function LiteEventReport() {
                         />
                       </motion.span>{" "}
                       <motion.span variants={rise} className="inline-block">
-                        of your peers.
+                        {t.report.countupTail}
                       </motion.span>
                     </motion.h1>
                   ) : (
@@ -333,14 +329,18 @@ export default function LiteEventReport() {
                   >
                     <div className="flex items-baseline justify-between">
                       <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#B4653C]">
-                        Your age band
+                        {t.report.ageBandLabel}
                       </p>
                       <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#B79C8E]">
                         {ageChip}
                       </p>
                     </div>
                     <div className="mt-4">
-                      <MotionScoreCurve percentile={percentile} gradient={RANK_GRADIENT} />
+                      <MotionScoreCurve
+                        percentile={percentile}
+                        gradient={RANK_GRADIENT}
+                        labels={t.report.curve}
+                      />
                     </div>
                     <p className="mt-4 text-[15px] leading-[1.55] text-[#6B5245]">
                       {copy.hero.sub(ctx)}
@@ -395,13 +395,18 @@ export default function LiteEventReport() {
               }
             >
               <Cascade>
-                <EyebrowV2 tone="light">What that actually means</EyebrowV2>
+                <EyebrowV2 tone="light">{t.report.meaningEyebrow}</EyebrowV2>
                 <motion.h2
                   variants={rise}
                   className="mt-3 font-display text-[clamp(28px,7.6vw,38px)] font-extrabold leading-[1.22] tracking-[-0.02em]"
                 >
-                  Processing speed is <Serif>how fast</Serif> your brain <Serif>takes in</Serif>{" "}
-                  what it sees and <Serif>responds</Serif>.
+                  {t.report.meaningH2[0]}
+                  <Serif>{t.report.meaningH2[1]}</Serif>
+                  {t.report.meaningH2[2]}
+                  <Serif>{t.report.meaningH2[3]}</Serif>
+                  {t.report.meaningH2[4]}
+                  <Serif>{t.report.meaningH2[5]}</Serif>
+                  {t.report.meaningH2[6]}
                 </motion.h2>
                 <motion.p variants={rise} className="mt-6 text-[17px] leading-[1.6] text-white/75">
                   {copy.meaning.intro}
@@ -434,19 +439,19 @@ export default function LiteEventReport() {
             {/* -------------------------------------- 3 · risk factors --- */}
             <SnapSection id="risk">
               <Cascade amount={0.15}>
-                <EyebrowV2>Also measured</EyebrowV2>
+                <EyebrowV2>{t.report.riskEyebrow}</EyebrowV2>
                 <motion.h2
                   variants={rise}
                   className="mt-3 font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.12] tracking-[-0.025em] text-[#1C110A]"
                 >
-                  Speed was not the only thing we looked at.
+                  {t.report.riskH2}
                 </motion.h2>
                 <motion.p variants={rise} className="mt-4 text-[16px] leading-[1.6] text-[#41586B]">
                   {copy.risk.body}
                 </motion.p>
 
                 <motion.div variants={rise} className="mt-6">
-                  <RiskTrendChart />
+                  <RiskTrendChart labels={t.report.trend} />
                 </motion.div>
 
                 <motion.div
@@ -454,18 +459,22 @@ export default function LiteEventReport() {
                   className="mt-6 rounded-[26px] border border-[#F2DDCE] bg-white p-5 shadow-[0_18px_46px_-28px_rgba(90,40,10,0.28)] sm:p-6"
                 >
                   <p className="text-[15px] font-bold text-[#41586B]">
-                    Your risk level:{" "}
+                    {t.report.riskLevelLabel}{" "}
                     <span className="text-[17px] font-extrabold text-[#1C110A]">{riskBand}</span>
                   </p>
                   <div className="mt-4">
-                    <RiskMeter band={meterBand} />
+                    <RiskMeter
+                      band={meterBand}
+                      labels={t.report.bandLabels}
+                      ariaLabel={`${t.report.riskLevelLabel} ${riskBand}`}
+                    />
                   </div>
                 </motion.div>
 
                 {factorChips.length > 0 && (
                   <motion.div variants={rise} className="mt-6">
                     <p className="text-[14.5px] leading-[1.55] text-[#41586B]">
-                      Some factors that affect your risk level{name ? `, ${name}` : ""}:
+                      {t.report.riskFactorsIntro}{name ? `, ${name}` : ""}:
                     </p>
                     <motion.div variants={stagger} className="mt-3 flex flex-wrap gap-2">
                       {factorChips.map((label) => (
@@ -482,9 +491,9 @@ export default function LiteEventReport() {
                 )}
 
                 <motion.div variants={rise} className="mt-7">
-                  <p className="text-[14.5px] text-[#41586B]">The good news is</p>
+                  <p className="text-[14.5px] text-[#41586B]">{t.report.goodNews}</p>
                   <p className="mt-1 font-display text-[30px] font-extrabold tracking-[-0.02em] text-[#1C110A]">
-                    About{" "}
+                    {t.report.goodNewsAbout}{" "}
                     <CountUp
                       value={45}
                       suffix="%"
@@ -493,8 +502,7 @@ export default function LiteEventReport() {
                     />
                   </p>
                   <p className="mt-1 text-[15px] leading-[1.6] text-[#41586B]">
-                    of dementia cases worldwide could be prevented or delayed by addressing the
-                    modifiable risk factors across a person&apos;s life.
+                    {t.report.goodNewsBody}
                   </p>
                 </motion.div>
 
@@ -546,10 +554,10 @@ export default function LiteEventReport() {
                 >
                   <div className="flex items-center justify-between">
                     <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#B4653C]">
-                      Your baseline
+                      {t.report.baselineLabel}
                     </p>
                     <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#B79C8E]">
-                      2 of 5 done
+                      {t.report.baselineProgress}
                     </p>
                   </div>
                   <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-[#F6E4D8]">
@@ -564,10 +572,11 @@ export default function LiteEventReport() {
                   </div>
                   <div className="mt-4">
                     <MotionRadar
-                      axes={RADAR_AXES}
+                      axes={t.report.radarAxes}
+                      aria={t.report.radarAria}
                       filled={{
-                        Speed: Math.max(0.25, percentile / 100),
-                        Risk: riskFill,
+                        [t.report.radarAxes[0]]: Math.max(0.25, percentile / 100),
+                        [t.report.radarAxes[4]]: riskFill,
                       }}
                     />
                   </div>
@@ -623,17 +632,17 @@ export default function LiteEventReport() {
                 </motion.div>
 
                 <div className="mt-9">
-                  <EyebrowV2>How it works</EyebrowV2>
+                  <EyebrowV2>{t.report.howItWorksEyebrow}</EyebrowV2>
                 </div>
                 <motion.h2
                   variants={rise}
                   className="mt-3 font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-[#1C110A]"
                 >
-                  From test to teleconsult in three steps
+                  {t.report.howItWorksH2}
                 </motion.h2>
 
                 <motion.ol variants={stagger} className="mt-8 space-y-6">
-                  {HOW_IT_WORKS_STEPS.map(({ step, title, body, domains }, i) => (
+                  {t.report.howItWorksSteps.map(({ step, title, body, domains }, i) => (
                     <motion.li key={title} variants={rise}>
                       <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#B4653C]">
                         {step}
@@ -643,7 +652,7 @@ export default function LiteEventReport() {
                       </p>
                       <p className="mt-2 text-[14.5px] leading-[1.6] text-[#6B5245]">{body}</p>
 
-                      {domains && (
+                      {domains.length > 0 && (
                         <div className="mt-3 flex flex-wrap gap-2">
                           {domains.map((d) => (
                             <span
@@ -656,7 +665,7 @@ export default function LiteEventReport() {
                         </div>
                       )}
 
-                      {i < HOW_IT_WORKS_STEPS.length - 1 && (
+                      {i < t.report.howItWorksSteps.length - 1 && (
                         <div aria-hidden className="mt-6 h-px bg-[#F2DDCE]" />
                       )}
                     </motion.li>
@@ -671,7 +680,7 @@ export default function LiteEventReport() {
                   className="mt-8 w-full rounded-full py-4 text-[16px] font-extrabold tracking-wide text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06]"
                   style={{ background: RANK_GRADIENT }}
                 >
-                  Take the assessment &rarr;
+                  {t.report.takeAssessment}
                 </motion.button>
 
                 <motion.figure
@@ -685,9 +694,7 @@ export default function LiteEventReport() {
                     &ldquo;&rdquo;
                   </span>
                   <blockquote className="-mt-3 text-[15px] leading-[1.6] text-[#1C110A]">
-                    Each of these games measures a specific brain function the same way I would
-                    assess it in clinic. We are not testing whether you can play, we are testing
-                    how well each part of your brain is doing the work it does for you every day.
+                    {t.report.clinicianQuote}
                   </blockquote>
                   <figcaption className="mt-5 flex items-center gap-3">
                     <img
@@ -697,12 +704,12 @@ export default function LiteEventReport() {
                     />
                     <div>
                       <p className="text-[14px] font-extrabold text-[#1C110A]">
-                        A/Prof Nagaendran Kandiah
+                        {t.report.clinicianName}
                       </p>
                       <p className="text-[11.5px] leading-[1.4] text-[#8A6A58]">
-                        Co-founder, Gray Matter Solutions
+                        {t.report.clinicianRole}
                         <br />
-                        MBBS, FAMS (Neurology), FRCP (Edin)
+                        {t.report.clinicianCreds}
                       </p>
                     </div>
                   </figcaption>
@@ -713,16 +720,15 @@ export default function LiteEventReport() {
             {/* ----------------------------------------- 9 · the offer --- */}
             <SnapSection id="offer">
               <Cascade amount={0.15}>
-                <EyebrowV2>{OFFER.eyebrow}</EyebrowV2>
+                <EyebrowV2>{t.offer.eyebrow}</EyebrowV2>
                 <motion.h2
                   variants={rise}
                   className="mt-3 font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.12] tracking-[-0.025em] text-[#1C110A]"
                 >
-                  Celebrating {OFFER.title}, we have a special offer for you
+                  {t.report.offerH2(t.offer.title)}
                 </motion.h2>
                 <motion.p variants={rise} className="mt-4 text-[15.5px] leading-[1.6] text-[#6B5245]">
-                  With our mission to advance preventive cognitive health, everyone should treat
-                  their brain the same as their body — as early as possible.
+                  {t.report.offerMission}
                 </motion.p>
 
                 <motion.div
@@ -730,11 +736,11 @@ export default function LiteEventReport() {
                   className="mt-7 rounded-[26px] border border-[#F2DDCE] bg-white p-6 shadow-[0_18px_46px_-28px_rgba(90,40,10,0.28)] sm:p-7"
                 >
                   <p className="font-display text-[19px] font-extrabold tracking-[-0.01em] text-[#1C110A]">
-                    {OFFER.productName}
+                    {t.offer.productName}
                   </p>
-                  <p className="mt-1 text-[13px] font-bold text-[#B79C8E]">{OFFER.productSub}</p>
+                  <p className="mt-1 text-[13px] font-bold text-[#B79C8E]">{t.offer.productSub}</p>
                   <p className="mt-2 text-[13.5px] leading-[1.55] text-[#6B5245]">
-                    {OFFER.domains.join(" · ")}
+                    {t.offer.domains.join(" · ")}
                   </p>
 
                   <motion.div
@@ -745,7 +751,7 @@ export default function LiteEventReport() {
                       variants={rise}
                       className="flex items-baseline justify-between text-[15px] text-[#6B5245]"
                     >
-                      <span>Normal price</span>
+                      <span>{t.report.normalPrice}</span>
                       <span className="relative inline-block">
                         {OFFER.currency}
                         {OFFER.normalPrice.toFixed(2)}
@@ -764,7 +770,7 @@ export default function LiteEventReport() {
                       variants={rise}
                       className="flex items-baseline justify-between text-[15px] font-bold text-[#C4400E]"
                     >
-                      <span>{OFFER.title} discount</span>
+                      <span>{t.report.discountLabel(t.offer.title)}</span>
                       <span>
                         &minus;{OFFER.currency}
                         {OFFER.discount.toFixed(2)}
@@ -774,7 +780,9 @@ export default function LiteEventReport() {
                       variants={pop}
                       className="flex items-baseline justify-between border-t border-[#F2DDCE] pt-3"
                     >
-                      <span className="text-[16px] font-extrabold text-[#1C110A]">Total</span>
+                      <span className="text-[16px] font-extrabold text-[#1C110A]">
+                        {t.report.total}
+                      </span>
                       <span className="font-display text-[30px] font-extrabold tracking-[-0.02em] text-[#1C110A]">
                         {OFFER.currency}
                         {OFFER.total.toFixed(2)}
@@ -791,10 +799,10 @@ export default function LiteEventReport() {
                   className="mt-7 w-full rounded-full py-4 text-[16px] font-extrabold tracking-wide text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06]"
                   style={{ background: RANK_GRADIENT }}
                 >
-                  Take the full test
+                  {t.report.takeFullTest}
                 </motion.button>
                 <motion.p variants={rise} className="mt-3 text-center text-[12.5px] text-[#A98D7D]">
-                  {OFFER.window} · Takes about 15 minutes. Same tasks clinicians use.
+                  {t.offer.window} · {t.report.offerFooter}
                 </motion.p>
               </Cascade>
             </SnapSection>
@@ -824,7 +832,7 @@ export default function LiteEventReport() {
                   className="relative mt-10 rounded-[26px] border border-[#EEDACD] bg-[#FFFDFB] p-6 sm:p-7"
                 >
                   <h3 className="font-display text-[21px] font-extrabold leading-tight tracking-[-0.015em] text-[#1C110A]">
-                    Still need time to think?
+                    {t.report.stillThinking}
                   </h3>
                   <p className="mt-3 text-[14.5px] leading-[1.6] text-[#6B5245]">
                     {copy.exit.body}
@@ -857,8 +865,7 @@ export default function LiteEventReport() {
                 </motion.div>
 
                 <motion.p variants={rise} className="mt-8 text-center text-[11px] leading-[1.6] text-[#C9B4A6]">
-                  Built on clinical research by Nanyang Technological University, LKC Medicine,
-                  Dementia Research Centre Singapore.
+                  {t.report.researchLine}
                 </motion.p>
               </Cascade>
             </SnapSection>

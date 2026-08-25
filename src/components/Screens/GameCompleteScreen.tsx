@@ -13,8 +13,10 @@ import { APP_LANG } from "src/constants";
 import { getAssessmentMode, getHookReportPath, isHookMode, isDarkHookMode, isLiteOneMode, isNoviMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
 import { LITE } from "src/constants/liteOneTheme";
 
-// Minimal localized strings for the SJMC short-assessment completion flow.
-// Only the SJMC (incl. Mandarin variant) path sets APP_LANG=MANDARIN today.
+// Minimal localized strings for the short-assessment completion flow. Two
+// paths reach the non-English sets: SJMC (incl. its Mandarin variant) sets
+// APP_LANG=MANDARIN, and /lite-event sets MANDARIN or MALAY from its language
+// picker (src/i18n/liteEvent.ts). Anything else falls through to English.
 const GC_COPY = {
   ENGLISH: {
     saving: "Saving your result, please wait.",
@@ -33,6 +35,15 @@ const GC_COPY = {
     complete: "评估完成",
     ready: "您的报告已准备就绪。",
     viewReport: "查看报告",
+  },
+  MALAY: {
+    saving: "Menyimpan keputusan anda, sila tunggu.",
+    errorTitle: "Ralat menyimpan keputusan anda.",
+    errorBody: "Sila periksa sambungan internet anda dan cuba lagi.",
+    retry: "CUBA LAGI",
+    complete: "Penilaian Selesai",
+    ready: "Laporan anda sedia untuk dilihat.",
+    viewReport: "Lihat laporan",
   },
 };
 
@@ -105,7 +116,12 @@ export function GameCompleteScreen({
   const ikigai = isDarkHookMode();
   const sjmc = isSjmcMode();
   const lite = isLiteOneMode();
-  const gc = APP_LANG === "MANDARIN" ? GC_COPY.MANDARIN : GC_COPY.ENGLISH;
+  const gc =
+    APP_LANG === "MANDARIN"
+      ? GC_COPY.MANDARIN
+      : APP_LANG === "MALAY"
+        ? GC_COPY.MALAY
+        : GC_COPY.ENGLISH;
 
   if (!result) return children;
 

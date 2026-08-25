@@ -2,12 +2,18 @@ import Head from "next/head";
 import Router from "next/router";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { StepList } from "src/components/LiteOne/StepList";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy, type LiteEventCopy } from "src/i18n/liteEventCopy";
 import { LITE_EVENT } from "src/utils/liteOne";
 
 /**
  * Step previews. Each one is a miniature of the screen it points at — the game
  * symbols, the quiz answer scale, the peer-comparison curve — drawn in the
  * Clinical Empathy palette rather than the comp's teal.
+ *
+ * The two that carry words take them from the copy set, so the miniatures read
+ * in the language the visitor picked rather than staying English under a
+ * translated headline.
  */
 
 function GameArt() {
@@ -28,11 +34,11 @@ function GameArt() {
   );
 }
 
-function QuizArt() {
+function QuizArt({ high, low }: { high: string; low: string }) {
   return (
     <span className="block w-[86px]" aria-hidden>
       <span className="block text-right text-[8.5px] font-bold leading-none text-quizPrimary">
-        Several times
+        {high}
       </span>
       <span
         className="mt-1.5 block h-[7px] rounded-full"
@@ -40,14 +46,12 @@ function QuizArt() {
           background: "linear-gradient(90deg,#97c459 0%,#fac775 45%,#ef9f27 75%,#f77528 100%)",
         }}
       />
-      <span className="mt-1.5 block text-[8.5px] leading-none text-quizOutline">
-        Not that noticeable
-      </span>
+      <span className="mt-1.5 block text-[8.5px] leading-none text-quizOutline">{low}</span>
     </span>
   );
 }
 
-function CurveArt() {
+function CurveArt({ weak, adequate }: { weak: string; adequate: string }) {
   return (
     <span className="relative block w-[94px]" aria-hidden>
       <span className="absolute -top-1 right-[22%] rounded-md bg-quizPrimary px-1.5 py-0.5 text-[9px] font-bold leading-none text-white">
@@ -85,30 +89,38 @@ function CurveArt() {
         />
         <circle cx="64" cy="18" r="2.8" fill="#f77528" />
         <text x="2" y="50" fill="#85736b" fontSize="7.5" fontWeight="600">
-          Weak
+          {weak}
         </text>
         <text x="94" y="50" fill="#f77528" fontSize="7.5" fontWeight="700" textAnchor="end">
-          Adequate
+          {adequate}
         </text>
       </svg>
     </span>
   );
 }
 
-const STEPS = [
-  { label: "Play a 60-second cognitive game", illustration: <GameArt /> },
-  {
-    label: "Take a medically-backed quiz on brain health risk factors",
-    illustration: <QuizArt />,
-  },
-  { label: "See how you compare to people your age", illustration: <CurveArt /> },
-];
+function buildSteps(t: LiteEventCopy) {
+  return [
+    { label: t.ready.steps[0], illustration: <GameArt /> },
+    {
+      label: t.ready.steps[1],
+      illustration: <QuizArt high={t.ready.quizArtHigh} low={t.ready.quizArtLow} />,
+    },
+    {
+      label: t.ready.steps[2],
+      illustration: <CurveArt weak={t.ready.curveWeak} adequate={t.ready.curveAdequate} />,
+    },
+  ];
+}
 
 export default function LiteEventReady() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
+
   return (
     <>
       <Head>
-        <title>What happens next | ReCOGnAIze</title>
+        <title>{t.ready.headTitle}</title>
       </Head>
 
       <LiteShell>
@@ -119,23 +131,23 @@ export default function LiteEventReady() {
               style={{ animationDelay: "40ms" }}
             >
               <span className="font-display text-[21px] font-medium leading-none text-charcoal sm:text-[23px]">
-                In the next
+                {t.ready.inTheNext}
               </span>
               <span className="font-display text-[29px] font-extrabold leading-none text-charcoal sm:text-[32px]">
-                3 mins
+                {t.ready.duration}
               </span>
             </div>
 
             <div className="mt-7">
-              <StepList steps={STEPS} />
+              <StepList steps={buildSteps(t)} />
             </div>
 
             <div className="lite-rise mt-9 text-center" style={{ animationDelay: "600ms" }}>
               <p className="font-display text-[16px] font-semibold italic text-quizSecondary">
-                And most importantly,
+                {t.ready.mostImportantly}
               </p>
               <p className="mt-1 font-display text-[22px] font-extrabold leading-tight text-charcoal sm:text-[24px]">
-                Learn how you can improve
+                {t.ready.learnToImprove}
               </p>
             </div>
 
@@ -144,7 +156,7 @@ export default function LiteEventReady() {
               style={{ animationDelay: "680ms" }}
             >
               <LiteButton onClick={() => Router.push(`${LITE_EVENT.basePath}/challenge`)}>
-                I&apos;m ready!
+                {t.ready.cta}
               </LiteButton>
             </div>
           </div>

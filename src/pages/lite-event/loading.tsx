@@ -2,6 +2,8 @@ import Head from "next/head";
 import Router from "next/router";
 import React from "react";
 import { LiteShell } from "src/components/LiteOne/LiteShell";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { useResultStore } from "src/stores/useResultStore";
 import {
   LITE_EVENT,
@@ -18,21 +20,20 @@ function delay(ms: number) {
 /**
  * Suspense crumbs, ported from b2cfunnel's AnalysingScreen
  * (`src/components/screens/AnalysingScreen.tsx`) along with its 1300ms beat.
+ * The lines themselves live in the copy set; only the count and the beat are
+ * fixed here, and every language carries the same five, so the screen holds
+ * for the same time whichever one is showing.
  */
 const CRUMB_MS = 1300;
 
-const CRUMBS = [
-  "Reviewing your profile of factors…",
-  "Comparing with an age-matched cohort…",
-  "Weighing lifestyle and biomedical factors…",
-  "Cross-referencing the 2024 Lancet Commission framework…",
-  "Preparing your Brain Health Score…",
-] as const;
+const CRUMB_COUNT = 5;
 
 /** The crumbs have to finish before the report page replaces this one. */
-const MIN_VISIBLE_MS = CRUMB_MS * CRUMBS.length;
+const MIN_VISIBLE_MS = CRUMB_MS * CRUMB_COUNT;
 
 export default function LiteEventLoading() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
   const { result } = useResultStore();
   const [name, setName] = React.useState("");
   const [crumb, setCrumb] = React.useState(0);
@@ -45,7 +46,7 @@ export default function LiteEventLoading() {
   // Advance the crumb line, then hold on the last one — navigation is driven by
   // the effect below, not by the end of this cycle.
   React.useEffect(() => {
-    if (crumb >= CRUMBS.length - 1) return;
+    if (crumb >= CRUMB_COUNT - 1) return;
     const timer = setTimeout(() => setCrumb((i) => i + 1), CRUMB_MS);
     return () => clearTimeout(timer);
   }, [crumb]);
@@ -86,14 +87,12 @@ export default function LiteEventLoading() {
     };
   }, [result]);
 
-  const greeting = name
-    ? `${name}, we are building your profile`
-    : "We are building your profile";
+  const greeting = name ? t.loading.greetingNamed(name) : t.loading.greeting;
 
   return (
     <>
       <Head>
-        <title>Building your profile | ReCOGnAIze</title>
+        <title>{t.loading.headTitle}</title>
       </Head>
 
       <LiteShell>
@@ -101,7 +100,7 @@ export default function LiteEventLoading() {
           <div
             className="size-14 animate-spin rounded-full border-4 border-quizSurface-high border-t-quizPrimary"
             role="status"
-            aria-label="Building your profile"
+            aria-label={t.loading.spinnerLabel}
           />
 
           <p
@@ -115,7 +114,7 @@ export default function LiteEventLoading() {
             key={crumb}
             className="lite-crumb mt-4 min-h-[3rem] max-w-[320px] text-[14px] leading-relaxed text-quizSecondary"
           >
-            {CRUMBS[crumb]}
+            {t.loading.crumbs[crumb]}
           </p>
         </div>
       </LiteShell>

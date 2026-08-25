@@ -5,7 +5,8 @@ import { LiteShell } from "src/components/LiteOne/LiteShell";
 import { OfferCard } from "src/components/LiteOne/OfferCard";
 import { Reveal } from "src/components/LiteOne/useInView";
 import { UPSELL } from "src/data/liteOneContent";
-import { CLINICAL_DISCLAIMER } from "src/utils/disclaimers";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { LITE_EVENT } from "src/utils/liteOne";
 
 const sectionClass =
@@ -27,20 +28,41 @@ const CheckGlyph = (
 /**
  * Report page two — the upsell, reached from the "Claim now" button on
  * /lite-event/report. A copy of /lite-one/report-full with this funnel's
- * routes; the offer and copy are shared through UPSELL and OfferCard.
+ * routes; the offer card is shared through OfferCard, and the wording comes
+ * from this funnel's own copy set so it follows the language the visitor
+ * picked. `UPSELL.paperUrl` is the only thing still read from the shared
+ * content module — it is a link, not copy.
  *
  * Deliberately readable without a finished run: everything here is product copy
  * plus the voucher, so a direct hit or a refresh renders fine rather than
  * needing the session data page one holds.
  */
 export default function LiteEventReportFull() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
   const [openFaq, setOpenFaq] = React.useState<number | null>(0);
   const [pubmedOk, setPubmedOk] = React.useState(true);
+
+  const offerLabels = {
+    eyebrow: t.offer.eyebrow,
+    title: t.offer.title,
+    window: t.offer.window,
+    productName: t.offer.productName,
+    productSub: t.offer.productSub,
+    domains: t.offer.domains,
+    normalPrice: t.offer.normalPrice,
+    discountLabel: t.offer.discountLabel,
+    total: t.offer.total,
+    claimCode: t.offer.claimCode,
+    preparing: t.offer.preparing,
+    download: t.offer.download,
+    redeemNote: t.offer.redeemNote,
+  };
 
   return (
     <>
       <Head>
-        <title>The full picture | ReCOGnAIze</title>
+        <title>{t.reportFull.headTitle}</title>
       </Head>
 
       <LiteShell scroll className="px-5 pb-16 sm:px-8">
@@ -51,14 +73,14 @@ export default function LiteEventReportFull() {
               onClick={() => Router.push(`${LITE_EVENT.basePath}/report`)}
               className="text-[13px] font-semibold text-quizSecondary transition-colors hover:text-charcoal"
             >
-              ← Back to your result
+              {t.reportFull.back}
             </button>
 
             <p className="mt-4 text-[11px] font-bold uppercase tracking-[0.2em] text-quizPrimary">
-              {UPSELL.eyebrow}
+              {t.reportFull.eyebrow}
             </p>
             <h1 className="mt-2 font-display text-[27px] font-extrabold leading-[1.12] text-charcoal sm:text-[31px]">
-              {UPSELL.heading}
+              {t.reportFull.heading}
             </h1>
 
             <a
@@ -76,7 +98,7 @@ export default function LiteEventReportFull() {
                 />
               )}
               <span className="text-[13.5px] font-medium leading-snug text-charcoal">
-                {UPSELL.paperNote}
+                {t.reportFull.paperNote}
               </span>
               <span aria-hidden className="ml-auto shrink-0 text-quizPrimary">
                 →
@@ -94,15 +116,15 @@ export default function LiteEventReportFull() {
                 className="h-11 w-auto shrink-0 object-contain"
               />
               <div className="min-w-0">
-                <p className="text-[14.5px] font-bold text-charcoal">{UPSELL.offerName}</p>
+                <p className="text-[14.5px] font-bold text-charcoal">{t.reportFull.offerName}</p>
                 <p className="mt-0.5 text-[12px] leading-snug text-quizSecondary">
-                  {UPSELL.offerNote}
+                  {t.reportFull.offerNote}
                 </p>
               </div>
             </div>
 
             <ul className="mt-5 space-y-2.5 border-t border-quizOutline-variant pt-5">
-              {UPSELL.includes.map((item) => (
+              {t.reportFull.includes.map((item) => (
                 <li key={item} className="flex items-start gap-2.5">
                   {CheckGlyph}
                   <span className="text-[13.5px] font-medium leading-snug text-charcoal">
@@ -115,11 +137,11 @@ export default function LiteEventReportFull() {
 
           {/* The offer, moved here from page one. */}
           <Reveal delay={40}>
-            <OfferCard />
+            <OfferCard labels={offerLabels} />
           </Reveal>
 
           <Reveal className="space-y-2">
-            {UPSELL.faqs.map((faq, i) => {
+            {t.reportFull.faqs.map((faq, i) => {
               const open = openFaq === i;
               return (
                 <div key={faq.q} className="overflow-hidden rounded-xl bg-quizSurface-container">
@@ -145,7 +167,9 @@ export default function LiteEventReportFull() {
           </Reveal>
 
           <Reveal className="pb-4 pt-2 text-center">
-            <p className="text-[11px] leading-relaxed text-quizOutline">{CLINICAL_DISCLAIMER}</p>
+            <p className="text-[11px] leading-relaxed text-quizOutline">
+              {t.reportFull.disclaimer}
+            </p>
           </Reveal>
         </div>
       </LiteShell>

@@ -198,7 +198,14 @@ export function HeroPill({ children }: { children: React.ReactNode }) {
  * inside the hero rather than a separate band below it. White plate so the
  * dark-inked press marks stay legible in their designed colours.
  */
-export function HeroFeaturedIn({ logos }: { logos: readonly PressLogo[] }) {
+export function HeroFeaturedIn({
+  logos,
+  label = "As featured in",
+}: {
+  logos: readonly PressLogo[];
+  /** Translated on /lite-event; every other funnel takes the default. */
+  label?: string;
+}) {
   const half = [...logos, ...logos];
   const track = [...half, ...half];
 
@@ -206,7 +213,7 @@ export function HeroFeaturedIn({ logos }: { logos: readonly PressLogo[] }) {
     <div className={`mx-auto w-full max-w-[720px] rounded-2xl px-2 pb-4 pt-4 ${PLATE}`}>
       <p className="flex items-center justify-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.22em] text-quizSecondary">
         <span aria-hidden className="h-px w-[22px] bg-charcoal/25" />
-        As featured in
+        {label}
         <span aria-hidden className="h-px w-[22px] bg-charcoal/25" />
       </p>
       <div
@@ -235,7 +242,22 @@ export function HeroFeaturedIn({ logos }: { logos: readonly PressLogo[] }) {
 
 /* ------------------------------------------------------------ trust band -- */
 
-export function TrustBand() {
+export function TrustBand({
+  lead = "Based on the ",
+  strong1 = "2024 Lancet Commission",
+  mid = " risk model and the ",
+  strong2 = "CAIDE dementia risk score",
+  tail = ".",
+}: {
+  /* Split rather than one string so the two emphasised names stay emphasised
+     in translation — /lite-event passes all five, every other funnel takes the
+     English defaults. */
+  lead?: string;
+  strong1?: string;
+  mid?: string;
+  strong2?: string;
+  tail?: string;
+} = {}) {
   return (
     <section className="border-b border-quizOutline-variant/60 bg-quizSurface-container">
       <div className={`${WRAP} flex items-center justify-center gap-3 py-4 text-center`}>
@@ -257,9 +279,11 @@ export function TrustBand() {
           />
         </svg>
         <p className="text-[13px] font-semibold text-charcoal sm:text-[14.5px]">
-          Based on the <span className="font-extrabold text-quizPrimary">2024 Lancet Commission</span>{" "}
-          risk model and the{" "}
-          <span className="font-extrabold text-quizPrimary">CAIDE dementia risk score</span>.
+          {lead}
+          <span className="font-extrabold text-quizPrimary">{strong1}</span>
+          {mid}
+          <span className="font-extrabold text-quizPrimary">{strong2}</span>
+          {tail}
         </p>
       </div>
     </section>

@@ -3,6 +3,48 @@ import { OFFER } from "src/data/liteOneContent";
 
 const money = (n: number) => `${OFFER.currency}${n.toFixed(2)}`;
 
+/**
+ * The card's words, so /lite-event can render it in Chinese or Malay. Every
+ * field defaults to the English original, so the other funnels pass nothing and
+ * render exactly as before.
+ *
+ * The downloadable voucher deliberately stays English whatever this says: it is
+ * a front-desk artifact rather than a screen, and the SVG is rasterised through
+ * a canvas against Helvetica/Arial, which has no CJK coverage — translated text
+ * would come out as tofu boxes on the visitor's only redeemable copy.
+ */
+export type OfferCardLabels = {
+  eyebrow: string;
+  title: string;
+  window: string;
+  productName: string;
+  productSub: string;
+  domains: readonly string[];
+  normalPrice: string;
+  discountLabel: string;
+  total: string;
+  claimCode: string;
+  preparing: string;
+  download: string;
+  redeemNote: string;
+};
+
+const DEFAULT_LABELS: OfferCardLabels = {
+  eyebrow: OFFER.eyebrow,
+  title: OFFER.title,
+  window: OFFER.window,
+  productName: OFFER.productName,
+  productSub: OFFER.productSub,
+  domains: OFFER.domains,
+  normalPrice: "Normal price",
+  discountLabel: "Alzheimer's Month discount",
+  total: "Total",
+  claimCode: "Your claim code:",
+  preparing: "Preparing…",
+  download: "Download proof",
+  redeemNote: OFFER.redeemNote,
+};
+
 /** Short, readable, non-guessable-enough claim reference. */
 function makeClaimCode() {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -66,7 +108,8 @@ function download(href: string, filename: string) {
   a.remove();
 }
 
-export function OfferCard({ id }: { id?: string }) {
+export function OfferCard({ id, labels }: { id?: string; labels?: OfferCardLabels }) {
+  const l = labels ?? DEFAULT_LABELS;
   const [code, setCode] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
 
@@ -125,31 +168,31 @@ export function OfferCard({ id }: { id?: string }) {
 
       <div className="relative p-5 sm:p-6">
         <span className="inline-block rounded-full bg-quizPrimary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white">
-          {OFFER.eyebrow}
+          {l.eyebrow}
         </span>
         <h3 className="mt-3 font-display text-[26px] font-extrabold leading-[1.1] text-charcoal">
-          {OFFER.title}
+          {l.title}
         </h3>
-        <p className="mt-1 text-[13.5px] font-semibold text-quizSecondary">{OFFER.window}</p>
+        <p className="mt-1 text-[13.5px] font-semibold text-quizSecondary">{l.window}</p>
 
         <div className="mt-5 rounded-xl border border-quizOutline-variant bg-quizSurface-low p-4">
-          <p className="text-[14.5px] font-bold text-charcoal">{OFFER.productName}</p>
-          <p className="mt-0.5 text-[12px] text-quizOutline">{OFFER.productSub}</p>
+          <p className="text-[14.5px] font-bold text-charcoal">{l.productName}</p>
+          <p className="mt-0.5 text-[12px] text-quizOutline">{l.productSub}</p>
           <p className="mt-1.5 text-[12px] leading-relaxed text-quizSecondary">
-            {OFFER.domains.join(" · ")}
+            {l.domains.join(" · ")}
           </p>
 
           <dl className="mt-4 space-y-2 border-t border-quizOutline-variant pt-3 text-[13.5px]">
             <div className="flex justify-between">
-              <dt className="text-quizSecondary">Normal price</dt>
+              <dt className="text-quizSecondary">{l.normalPrice}</dt>
               <dd className="text-quizSecondary">{money(OFFER.normalPrice)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-quizPrimary">Alzheimer&apos;s Month discount</dt>
+              <dt className="text-quizPrimary">{l.discountLabel}</dt>
               <dd className="font-semibold text-quizPrimary">−{money(OFFER.discount)}</dd>
             </div>
             <div className="flex justify-between border-t border-quizOutline-variant pt-2.5">
-              <dt className="font-bold text-charcoal">Total</dt>
+              <dt className="font-bold text-charcoal">{l.total}</dt>
               <dd className="font-display text-[19px] font-extrabold text-charcoal">
                 {money(OFFER.total)}
               </dd>
@@ -159,7 +202,7 @@ export function OfferCard({ id }: { id?: string }) {
 
         {code && (
           <p className="mt-3 text-center text-[12px] text-quizOutline">
-            Your claim code: <span className="font-bold tracking-wider text-quizPrimary">{code}</span>
+            {l.claimCode} <span className="font-bold tracking-wider text-quizPrimary">{code}</span>
           </p>
         )}
 
@@ -169,9 +212,9 @@ export function OfferCard({ id }: { id?: string }) {
           disabled={busy}
           className="mt-4 w-full rounded-full bg-quizPrimary px-6 py-3.5 text-[15px] font-bold text-quizPrimary-on shadow-card transition-all hover:brightness-105 hover:shadow-float active:scale-[0.98] disabled:opacity-60"
         >
-          {busy ? "Preparing…" : "Download proof"}
+          {busy ? l.preparing : l.download}
         </button>
-        <p className="mt-2.5 text-center text-[11.5px] text-quizOutline">{OFFER.redeemNote}</p>
+        <p className="mt-2.5 text-center text-[11.5px] text-quizOutline">{l.redeemNote}</p>
       </div>
     </div>
   );
