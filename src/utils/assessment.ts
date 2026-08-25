@@ -116,6 +116,7 @@ const LITE_HOOK_CLINICS = new Set([
   "LiteTwo",
   "Act4Health",
   "LiteBcGolf",
+  "LiteEvent",
 ]);
 
 export function isLiteOneMode(): boolean {

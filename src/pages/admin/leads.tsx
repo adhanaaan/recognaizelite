@@ -70,6 +70,7 @@ const CLINIC_OPTIONS: { value: string; label: string }[] = [
   { value: "litetwo", label: "BrainScan Testing · Lite Two" },
   { value: "act4health", label: "Act4Health" },
   { value: "litebcgolf", label: "Business China Golf 2026" },
+  { value: "liteevent", label: "Corporate events" },
 ];
 
 const ROLE_LABELS: Record<string, string> = {

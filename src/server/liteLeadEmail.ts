@@ -15,6 +15,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { renderClinicianResultEmail } from "src/server/emails/clinicianResultEmail";
 import { renderEventResultEmail } from "src/server/emails/eventResultEmail";
 import { renderLiteResultEmail } from "src/server/emails/liteResultEmail";
+import { EVENT as BCGOLF_EVENT } from "src/data/liteBcGolfContent";
 import type { LiteEmailRenderer } from "src/server/emails/shared";
 import { addContactToAudience, getResendConfig, sendEmail } from "src/server/resend";
 
@@ -32,10 +33,33 @@ import { addContactToAudience, getResendConfig, sendEmail } from "src/server/res
  * the result; the clinician one spends its length on the published validation;
  * the event one is a courtesy note to a guest at a fundraiser.
  */
-const EMAIL_CLINICS: Record<string, { brand: string; render: LiteEmailRenderer }> = {
+const EMAIL_CLINICS: Record<
+  string,
+  {
+    brand: string;
+    render: LiteEmailRenderer;
+    /**
+     * The occasion the mail names, for funnels tied to one. Omitted by funnels
+     * that are reused across many events — the mail then names none, rather
+     * than naming whichever event was hard-coded last.
+     */
+    event?: { name: string; date: string; venue: string };
+  }
+> = {
   liteworldalz: { brand: "Recog-Lite", render: renderLiteResultEmail },
   liteclinician: { brand: "Recog-Lite", render: renderClinicianResultEmail },
-  litebcgolf: { brand: "ReCOGnAIze Lite", render: renderEventResultEmail },
+  litebcgolf: {
+    brand: "ReCOGnAIze Lite",
+    render: renderEventResultEmail,
+    event: BCGOLF_EVENT,
+  },
+  // The corporate-event funnel. /lite-two, which it is otherwise a copy of, is
+  // absent from this map and mails nothing; adding the entry is the whole
+  // difference between the two. The event template fits for the same reason it
+  // fit the golf tournament: the reader is standing at a booth with a drink,
+  // has just handed the iPad back, and the mail is the only copy of the result
+  // they keep once the screen is wiped for the next person.
+  liteevent: { brand: "ReCOGnAIze Lite", render: renderEventResultEmail },
 };
 
 export function emailEnabledForClinic(clinic: string): boolean {
@@ -109,6 +133,8 @@ export async function deliverLiteResultEmail(params: LiteLeadEmailParams): Promi
     severity: params.severity,
     brainHealthScore: params.brainHealthScore,
     band: params.band,
+    // Named by the event template when the funnel is tied to one occasion.
+    event: funnel.event ?? null,
     // Rendered by the clinician and event templates; the consumer one ignores
     // them.
     demoUrl: process.env.RECOGNAIZE_DEMO_URL ?? null,

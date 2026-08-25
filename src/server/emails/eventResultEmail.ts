@@ -29,7 +29,7 @@
  * Server-only: imported from the save-lead API route.
  */
 
-import { ABOUT, EVENT, PRODUCT } from "src/data/liteBcGolfContent";
+import { ABOUT, PRODUCT } from "src/data/liteBcGolfContent";
 import { CLINICAL_DISCLAIMER } from "src/utils/disclaimers";
 import {
   BAND_PRESENTATION,
@@ -81,6 +81,22 @@ export function renderEventResultEmail(input: LiteEmailInput): RenderedEmail {
     ? `${named} — your ${PRODUCT.name} result`
     : `Your ${PRODUCT.name} result`;
 
+  // The occasion, when there is one to name. /lite-bcgolf passes the golf
+  // tournament; /lite-event is one link reused across many events and passes
+  // nothing, so the mail thanks the reader without inventing an occasion.
+  const event = input.event ?? null;
+  const thanksText = event
+    ? `Thank you for taking part at the ${event.name}.`
+    : "Thank you for taking part.";
+  const thanksHtml = event
+    ? `Thank you for taking part at the ${escapeHtml(event.name)}. Your result is below.`
+    : "Thank you for taking part. Your result is below.";
+  const eventStampHtml = event
+    ? `\n            <p style="margin:14px 0 0 0;font-family:${SERIF};font-size:12px;line-height:1.6;color:${FAINT};">
+              ${escapeHtml(event.name)}<br />${escapeHtml(event.date)} · ${escapeHtml(event.venue)}
+            </p>`
+    : "";
+
   const bandKey = bandKeyOf(input.band);
   const bandPresentation = bandKey ? BAND_PRESENTATION[bandKey] : null;
   const hasQuiz = input.brainHealthScore !== null && bandPresentation !== null;
@@ -105,7 +121,7 @@ export function renderEventResultEmail(input: LiteEmailInput): RenderedEmail {
   const textLines = [
     greeting,
     "",
-    `Thank you for taking part at the ${EVENT.name}.`,
+    thanksText,
     "",
     ...(percentile === null
       ? ["Your result was recorded but could not be scored against the reference sample."]
@@ -200,10 +216,7 @@ export function renderEventResultEmail(input: LiteEmailInput): RenderedEmail {
             </p>
             <p style="margin:6px 0 0 0;font-family:${SERIF};font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:${GOLD};">
               ${escapeHtml(PRODUCT.company)}
-            </p>
-            <p style="margin:14px 0 0 0;font-family:${SERIF};font-size:12px;line-height:1.6;color:${FAINT};">
-              ${escapeHtml(EVENT.name)}<br />${escapeHtml(EVENT.date)} · ${escapeHtml(EVENT.venue)}
-            </p>
+            </p>${eventStampHtml}
           </td>
         </tr>
 
@@ -213,7 +226,7 @@ export function renderEventResultEmail(input: LiteEmailInput): RenderedEmail {
               ${escapeHtml(greeting)}
             </p>
             <p style="margin:14px 0 0 0;font-family:${SERIF};font-size:15px;line-height:1.75;color:${BODY};">
-              Thank you for taking part at the ${escapeHtml(EVENT.name)}. Your result is below.
+              ${thanksHtml}
             </p>
           </td>
         </tr>
