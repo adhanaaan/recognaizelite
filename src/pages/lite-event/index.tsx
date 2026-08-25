@@ -107,20 +107,11 @@ export default function LiteEventEntry() {
           <HeroVideo>
             {/*
              * Three groups, spread by HeroVideo's `justify-between`: the
-             * language switch and credibility pill near the top under the
-             * lock-up, the headline stack in the middle, and the featured-in
-             * bar at the bottom above the cream fade.
+             * credibility pill near the top under the lock-up, the headline
+             * stack in the middle, and the featured-in bar at the bottom above
+             * the cream fade.
              */}
-            <div
-              className="lite-rise flex flex-col items-center gap-3"
-              style={{ animationDelay: "40ms" }}
-            >
-              <LanguagePicker
-                lang={lang}
-                onChange={setLang}
-                enabled={enabled}
-                label={t.picker.label}
-              />
+            <div className="lite-rise" style={{ animationDelay: "40ms" }}>
               <HeroPill>{t.landing.pill}</HeroPill>
             </div>
 
@@ -143,6 +134,22 @@ export default function LiteEventEntry() {
               >
                 {t.landing.heroSub}
               </p>
+
+              {/* The language switch sits between the subheadline and the CTA:
+                  the visitor reads what this is, picks their language, then
+                  starts. The wrapper is gated on `enabled` too, not just the
+                  picker — an empty div would still leave its `mt-7` gap above
+                  the CTA once the toggle is off. */}
+              {enabled && (
+                <div className="lite-rise mt-7" style={{ animationDelay: "240ms" }}>
+                  <LanguagePicker
+                    lang={lang}
+                    onChange={setLang}
+                    enabled={enabled}
+                    label={t.picker.label}
+                  />
+                </div>
+              )}
 
               <div
                 className="lite-rise mt-8 w-full max-w-[320px]"
