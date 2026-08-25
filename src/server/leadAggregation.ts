@@ -10,7 +10,7 @@ import { getSupabaseAdmin, LeadRow } from "src/utils/supabase";
  * this from client code — it relies on the Supabase service-role key.
  */
 
-export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo", "act4health", "litebcgolf"] as const;
+export const KNOWN_CLINICS = ["sjmc", "hookikigai", "healthtechx", "tcmbrain", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo", "act4health", "litebcgolf", "liteevent"] as const;
 export type KnownClinic = (typeof KNOWN_CLINICS)[number];
 
 export interface LeadStats {

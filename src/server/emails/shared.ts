@@ -32,6 +32,14 @@ export type LiteEmailInput = {
   severity: SpeedKey | string | null;
   brainHealthScore: number | null;
   band: BandKey | string | null;
+  /**
+   * The occasion, for templates that name one. /lite-bcgolf passes the golf
+   * tournament it was built for; the general corporate-event funnel passes
+   * nothing, because it is one link reused across booths and client days and
+   * has no single event to name. Absent means the mail simply doesn't mention
+   * one — never a placeholder, and never the last event we happened to run.
+   */
+  event?: { name: string; date: string; venue: string } | null;
   /** Where "see a demo" points. Omitted from the mail when null. */
   demoUrl?: string | null;
   /** Booking link (Calendly or equivalent). Omitted from the mail when null. */

@@ -4,7 +4,7 @@ import React from "react";
 import { LiteShell } from "src/components/LiteOne/LiteShell";
 import { useResultStore } from "src/stores/useResultStore";
 import {
-  LITE_BCGOLF,
+  LITE_EVENT,
   fetchLiteReport,
   readLiteProfile,
   readStashedReport,
@@ -32,13 +32,13 @@ const CRUMBS = [
 /** The crumbs have to finish before the report page replaces this one. */
 const MIN_VISIBLE_MS = CRUMB_MS * CRUMBS.length;
 
-export default function BcGolfLoading() {
+export default function LiteEventLoading() {
   const { result } = useResultStore();
   const [name, setName] = React.useState("");
   const [crumb, setCrumb] = React.useState(0);
 
   React.useEffect(() => {
-    const profile = readLiteProfile(LITE_BCGOLF);
+    const profile = readLiteProfile(LITE_EVENT);
     if (profile?.name) setName(profile.name);
   }, []);
 
@@ -52,15 +52,11 @@ export default function BcGolfLoading() {
 
   React.useEffect(() => {
     let cancelled = false;
-    // report-v2 is the scroll-snapped report ported from /lite-two. The older
-    // card-stack report is still built and still correct at
-    // `${LITE_BCGOLF.basePath}/report`; changing this one path back is the
-    // whole revert if the new one misbehaves in front of a guest.
     const go = () => {
-      if (!cancelled) Router.replace(`${LITE_BCGOLF.basePath}/report-v2`);
+      if (!cancelled) Router.replace(`${LITE_EVENT.basePath}/report`);
     };
 
-    const stashed = readStashedReport(LITE_BCGOLF);
+    const stashed = readStashedReport(LITE_EVENT);
     if (stashed) {
       delay(MIN_VISIBLE_MS).then(go);
       return () => {
@@ -75,10 +71,10 @@ export default function BcGolfLoading() {
       };
     }
 
-    Promise.all([fetchLiteReport(result, LITE_BCGOLF), delay(MIN_VISIBLE_MS)])
+    Promise.all([fetchLiteReport(result, LITE_EVENT), delay(MIN_VISIBLE_MS)])
       .then(([report]) => {
         if (cancelled) return;
-        stashReport(report, LITE_BCGOLF);
+        stashReport(report, LITE_EVENT);
         go();
       })
       // The report page re-fetches and shows its own error state, so a failure
@@ -97,7 +93,7 @@ export default function BcGolfLoading() {
   return (
     <>
       <Head>
-        <title>Building your profile | ReCOGnAIze Lite</title>
+        <title>Building your profile | ReCOGnAIze</title>
       </Head>
 
       <LiteShell>

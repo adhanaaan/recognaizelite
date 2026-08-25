@@ -36,7 +36,7 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 //   litebcgolf  → public.litebcgolf_leads   (the Business China golf tournament funnel:
 //                                           a one-day event link, so its numbers are a
 //                                           single afternoon rather than a campaign.)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo", "act4health", "litebcgolf"]);
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo", "act4health", "litebcgolf", "liteevent"]);
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;

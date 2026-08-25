@@ -17,6 +17,7 @@ export const CLINICIAN_CLINIC = "liteclinician";
 export const LITE_TWO_CLINIC = "litetwo";
 export const ACT4HEALTH_CLINIC = "act4health";
 export const BCGOLF_CLINIC = "litebcgolf";
+export const LITE_EVENT_CLINIC = "liteevent";
 
 /**
  * One entry per funnel built on the lite flow. /lite-worldalzmonth is a copy of
@@ -94,6 +95,23 @@ export const LITE_BCGOLF: LiteVariant = {
   basePath: "/lite-bcgolf",
   defaultCampaign: "bcgolf",
   storagePrefix: "recognaize-bcg",
+};
+
+/**
+ * The corporate-event funnel — /lite-two's flow and report, reused across
+ * booths, conferences and client days rather than tied to one date.
+ *
+ * defaultCampaign is the generic "event"; the point of this funnel is that
+ * each occasion overrides it with its own ?utm_campaign=, so one link and one
+ * table serve every event and the results still separate cleanly afterwards.
+ * Unlike /lite-two it mails the result — see EMAIL_CLINICS.
+ */
+export const LITE_EVENT: LiteVariant = {
+  clinic: LITE_EVENT_CLINIC,
+  hookClinic: "LiteEvent",
+  basePath: "/lite-event",
+  defaultCampaign: "event",
+  storagePrefix: "recognaize-levt",
 };
 
 const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;
