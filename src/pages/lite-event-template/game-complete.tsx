@@ -1,0 +1,100 @@
+import Head from "next/head";
+import Router from "next/router";
+import React from "react";
+import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
+import { SectionBadge } from "src/components/LiteOne/SectionBadge";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy } from "src/i18n/liteEventCopy";
+import { useResultStore } from "src/stores/useResultStore";
+import { LITE_EVENT_TEMPLATE, readTask2Score } from "src/utils/liteOne";
+
+/**
+ * /lite-event-template — the template copy of this /lite-event screen.
+ *
+ * The template funnel is where flow changes are trialled before they are
+ * folded back into /lite-event, so this file starts as a page-for-page copy
+ * and only diverges where a change is being tried out. See LITE_EVENT_TEMPLATE
+ * in src/utils/liteOne.ts for what the two funnels share and what they don't.
+ */
+
+const ICONS = [
+  { src: "/images/task-2/sun.png", alt: "", className: "absolute -left-2 top-[18%] size-16 lite-bob", delay: 0 },
+  { src: "/images/task-2/flash.png", alt: "", className: "absolute -right-1 top-[14%] size-14 lite-rock", delay: 400 },
+];
+
+/**
+ * Where the shared game hands control back to this funnel — GameCompleteScreen
+ * routes here via getHookReportPath(), which the entry page pointed at this
+ * path. That redirect is the whole mechanism keeping the lite funnels apart
+ * once they've all passed through /symbol-matching.
+ */
+export default function LiteEventTemplateGameComplete() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
+  const { result } = useResultStore();
+  const score = readTask2Score(result);
+
+  return (
+    <>
+      <Head>
+        <title>{t.gameComplete.headTitle}</title>
+      </Head>
+
+      <LiteShell>
+        <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 py-8">
+          <div className="relative mx-auto w-full max-w-[440px] text-center">
+            <div className="lite-rise" style={{ animationDelay: "0ms" }}>
+              <SectionBadge label={t.gameComplete.badge} />
+            </div>
+
+            {ICONS.map((icon) => (
+              <img
+                key={icon.src}
+                src={icon.src}
+                alt={icon.alt}
+                aria-hidden
+                className={`${icon.className} lite-rise pointer-events-none select-none`}
+                style={{ animationDelay: `${icon.delay + 200}ms` }}
+              />
+            ))}
+
+            <h1
+              className="lite-rise mt-14 font-display text-[32px] font-extrabold leading-[1.08] text-charcoal sm:text-[38px]"
+              style={{ animationDelay: "100ms" }}
+            >
+              {t.gameComplete.h1}
+            </h1>
+
+            <p
+              className="lite-rise mt-4 text-[18px] font-semibold text-charcoal"
+              style={{ animationDelay: "180ms" }}
+            >
+              {t.gameComplete.correctSymbols} {score ?? "—"}
+            </p>
+
+            <div
+              className="lite-rise mx-auto mt-16 max-w-[320px]"
+              style={{ animationDelay: "300ms" }}
+            >
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-quizOutline">
+                {t.gameComplete.nextEyebrow}
+              </p>
+              <p className="mt-2 text-[15px] leading-relaxed text-quizSecondary">
+                {t.gameComplete.nextBody}
+              </p>
+            </div>
+
+            <div
+              className="lite-rise mx-auto mt-8 max-w-[320px]"
+              style={{ animationDelay: "420ms" }}
+            >
+              <LiteButton onClick={() => Router.push(`${LITE_EVENT_TEMPLATE.basePath}/quiz`)}>
+                {t.gameComplete.cta}
+              </LiteButton>
+            </div>
+          </div>
+        </div>
+      </LiteShell>
+    </>
+  );
+}

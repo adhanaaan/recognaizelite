@@ -114,6 +114,32 @@ export const LITE_EVENT: LiteVariant = {
   storagePrefix: "recognaize-levt",
 };
 
+/**
+ * /lite-event-template — a working copy of the corporate-event funnel, page for
+ * page, where flow changes are trialled before they are folded back into
+ * /lite-event. A booth link never points here; the route exists so a change can
+ * be reviewed end to end without disturbing the funnel that is out in the field.
+ *
+ * `clinic` stays "liteevent" on purpose: the template writes to the same
+ * liteevent_leads table and mails the same event template, so a run through it
+ * is a real run and nothing new has to be provisioned server-side. What it does
+ * not share is `storagePrefix` — the two funnels keep separate sessionStorage
+ * namespaces, so a run through the template can never overwrite the report,
+ * profile or attempt id of a live run in the same browser.
+ *
+ * `hookClinic` stays "LiteEvent" as well, because that is what puts the shared
+ * Symbol Matching screens in the Clinical Empathy palette (see
+ * isLiteOneMode()). The funnels are kept apart after the game by
+ * hookReportPath, which the entry page points at this basePath.
+ */
+export const LITE_EVENT_TEMPLATE: LiteVariant = {
+  clinic: LITE_EVENT_CLINIC,
+  hookClinic: "LiteEvent",
+  basePath: "/lite-event-template",
+  defaultCampaign: "event-template",
+  storagePrefix: "recognaize-levt-tpl",
+};
+
 const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;
 const profileKey = (v: LiteVariant) => `${v.storagePrefix}-profile`;
 const attemptKey = (v: LiteVariant) => `${v.storagePrefix}-attempt`;
