@@ -73,6 +73,8 @@ const EN = {
     bodyEmph: "fast",
     bodyTail:
       " does your brain process? Match as many symbols to their numbers as you can in 60 seconds.",
+    /** Badge over the board that plays itself, inside AutoPlayDemo. */
+    demoBadge: "Demo · plays itself",
     cta: "Start tutorial",
   },
 
@@ -160,6 +162,8 @@ const EN = {
     ],
     share: "Share results",
     shared: "Copied",
+    /** Floating cue on viewports too short to show the hero's own scroll cue. */
+    moreBelow: "More results below",
     shareSheetTitle: "My brain speed score",
     shareScore: (percentile: number, peers: string) =>
       `I reacted faster than ${percentile}% of ${peers} on a 60-second cognitive test.`,
@@ -411,6 +415,7 @@ const ZH: LiteEventCopy = {
     bodyLead: "您的大脑处理信息有",
     bodyEmph: "多快",
     bodyTail: "？在 60 秒内尽可能多地把符号与对应的数字配对。",
+    demoBadge: "演示 · 自动播放",
     cta: "开始教程",
   },
 
@@ -479,6 +484,7 @@ const ZH: LiteEventCopy = {
     sections: ["您的排名", "这代表什么", "风险因素", "您的基线", "完整测试", "专属优惠", "结语"],
     share: "分享结果",
     shared: "已复制",
+    moreBelow: "下方还有更多结果",
     shareSheetTitle: "我的大脑速度分数",
     shareScore: (percentile: number, peers: string) =>
       `在一个 60 秒的认知测试中，我的反应速度快过 ${percentile}% 的${peers}。`,
@@ -720,6 +726,7 @@ const MS: LiteEventCopy = {
     bodyEmph: "pantas",
     bodyTail:
       " otak anda memproses maklumat? Padankan sebanyak mungkin simbol dengan nombornya dalam masa 60 saat.",
+    demoBadge: "Demo · main sendiri",
     cta: "Mula tutorial",
   },
 
@@ -798,6 +805,7 @@ const MS: LiteEventCopy = {
     ],
     share: "Kongsi keputusan",
     shared: "Disalin",
+    moreBelow: "Lagi keputusan di bawah",
     shareSheetTitle: "Skor kelajuan otak saya",
     shareScore: (percentile: number, peers: string) =>
       `Reaksi saya lebih pantas daripada ${percentile}% ${peers} dalam ujian kognitif 60 saat.`,

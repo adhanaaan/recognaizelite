@@ -15,6 +15,22 @@ interface QuestionGroupScreenProps {
   onNext: () => void;
   onBack: () => void;
   labels?: { back?: string; continue?: string };
+  /**
+   * Renders every question as option buttons, including the ones marked
+   * `control: "slider"`.
+   *
+   * At booths, visitors coming off two screens of button questions did not
+   * read the sliders as controls at all and stalled on them, so
+   * /lite-event-template asks the shared-scale symptom questions the same way
+   * it asks everything else. The options are reversed to match the slider's
+   * least-severe-first reading order, which is also the order every other
+   * button question in the bank uses.
+   *
+   * It also changes what "answered" means: an untouched slider silently
+   * counts as the lowest-severity option, while a button has to be pressed,
+   * so Continue now waits for these three the way it waits for the rest.
+   */
+  buttonsOnly?: boolean;
 }
 
 /**
@@ -34,11 +50,13 @@ export function QuestionGroupScreen({
   onNext,
   onBack,
   labels,
+  buttonsOnly = false,
 }: QuestionGroupScreenProps) {
   // A slider always sits on a valid option, so it never gates Continue; button
-  // questions still have to be answered explicitly.
+  // questions — including sliders rendered as buttons — have to be answered
+  // explicitly.
   const allAnswered = questions.every(
-    (q) => q.control === "slider" || typeof answers[q.id] === "string"
+    (q) => (q.control === "slider" && !buttonsOnly) || typeof answers[q.id] === "string"
   );
 
   const groupCitation = (() => {
@@ -62,7 +80,12 @@ export function QuestionGroupScreen({
       <div className="mt-6 divide-y divide-quizOutline-variant">
         {questions.map((q) => {
           const selected = answers[q.id];
-          const cols = optionColsClass(q.options);
+          const asSlider = q.control === "slider" && !buttonsOnly;
+          // Slider options are stored worst-first and flipped by OptionSlider;
+          // buttons rendered in their place flip them the same way so the scale
+          // still reads least severe → most severe.
+          const options = q.control === "slider" ? [...(q.options ?? [])].reverse() : q.options;
+          const cols = optionColsClass(options);
           return (
             <div key={q.id} className="py-5 first:pt-0">
               <p className="font-jakarta font-semibold text-charcoal text-[15px] leading-snug">
@@ -71,7 +94,7 @@ export function QuestionGroupScreen({
               {q.helpText && (
                 <p className="mt-1 text-[12.5px] text-quizSecondary font-jakarta">{q.helpText}</p>
               )}
-              {q.control === "slider" ? (
+              {asSlider ? (
                 <OptionSlider
                   question={q}
                   value={selected}
@@ -79,7 +102,7 @@ export function QuestionGroupScreen({
                 />
               ) : (
                 <div className={`mt-3 grid gap-2 ${cols}`}>
-                  {q.options?.map((opt) => (
+                  {options?.map((opt) => (
                     <CompactOption
                       key={opt.id}
                       label={opt.label}

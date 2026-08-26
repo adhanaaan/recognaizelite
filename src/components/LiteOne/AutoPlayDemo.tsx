@@ -46,7 +46,16 @@ function legendForRound(round: number) {
   return SYMBOLS.map((_, i) => (i + shift) % SYMBOLS.length);
 }
 
-export function AutoPlayDemo() {
+export function AutoPlayDemo({
+  /**
+   * The badge over the board. Defaults to English because most funnels only
+   * ever run in English; /lite-event-template passes the visitor's language
+   * through so the badge does not sit in English under a translated headline.
+   */
+  label = "Demo · plays itself",
+}: {
+  label?: string;
+} = {}) {
   const [round, setRound] = React.useState(0);
   const [phase, setPhase] = React.useState<Phase>("idle");
   const [playing, setPlaying] = React.useState(false);
@@ -87,7 +96,7 @@ export function AutoPlayDemo() {
     <div className="mx-auto w-full max-w-[320px]">
       <div className="mb-3 flex justify-center">
         <span className="rounded-full border border-quizOutline-variant bg-quizSurface-lowest px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-quizOutline">
-          Demo · plays itself
+          {label}
         </span>
       </div>
 
