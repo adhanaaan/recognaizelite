@@ -43,10 +43,8 @@ import { PARKWAY } from "src/utils/liteOne";
 import {
   PARKWAY_LOGO,
   PARKWAY_SITES,
-  PARKWAY_WHATSAPP_DISPLAY,
   PARKWAY_WHATSAPP_URL,
   parkwaySiteName,
-  parkwaySiteWhatsAppUrl,
   type ParkwaySite,
 } from "src/utils/parkway";
 
@@ -136,14 +134,6 @@ function ThickArrowDown({ className }: { className?: string }) {
   );
 }
 
-function WhatsAppGlyph({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
-      <path d="M12.04 2a9.9 9.9 0 0 0-8.53 14.9L2 22l5.25-1.47A9.9 9.9 0 1 0 12.04 2Zm0 1.67a8.23 8.23 0 1 1-4.2 15.31l-.3-.18-3.12.87.85-3.04-.2-.31a8.23 8.23 0 0 1 6.97-12.65Zm-3.3 3.6c-.18 0-.47.07-.72.34-.25.27-.94.92-.94 2.24 0 1.32.96 2.6 1.1 2.78.13.18 1.86 2.97 4.58 4.05 2.26.89 2.72.71 3.21.67.49-.05 1.58-.65 1.8-1.27.23-.62.23-1.16.16-1.27-.07-.11-.25-.18-.52-.31-.27-.14-1.58-.78-1.83-.87-.24-.09-.42-.13-.6.14-.18.26-.69.86-.85 1.04-.15.18-.31.2-.58.07a7.3 7.3 0 0 1-2.15-1.33 8.1 8.1 0 0 1-1.5-1.86c-.15-.27-.01-.41.12-.55.12-.12.27-.31.4-.47.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.47-.07-.14-.6-1.45-.82-1.98-.22-.52-.44-.45-.6-.46l-.51-.01Z" />
-    </svg>
-  );
-}
-
 /**
  * One step's illustration. Removes itself if the asset 404s, so a step whose
  * image hasn't been committed yet still reads as a normal text step instead of
@@ -203,12 +193,9 @@ function SiteCarousel() {
   return (
     <div className="scroll-hidden -mx-5 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-pl-5 px-5 sm:-mx-8 sm:scroll-pl-8 sm:px-8">
       {PARKWAY_SITES.map((site) => (
-        <a
+        <div
           key={site.location}
-          href={parkwaySiteWhatsAppUrl(parkwaySiteName(site))}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-[216px] shrink-0 snap-start overflow-hidden rounded-2xl bg-white pb-4 shadow-[0_2px_8px_-1px_rgba(0,0,0,0.04)] transition-transform active:scale-[0.98]"
+          className="w-[216px] shrink-0 snap-start overflow-hidden rounded-2xl bg-white pb-4 shadow-[0_2px_8px_-1px_rgba(0,0,0,0.04)]"
         >
           <SiteThumb site={site} className="h-[125px] w-full rounded-t-[10px]" />
           <p className="mt-2.5 px-4 text-[13.5px] font-semibold leading-[1.36] text-[#171717]">
@@ -216,7 +203,7 @@ function SiteCarousel() {
             <br />
             {site.location}
           </p>
-        </a>
+        </div>
       ))}
     </div>
   );
@@ -827,25 +814,6 @@ export default function ParkwayReport() {
                   ))}
                 </motion.ol>
 
-                {/*
-                 * The design draws this in the rank gradient rather than
-                 * WhatsApp green, but it is still the funnel's booking path —
-                 * /parkway has no checkout to send it to. Same destination as
-                 * the green button below, which is how /act4health handles its
-                 * mid-report booking CTA too.
-                 */}
-                <motion.a
-                  variants={rise}
-                  href={PARKWAY_WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-8 flex w-full items-center justify-center rounded-full py-4 text-[16px] font-extrabold tracking-wide text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06]"
-                  style={{ background: RANK_GRADIENT }}
-                >
-                  {pk.product.cta}
-                </motion.a>
-
                 <motion.figure
                   variants={rise}
                   className="mt-10 rounded-[26px] border border-[#F2DDCE] bg-white p-6 shadow-[0_18px_46px_-28px_rgba(90,40,10,0.28)]"
@@ -947,12 +915,7 @@ export default function ParkwayReport() {
                     {PARKWAY_SITES.map((site, i) => (
                       <li key={site.location}>
                         {i > 0 && <div aria-hidden className="h-px bg-[#E5E7EB]" />}
-                        <a
-                          href={parkwaySiteWhatsAppUrl(parkwaySiteName(site))}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-4 py-2 transition-colors hover:bg-[#FFF8F3]"
-                        >
+                        <div className="flex items-center gap-4 py-2">
                           <SiteThumb site={site} className="size-10 shrink-0 rounded-lg" />
                           <span className="min-w-0 flex-1 text-[12px] leading-[1.58] text-black">
                             {site.practice}
@@ -971,27 +934,11 @@ export default function ParkwayReport() {
                           >
                             <path d="M9 5l7 7-7 7" />
                           </svg>
-                        </a>
+                        </div>
                       </li>
                     ))}
                   </ul>
                 </motion.div>
-
-                <motion.a
-                  variants={rise}
-                  href={PARKWAY_WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-[26px] flex w-full items-center justify-center gap-2.5 rounded-full py-4 text-[16px] font-extrabold tracking-wide text-white shadow-[0_16px_34px_-16px_rgba(31,175,87,0.6)] transition-[filter] hover:brightness-[1.06]"
-                  style={{ background: WHATSAPP_GREEN }}
-                >
-                  <WhatsAppGlyph className="size-5 shrink-0" />
-                  {pk.offer.cta}
-                </motion.a>
-                <motion.p variants={rise} className="mt-3 text-center text-[12.5px] leading-[1.5] text-[#8A6A58]">
-                  {pk.offer.footnote(PARKWAY_WHATSAPP_DISPLAY)}
-                </motion.p>
               </Cascade>
             </SnapSection>
 
