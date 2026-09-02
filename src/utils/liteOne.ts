@@ -140,6 +140,38 @@ export const LITE_EVENT_TEMPLATE: LiteVariant = {
   storagePrefix: "recognaize-levt-tpl",
 };
 
+/**
+ * /parkway — the Parkway Shenton partner funnel.
+ *
+ * The flow is /lite-event-template's, taken page for page: same landing,
+ * language picker, reaction-time game, quiz, lead form and personalised v2
+ * report. What Parkway changes is where the report sends the reader. Instead
+ * of the ReCOGnAIze upsell it closes on a consultation at one of the four
+ * Parkway Shenton sites, booked over the clinic's WhatsApp line — the same
+ * shape /act4health takes for its partner clinic.
+ *
+ * `clinic` stays "liteevent" for the reason the template's does: the funnel
+ * writes to the existing liteevent_leads table and mails the existing event
+ * template, so a run through it is a real run and nothing has to be
+ * provisioned server-side first. `defaultCampaign` is what separates Parkway's
+ * numbers from the rest of the event traffic afterwards, and `storagePrefix`
+ * keeps its sessionStorage namespace to itself, so a run here can never
+ * overwrite the report, profile or attempt id of a run through another funnel
+ * in the same browser.
+ *
+ * `hookClinic` stays "LiteEvent" as well, because that is what puts the shared
+ * Symbol Matching screens in the Clinical Empathy palette (see
+ * isLiteOneMode()). The funnels are kept apart after the game by
+ * hookReportPath, which the entry page points at this basePath.
+ */
+export const PARKWAY: LiteVariant = {
+  clinic: LITE_EVENT_CLINIC,
+  hookClinic: "LiteEvent",
+  basePath: "/parkway",
+  defaultCampaign: "parkway",
+  storagePrefix: "recognaize-pkw",
+};
+
 const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;
 const profileKey = (v: LiteVariant) => `${v.storagePrefix}-profile`;
 const attemptKey = (v: LiteVariant) => `${v.storagePrefix}-attempt`;
