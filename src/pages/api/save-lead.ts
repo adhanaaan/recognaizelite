@@ -58,6 +58,16 @@ function str(value: unknown): string | null {
   return trimmed.length > 0 ? trimmed : null;
 }
 
+/**
+ * A consent tickbox. Absent means "never asked" rather than "declined", which
+ * is why this returns null instead of false: a funnel that has no consent
+ * screen must not write rows that read as a refusal.
+ */
+function bool(value: unknown): boolean | null {
+  if (typeof value === "boolean") return value;
+  return null;
+}
+
 function num(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value)) return value;
   if (typeof value === "string" && value.trim() !== "") {
@@ -333,6 +343,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ? (body.quizAnswers as Record<string, unknown>)
         : null;
 
+    /**
+     * Consents, all three optional. /parkway is the first funnel to ask: two
+     * tickboxes on the lead form (campaign analytics, which is required there,
+     * and the newsletter opt-in) and the partner's own consent on the screen
+     * after it. The other lite funnels post none of these and their rows keep
+     * NULL, which is the honest value for a question never put to the visitor.
+     *
+     * consent_at is stamped only when at least one of them arrives, so it
+     * dates the consent rather than the row.
+     */
+    const consentAnalytics = bool(body.consentAnalytics);
+    const consentMarketing = bool(body.consentMarketing);
+    const consentPartner = bool(body.consentPartner);
+    const askedForConsent =
+      consentAnalytics !== null || consentMarketing !== null || consentPartner !== null;
+
+    // Typed with every key optional so the columns can be left out entirely
+    // rather than written as explicit NULLs — an update from a funnel that
+    // never asks must not blank a consent another screen recorded.
+    const consentRow: {
+      consent_analytics?: boolean | null;
+      consent_marketing?: boolean | null;
+      consent_partner?: boolean | null;
+      consent_at?: string | null;
+    } = askedForConsent
+      ? {
+          consent_analytics: consentAnalytics,
+          consent_marketing: consentMarketing,
+          consent_partner: consentPartner,
+          consent_at: new Date().toISOString(),
+        }
+      : {};
+
     const contactRow = {
       name: nameVal,
       email: emailRaw,
@@ -346,6 +389,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       band,
       persona,
       completed_at: new Date().toISOString(),
+      ...consentRow,
     };
 
     /**
@@ -386,9 +430,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .eq("attempt_id", attemptId)
         .select("id");
 
+      // Schema-cache fallback, as below: an environment that pre-dates
+      // migration 011 (quiz columns) or 019 (consent) still takes the lead.
       if (error && error.message?.includes("schema cache")) {
-        const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, ...legacyRow } = contactRow;
-        void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
+        const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, consent_analytics: _ca, consent_marketing: _cm, consent_partner: _cp, consent_at: _cat, ...legacyRow } = contactRow;
+        void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p; void _ca; void _cm; void _cp; void _cat;
         const retry = await supabase.from(liteTable).update(legacyRow).eq("attempt_id", attemptId).select("id");
         data = retry.data;
         error = retry.error;
@@ -418,8 +464,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let { error } = await supabase.from(liteTable).insert(fullRow);
 
     if (error && error.message?.includes("schema cache")) {
-      const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, ...legacyRow } = fullRow;
-      void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
+      const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, consent_analytics: _ca, consent_marketing: _cm, consent_partner: _cp, consent_at: _cat, ...legacyRow } = fullRow;
+      void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p; void _ca; void _cm; void _cp; void _cat;
       const retry = await supabase.from(liteTable).insert(legacyRow);
       error = retry.error;
     }
