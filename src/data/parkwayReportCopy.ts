@@ -22,6 +22,11 @@ export type ParkwayStep = {
 };
 
 export type ParkwayCopy = {
+  /** The persistent bottom bar, shown across every section of the report. */
+  stickyBar: {
+    title: string;
+    subtitle: string;
+  };
   product: {
     eyebrow: string;
     /** The h2, broken where the design breaks it. */
@@ -49,6 +54,10 @@ export type ParkwayCopy = {
 };
 
 const EN: ParkwayCopy = {
+  stickyBar: {
+    title: "TAKE THE FULL ASSESSMENT",
+    subtitle: "@ Parkway Shenton Clinics",
+  },
   product: {
     eyebrow: "What to do now?",
     h2Lead: "Take the",
@@ -91,6 +100,10 @@ const EN: ParkwayCopy = {
 };
 
 const ZH: ParkwayCopy = {
+  stickyBar: {
+    title: "做完整评估",
+    subtitle: "@ 百汇珊顿诊所",
+  },
   product: {
     eyebrow: "接下来该怎么做？",
     h2Lead: "做完整的",
@@ -133,6 +146,10 @@ const ZH: ParkwayCopy = {
 };
 
 const MS: ParkwayCopy = {
+  stickyBar: {
+    title: "AMBIL PENILAIAN PENUH",
+    subtitle: "@ Klinik Parkway Shenton",
+  },
   product: {
     eyebrow: "Apa langkah seterusnya?",
     h2Lead: "Ambil",
