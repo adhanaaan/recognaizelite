@@ -11,13 +11,11 @@ their images from here, under these exact names:
 | `mount-elizabeth.jpg`  | Executive Health Screeners, Mount Elizabeth Hospital |
 | `woodleigh-mall.jpg`   | Parkway MediCentre @ The Woodleigh Mall              |
 
-**These four files are not in the repo yet.** They are photographs of real
-clinics, so they have to come from the design's exports or from Parkway
-Shenton — there is nothing in the codebase to stand in for them. `SiteThumb` in
-`src/pages/parkway/report.tsx` swaps any image that fails to load for a plain
-tile, so until they land both the cards and the list lay out exactly as they
-will afterwards, with no broken images and no code change needed once the files
-appear.
+All four are in place, supplied by Parkway. `SiteThumb` in
+`src/pages/parkway/report.tsx` still swaps any image that fails to load for a
+plain tile — that guard is what let the cards and the list ship ahead of these
+files, and it stays as the fallback for whichever one goes missing next (a
+renamed file, a bad upload) rather than only protecting a one-time gap.
 
 The card renders the image at 216 × 125 CSS px and the list row at 40 × 40, so
 export around 640px wide (well past 2x for the larger of the two) and crop to

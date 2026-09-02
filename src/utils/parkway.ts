@@ -12,7 +12,7 @@
  * the same lock-up the design places at the top of that card.
  */
 export const PARKWAY_LOGO = {
-  src: "/images/lite-one/logo-parkway-shenton.png",
+  src: "/images/lite-one/logo-parkway-shenton.svg",
   alt: "Parkway Shenton",
 };
 

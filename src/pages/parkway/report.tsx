@@ -111,6 +111,31 @@ const SECTION_IDS = [
 /** WhatsApp brand green — every booking CTA reads as "this opens a chat". */
 const WHATSAPP_GREEN = "#1FAF57";
 
+/**
+ * The sticky bar's icon — akar-icons:arrow-up-thick, rotated to point down in
+ * the design. Drawn inline rather than pulled in through an icon package: the
+ * report's other glyphs (chevrons, checks, the WhatsApp mark) are all inline
+ * SVG already, and this funnel runs at booths where a run to an icon CDN is
+ * not something to depend on.
+ */
+function ThickArrowDown({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M12 4v16" />
+      <path d="M6 14l6 6 6-6" />
+    </svg>
+  );
+}
+
 function WhatsAppGlyph({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
@@ -971,7 +996,7 @@ export default function ParkwayReport() {
             </SnapSection>
 
             {/* ---------------------------------------- 10 · wrap up --- */}
-            <SnapSection id="closing">
+            <SnapSection id="closing" paddingClassName="pb-32 pt-24">
               <Cascade amount={0.2}>
                 <motion.figure variants={rise}>
                   <span
@@ -1032,6 +1057,32 @@ export default function ParkwayReport() {
                 </motion.p>
               </Cascade>
             </SnapSection>
+
+            {/* ------------------------------------ sticky booking bar --- */}
+            {/* Always one tap from a booking, whatever section is on screen —
+                same job /act4health's WhatsApp bar does for its clinic, in
+                this design's rank-gradient styling. The closing section
+                above carries pb-32 so the bar never sits on top of the last
+                line the visitor can't scroll past. */}
+            <a
+              href={PARKWAY_WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="fixed inset-x-3 bottom-3 z-50 mx-auto flex max-w-[560px] items-center justify-between gap-3 rounded-2xl py-3 pl-5 pr-3 text-white shadow-[0_18px_40px_-14px_rgba(214,47,22,0.55)] transition-transform active:scale-[0.985]"
+              style={{ background: RANK_GRADIENT }}
+            >
+              <span className="min-w-0">
+                <span className="block text-[14px] font-extrabold uppercase italic tracking-wide leading-tight sm:text-[15px]">
+                  {pk.stickyBar.title}
+                </span>
+                <span className="block truncate text-[12.5px] font-semibold text-white/90">
+                  {pk.stickyBar.subtitle}
+                </span>
+              </span>
+              <span className="grid size-11 shrink-0 place-items-center rounded-full bg-white/[0.16]">
+                <ThickArrowDown className="size-6" />
+              </span>
+            </a>
           </div>
         </ScrollerContext.Provider>
       </MotionConfig>
