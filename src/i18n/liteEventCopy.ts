@@ -124,8 +124,28 @@ const EN = {
     namePlaceholder: "Your name",
     emailLabel: "Email",
     emailPlaceholder: "your@email.com",
+    /**
+     * The two tickboxes between the email field and the button.
+     *
+     * The first is required and its label says so before anything else, in
+     * bold; the second is the newsletter opt-in and is not. Both are recorded
+     * either way, so the leads table distinguishes a visitor who opted in from
+     * one who was never asked.
+     *
+     * The required line is split the way the landing copy is split, because it
+     * carries a link: lead, the policy's name, then the tail. The name renders
+     * as plain text rather than a link until the policy URL is set - see
+     * GMS_PRIVACY_POLICY_URL in src/utils/parkway.ts.
+     */
+    consentRequiredMark: "Required",
+    consentAnalyticsLead:
+      ". I agree that my assessment data may be used for campaign analytics by Gray Matter Solutions, in accordance with their ",
+    consentPolicy: "Privacy Policy",
+    consentAnalyticsTail: ".",
+    consentMarketing: "Send me occasional brain health tips and updates.",
     errName: "Please enter your name.",
     errEmail: "Please enter a valid email address.",
+    errConsent: "Please agree to the required consent to continue.",
     errSave: "We couldn't save that. Please try again.",
     saving: "Saving…",
     submit: "Reveal my score",
@@ -457,8 +477,14 @@ const ZH: LiteEventCopy = {
     namePlaceholder: "您的姓名",
     emailLabel: "电邮",
     emailPlaceholder: "your@email.com",
+    consentRequiredMark: "必填",
+    consentAnalyticsLead: "。我同意 Gray Matter Solutions 将我的评估数据用于活动分析，并遵照其",
+    consentPolicy: "隐私政策",
+    consentAnalyticsTail: "。",
+    consentMarketing: "我愿意收到不定期的脑健康建议与资讯。",
     errName: "请输入您的姓名。",
     errEmail: "请输入有效的电邮地址。",
+    errConsent: "请勾选必填的同意项以继续。",
     errSave: "保存失败，请再试一次。",
     saving: "正在保存…",
     submit: "查看我的分数",
@@ -769,8 +795,15 @@ const MS: LiteEventCopy = {
     namePlaceholder: "Nama anda",
     emailLabel: "E-mel",
     emailPlaceholder: "anda@emel.com",
+    consentRequiredMark: "Diperlukan",
+    consentAnalyticsLead:
+      ". Saya bersetuju bahawa data penilaian saya boleh digunakan untuk analitik kempen oleh Gray Matter Solutions, selaras dengan ",
+    consentPolicy: "Dasar Privasi",
+    consentAnalyticsTail: " mereka.",
+    consentMarketing: "Hantarkan saya tip dan berita kesihatan otak dari semasa ke semasa.",
     errName: "Sila masukkan nama anda.",
     errEmail: "Sila masukkan alamat e-mel yang sah.",
+    errConsent: "Sila setujui kebenaran yang diperlukan untuk meneruskan.",
     errSave: "Kami tidak dapat menyimpannya. Sila cuba lagi.",
     saving: "Menyimpan…",
     submit: "Tunjukkan skor saya",

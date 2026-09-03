@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Router from "next/router";
 import React from "react";
+import { ConsentCheckbox } from "src/components/LiteOne/ConsentCheckbox";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { SectionBadge } from "src/components/LiteOne/SectionBadge";
 import { useLiteEventLang } from "src/i18n/liteEvent";
@@ -17,26 +18,31 @@ import {
   readStashedQuizResult,
   readTask2Score,
   recordLiteAttempt,
-  stashLiteProfile,
+  severityKey,
+  stashPendingLead,
   stashReport,
 } from "src/utils/liteOne";
+import { GMS_PRIVACY_POLICY_URL, consentLinkHref } from "src/utils/parkway";
 import type { DomainReport } from "src/types/report";
 
 /**
  * /parkway — the Parkway Shenton copy of this /lite-event-template screen.
  *
- * The flow is /lite-event-template's, page for page and unchanged; what the
- * partner funnel changes is the report, whose conversion path books a
- * consultation at a Parkway Shenton site instead of selling the online
- * assessment. See PARKWAY in src/utils/liteOne.ts for what the two funnels
- * share and what they don't.
+ * The flow is /lite-event-template's, page for page, save for two additions
+ * this screen and the next one make: the two consent tickboxes below the email
+ * field, and the partner consent screen that now stands between this form and
+ * the report. What the partner funnel changes after that is the report itself,
+ * whose conversion path books a consultation at a Parkway Shenton site instead
+ * of selling the online assessment. See PARKWAY in src/utils/liteOne.ts for
+ * what the two funnels share and what they don't.
+ *
+ * Submitting no longer saves. /api/save-lead is what mails the visitor their
+ * result (see EMAIL_CLINICS in src/server/liteLeadEmail.ts), and the partner's
+ * consent is asked for before anything is sent — so this screen validates,
+ * parks the payload it has assembled with `stashPendingLead`, and hands off to
+ * /parkway/consent, which posts it. A visitor who backs out there leaves no
+ * row and no mail behind.
  */
-
-const SEVERITY_TO_KEY: Record<string, string> = {
-  Low: "low",
-  Medium: "moderate",
-  High: "high",
-};
 
 const inputClass =
   "w-full rounded-xl border border-quizOutline-variant bg-quizSurface-lowest px-4 py-3.5 text-[15px] text-charcoal placeholder-quizOutline outline-none transition-colors focus:border-quizPrimary";
@@ -49,8 +55,13 @@ export default function ParkwayResults() {
 
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [consentAnalytics, setConsentAnalytics] = React.useState(false);
+  const [consentMarketing, setConsentMarketing] = React.useState(false);
   const [error, setError] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
+
+  /** Null until the policy URL is set, which renders its name unlinked. */
+  const policyHref = consentLinkHref(GMS_PRIVACY_POLICY_URL);
 
   const reportRef = React.useRef<DomainReport | null>(null);
   const attemptIdRef = React.useRef<string>("");
@@ -72,7 +83,7 @@ export default function ParkwayResults() {
           attemptId: attemptIdRef.current,
           score,
           percentile: Math.round(report.percentile),
-          severity: SEVERITY_TO_KEY[report.severity] ?? null,
+          severity: severityKey(report.severity),
         }, PARKWAY);
       })
       .catch(() => {
@@ -88,7 +99,13 @@ export default function ParkwayResults() {
     return () => { cancelled = true; };
   }, [result]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  /**
+   * Validates, then hands the lead to the consent screen rather than saving
+   * it. The payload is assembled here because this is where the zustand
+   * stores it is derived from are still populated; the screen after this one
+   * only has to add the partner's consent and post it.
+   */
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
 
@@ -101,6 +118,11 @@ export default function ParkwayResults() {
     const trimmedEmail = email.trim();
     if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       setError(t.results.errEmail);
+      return;
+    }
+
+    if (!consentAnalytics) {
+      setError(t.results.errConsent);
       return;
     }
 
@@ -121,49 +143,46 @@ export default function ParkwayResults() {
       ? (quizAnswers.sex === "female" ? "female" : quizAnswers.sex === "male" ? "male" : null)
       : null;
 
-    try {
-      const res = await fetch("/api/save-lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          clinic: PARKWAY.clinic,
-          attemptId: attemptIdRef.current || readOrCreateAttemptId(PARKWAY),
-          name: trimmedName,
-          email: trimmedEmail,
-          ageRange,
-          gender,
-          score: readTask2Score(result),
-          percentile: report ? Math.round(report.percentile) : null,
-          severity: report ? SEVERITY_TO_KEY[report.severity] ?? null : null,
-          quizAnswers: hasQuizAnswers ? quizAnswers : null,
-          brainHealthScore: brainScore ? brainScore.total : null,
-          riskScore: brainScore ? brainScore.riskScore : null,
-          symptomScore: brainScore ? brainScore.symptomScore : null,
-          band: brainScore ? brainScore.band : null,
-          persona: brainScore ? brainScore.persona : null,
-          utm,
-          referrer,
-        }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.error || t.results.errSave);
-      }
+    stashPendingLead({
+      payload: {
+        clinic: PARKWAY.clinic,
+        attemptId: attemptIdRef.current || readOrCreateAttemptId(PARKWAY),
+        name: trimmedName,
+        email: trimmedEmail,
+        ageRange,
+        gender,
+        score: readTask2Score(result),
+        // Null if the report fetch this screen started on mount hasn't landed
+        // yet. The consent screen fills both in from the stashed report before
+        // it posts, so a fast typist still gets a complete row.
+        percentile: report ? Math.round(report.percentile) : null,
+        severity: report ? severityKey(report.severity) : null,
+        quizAnswers: hasQuizAnswers ? quizAnswers : null,
+        brainHealthScore: brainScore ? brainScore.total : null,
+        riskScore: brainScore ? brainScore.riskScore : null,
+        symptomScore: brainScore ? brainScore.symptomScore : null,
+        band: brainScore ? brainScore.band : null,
+        persona: brainScore ? brainScore.persona : null,
+        utm,
+        referrer,
+        consentAnalytics: true,
+        consentMarketing,
+        // Set by the consent screen, which is the only place it is asked for.
+        consentPartner: false,
+      },
       // quizAge rides along for the report page: the optimizer/senior split is
       // made on the raw quiz band, not the shifted leads-table bucket.
-      stashLiteProfile({
+      profile: {
         name: trimmedName,
         email: trimmedEmail,
         ageRange: ageRange ?? "",
         gender: gender ?? "",
         score: readTask2Score(result),
         quizAge,
-      }, PARKWAY);
-      Router.push(`${PARKWAY.basePath}/loading`);
-    } catch (err) {
-      setError((err as Error).message || t.results.errSave);
-      setSubmitting(false);
-    }
+      },
+    }, PARKWAY);
+
+    Router.push(`${PARKWAY.basePath}/consent`);
   };
 
   return (
@@ -231,6 +250,52 @@ export default function ParkwayResults() {
                 onChange={(e) => { setEmail(e.target.value); setError(""); }}
                 className={inputClass}
               />
+            </div>
+
+            {/* The two consents, between the last field and the button, the
+                way the design places them. `space-y-4` is too much air for
+                two stacked tickboxes, so this pair sets its own rhythm. */}
+            <div className="space-y-3 pt-1">
+              <ConsentCheckbox
+                id="pkw-consent-analytics"
+                checked={consentAnalytics}
+                onChange={(next) => { setConsentAnalytics(next); setError(""); }}
+              >
+                <span className="block text-[12.5px] leading-[1.55] text-quizSecondary">
+                  <strong className="font-bold text-charcoal">
+                    {t.results.consentRequiredMark}
+                  </strong>
+                  {t.results.consentAnalyticsLead}
+                  {policyHref ? (
+                    <a
+                      href={policyHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-semibold text-charcoal underline decoration-quizOutline-variant underline-offset-2"
+                      // The label wraps this whole line, so a tap on the link
+                      // would toggle the box as well without this.
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {t.results.consentPolicy}
+                    </a>
+                  ) : (
+                    <span className="font-semibold text-charcoal underline decoration-quizOutline-variant underline-offset-2">
+                      {t.results.consentPolicy}
+                    </span>
+                  )}
+                  {t.results.consentAnalyticsTail}
+                </span>
+              </ConsentCheckbox>
+
+              <ConsentCheckbox
+                id="pkw-consent-marketing"
+                checked={consentMarketing}
+                onChange={setConsentMarketing}
+              >
+                <span className="block text-[12.5px] leading-[1.55] text-quizSecondary">
+                  {t.results.consentMarketing}
+                </span>
+              </ConsentCheckbox>
             </div>
 
             {error && (

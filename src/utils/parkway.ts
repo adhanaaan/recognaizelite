@@ -93,3 +93,72 @@ export const PARKWAY_SITES: ParkwaySite[] = [
 
 /** The site's full name on one line, for alt text and prefilled messages. */
 export const parkwaySiteName = (site: ParkwaySite) => `${site.practice} ${site.location}`;
+
+/* ------------------------------------------------------------- consent -- */
+
+/**
+ * IHH Healthcare Singapore, the partner on this event.
+ *
+ * Parkway Shenton is part of IHH, and the consent the visitor gives before
+ * their result is sent is IHH's to hold, not the clinic's — so the partner is
+ * named separately here rather than folded into PARKWAY_LOGO above.
+ */
+export const IHH = {
+  /** How the partner is named in running copy. Wording supplied by IHH. */
+  name: "IHH Healthcare Singapore",
+  /**
+   * !! PLACEHOLDER — the mark itself is IHH's to supply.
+   *
+   * `PartnerMark` on the consent screen swaps a file that 404s for a plain
+   * typographic wordmark, the same guard SiteThumb gives the site photos, so
+   * the screen reads correctly before this lands. Drop the real export in at
+   * this exact path — see public/images/parkway/README.md.
+   */
+  logo: {
+    src: "/images/parkway/logo-ihh-healthcare.svg",
+    alt: "IHH Healthcare",
+  },
+  /** From the design. The one address in this block that is not a guess. */
+  dpoEmail: "pdpo@ihhhealthcare.com",
+  /**
+   * !! PLACEHOLDER — needs IHH's published notice URL before this funnel goes
+   * out. The clause names the notice and the design links it, so the link has
+   * to point somewhere; it is left obviously unset rather than guessed at, and
+   * `consentLinkHref` below is what keeps an unset one off the screen.
+   */
+  dataProtectionNoticeUrl: "",
+} as const;
+
+/**
+ * !! PLACEHOLDER — needs Gray Matter Solutions' published policy URL.
+ *
+ * Same treatment as IHH's notice above: the lead form's required consent
+ * names the policy, so it is a link in the design, and an empty string here
+ * renders the words without one rather than a link to nowhere.
+ */
+export const GMS_PRIVACY_POLICY_URL = "";
+
+/** Whether a URL is set, i.e. whether to render its words as a link at all. */
+export const consentLinkHref = (url: string): string | null =>
+  url.trim().length > 0 ? url : null;
+
+/**
+ * Whether the partner's consent gates the report.
+ *
+ * True is the design: the screen is headed "We need your consent on" and the
+ * only way past it is the one checkbox. Flip this to false and the screen
+ * becomes a notice a visitor can pass without ticking — the tick is still
+ * recorded either way, so the leads table keeps saying who agreed and who
+ * only read it.
+ */
+export const PARTNER_CONSENT_REQUIRED = true;
+
+/**
+ * IHH's two brand colours, for the corner decoration on the consent screen.
+ *
+ * The screen is the one place in this funnel that is the partner's rather than
+ * ours, and the design marks that with their navy and yellow instead of the
+ * warm-cream blur circles every other screen carries.
+ */
+export const IHH_NAVY = "#272463";
+export const IHH_YELLOW = "#FFD66B";

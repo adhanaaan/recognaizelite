@@ -176,6 +176,64 @@ const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;
 const profileKey = (v: LiteVariant) => `${v.storagePrefix}-profile`;
 const attemptKey = (v: LiteVariant) => `${v.storagePrefix}-attempt`;
 const quizResultKey = (v: LiteVariant) => `${v.storagePrefix}-quiz`;
+const pendingLeadKey = (v: LiteVariant) => `${v.storagePrefix}-pending-lead`;
+
+/**
+ * The body /api/save-lead is posted, as the lead form assembles it.
+ *
+ * Named rather than inlined because /parkway builds it one screen before it is
+ * sent: the partner consent screen stands between the form and the report, and
+ * nothing may be saved or mailed until that consent is given. See
+ * `stashPendingLead`.
+ */
+export type LiteLeadPayload = {
+  clinic: string;
+  attemptId: string;
+  name: string;
+  email: string;
+  ageRange: string | null;
+  gender: string | null;
+  score: number | null;
+  percentile: number | null;
+  severity: string | null;
+  quizAnswers: Record<string, unknown> | null;
+  brainHealthScore: number | null;
+  riskScore: number | null;
+  symptomScore: number | null;
+  band: string | null;
+  persona: string | null;
+  utm: { source: string | null; medium: string | null; campaign: string | null };
+  referrer: string | null;
+  /** Required tickbox on the form: campaign analytics by Gray Matter. */
+  consentAnalytics: boolean;
+  /** Optional tickbox on the form: brain health tips and updates. */
+  consentMarketing: boolean;
+  /**
+   * The partner's consent, given on the screen after the form. False until
+   * that screen sets it, and false in the saved row if a funnel that has no
+   * partner screen never asks.
+   */
+  consentPartner: boolean;
+};
+
+/**
+ * A lead that has been typed but not yet sent, parked between two screens.
+ *
+ * /parkway's form no longer posts on submit. It stashes what it has — the
+ * payload plus the profile the report screens read the visitor's name from —
+ * and hands off to /parkway/consent, which is where the POST (and with it the
+ * result email) actually happens. Two reasons it is a stash rather than props
+ * or a store: a reload of the consent screen would empty the in-memory zustand
+ * stores the payload is derived from, and a visitor who backs out of that
+ * screen leaves no row behind.
+ *
+ * Cleared by `clearPendingLead` once the POST has succeeded, so a later run in
+ * the same tab can never re-send the previous visitor's details.
+ */
+export type PendingLiteLead = {
+  payload: LiteLeadPayload;
+  profile: LiteProfile;
+};
 
 export type LiteProfile = {
   name: string;
@@ -226,11 +284,27 @@ export const readStashedQuizResult = (v: LiteVariant = LITE_ONE) =>
 export const stashQuizResult = (result: ScoreResult, v: LiteVariant = LITE_ONE) =>
   writeJson(quizResultKey(v), result);
 
+export const readPendingLead = (v: LiteVariant = LITE_ONE) =>
+  readJson<PendingLiteLead>(pendingLeadKey(v));
+export const stashPendingLead = (lead: PendingLiteLead, v: LiteVariant = LITE_ONE) =>
+  writeJson(pendingLeadKey(v), lead);
+export function clearPendingLead(v: LiteVariant = LITE_ONE) {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.removeItem(pendingLeadKey(v));
+  } catch {
+    /* nothing to clear if storage is unavailable */
+  }
+}
+
 export function clearLiteSession(v: LiteVariant = LITE_ONE) {
   if (typeof window === "undefined") return;
   sessionStorage.removeItem(reportKey(v));
   sessionStorage.removeItem(profileKey(v));
   sessionStorage.removeItem(quizResultKey(v));
+  // A form filled in but abandoned on the consent screen must not be picked
+  // up by the next run through the funnel.
+  sessionStorage.removeItem(pendingLeadKey(v));
   // Cleared on retake, so the next run opens a fresh attempt rather than
   // overwriting the previous one's row.
   sessionStorage.removeItem(attemptKey(v));
@@ -302,6 +376,25 @@ export async function recordLiteAttempt(
     // missing, so the lead itself is still captured.
   }
 }
+
+/**
+ * The report's human-readable severity ("Low" | "Medium" | "High") as the
+ * leads-table key ("low" | "moderate" | "high").
+ *
+ * Every funnel's lead form has carried its own copy of this map; /parkway
+ * needs it in two places — the form and the consent screen that posts for it —
+ * so it lives here. The other funnels' local copies are identical and are left
+ * where they are.
+ */
+export const SEVERITY_TO_KEY: Record<string, string> = {
+  Low: "low",
+  Medium: "moderate",
+  High: "high",
+};
+
+/** `severityKey(report.severity)`, tolerating a missing report. */
+export const severityKey = (severity: string | null | undefined): string | null =>
+  (severity ? SEVERITY_TO_KEY[severity] : null) ?? null;
 
 /** Pulls the task2 score out of the result store's two historical shapes. */
 export function readTask2Score(result: any): number | null {
