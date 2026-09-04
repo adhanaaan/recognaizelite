@@ -117,6 +117,7 @@ that difference:
 | `/act4health` | `act4health` | `act4health_leads` | 016 |
 | `/lite-bcgolf` | `litebcgolf` | `litebcgolf_leads` | 017 |
 | `/lite-event` | `liteevent` | `liteevent_leads` | 018 |
+| `/lite-event-template` | `liteevent` | `liteevent_leads` + `liteevent_report_interest` | 018, 020 |
 
 `/lite-clinician` has eight pages, not nine: it carries no voucher page and no
 commerce CTA, so `report-full` does not exist for it. The clinician next step is
@@ -128,6 +129,20 @@ back and the screen is wiped for the next person, so the mail is the only copy
 of the result they keep; `/lite-two` is absent from `EMAIL_CLINICS` and sends
 nothing. One table serves every event and `?utm_campaign=` separates them after
 the fact, so a new booth needs a link rather than a migration and a deploy.
+
+`/lite-event-template` is `/lite-event` page for page, and the place a change
+is tried before it is folded back. The change on trial is the report's closing:
+the price card and the voucher button are gone, and the report instead ends on
+an "I'm interested" button under the three steps and a "What happens next" card
+that names the booth as the next step and closes on one tickbox, "Send me brain
+health tips, and early access when we launch." Both are recorded in
+`liteevent_report_interest` (migration `020`) through
+`/api/lite-report-interest`: one row per run, keyed by the same `attempt_id` as
+the lead, so who raised their hand joins back to who they are. The button is
+one-way; the tickbox is upserted on every change, so the row is always the
+current state. Each flag has a timestamp beside it, which is how "never
+touched" is told apart from "ticked, then unticked". Leads still go to
+`liteevent_leads`, and `report-full` still exists there, unlinked.
 
 `/lite-two` is `/lite-one`'s flow with the report swapped for the v2
 scroll-snapped design, personalised per the RevitalAIze v2 comps: the copy

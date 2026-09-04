@@ -271,6 +271,27 @@ const EN = {
     clinicianRole: "Co-founder, Gray Matter Solutions",
     clinicianCreds: "MBBS, FAMS (Neurology), FRCP (Edin)",
 
+    /* /lite-event-template's closing — the CTA on trial there. See that
+       funnel's report.tsx; /lite-event still renders the offer keys below. */
+    nextSectionLabel: "Next steps",
+    interested: "I'm interested",
+    interestedDone: "Thanks, noted",
+    nextEyebrow: "What happens next",
+    nextH2: "Ready for the full picture?",
+    nextBody:
+      "Your Brain Health Score and recommendations are on their way to your inbox. Today's quiz estimates your risk profile; the ReCOGnAIze assessment shows how your brain is actually performing.",
+    nextReassurance:
+      "Whatever your score today, most of the factors behind it can change. That is the point of checking early.",
+    nextProductName: "ReCOGnAIze brain health assessment",
+    nextPoints: [
+      "Developed at NTU's Dementia Research Centre",
+      "Registered with Singapore's HSA",
+      "Results reviewed with a medical professional",
+    ],
+    nextCallout: "Speak to our team at the booth",
+    tipsOptIn: "Send me brain health tips, and early access when we launch.",
+    credibilityLine: "Built with NTU's Dementia Research Centre · 2024 Lancet Commission",
+
     offerH2: (title: string) => `Celebrating ${title}, we have a special offer for you`,
     offerMission:
       "With our mission to advance preventive cognitive health, everyone should treat their brain the same as their body — as early as possible.",
@@ -592,6 +613,25 @@ const ZH: LiteEventCopy = {
     clinicianName: "Nagaendran Kandiah 副教授",
     clinicianRole: "Gray Matter Solutions 联合创办人",
     clinicianCreds: "MBBS, FAMS (神经内科), FRCP (Edin)",
+
+    nextSectionLabel: "下一步",
+    interested: "我有兴趣",
+    interestedDone: "已记录，谢谢",
+    nextEyebrow: "接下来会怎样",
+    nextH2: "准备好了解完整的情况了吗？",
+    nextBody:
+      "您的脑健康分数和建议正在发送到您的邮箱。今天的测验估算的是您的风险概况；ReCOGnAIze 评估则显示您的大脑实际表现如何。",
+    nextReassurance:
+      "无论您今天的分数如何，背后的大多数因素都是可以改变的。这正是早做检查的意义。",
+    nextProductName: "ReCOGnAIze 脑健康评估",
+    nextPoints: [
+      "由南洋理工大学痴呆症研究中心开发",
+      "已在新加坡卫生科学局（HSA）注册",
+      "结果由医疗专业人员与您一同解读",
+    ],
+    nextCallout: "到展位与我们的团队交流",
+    tipsOptIn: "请向我发送脑健康建议，并在正式推出时让我优先体验。",
+    credibilityLine: "与南洋理工大学痴呆症研究中心共同打造 · 2024 年《柳叶刀》委员会",
 
     offerH2: (title: string) => `为庆祝${title}，我们为您准备了专属优惠`,
     offerMission:
@@ -922,6 +962,25 @@ const MS: LiteEventCopy = {
     clinicianName: "Prof Madya Nagaendran Kandiah",
     clinicianRole: "Pengasas bersama, Gray Matter Solutions",
     clinicianCreds: "MBBS, FAMS (Neurologi), FRCP (Edin)",
+
+    nextSectionLabel: "Langkah seterusnya",
+    interested: "Saya berminat",
+    interestedDone: "Terima kasih, dicatat",
+    nextEyebrow: "Apa yang berlaku seterusnya",
+    nextH2: "Bersedia untuk gambaran penuh?",
+    nextBody:
+      "Skor Kesihatan Otak dan cadangan anda sedang dalam perjalanan ke peti masuk anda. Kuiz hari ini menganggarkan profil risiko anda; penilaian ReCOGnAIze menunjukkan prestasi sebenar otak anda.",
+    nextReassurance:
+      "Walau apa pun skor anda hari ini, kebanyakan faktor di sebaliknya boleh berubah. Itulah gunanya memeriksa lebih awal.",
+    nextProductName: "Penilaian kesihatan otak ReCOGnAIze",
+    nextPoints: [
+      "Dibangunkan di Dementia Research Centre, NTU",
+      "Berdaftar dengan HSA Singapura",
+      "Keputusan disemak bersama profesional perubatan",
+    ],
+    nextCallout: "Berbual dengan pasukan kami di gerai",
+    tipsOptIn: "Hantarkan saya tip kesihatan otak, dan akses awal apabila kami dilancarkan.",
+    credibilityLine: "Dibina bersama Dementia Research Centre, NTU · Suruhanjaya Lancet 2024",
 
     offerH2: (title: string) =>
       `Sempena ${title}, kami ada tawaran istimewa untuk anda`,

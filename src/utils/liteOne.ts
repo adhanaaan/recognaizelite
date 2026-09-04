@@ -177,6 +177,7 @@ const profileKey = (v: LiteVariant) => `${v.storagePrefix}-profile`;
 const attemptKey = (v: LiteVariant) => `${v.storagePrefix}-attempt`;
 const quizResultKey = (v: LiteVariant) => `${v.storagePrefix}-quiz`;
 const pendingLeadKey = (v: LiteVariant) => `${v.storagePrefix}-pending-lead`;
+const interestKey = (v: LiteVariant) => `${v.storagePrefix}-interest`;
 
 /**
  * The body /api/save-lead is posted, as the lead form assembles it.
@@ -308,6 +309,9 @@ export function clearLiteSession(v: LiteVariant = LITE_ONE) {
   // Cleared on retake, so the next run opens a fresh attempt rather than
   // overwriting the previous one's row.
   sessionStorage.removeItem(attemptKey(v));
+  // And what the last reader did with the report's closing, for the same
+  // reason: the next run's button must not open already confirmed.
+  sessionStorage.removeItem(interestKey(v));
 }
 
 /**
@@ -374,6 +378,77 @@ export async function recordLiteAttempt(
   } catch {
     // Offline or blocked. save-lead falls back to an insert if this row is
     // missing, so the lead itself is still captured.
+  }
+}
+
+/**
+ * The run's attempt id if one exists, without opening a new one.
+ *
+ * The report reads it this way: a tap there belongs to the run that just
+ * finished, and with nothing stashed — a preview hit, a wiped session — there
+ * is no run to attribute it to and nothing should be written.
+ */
+export function readAttemptId(v: LiteVariant = LITE_ONE): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return sessionStorage.getItem(attemptKey(v)) || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * What the reader did with the report's closing CTA, mirrored on the device
+ * so a refresh shows the button still confirmed and the box still ticked, in
+ * step with the row /api/lite-report-interest holds for the run.
+ */
+export type LiteReportInterest = {
+  /** Tapped "I'm interested". One-way: the button confirms and stays so. */
+  interested: boolean;
+  /** Current state of the "Send me brain health tips…" tickbox. */
+  tipsOptIn: boolean;
+};
+
+export const readReportInterest = (v: LiteVariant = LITE_ONE) =>
+  readJson<LiteReportInterest>(interestKey(v));
+
+export function stashReportInterest(patch: Partial<LiteReportInterest>, v: LiteVariant = LITE_ONE) {
+  const current = readReportInterest(v) ?? { interested: false, tipsOptIn: false };
+  writeJson(interestKey(v), { ...current, ...patch });
+}
+
+/**
+ * Records a CTA interaction on the report — the "I'm interested" tap or a
+ * change to the tips opt-in — against the run's row in the funnel's
+ * report-interest table. Best-effort, like recordLiteAttempt: the reader sees
+ * the confirmed state at once and a failed write must never surface.
+ *
+ * Skipped without an attempt id, so a preview render (or a session wiped
+ * mid-read) writes nothing rather than a row no lead can be joined to.
+ */
+export async function recordReportInterest(
+  patch: Partial<LiteReportInterest>,
+  v: LiteVariant = LITE_ONE,
+  extra: { lang?: string | null } = {}
+) {
+  const attemptId = readAttemptId(v);
+  if (!attemptId) return;
+  const { utm } = readAttribution(v);
+  try {
+    await fetch("/api/lite-report-interest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        clinic: v.clinic,
+        attemptId,
+        funnel: v.basePath,
+        lang: extra.lang ?? null,
+        utm,
+        ...patch,
+      }),
+    });
+  } catch {
+    // Offline or blocked. The device copy still reflects what they chose.
   }
 }
 

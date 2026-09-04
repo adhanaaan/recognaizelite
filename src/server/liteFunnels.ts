@@ -27,3 +27,23 @@ export function liteTableFor(clinic: string | null | undefined): string | null {
   if (!clinic) return null;
   return LITE_TABLES[clinic] ?? null;
 }
+
+/**
+ * Where a lite funnel's report CTA interactions go, per clinic.
+ *
+ * Separate from LITE_TABLES because it is a different kind of row: not the
+ * lead, but what the reader did with the closing of the report after the lead
+ * was captured. Only the event funnels write it so far — /lite-event-template
+ * is trialling the "I'm interested" button and the tips opt-in there — and the
+ * clinics not listed here simply have no such table; /api/lite-report-interest
+ * refuses them rather than inventing a name.
+ */
+export const LITE_INTEREST_TABLES: Record<string, string> = {
+  liteevent: "liteevent_report_interest",
+};
+
+/** Report-interest table for a lite clinic, or null if it records none. */
+export function liteInterestTableFor(clinic: string | null | undefined): string | null {
+  if (!clinic) return null;
+  return LITE_INTEREST_TABLES[clinic] ?? null;
+}
