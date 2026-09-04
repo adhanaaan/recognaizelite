@@ -6,6 +6,7 @@ import Script from "next/script";
 import ErrorBoundary from "src/components/Layout/ErrorBoundary";
 import "src/lib/init";
 import { hydrateTranslationsFromStorage } from "src/lib/translations";
+import { hydrateQuestionnaireFromStorage } from "src/stores/useQuestionnaireStore";
 import { useMazeTesting } from "src/utils/maze";
 
 // Styles
@@ -26,6 +27,13 @@ function App({ Component, pageProps }: AppProps) {
     if (hydrateTranslationsFromStorage()) {
       setLanguageVersion((version) => version + 1);
     }
+  }, []);
+
+  // Puts a reloaded run's quiz answers back in the store. On mount rather than
+  // at module scope so the first client render still matches the pre-rendered
+  // HTML; the answers are read on submit, long after this has run.
+  useEffect(() => {
+    hydrateQuestionnaireFromStorage();
   }, []);
 
   return (
