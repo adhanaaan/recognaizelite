@@ -277,7 +277,7 @@ const EN = {
     interested: "I'm interested",
     interestedDone: "Thanks, noted",
     nextEyebrow: "What happens next",
-    nextH2: "Ready for the full picture?",
+    nextH2: "Take the next step with ReCOGnAIze",
     nextBody:
       "Your Brain Health Score and recommendations are on their way to your inbox. Today's quiz estimates your risk profile; the ReCOGnAIze assessment shows how your brain is actually performing.",
     nextReassurance:
@@ -618,7 +618,7 @@ const ZH: LiteEventCopy = {
     interested: "我有兴趣",
     interestedDone: "已记录，谢谢",
     nextEyebrow: "接下来会怎样",
-    nextH2: "准备好了解完整的情况了吗？",
+    nextH2: "迈出下一步，体验 ReCOGnAIze",
     nextBody:
       "您的脑健康分数和建议正在发送到您的邮箱。今天的测验估算的是您的风险概况；ReCOGnAIze 评估则显示您的大脑实际表现如何。",
     nextReassurance:
@@ -967,7 +967,7 @@ const MS: LiteEventCopy = {
     interested: "Saya berminat",
     interestedDone: "Terima kasih, dicatat",
     nextEyebrow: "Apa yang berlaku seterusnya",
-    nextH2: "Bersedia untuk gambaran penuh?",
+    nextH2: "Teruskan langkah anda dengan ReCOGnAIze",
     nextBody:
       "Skor Kesihatan Otak dan cadangan anda sedang dalam perjalanan ke peti masuk anda. Kuiz hari ini menganggarkan profil risiko anda; penilaian ReCOGnAIze menunjukkan prestasi sebenar otak anda.",
     nextReassurance:
