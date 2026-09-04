@@ -118,6 +118,7 @@ that difference:
 | `/lite-bcgolf` | `litebcgolf` | `litebcgolf_leads` | 017 |
 | `/lite-event` | `liteevent` | `liteevent_leads` | 018 |
 | `/lite-event-template` | `liteevent` | `liteevent_leads` + `liteevent_report_interest` | 018, 020 |
+| `/lite-event/ntuhomecoming` | `liteevent` | same two, `utm_campaign = 'ntuhomecoming'` | 018, 020 |
 
 `/lite-clinician` has eight pages, not nine: it carries no voucher page and no
 commerce CTA, so `report-full` does not exist for it. The clinician next step is
@@ -143,6 +144,17 @@ one-way; the tickbox is upserted on every change, so the row is always the
 current state. Each flag has a timestamp beside it, which is how "never
 touched" is told apart from "ticked, then unticked". Leads still go to
 `liteevent_leads`, and `report-full` still exists there, unlinked.
+
+`/lite-event/ntuhomecoming` is the event link for NTU Homecoming:
+`/lite-event-template` page for page, CTA trial included, with its own routes
+and sessionStorage namespace but no table of its own. Its identifier in the
+database is the campaign: every row it writes carries
+`utm_campaign = 'ntuhomecoming'` (and `funnel = '/lite-event/ntuhomecoming'`
+in the interest table), so the evening is one `where` clause on the shared
+tables. The route nests under `/lite-event` because it is one of that family's
+occasions; Next resolves it to its own directory without touching `/lite-event`'s
+pages. Adding the next occasion is the same recipe: a `LiteVariant` with its
+campaign, and the pages copied with the variant swapped.
 
 `/lite-two` is `/lite-one`'s flow with the report swapped for the v2
 scroll-snapped design, personalised per the RevitalAIze v2 comps: the copy
