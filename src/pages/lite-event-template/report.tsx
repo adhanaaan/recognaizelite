@@ -7,8 +7,9 @@ import {
   useTransform,
 } from "framer-motion";
 import Head from "next/head";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import React from "react";
+import { ConsentCheckbox } from "src/components/LiteOne/ConsentCheckbox";
 import {
   MotionRadar,
   MotionScoreCurve,
@@ -30,7 +31,6 @@ import {
 import { ScrollMoreCue } from "src/components/LiteOne/ReportV2/ScrollMoreCue";
 import { useReportData } from "src/components/LiteOne/ReportV2/useReportData";
 import { RANK_GRADIENT } from "src/components/LiteOne/ReportLab/visuals";
-import { OFFER } from "src/data/liteOneContent";
 import { liteEventReportCopy } from "src/data/liteEventReportCopy";
 import type {
   LiteTwoBand,
@@ -39,7 +39,12 @@ import type {
 } from "src/data/liteTwoReportContent";
 import { useLiteEventLang } from "src/i18n/liteEvent";
 import { liteEventCopy } from "src/i18n/liteEventCopy";
-import { LITE_EVENT_TEMPLATE } from "src/utils/liteOne";
+import {
+  LITE_EVENT_TEMPLATE,
+  readReportInterest,
+  recordReportInterest,
+  stashReportInterest,
+} from "src/utils/liteOne";
 
 /**
  * /lite-event-template — the template copy of this /lite-event screen.
@@ -48,6 +53,16 @@ import { LITE_EVENT_TEMPLATE } from "src/utils/liteOne";
  * folded back into /lite-event, so this file starts as a page-for-page copy
  * and only diverges where a change is being tried out. See LITE_EVENT_TEMPLATE
  * in src/utils/liteOne.ts for what the two funnels share and what they don't.
+ *
+ * What is being tried out here is the closing. /lite-event's report ends on a
+ * price card and a button to the voucher page; this one keeps every
+ * personalised line above it and swaps the commerce for two things the booth
+ * team can act on: an "I'm interested" button under the three steps, and a
+ * "What happens next" card that names the in-person next step and ends on a
+ * tips opt-in. Both are recorded, keyed by the run's attempt id, in
+ * liteevent_report_interest (migration 020) via /api/lite-report-interest —
+ * see recordReportInterest. report-full.tsx still exists but nothing here
+ * links to it any more.
  */
 
 /**
@@ -86,7 +101,7 @@ const SECTION_IDS = [
   "risk",
   "baseline",
   "recognaize",
-  "offer",
+  "next",
   "closing",
 ] as const;
 
@@ -125,7 +140,13 @@ export default function LiteEventTemplateReport() {
     .slice(0, 5)
     .map((label) => t.report.factorLabels[label] ?? label);
 
-  const sections = SECTION_IDS.map((id, i) => ({ id, label: t.report.sections[i] }));
+  // The rail's labels are the shared set, except the slot the offer used to
+  // fill: that label still names /lite-event's price card, so this funnel's
+  // closing carries its own.
+  const sections = SECTION_IDS.map((id, i) => ({
+    id,
+    label: id === "next" ? t.report.nextSectionLabel : t.report.sections[i],
+  }));
 
   // ?persona= and ?band= force a variant for design review; the visitor's own
   // run decides otherwise.
@@ -172,6 +193,30 @@ export default function LiteEventTemplateReport() {
   const peers = data.ageRange ? t.report.peopleAged(data.ageRange) : t.report.peopleYourAge;
 
   const [shared, setShared] = React.useState(false);
+
+  // The closing's two trackers. Hydrated from the device copy so a refresh
+  // shows the same state the run's row holds; each change is mirrored there
+  // and posted, best-effort, to /api/lite-report-interest.
+  const [interested, setInterested] = React.useState(false);
+  const [tipsOptIn, setTipsOptIn] = React.useState(false);
+  React.useEffect(() => {
+    const stored = readReportInterest(LITE_EVENT_TEMPLATE);
+    if (stored) {
+      setInterested(stored.interested);
+      setTipsOptIn(stored.tipsOptIn);
+    }
+  }, []);
+  const markInterested = () => {
+    if (interested) return;
+    setInterested(true);
+    stashReportInterest({ interested: true }, LITE_EVENT_TEMPLATE);
+    void recordReportInterest({ interested: true }, LITE_EVENT_TEMPLATE, { lang });
+  };
+  const toggleTips = (next: boolean) => {
+    setTipsOptIn(next);
+    stashReportInterest({ tipsOptIn: next }, LITE_EVENT_TEMPLATE);
+    void recordReportInterest({ tipsOptIn: next }, LITE_EVENT_TEMPLATE, { lang });
+  };
   const share = async (text: string) => {
     const url = typeof window === "undefined" ? "" : `${window.location.origin}${LITE_EVENT_TEMPLATE.basePath}`;
     try {
@@ -692,15 +737,35 @@ export default function LiteEventTemplateReport() {
                   ))}
                 </motion.ol>
 
+                {/* The trial's first tracker. Where /lite-event opens the
+                    voucher page, this records a raised hand and stays
+                    confirmed; the next step is the team at the booth, named
+                    in the card two sections down. */}
                 <motion.button
                   variants={rise}
                   type="button"
-                  onClick={() => Router.push(`${LITE_EVENT_TEMPLATE.basePath}/report-full`)}
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-8 w-full rounded-full py-4 text-[16px] font-extrabold tracking-wide text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06]"
+                  onClick={markInterested}
+                  disabled={interested}
+                  aria-pressed={interested}
+                  whileTap={interested ? undefined : { scale: 0.98 }}
+                  className="mt-8 flex w-full items-center justify-center gap-2 rounded-full px-8 py-[17px] text-[16px] font-bold leading-none tracking-[0.025em] text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06] disabled:cursor-default disabled:hover:brightness-100"
                   style={{ background: RANK_GRADIENT }}
                 >
-                  {t.report.takeAssessment}
+                  {interested && (
+                    <svg
+                      aria-hidden
+                      viewBox="0 0 24 24"
+                      className="size-[18px] shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M4.5 12.6l5 5 10-10.5" />
+                    </svg>
+                  )}
+                  {interested ? t.report.interestedDone : t.report.interested}
                 </motion.button>
 
                 <motion.figure
@@ -737,93 +802,71 @@ export default function LiteEventTemplateReport() {
               </Cascade>
             </SnapSection>
 
-            {/* ----------------------------------------- 9 · the offer --- */}
-            <SnapSection id="offer">
+            {/* ------------------------------------ 9 · what happens next --- */}
+            {/* The trial's closing, in place of /lite-event's price card. The
+                card is set in the quiz screens' Clinical Empathy tokens — the
+                same values the design's variables resolve to — rather than the
+                report's own warm neutrals, which is what makes it read as a
+                hand-off to the booth rather than one more section. */}
+            <SnapSection id="next">
               <Cascade amount={0.15}>
-                <EyebrowV2>{t.offer.eyebrow}</EyebrowV2>
-                <motion.h2
-                  variants={rise}
-                  className="mt-3 font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.12] tracking-[-0.025em] text-[#1C110A]"
-                >
-                  {t.report.offerH2(t.offer.title)}
-                </motion.h2>
-                <motion.p variants={rise} className="mt-4 text-[15.5px] leading-[1.6] text-[#6B5245]">
-                  {t.report.offerMission}
-                </motion.p>
-
                 <motion.div
                   variants={rise}
-                  className="mt-7 rounded-[26px] border border-[#F2DDCE] bg-white p-6 shadow-[0_18px_46px_-28px_rgba(90,40,10,0.28)] sm:p-7"
+                  className="rounded-[26px] bg-quizSurface-container px-[22px] py-[26px] sm:px-7 sm:py-8"
                 >
-                  <p className="font-display text-[19px] font-extrabold tracking-[-0.01em] text-[#1C110A]">
-                    {t.offer.productName}
+                  <p className="text-[13px] font-bold uppercase tracking-[0.1em] text-quizPrimary">
+                    {t.report.nextEyebrow}
                   </p>
-                  <p className="mt-1 text-[13px] font-bold text-[#B79C8E]">{t.offer.productSub}</p>
-                  <p className="mt-2 text-[13.5px] leading-[1.55] text-[#6B5245]">
-                    {t.offer.domains.join(" · ")}
+                  <h2 className="mt-2 font-display text-[22px] font-extrabold leading-[1.375] text-charcoal">
+                    {t.report.nextH2}
+                  </h2>
+                  <p className="mt-2 text-[15.5px] leading-[1.62] text-quizSecondary">
+                    {t.report.nextBody}
+                  </p>
+                  <p className="mt-2 text-[15.5px] leading-[1.62] text-quizSecondary">
+                    {t.report.nextReassurance}
                   </p>
 
-                  <motion.div
-                    variants={stagger}
-                    className="mt-5 space-y-2.5 border-t border-[#F2DDCE] pt-5"
+                  <div className="mt-[22px] rounded-[18px] bg-quizSurface-lowest p-[18px]">
+                    <p className="font-display text-[17.5px] font-extrabold leading-[1.5] text-charcoal">
+                      {t.report.nextProductName}
+                    </p>
+                    <ul className="mt-[11px] space-y-2">
+                      {t.report.nextPoints.map((point) => (
+                        <li key={point} className="flex items-start gap-2">
+                          <span
+                            aria-hidden
+                            className="mt-[7px] size-[7px] shrink-0 rounded-full bg-quizPrimary"
+                          />
+                          <span className="text-[15.5px] leading-[1.4] text-quizSecondary">
+                            {point}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* A callout, not a button: the next step happens in person. */}
+                  <p className="mt-[19px] rounded-2xl border border-quizPrimary bg-quizPrimary-container px-[18px] py-[13px] text-center text-[17.5px] font-bold leading-[1.5] text-quizPrimary-onContainer">
+                    {t.report.nextCallout}
+                  </p>
+
+                  {/* The trial's second tracker, and the card's one control. */}
+                  <ConsentCheckbox
+                    id="levt-tpl-tips-opt-in"
+                    checked={tipsOptIn}
+                    onChange={toggleTips}
+                    className="mt-[22px] py-1"
                   >
-                    <motion.div
-                      variants={rise}
-                      className="flex items-baseline justify-between text-[15px] text-[#6B5245]"
-                    >
-                      <span>{t.report.normalPrice}</span>
-                      <span className="relative inline-block">
-                        {OFFER.currency}
-                        {OFFER.normalPrice.toFixed(2)}
-                        <motion.span
-                          aria-hidden
-                          className="absolute left-0 top-1/2 h-[2px] w-full bg-[#B79C8E]"
-                          style={{ transformOrigin: "0 50%" }}
-                          initial={{ scaleX: 0 }}
-                          whileInView={{ scaleX: 1 }}
-                          viewport={{ once: true, amount: 0.9, root: scrollerRef }}
-                          transition={{ duration: 0.5, delay: 0.7, ease: "easeOut" }}
-                        />
-                      </span>
-                    </motion.div>
-                    <motion.div
-                      variants={rise}
-                      className="flex items-baseline justify-between text-[15px] font-bold text-[#C4400E]"
-                    >
-                      <span>{t.report.discountLabel(t.offer.title)}</span>
-                      <span>
-                        &minus;{OFFER.currency}
-                        {OFFER.discount.toFixed(2)}
-                      </span>
-                    </motion.div>
-                    <motion.div
-                      variants={pop}
-                      className="flex items-baseline justify-between border-t border-[#F2DDCE] pt-3"
-                    >
-                      <span className="text-[16px] font-extrabold text-[#1C110A]">
-                        {t.report.total}
-                      </span>
-                      <span className="font-display text-[30px] font-extrabold tracking-[-0.02em] text-[#1C110A]">
-                        {OFFER.currency}
-                        {OFFER.total.toFixed(2)}
-                      </span>
-                    </motion.div>
-                  </motion.div>
-                </motion.div>
+                    <span className="mt-[2px] block text-[15.5px] leading-[1.4] text-quizSecondary">
+                      {t.report.tipsOptIn}
+                    </span>
+                  </ConsentCheckbox>
 
-                <motion.button
-                  variants={rise}
-                  type="button"
-                  onClick={() => Router.push(`${LITE_EVENT_TEMPLATE.basePath}/report-full`)}
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-7 w-full rounded-full py-4 text-[16px] font-extrabold tracking-wide text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06]"
-                  style={{ background: RANK_GRADIENT }}
-                >
-                  {t.report.takeFullTest}
-                </motion.button>
-                <motion.p variants={rise} className="mt-3 text-center text-[12.5px] text-[#A98D7D]">
-                  {t.offer.window} · {t.report.offerFooter}
-                </motion.p>
+                  <p className="mt-[21px] text-center text-[13px] leading-[1.35] text-quizOutline">
+                    {t.report.credibilityLine}
+                  </p>
+                </motion.div>
               </Cascade>
             </SnapSection>
 
