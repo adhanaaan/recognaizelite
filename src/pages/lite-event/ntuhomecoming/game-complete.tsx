@@ -1,0 +1,100 @@
+import Head from "next/head";
+import Router from "next/router";
+import React from "react";
+import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
+import { SectionBadge } from "src/components/LiteOne/SectionBadge";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy } from "src/i18n/liteEventCopy";
+import { useResultStore } from "src/stores/useResultStore";
+import { NTU_HOMECOMING, readTask2Score } from "src/utils/liteOne";
+
+/**
+ * /lite-event/ntuhomecoming — the NTU Homecoming copy of this /lite-event-template screen.
+ *
+ * The event link for NTU Homecoming: /lite-event-template taken page for page,
+ * the report's CTA trial included, so a guest sees exactly what the template
+ * shows. Nothing here diverges; what is this event's alone is the campaign its
+ * rows carry. See NTU_HOMECOMING in src/utils/liteOne.ts.
+ */
+
+const ICONS = [
+  { src: "/images/task-2/sun.png", alt: "", className: "absolute -left-2 top-[18%] size-16 lite-bob", delay: 0 },
+  { src: "/images/task-2/flash.png", alt: "", className: "absolute -right-1 top-[14%] size-14 lite-rock", delay: 400 },
+];
+
+/**
+ * Where the shared game hands control back to this funnel — GameCompleteScreen
+ * routes here via getHookReportPath(), which the entry page pointed at this
+ * path. That redirect is the whole mechanism keeping the lite funnels apart
+ * once they've all passed through /symbol-matching.
+ */
+export default function NtuHomecomingGameComplete() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
+  const { result } = useResultStore();
+  const score = readTask2Score(result);
+
+  return (
+    <>
+      <Head>
+        <title>{t.gameComplete.headTitle}</title>
+      </Head>
+
+      <LiteShell>
+        <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 py-8">
+          <div className="relative mx-auto w-full max-w-[440px] text-center">
+            <div className="lite-rise" style={{ animationDelay: "0ms" }}>
+              <SectionBadge label={t.gameComplete.badge} />
+            </div>
+
+            {ICONS.map((icon) => (
+              <img
+                key={icon.src}
+                src={icon.src}
+                alt={icon.alt}
+                aria-hidden
+                className={`${icon.className} lite-rise pointer-events-none select-none`}
+                style={{ animationDelay: `${icon.delay + 200}ms` }}
+              />
+            ))}
+
+            <h1
+              className="lite-rise mt-14 font-display text-[32px] font-extrabold leading-[1.08] text-charcoal sm:text-[38px]"
+              style={{ animationDelay: "100ms" }}
+            >
+              {t.gameComplete.h1}
+            </h1>
+
+            <p
+              className="lite-rise mt-4 text-[18px] font-semibold text-charcoal"
+              style={{ animationDelay: "180ms" }}
+            >
+              {t.gameComplete.correctSymbols} {score ?? "—"}
+            </p>
+
+            <div
+              className="lite-rise mx-auto mt-16 max-w-[320px]"
+              style={{ animationDelay: "300ms" }}
+            >
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-quizOutline">
+                {t.gameComplete.nextEyebrow}
+              </p>
+              <p className="mt-2 text-[15px] leading-relaxed text-quizSecondary">
+                {t.gameComplete.nextBody}
+              </p>
+            </div>
+
+            <div
+              className="lite-rise mx-auto mt-8 max-w-[320px]"
+              style={{ animationDelay: "420ms" }}
+            >
+              <LiteButton onClick={() => Router.push(`${NTU_HOMECOMING.basePath}/quiz`)}>
+                {t.gameComplete.cta}
+              </LiteButton>
+            </div>
+          </div>
+        </div>
+      </LiteShell>
+    </>
+  );
+}

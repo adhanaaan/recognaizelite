@@ -141,6 +141,42 @@ export const LITE_EVENT_TEMPLATE: LiteVariant = {
 };
 
 /**
+ * /lite-event/ntuhomecoming — the event link for NTU Homecoming.
+ *
+ * /lite-event-template taken page for page, the report's CTA trial included,
+ * so a guest sees exactly what the template shows. Nothing in its pages
+ * diverges; what is this event's alone is the identifier its rows carry.
+ *
+ * `clinic` stays "liteevent": the link writes to liteevent_leads and
+ * liteevent_report_interest and mails the event template, so nothing has to
+ * be provisioned server-side. `defaultCampaign` is the database identifier —
+ * every row this link writes lands with utm_campaign "ntuhomecoming" (and, in
+ * the interest table, funnel "/lite-event/ntuhomecoming"), which is how the
+ * evening is pulled out of the shared tables afterwards:
+ *
+ *   select * from liteevent_leads where utm_campaign = 'ntuhomecoming';
+ *
+ * `storagePrefix` keeps its sessionStorage namespace to itself, so a run here
+ * can never overwrite the report, profile or attempt id of a run through
+ * another funnel in the same browser. `hookClinic` stays "LiteEvent" for the
+ * reason the template's does: it puts the shared Symbol Matching screens in
+ * the Clinical Empathy palette (see isLiteOneMode()), and hookReportPath, which
+ * the entry page points at this basePath, is what keeps the funnels apart
+ * after the game.
+ *
+ * The route nests under /lite-event on purpose — it is one of that family's
+ * occasions — and Next resolves /lite-event/ntuhomecoming to its own
+ * directory without touching /lite-event's pages.
+ */
+export const NTU_HOMECOMING: LiteVariant = {
+  clinic: LITE_EVENT_CLINIC,
+  hookClinic: "LiteEvent",
+  basePath: "/lite-event/ntuhomecoming",
+  defaultCampaign: "ntuhomecoming",
+  storagePrefix: "recognaize-levt-ntuhc",
+};
+
+/**
  * /parkway — the Parkway Shenton partner funnel.
  *
  * The flow is /lite-event-template's, taken page for page: same landing,
