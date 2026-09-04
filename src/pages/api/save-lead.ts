@@ -77,6 +77,52 @@ function num(value: unknown): number | null {
   return null;
 }
 
+/**
+ * PostgREST's message for a column the deployed table doesn't have:
+ * "Could not find the 'consent_analytics' column of 'liteevent_leads' in the
+ * schema cache".
+ */
+const SCHEMA_CACHE_COLUMN_RE = /Could not find the '([^']+)' column/i;
+
+type WriteResult<T> = {
+  data: T | null;
+  error: { message?: string; code?: string } | null;
+};
+
+/**
+ * Runs a write and, when the deployed table pre-dates one of the row's
+ * columns, drops that one column and tries again — repeating until the row
+ * fits the schema that is actually live.
+ *
+ * The blanket fallback this replaces shed every column added after a table's
+ * first migration in a single retry, so an environment missing (say) the
+ * consent columns silently also lost the visitor's quiz answers, brain-health
+ * score, band and persona. Dropping only the column the error names keeps
+ * everything the table can hold, which is the difference between a lead row
+ * with `quiz_answers` NULL and one that actually carries the quiz.
+ *
+ * Bounded by the row's own column count, so a message we can't parse — or a
+ * column that reappears — ends the loop rather than spinning on it.
+ */
+async function writeSheddingUnknownColumns<T>(
+  row: Record<string, unknown>,
+  write: (r: Record<string, unknown>) => PromiseLike<WriteResult<T>>
+): Promise<WriteResult<T>> {
+  const current = { ...row };
+  let result = await write(current);
+
+  for (let attempt = 0; attempt < Object.keys(row).length; attempt++) {
+    if (!result.error?.message?.includes("schema cache")) break;
+    const missing = SCHEMA_CACHE_COLUMN_RE.exec(result.error.message)?.[1];
+    if (!missing || !(missing in current)) break;
+    console.warn(`Column "${missing}" is missing from the live schema; retrying without it.`);
+    delete current[missing];
+    result = await write(current);
+  }
+
+  return result;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
@@ -258,25 +304,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       persona,
     };
 
-    let { error } = await supabase.from("demo_leads").insert(demoRow);
-
-    // Schema-cache fallback for older deploys that pre-date migration 009.
-    // Strip the Brain Health Quiz columns and retry so legacy environments
-    // still accept the lead.
-    if (error && error.message?.includes("schema cache")) {
-      const {
-        quiz_answers: _qa,
-        brain_health_score: _bhs,
-        risk_score: _rs,
-        symptom_score: _ss,
-        band: _b,
-        persona: _p,
-        ...legacyRow
-      } = demoRow;
-      void _qa; void _bhs; void _rs; void _ss; void _b; void _p;
-      const retry = await supabase.from("demo_leads").insert(legacyRow);
-      error = retry.error;
-    }
+    // Schema-cache fallback for older deploys that pre-date migration 009:
+    // whichever Brain Health Quiz column the live table lacks is dropped, one
+    // at a time, so a legacy environment still accepts the lead — and keeps
+    // every column it does have.
+    const { error } = await writeSheddingUnknownColumns(demoRow, (row) =>
+      supabase.from("demo_leads").insert(row)
+    );
 
     if (error) {
       console.error("Supabase insert (demo_leads) failed:", error);
@@ -424,21 +458,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     if (attemptId && UUID_RE.test(attemptId)) {
-      let { data, error } = await supabase
-        .from(liteTable)
-        .update(contactRow)
-        .eq("attempt_id", attemptId)
-        .select("id");
-
       // Schema-cache fallback, as below: an environment that pre-dates
-      // migration 011 (quiz columns) or 019 (consent) still takes the lead.
-      if (error && error.message?.includes("schema cache")) {
-        const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, consent_analytics: _ca, consent_marketing: _cm, consent_partner: _cp, consent_at: _cat, ...legacyRow } = contactRow;
-        void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p; void _ca; void _cm; void _cp; void _cat;
-        const retry = await supabase.from(liteTable).update(legacyRow).eq("attempt_id", attemptId).select("id");
-        data = retry.data;
-        error = retry.error;
-      }
+      // migration 011 (quiz columns) or 019 (consent) still takes the lead,
+      // minus only the columns its table is actually missing.
+      const { data, error } = await writeSheddingUnknownColumns(contactRow, (row) =>
+        supabase.from(liteTable).update(row).eq("attempt_id", attemptId).select("id")
+      );
 
       if (error) {
         console.error(`Supabase update (${liteTable}) failed:`, error);
@@ -461,14 +486,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       attempt_id: resolvedAttemptId,
     };
 
-    let { error } = await supabase.from(liteTable).insert(fullRow);
-
-    if (error && error.message?.includes("schema cache")) {
-      const { name: _n, quiz_answers: _qa, brain_health_score: _bhs, risk_score: _rs, symptom_score: _ss, band: _b, persona: _p, consent_analytics: _ca, consent_marketing: _cm, consent_partner: _cp, consent_at: _cat, ...legacyRow } = fullRow;
-      void _n; void _qa; void _bhs; void _rs; void _ss; void _b; void _p; void _ca; void _cm; void _cp; void _cat;
-      const retry = await supabase.from(liteTable).insert(legacyRow);
-      error = retry.error;
-    }
+    const { error } = await writeSheddingUnknownColumns(fullRow, (row) =>
+      supabase.from(liteTable).insert(row)
+    );
 
     if (error) {
       console.error(`Supabase insert (${liteTable}) failed:`, error);
@@ -537,25 +557,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     gender: genderRaw,
   };
 
-  let { error } = await supabase.from("leads").insert({
-    ...sjmcBaseRow,
-    health_goal: healthGoalRaw,
-    takes_supplements: takesSupplementsRaw,
-  });
-
   // Schema-cache fallback for older deploys that pre-date health_goal /
-  // takes_supplements / whatsapp. Each retry sheds the most-recently-added
-  // columns until the insert succeeds against whatever schema is live.
-  if (error && error.message?.includes("schema cache")) {
-    const retry = await supabase.from("leads").insert(sjmcBaseRow);
-    error = retry.error;
-  }
-  if (error && error.message?.includes("schema cache")) {
-    const { whatsapp: _drop, ...withoutWhatsapp } = sjmcBaseRow;
-    void _drop;
-    const retry = await supabase.from("leads").insert(withoutWhatsapp);
-    error = retry.error;
-  }
+  // takes_supplements / whatsapp. Each retry sheds the one column the live
+  // table is missing, until the insert succeeds against whatever schema is
+  // there.
+  const { error } = await writeSheddingUnknownColumns(
+    {
+      ...sjmcBaseRow,
+      health_goal: healthGoalRaw,
+      takes_supplements: takesSupplementsRaw,
+    },
+    (row) => supabase.from("leads").insert(row)
+  );
 
   if (error) {
     if (error.code === "23505") {
