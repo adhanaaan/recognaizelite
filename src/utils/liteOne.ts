@@ -248,6 +248,52 @@ export const PARKWAY: LiteVariant = {
   storagePrefix: "recognaize-pkw",
 };
 
+/**
+ * /parkwayshenton — the Parkway Shenton clinic funnel.
+ *
+ * /clinic-signup's flow, page for page: the landing page takes the name, the
+ * email and the consents and opens the lead row there, before the game, so a
+ * visitor who wanders off mid-run still leaves a contactable row behind. There
+ * is no lead form after the quiz and no consent screen before the result —
+ * both questions are asked once, on the landing page.
+ *
+ * Two things differ from /clinic-signup, and both come from the partner.
+ *
+ * The consent is doubled. Gray Matter Solutions' own clause is unchanged, and
+ * IHH Healthcare Singapore's three clauses are asked alongside it, in their own
+ * words: Parkway Shenton is part of IHH, and under the PDPA that consent is
+ * theirs to hold. /parkway asks for it on a screen of its own after the lead
+ * form; this funnel has neither that screen nor that form, so both tickboxes
+ * sit under the hero and both are required. The two land in separate columns —
+ * `consent_marketing` and `consent_partner` (migration 019) — so a PDPA request
+ * about IHH marketing is answered from the column that actually holds it.
+ *
+ * The report closes in person. Where /clinic-signup's report ends on a booth
+ * hand-off and /parkway's on a WhatsApp booking, this one ends on the clinic's
+ * own staff — see src/data/parkwayShentonReportCopy.ts.
+ *
+ * `clinic` stays "liteevent" for the reason /clinic-signup's does: the funnel
+ * writes to the existing liteevent_leads table and mails the existing event
+ * template, so a run through it is a real run and nothing has to be provisioned
+ * server-side first. `defaultCampaign` is what separates this clinic's rows
+ * from the rest of the event traffic afterwards, and `storagePrefix` keeps its
+ * sessionStorage namespace to itself, so a run here can never overwrite the
+ * report, profile or attempt id of a run through another funnel in the same
+ * browser — /parkway's included, which is why the two prefixes differ.
+ *
+ * `hookClinic` stays "LiteEvent" as well, because that is what puts the shared
+ * Symbol Matching screens in the Clinical Empathy palette (see isLiteOneMode()).
+ * The funnels are kept apart after the game by hookReportPath, which the entry
+ * page points at this basePath.
+ */
+export const PARKWAY_SHENTON: LiteVariant = {
+  clinic: LITE_EVENT_CLINIC,
+  hookClinic: "LiteEvent",
+  basePath: "/parkwayshenton",
+  defaultCampaign: "parkwayshenton",
+  storagePrefix: "recognaize-pkwshenton",
+};
+
 const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;
 const profileKey = (v: LiteVariant) => `${v.storagePrefix}-profile`;
 const attemptKey = (v: LiteVariant) => `${v.storagePrefix}-attempt`;
