@@ -130,17 +130,12 @@ export const IHH = {
 } as const;
 
 /**
- * !! PLACEHOLDER — needs Gray Matter Solutions' published policy URL.
- *
- * Same treatment as IHH's notice above: the lead form's required consent
- * names the policy, so it is a link in the design, and an empty string here
- * renders the words without one rather than a link to nowhere.
+ * The company's policy URL and the guard that keeps an unset one off the
+ * screen. Both moved to src/utils/liteOne.ts when /clinic-signup's lead form
+ * started citing the same policy — one fact about the company, in one place —
+ * and are re-exported here so this funnel's call sites read as they did.
  */
-export const GMS_PRIVACY_POLICY_URL = "";
-
-/** Whether a URL is set, i.e. whether to render its words as a link at all. */
-export const consentLinkHref = (url: string): string | null =>
-  url.trim().length > 0 ? url : null;
+export { GMS_PRIVACY_POLICY_URL, consentLinkHref } from "src/utils/liteOne";
 
 /**
  * Whether the partner's consent gates the report.

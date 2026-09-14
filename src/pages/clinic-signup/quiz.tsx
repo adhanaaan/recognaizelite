@@ -24,9 +24,10 @@ import { CLINIC_SIGNUP, stashQuizResult } from "src/utils/liteOne";
 /**
  * /clinic-signup — the clinic copy of this /lite-event-template screen.
  *
- * The flow is /lite-event-template's, page for page; what this funnel adds is
- * the Eisai newsletter consent, which /clinic-signup/consent takes before the
- * run begins. See CLINIC_SIGNUP in src/utils/liteOne.ts.
+ * The flow is /lite-event-template's, less its lead form: this funnel takes the
+ * name, email and compulsory consent on its landing page instead, so the email
+ * is captured before the run rather than after it. See CLINIC_SIGNUP in
+ * src/utils/liteOne.ts.
  */
 
 type StepDef =
@@ -217,7 +218,10 @@ export default function ClinicSignupQuizPage() {
     if (currentStep >= steps.length && steps.length > 0) {
       const score = computeScore(answers);
       stashQuizResult(score, CLINIC_SIGNUP);
-      Router.replace(`${CLINIC_SIGNUP.basePath}/results`);
+      // Straight to the analysing screen: the name, email and consent this
+      // funnel needs were taken on the landing page, so there is no lead form
+      // between the quiz and the result.
+      Router.replace(`${CLINIC_SIGNUP.basePath}/loading`);
     }
   }, [currentStep, steps.length, answers]);
 

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Router from "next/router";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import { ConsentCheckbox } from "src/components/LiteOne/ConsentCheckbox";
 import {
   HeroFeaturedIn,
   HeroPill,
@@ -10,6 +11,7 @@ import {
 } from "src/components/LiteOne/LandingSections";
 import { LanguagePicker } from "src/components/LiteOne/LanguagePicker";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
+import { clinicSignupConsentCopy } from "src/data/clinicSignupConsentCopy";
 import { useLiteEventLang } from "src/i18n/liteEvent";
 import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { resetResults } from "src/stores/useResultStore";
@@ -21,14 +23,23 @@ import {
   setHookEntryPath,
   setHookReportPath,
 } from "src/utils/assessment";
-import { CLINIC_SIGNUP, clearPartnerConsent } from "src/utils/liteOne";
+import {
+  CLINIC_SIGNUP,
+  GMS_PRIVACY_POLICY_URL,
+  clearLiteSession,
+  consentLinkHref,
+  readAttribution,
+  readOrCreateAttemptId,
+  stashLiteProfile,
+} from "src/utils/liteOne";
 
 /**
  * /clinic-signup — the clinic copy of this /lite-event-template screen.
  *
- * The flow is /lite-event-template's, page for page; what this funnel adds is
- * the Eisai newsletter consent, which /clinic-signup/consent takes before the
- * run begins. See CLINIC_SIGNUP in src/utils/liteOne.ts.
+ * The flow is /lite-event-template's, less its lead form: this funnel takes the
+ * name, email and compulsory consent on its landing page instead, so the email
+ * is captured before the run rather than after it. See CLINIC_SIGNUP in
+ * src/utils/liteOne.ts.
  */
 
 /**
@@ -43,22 +54,25 @@ const PRESS: PressLogo[] = [
   { src: "logo-pubmed.svg", alt: "PubMed", h: 20 },
 ];
 
+/** The hero's fields. Solid white, because they sit on moving footage. */
+const fieldClass =
+  "w-full rounded-xl border border-white/70 bg-white px-4 py-3 text-[15px] text-charcoal placeholder-quizOutline shadow-sm outline-none transition-colors focus:border-quizPrimary";
+
 /**
  * /clinic-signup — entry. The clinic funnel's landing page.
  *
- * /lite-event-template's landing, page for page: same hero, same language
- * picker, same trust band. What differs is where the button goes. Every other
- * funnel in this family starts the run from here; this one hands off to
- * /clinic-signup/consent first, where the visitor signs up to Eisai's EDMs and
- * CME invitations. That sign-up is the condition of the run — see
- * EISAI_CONSENT_REQUIRED in src/utils/eisai.ts — so the landing is the page
- * that states what this is and the consent screen is the door.
+ * /lite-event-template's landing, with its lead form pulled forward onto it.
+ * The hero, language picker and trust band are the template's; where that
+ * funnel's CTA simply starts the run, this one takes the name, the email and
+ * the compulsory consent first, and opens the lead row before the game.
  *
- * `clearPartnerConsent` on mount is the counterpart of that: at a booth the
- * iPad comes back to this screen for the next person, and the previous
- * visitor's consent must stop counting the moment it does. It sits here rather
- * than in `clearLiteSession` because this is the screen that marks a new
- * visitor; the rest of the run only ever reads the answer.
+ * That is the point of this funnel: the email is captured by default. A
+ * clinician who tries the assessment and wanders off after the first screen
+ * has still left a contactable row behind, which is not true of a funnel that
+ * asks at the end. The cost is a heavier hero, and it is worth it.
+ *
+ * There is no /clinic-signup/results as a result — the quiz hands straight to
+ * /clinic-signup/loading, which completes the row this page opened.
  *
  * Like the template, it mails the result: the funnel's clinic is "liteevent",
  * which EMAIL_CLINICS maps to the event template — see
@@ -82,6 +96,15 @@ const PRESS: PressLogo[] = [
 export default function ClinicSignupEntry() {
   const { lang, setLang, enabled } = useLiteEventLang();
   const t = liteEventCopy(lang);
+  const c = clinicSignupConsentCopy(lang);
+
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [consented, setConsented] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const [saving, setSaving] = React.useState(false);
+
+  const policyHref = consentLinkHref(GMS_PRIVACY_POLICY_URL);
 
   useEffect(() => {
     setHookClinic(CLINIC_SIGNUP.hookClinic);
@@ -91,10 +114,92 @@ export default function ClinicSignupEntry() {
     resetTaskProgress();
     resetResults();
     resetQuestionnaire();
-    clearPartnerConsent(CLINIC_SIGNUP);
+    // Wipes the previous run's attempt id along with its report and profile.
+    // It matters more here than on the other funnels: this page opens a lead
+    // row keyed by that attempt id, so a second clinician on the same iPad
+    // would otherwise overwrite the first one's name and email instead of
+    // getting a row of their own.
+    clearLiteSession(CLINIC_SIGNUP);
   }, []);
 
-  const start = () => Router.push(`${CLINIC_SIGNUP.basePath}/consent`);
+  /**
+   * Opens the lead row, then starts the run.
+   *
+   * The row is written here rather than at the end so the address is captured
+   * whether or not the clinician finishes: a walk-away after the first screen
+   * still leaves a name, an email and a consent, and those rows are the ones
+   * with `score` still NULL. /clinic-signup/loading writes the same row again
+   * when the result exists, keyed by the same attempt id, and that second write
+   * is what sends the mail — `deferEmail` holds it back here, since there is
+   * nothing to report yet.
+   *
+   * A failed save keeps the clinician on this screen with their typing intact,
+   * rather than starting a run whose result has nowhere to go.
+   */
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (saving) return;
+
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      setError(t.results.errName);
+      return;
+    }
+
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError(t.results.errEmail);
+      return;
+    }
+
+    if (!consented) {
+      setError(t.results.errConsent);
+      return;
+    }
+
+    setSaving(true);
+    setError("");
+
+    const { utm, referrer } = readAttribution(CLINIC_SIGNUP);
+    const attemptId = readOrCreateAttemptId(CLINIC_SIGNUP);
+
+    try {
+      const res = await fetch("/api/save-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clinic: CLINIC_SIGNUP.clinic,
+          attemptId,
+          name: trimmedName,
+          email: trimmedEmail,
+          consentMarketing: consented,
+          utm,
+          referrer,
+          deferEmail: true,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || t.results.errSave);
+      }
+    } catch (err) {
+      setError((err as Error).message || t.results.errSave);
+      setSaving(false);
+      return;
+    }
+
+    // Score and quiz age are filled in later, by the screen that completes the
+    // row; what the run needs from here is the name the report greets.
+    stashLiteProfile({
+      name: trimmedName,
+      email: trimmedEmail,
+      ageRange: "",
+      gender: "",
+      score: null,
+    }, CLINIC_SIGNUP);
+
+    Router.push(`${CLINIC_SIGNUP.basePath}/ready`);
+  };
 
   return (
     <>
@@ -166,18 +271,108 @@ export default function ClinicSignupEntry() {
                 </div>
               )}
 
-              <div
-                className="lite-rise mt-8 w-full max-w-[320px]"
+              {/* The sign-up, in the slot the CTA used to have to itself.
+                  Solid white fields rather than translucent ones: they sit on
+                  a moving video, and a tinted input over changing footage is
+                  unreadable half the time. */}
+              <form
+                onSubmit={handleSubmit}
+                noValidate
+                className="lite-rise mt-7 w-full max-w-[340px] text-left"
                 style={{ animationDelay: "280ms" }}
               >
-                <LiteButton onClick={start}>{t.landing.cta}</LiteButton>
-              </div>
+                <input
+                  id="clinic-name"
+                  type="text"
+                  autoComplete="name"
+                  aria-label={t.results.nameLabel}
+                  placeholder={t.results.namePlaceholder}
+                  value={name}
+                  onChange={(e) => { setName(e.target.value); setError(""); }}
+                  className={fieldClass}
+                />
+                <input
+                  id="clinic-email"
+                  type="email"
+                  autoComplete="email"
+                  inputMode="email"
+                  aria-label={t.results.emailLabel}
+                  placeholder={t.results.emailPlaceholder}
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                  className={`${fieldClass} mt-2.5`}
+                />
+
+                <div className="mt-4">
+                  <p className="mb-2 text-[12px] font-bold leading-snug text-white">
+                    {c.heading}
+                  </p>
+                  <ConsentCheckbox
+                    id="clinic-consent"
+                    checked={consented}
+                    onChange={(next) => { setConsented(next); setError(""); }}
+                    size={22}
+                  >
+                    <span className="block space-y-1 text-[11.5px] leading-[1.5] text-white/85">
+                      <span className="block">{c.ownBehalf}</span>
+                      {/* The compulsory half, set brighter: it is the sentence
+                          a clinician is likeliest to skim, and the one the
+                          submit actually turns on. */}
+                      <span className="block font-semibold text-white">{c.consent}</span>
+                    </span>
+                  </ConsentCheckbox>
+                </div>
+
+                {error && (
+                  <p
+                    role="alert"
+                    className="mt-3 rounded-lg bg-black/45 px-3 py-2 text-[12.5px] font-semibold text-white"
+                  >
+                    {error}
+                  </p>
+                )}
+
+                <div className="mt-4">
+                  <LiteButton type="submit" disabled={saving}>
+                    {saving ? t.results.saving : t.landing.cta}
+                  </LiteButton>
+                </div>
+              </form>
             </div>
 
             <div className="lite-rise" style={{ animationDelay: "360ms" }}>
               <HeroFeaturedIn logos={PRESS} label={t.landing.featuredIn} />
             </div>
           </HeroVideo>
+
+          {/* The fine print the tick refers to, below the hero rather than
+              inside it. It has to be on the page the consent is given on, and
+              it is — but six lines of legal text over moving footage is both
+              unreadable and the largest thing in the hero, so it sits on solid
+              ground under the fold instead, where it can actually be read. */}
+          <section className="border-t border-quizOutline-variant/60 bg-quizSurface">
+            <div className="mx-auto w-full max-w-[560px] space-y-2 px-6 py-5 text-[11px] leading-[1.6] text-quizOutline">
+              <p>
+                {c.dataProtectionLead}
+                {policyHref ? (
+                  <a
+                    href={policyHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2"
+                  >
+                    {c.policyName}
+                  </a>
+                ) : (
+                  <span className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2">
+                    {c.policyName}
+                  </span>
+                )}
+                {c.dataProtectionTail}
+              </p>
+              <p>{c.processingNote}</p>
+            </div>
+          </section>
 
           <TrustBand
             lead={t.landing.trustLead}

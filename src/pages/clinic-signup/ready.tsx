@@ -1,25 +1,18 @@
 import Head from "next/head";
 import Router from "next/router";
-import React from "react";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { StepList } from "src/components/LiteOne/StepList";
 import { useLiteEventLang } from "src/i18n/liteEvent";
 import { liteEventCopy, type LiteEventCopy } from "src/i18n/liteEventCopy";
-import { EISAI_CONSENT_REQUIRED } from "src/utils/eisai";
-import { CLINIC_SIGNUP, readPartnerConsent } from "src/utils/liteOne";
+import { CLINIC_SIGNUP } from "src/utils/liteOne";
 
 /**
  * /clinic-signup — the clinic copy of this /lite-event-template screen.
  *
- * The flow is /lite-event-template's, page for page; what this funnel adds is
- * the Eisai newsletter consent, which /clinic-signup/consent takes before the
- * run begins. See CLINIC_SIGNUP in src/utils/liteOne.ts.
- *
- * This is the first screen of the run proper, so it is where that consent is
- * enforced: without it the visitor is sent back to the screen that asks. The
- * guard is what makes the sign-up compulsory in fact and not just in the
- * landing page's wording — /clinic-signup/consent is otherwise a screen a
- * typed URL could step over.
+ * The flow is /lite-event-template's, less its lead form: this funnel takes the
+ * name, email and compulsory consent on its landing page instead, so the email
+ * is captured before the run rather than after it. See CLINIC_SIGNUP in
+ * src/utils/liteOne.ts.
  */
 
 /**
@@ -132,19 +125,6 @@ function buildSteps(t: LiteEventCopy) {
 export default function ClinicSignupReady() {
   const { lang } = useLiteEventLang();
   const t = liteEventCopy(lang);
-
-  /**
-   * In an effect rather than during render: the page is statically rendered, so
-   * the consent (which lives in sessionStorage) cannot be read until the
-   * browser has it. `replace` rather than `push` so the back button returns to
-   * the landing page instead of bouncing off this screen again.
-   */
-  React.useEffect(() => {
-    if (!EISAI_CONSENT_REQUIRED) return;
-    if (!readPartnerConsent(CLINIC_SIGNUP)) {
-      Router.replace(`${CLINIC_SIGNUP.basePath}/consent`);
-    }
-  }, []);
 
   return (
     <>
