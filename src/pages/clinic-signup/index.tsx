@@ -21,14 +21,14 @@ import {
   setHookEntryPath,
   setHookReportPath,
 } from "src/utils/assessment";
-import { CLINIC_SIGNUP, clearPartnerConsent } from "src/utils/liteOne";
+import { CLINIC_SIGNUP } from "src/utils/liteOne";
 
 /**
  * /clinic-signup — the clinic copy of this /lite-event-template screen.
  *
  * The flow is /lite-event-template's, page for page; what this funnel adds is
- * the Eisai newsletter consent, which /clinic-signup/consent takes before the
- * run begins. See CLINIC_SIGNUP in src/utils/liteOne.ts.
+ * the compulsory consent on /clinic-signup/results, where the clinician gives
+ * the email address it applies to. See CLINIC_SIGNUP in src/utils/liteOne.ts.
  */
 
 /**
@@ -47,18 +47,9 @@ const PRESS: PressLogo[] = [
  * /clinic-signup — entry. The clinic funnel's landing page.
  *
  * /lite-event-template's landing, page for page: same hero, same language
- * picker, same trust band. What differs is where the button goes. Every other
- * funnel in this family starts the run from here; this one hands off to
- * /clinic-signup/consent first, where the visitor signs up to Eisai's EDMs and
- * CME invitations. That sign-up is the condition of the run — see
- * EISAI_CONSENT_REQUIRED in src/utils/eisai.ts — so the landing is the page
- * that states what this is and the consent screen is the door.
- *
- * `clearPartnerConsent` on mount is the counterpart of that: at a booth the
- * iPad comes back to this screen for the next person, and the previous
- * visitor's consent must stop counting the moment it does. It sits here rather
- * than in `clearLiteSession` because this is the screen that marks a new
- * visitor; the rest of the run only ever reads the answer.
+ * picker, same trust band, same hand-off to /clinic-signup/ready. What this
+ * funnel adds sits at the other end of the run — the compulsory consent on
+ * /clinic-signup/results, where the email address it applies to is given.
  *
  * Like the template, it mails the result: the funnel's clinic is "liteevent",
  * which EMAIL_CLINICS maps to the event template — see
@@ -91,10 +82,9 @@ export default function ClinicSignupEntry() {
     resetTaskProgress();
     resetResults();
     resetQuestionnaire();
-    clearPartnerConsent(CLINIC_SIGNUP);
   }, []);
 
-  const start = () => Router.push(`${CLINIC_SIGNUP.basePath}/consent`);
+  const start = () => Router.push(`${CLINIC_SIGNUP.basePath}/ready`);
 
   return (
     <>

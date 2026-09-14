@@ -2,8 +2,9 @@ import Head from "next/head";
 import Router from "next/router";
 import React from "react";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
+import { ConsentCheckbox } from "src/components/LiteOne/ConsentCheckbox";
 import { SectionBadge } from "src/components/LiteOne/SectionBadge";
-import { eisaiConsentCopy } from "src/data/eisaiConsentCopy";
+import { clinicSignupConsentCopy } from "src/data/clinicSignupConsentCopy";
 import { useLiteEventLang } from "src/i18n/liteEvent";
 import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { computeScore } from "src/lib/brainHealthScoring";
@@ -14,8 +15,9 @@ import {
   QUIZ_AGE_TO_LITE,
   fetchLiteReport,
   readAttribution,
+  GMS_PRIVACY_POLICY_URL,
+  consentLinkHref,
   readOrCreateAttemptId,
-  readPartnerConsent,
   readStashedQuizResult,
   readTask2Score,
   recordLiteAttempt,
@@ -28,19 +30,22 @@ import type { DomainReport } from "src/types/report";
  * /clinic-signup — the clinic copy of this /lite-event-template screen.
  *
  * The flow is /lite-event-template's, page for page; what this funnel adds is
- * the Eisai newsletter consent, which /clinic-signup/consent takes before the
- * run begins. See CLINIC_SIGNUP in src/utils/liteOne.ts.
+ * the compulsory consent on /clinic-signup/results, where the clinician gives
+ * the email address it applies to. See CLINIC_SIGNUP in src/utils/liteOne.ts.
  *
- * This screen is where that consent is finally recorded. It was given several
- * screens ago, before there was an email address to attach it to; the form
- * reads it back out of the funnel's sessionStorage namespace and posts it as
- * `consentPartner`, which /api/save-lead writes to
- * liteevent_leads.consent_partner (migration 019).
+ * The consent is one required tickbox between the email field and the button —
+ * the same place /parkway puts its pair, and the right place for it: it is
+ * consent to be emailed, and this is the screen where the address is given.
+ * The form refuses to submit without it, which is what "compulsory" means here
+ * in practice; the wording says so too. See src/data/clinicSignupConsentCopy.ts
+ * for whose consent this is (ours, not Eisai's) and why it is worded the way it
+ * is.
  *
- * The address the visitor types here is the one Eisai's mailers will go to, so
- * the field carries a line saying so. Adding them to Eisai's own audience is
- * not wired up: this funnel records the consent against the lead row, and the
- * list itself is Eisai's to load from those rows.
+ * It posts as `consentMarketing`, which /api/save-lead writes to
+ * liteevent_leads.consent_marketing (migration 019) — the column for "may we
+ * send this person email", which is exactly the question asked. The column is
+ * NULL for a funnel that never asks, false for one that asked and was declined,
+ * and on this funnel's rows it is true or the row does not exist at all.
  */
 
 const SEVERITY_TO_KEY: Record<string, string> = {
@@ -55,14 +60,17 @@ const inputClass =
 export default function ClinicSignupResults() {
   const { lang } = useLiteEventLang();
   const t = liteEventCopy(lang);
-  const c = eisaiConsentCopy(lang);
+  const c = clinicSignupConsentCopy(lang);
   const { result } = useResultStore();
   const quizAnswers = useQuestionnaireStore((s) => s.answers);
 
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [consented, setConsented] = React.useState(false);
   const [error, setError] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
+
+  const policyHref = consentLinkHref(GMS_PRIVACY_POLICY_URL);
 
   const reportRef = React.useRef<DomainReport | null>(null);
   const attemptIdRef = React.useRef<string>("");
@@ -116,6 +124,11 @@ export default function ClinicSignupResults() {
       return;
     }
 
+    if (!consented) {
+      setError(t.results.errConsent);
+      return;
+    }
+
     setSubmitting(true);
     setError("");
 
@@ -155,10 +168,10 @@ export default function ClinicSignupResults() {
           persona: brainScore ? brainScore.persona : null,
           utm,
           referrer,
-          // Given on /clinic-signup/consent, before the run. False only if the
-          // storage carrying it was wiped mid-run — never because the visitor
-          // declined, since the run does not start without it.
-          consentPartner: readPartnerConsent(CLINIC_SIGNUP),
+          // Always true by the time this runs — the submit above returns early
+          // otherwise — but sent from the state rather than hard-coded, so the
+          // row records what was actually ticked.
+          consentMarketing: consented,
         }),
       });
       if (!res.ok) {
@@ -247,12 +260,30 @@ export default function ClinicSignupResults() {
                 onChange={(e) => { setEmail(e.target.value); setError(""); }}
                 className={inputClass}
               />
-              {/* The address the consent given on /clinic-signup/consent
-                  applies to. Said here because that screen came before there
-                  was an address to say it about. */}
-              <p className="mt-2 text-[12px] leading-relaxed text-quizOutline">
-                {c.mailerNote}
+            </div>
+
+            {/* The consent, between the last field and the button, where the
+                design places it. One box, required: the heading names what is
+                being confirmed and the two lines under it are what the tick
+                agrees to. `space-y-4` is too much air around a block this
+                tall, so it sets its own rhythm. */}
+            <div className="pt-1">
+              <p className="mb-2 text-[12px] font-bold leading-snug text-charcoal">
+                {c.heading}
               </p>
+              <ConsentCheckbox
+                id="clinic-consent"
+                checked={consented}
+                onChange={(next) => { setConsented(next); setError(""); }}
+              >
+                <span className="block space-y-1.5 text-[12.5px] leading-[1.55] text-quizSecondary">
+                  <span className="block">{c.ownBehalf}</span>
+                  {/* The compulsory half, set in the body colour: it is the
+                      sentence a clinician is likeliest to skim, and the one
+                      the submit actually turns on. */}
+                  <span className="block font-semibold text-charcoal">{c.consent}</span>
+                </span>
+              </ConsentCheckbox>
             </div>
 
             {error && (
@@ -265,9 +296,32 @@ export default function ClinicSignupResults() {
               {submitting ? t.results.saving : t.results.submit}
             </LiteButton>
 
-            <p className="text-center text-[11.5px] leading-relaxed text-quizOutline">
-              {t.results.privacy}
-            </p>
+            {/* The fine print the tick refers to, under the button rather than
+                inside the label: a clinician should be able to read the whole
+                agreement, but not have to scroll past it to reach the form's
+                only control. It replaces the shared one-line privacy note,
+                which says less than this funnel has to. */}
+            <div className="space-y-2.5 pt-1 text-[11.5px] leading-relaxed text-quizOutline">
+              <p>
+                {c.dataProtectionLead}
+                {policyHref ? (
+                  <a
+                    href={policyHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2"
+                  >
+                    {c.policyName}
+                  </a>
+                ) : (
+                  <span className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2">
+                    {c.policyName}
+                  </span>
+                )}
+                {c.dataProtectionTail}
+              </p>
+              <p>{c.processingNote}</p>
+            </div>
           </form>
         </div>
       </LiteShell>

@@ -12,8 +12,8 @@ import { preloadImages } from "src/lib/image-cache";
  * /clinic-signup — the clinic copy of this /lite-event-template screen.
  *
  * The flow is /lite-event-template's, page for page; what this funnel adds is
- * the Eisai newsletter consent, which /clinic-signup/consent takes before the
- * run begins. See CLINIC_SIGNUP in src/utils/liteOne.ts.
+ * the compulsory consent on /clinic-signup/results, where the clinician gives
+ * the email address it applies to. See CLINIC_SIGNUP in src/utils/liteOne.ts.
  */
 
 /**
