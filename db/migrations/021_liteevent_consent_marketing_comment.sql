@@ -21,6 +21,19 @@
 --   select utm_campaign, consent_marketing, consent_at, name, email
 --   from public.liteevent_leads
 --   where utm_campaign = 'clinic-signup';
+--
+-- One thing to know when reading that funnel's rows. It takes the name, email
+-- and consent on its landing page and writes the row there, before the game,
+-- so a row exists for every clinician who started — not only for those who
+-- finished. The run's numbers are written to the same row afterwards, which
+-- makes `score` the completion marker:
+--
+--   -- started and walked away (still contactable, still consented)
+--   select * from public.liteevent_leads
+--   where utm_campaign = 'clinic-signup' and score is null;
+--
+-- On every other funnel in this table the reverse holds — a row with no email
+-- is the abandoned one — because they write contact details last.
 
 comment on column public.liteevent_leads.consent_marketing is
   'Consent for Gray Matter Solutions to send email and newsletters. Optional on /parkway ("occasional brain health tips and updates"); required on /clinic-signup, whose lead form will not submit without it, so its rows are always true. Which funnel a row came from is in utm_campaign. NULL = never asked.';

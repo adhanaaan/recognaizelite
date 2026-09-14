@@ -12,9 +12,10 @@ import { CLINIC_SIGNUP } from "src/utils/liteOne";
 /**
  * /clinic-signup — the clinic copy of this /lite-event-template screen.
  *
- * The flow is /lite-event-template's, page for page; what this funnel adds is
- * the compulsory consent on /clinic-signup/results, where the clinician gives
- * the email address it applies to. See CLINIC_SIGNUP in src/utils/liteOne.ts.
+ * The flow is /lite-event-template's, less its lead form: this funnel takes the
+ * name, email and compulsory consent on its landing page instead, so the email
+ * is captured before the run rather than after it. See CLINIC_SIGNUP in
+ * src/utils/liteOne.ts.
  */
 
 const sectionClass =

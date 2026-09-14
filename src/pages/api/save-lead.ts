@@ -387,6 +387,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
      * consent_at is stamped only when at least one of them arrives, so it
      * dates the consent rather than the row.
      */
+    /**
+     * Hold the result email back on this write. Default false, so every funnel
+     * that saves once — all of them but /clinic-signup — is unaffected. See
+     * `deliverResultEmail` below.
+     */
+    const deferEmail = body.deferEmail === true;
+
     const consentAnalytics = bool(body.consentAnalytics);
     const consentMarketing = bool(body.consentMarketing);
     const consentPartner = bool(body.consentPartner);
@@ -438,6 +445,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
      */
     const deliverResultEmail = async (rowAttemptId: string) => {
       if (!emailRaw || !emailEnabledForClinic(clinic)) return;
+      // Nothing to mail yet. /clinic-signup takes the email on its landing
+      // page, so it writes the row once before the game and again when the
+      // result exists; the first call sets this and the second sends. Without
+      // it the visitor would get a result email with no result in it, and
+      // `email_sent_at` would then block the real one.
+      if (deferEmail) return;
       try {
         await deliverLiteResultEmail({
           supabase,

@@ -179,12 +179,17 @@ export const NTU_HOMECOMING: LiteVariant = {
 /**
  * /clinic-signup — the clinic funnel, reaching clinicians through Eisai.
  *
- * The flow is /lite-event-template's, page for page. What it adds is one
- * required tickbox on /clinic-signup/results: consent for Gray Matter Solutions
- * to contact the clinician by email and newsletter, without which the form does
- * not submit. Eisai gives clinicians the option to try the assessment and is
- * not party to that consent — see src/data/clinicSignupConsentCopy.ts, which is
- * also where the wording lives.
+ * The flow is /lite-event-template's with its lead form moved to the front.
+ * The landing page takes the name, the email and one required consent — for
+ * Gray Matter Solutions to send email and newsletters — and opens the lead row
+ * there, before the game, so a clinician who wanders off mid-run still leaves a
+ * contactable row behind. Those rows are the ones with `score` still NULL.
+ * /clinic-signup/loading completes the same row afterwards, and that write is
+ * what mails the result.
+ *
+ * Eisai gives clinicians the option to try the assessment and is not party to
+ * the consent — see src/data/clinicSignupConsentCopy.ts, which is also where
+ * the wording lives.
  *
  * `clinic` stays "liteevent" for the reason the template's does: the funnel
  * writes to the existing liteevent_leads table and mails the existing event

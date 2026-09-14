@@ -1,6 +1,6 @@
 /**
- * Copy for the consent on /clinic-signup/results — the tickbox between the
- * email field and the button.
+ * Copy for the consent on the /clinic-signup landing page — the tickbox under
+ * the name and email fields in the hero.
  *
  * ---------------------------------------------------------------------------
  * WHOSE CONSENT THIS IS
@@ -19,10 +19,10 @@
  * ---------------------------------------------------------------------------
  * The assessment is free, and the consent is the condition of taking it, so
  * `consent` below is phrased as the condition it is ("By registering, I
- * consent…") rather than as an offer. The visitor still has to tick the box:
+ * consent…") rather than as an offer. The clinician still has to tick the box:
  * the wording carries the fact that there is no way past it, and the tick is
- * what records the moment they agreed. The form refuses to submit without it —
- * see /clinic-signup/results, which reuses the shared `errConsent` line.
+ * what records the moment they agreed. The landing page refuses to start the
+ * run without it, reusing the shared `errConsent` line.
  *
  * The three languages translate in full. Nothing here is a partner's verbatim
  * wording that a paraphrase would misstate (contrast src/data/parkwayConsentCopy.ts,
