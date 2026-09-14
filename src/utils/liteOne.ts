@@ -177,6 +177,43 @@ export const NTU_HOMECOMING: LiteVariant = {
 };
 
 /**
+ * /clinic-signup — the clinic funnel, with the Eisai newsletter sign-up in
+ * front of it.
+ *
+ * The flow is /lite-event-template's, page for page. What it adds is one
+ * screen the template does not have: /clinic-signup/consent, where the visitor
+ * subscribes to Eisai (Singapore) Pte Ltd's electronic direct mailers and CME
+ * invitations. That screen stands between the landing and the run and cannot be
+ * passed without consenting — see EISAI in src/utils/eisai.ts for why it is
+ * written as a declaration rather than a tickbox.
+ *
+ * `clinic` stays "liteevent" for the reason the template's does: the funnel
+ * writes to the existing liteevent_leads table and mails the existing event
+ * template, so a run through it is a real run and nothing has to be
+ * provisioned server-side first. The consent itself lands in that table's
+ * `consent_partner` column (migration 019), which /parkway added for IHH and
+ * this funnel reuses for Eisai — the partner differs, the question does not.
+ *
+ * `defaultCampaign` is what separates this funnel's rows from the rest of the
+ * event traffic afterwards, and `storagePrefix` keeps its sessionStorage
+ * namespace — the consent included — to itself, so a run here can never
+ * overwrite the report, profile or attempt id of a run through another funnel
+ * in the same browser.
+ *
+ * `hookClinic` stays "LiteEvent" as well, because that is what puts the shared
+ * Symbol Matching screens in the Clinical Empathy palette (see
+ * isLiteOneMode()). The funnels are kept apart after the game by
+ * hookReportPath, which the entry page points at this basePath.
+ */
+export const CLINIC_SIGNUP: LiteVariant = {
+  clinic: LITE_EVENT_CLINIC,
+  hookClinic: "LiteEvent",
+  basePath: "/clinic-signup",
+  defaultCampaign: "clinic-signup",
+  storagePrefix: "recognaize-clinicsignup",
+};
+
+/**
  * /parkway — the Parkway Shenton partner funnel.
  *
  * The flow is /lite-event-template's, taken page for page: same landing,
@@ -214,6 +251,7 @@ const attemptKey = (v: LiteVariant) => `${v.storagePrefix}-attempt`;
 const quizResultKey = (v: LiteVariant) => `${v.storagePrefix}-quiz`;
 const pendingLeadKey = (v: LiteVariant) => `${v.storagePrefix}-pending-lead`;
 const interestKey = (v: LiteVariant) => `${v.storagePrefix}-interest`;
+const partnerConsentKey = (v: LiteVariant) => `${v.storagePrefix}-consent-partner`;
 
 /**
  * The body /api/save-lead is posted, as the lead form assembles it.
@@ -329,6 +367,53 @@ export function clearPendingLead(v: LiteVariant = LITE_ONE) {
   if (typeof window === "undefined") return;
   try {
     sessionStorage.removeItem(pendingLeadKey(v));
+  } catch {
+    /* nothing to clear if storage is unavailable */
+  }
+}
+
+/**
+ * A partner consent given before the run, carried to the screen that posts it.
+ *
+ * /parkway asks for its partner's consent on the screen *after* the lead form,
+ * so it can hand the answer straight to the POST. /clinic-signup asks before
+ * the run instead — Eisai's newsletter sign-up is the door into that funnel —
+ * and the lead is not posted until several screens later, so the answer has to
+ * survive the game and the quiz. It rides in sessionStorage under the funnel's
+ * own namespace, and /clinic-signup/results reads it back into the payload's
+ * `consentPartner`.
+ *
+ * `memo` mirrors it in module state for one reason: with storage refused
+ * (private mode, a locked-down kiosk browser) `writeJson` swallows the failure,
+ * and a visitor who has just consented would be bounced straight back to the
+ * screen by the guard on /clinic-signup/ready. Client-side navigation keeps
+ * this module alive for the whole run, so the memo carries them through; a hard
+ * reload loses it, which is the case where storage is working anyway.
+ */
+const partnerConsentMemo: Record<string, boolean> = {};
+
+export function stashPartnerConsent(given: boolean, v: LiteVariant = LITE_ONE) {
+  partnerConsentMemo[v.storagePrefix] = given;
+  writeJson(partnerConsentKey(v), given);
+}
+
+export function readPartnerConsent(v: LiteVariant = LITE_ONE): boolean {
+  if (partnerConsentMemo[v.storagePrefix]) return true;
+  return readJson<boolean>(partnerConsentKey(v)) === true;
+}
+
+/**
+ * Forgets the consent, so the next visitor is asked for their own.
+ *
+ * Called from the funnel's entry page rather than from `clearLiteSession`: at a
+ * booth the iPad is handed to the next person at the landing screen, and that
+ * is the moment the previous person's answer must stop counting.
+ */
+export function clearPartnerConsent(v: LiteVariant = LITE_ONE) {
+  delete partnerConsentMemo[v.storagePrefix];
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.removeItem(partnerConsentKey(v));
   } catch {
     /* nothing to clear if storage is unavailable */
   }
