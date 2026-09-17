@@ -1,7 +1,6 @@
 /**
- * Copy for the consent on the /clinic-signup-id landing page — the two
- * tickboxes under the name and email fields in the hero, and the notice they
- * refer to below it.
+ * Copy for the consent on the /clinic-signup-id landing page — the one tickbox
+ * under the name and email fields in the hero, and the notice it links to.
  *
  * ---------------------------------------------------------------------------
  * WHOSE CONSENT THIS IS
@@ -13,35 +12,35 @@
  * the controller named in a consent is the one accountable for it.
  *
  * ---------------------------------------------------------------------------
- * WHY THIS IS NOT src/data/clinicSignupConsentCopy.ts
+ * ONE TICKBOX, AND WHAT THAT COSTS
  * ---------------------------------------------------------------------------
- * /clinic-signup asks Singapore's PDPA question — one compulsory tickbox that
- * bundles the processing with the marketing, which is how a Singapore funnel
- * may ask it. Indonesia's UU No. 27 Tahun 2022 (UU PDP) does not let the same
- * sentence carry both: Art. 22(2) requires a request covering more than one
- * purpose to state each purpose and to be separable, and Art. 22(3) voids a
- * consent that fails it. So this funnel asks twice:
+ * This funnel asks the way /clinic-signup asks: a single compulsory tick,
+ * carrying the processing, the transfer out of Indonesia and the marketing
+ * together, with Indonesia's disclosures written into the sentence and the full
+ * notice one tap away. It is deliberately the same shape as its Singapore
+ * sibling — that is the product decision — and the Indonesian law lives inside
+ * the wording rather than in the number of boxes.
  *
- *   1. `consentProcessing` — REQUIRED. Collecting and processing the name, the
- *      email, the quiz answers and the cognitive result, in order to run the
- *      assessment and send the result; and the transfer of that data out of
- *      Indonesia, which Art. 56 requires consent for where the receiving
- *      country has no adequacy finding. The assessment cannot run without it,
- *      which is why the landing page refuses to start the run until it is
- *      ticked.
+ * It is worth being straight in this file about the tradeoff, because the code
+ * cannot see it. An earlier revision split this in two, a required processing
+ * consent and an optional marketing one, because Art. 22(2) of UU No. 27 Tahun
+ * 2022 wants a request covering more than one purpose to state each purpose
+ * separably, and Art. 22(3) voids a consent that does not. A single compulsory
+ * tick states all three purposes but does not let a clinician take the
+ * assessment while refusing the mail, which is the part a regulator would
+ * press on. The purposes are therefore enumerated as plainly as the wording
+ * allows — `consentLead` names each one — and the notice sets them out in full.
+ * If that reading ever has to be defended, split `consentLead` back into the
+ * two ticks and bump CLINIC_SIGNUP_ID_CONSENT_VERSION; nothing else depends on
+ * the shape.
  *
- *   2. `consentMarketing` — OPTIONAL. Newsletters, brain-health mail and event
- *      invitations. A separate purpose, so a separate tick, and refusing it
- *      changes nothing about the assessment. `consentMarketingNote` says so on
- *      screen, because a visitor who believes the free assessment depends on it
- *      has not given the freely-made consent Art. 20 asks for.
- *
- * The two land in separate columns — `consent_analytics` and
- * `consent_marketing` — so a PDP request about marketing is answered from the
- * column that actually holds the answer. See db/migrations/022.
+ * Because the one tick carries both, both columns it writes are true on every
+ * row: `consent_analytics` for the processing and `consent_marketing` for the
+ * mail. That is the same way /clinic-signup's rows read, and
+ * db/migrations/023 says so where the table is read back.
  *
  * ---------------------------------------------------------------------------
- * WHAT THE NOTICE BELOW THE HERO HAS TO CARRY
+ * WHAT THE NOTICE HAS TO CARRY
  * ---------------------------------------------------------------------------
  * Art. 21(1) lists what the data subject must be told BEFORE consent is taken:
  * the lawfulness of the processing, its purpose, the types of personal data,
@@ -74,7 +73,7 @@ import type { ClinicSignupIdLang } from "src/i18n/clinicSignupId";
  * string below changes in substance, so an old row still says which text it
  * answered. /api/save-lead writes it to `consent_version`.
  */
-export const CLINIC_SIGNUP_ID_CONSENT_VERSION = "clinic-signup-id/2026-09-17";
+export const CLINIC_SIGNUP_ID_CONSENT_VERSION = "clinic-signup-id/2026-09-17-2";
 
 /**
  * How long a lead row is kept, stated because Art. 21(1)(d) requires the
@@ -93,19 +92,22 @@ export type ConsentNoticeItem = {
 };
 
 export type ClinicSignupIdConsentCopy = {
-  /** The small line above the tickboxes, as the design sets it. */
+  /** The small line above the tickbox, as the design sets it. */
   heading: string;
   /**
-   * The authorisation confirmation, above both tickboxes. Answering for someone
-   * else is processing that person's data, which needs their consent and not
-   * only the filler's say-so — so the line says both.
+   * The authorisation confirmation, the tickbox's first line. Answering for
+   * someone else is processing that person's data, which needs their consent
+   * and not only the filler's say-so — so the line says both.
    */
   ownBehalf: string;
-  /** The chips that mark each tickbox, so which is which is visible at a glance. */
-  requiredMark: string;
-  optionalMark: string;
   /**
-   * Tickbox 1 — required. Processing, incl. the transfer out of Indonesia.
+   * The consent itself, the tickbox's second line and the compulsory one.
+   *
+   * It carries all three purposes — running the assessment and mailing the
+   * result, the transfer out of Indonesia, and the newsletters — because this
+   * funnel asks once rather than twice. Each is named rather than gestured at:
+   * a purpose a clinician cannot find in the sentence is a purpose they did not
+   * consent to, however short the sentence.
    *
    * Split around the notice's name, which renders as a link to
    * /clinic-signup-id/privacy inside the tickbox label. The reference lives in
@@ -114,13 +116,10 @@ export type ClinicSignupIdConsentCopy = {
    * satisfied by the disclosure being reachable at the moment of consent, not
    * by it being printed underneath.
    */
-  consentProcessingLead: string;
-  consentProcessingTail: string;
-  /** Tickbox 2 — optional. Marketing, and the line that says it is optional. */
-  consentMarketing: string;
-  consentMarketingNote: string;
-  /** Shown when the run is started without the required tick. */
-  errProcessing: string;
+  consentLead: string;
+  consentTail: string;
+  /** Shown when the run is started without the tick. */
+  errConsent: string;
 
   /** The notice's name, as the tickbox link and the page's own heading. */
   noticeLinkLabel: string;
@@ -167,19 +166,14 @@ const RETENTION = CLINIC_SIGNUP_ID_RETENTION_MONTHS;
 /* ==================================================== Bahasa Indonesia ==== */
 
 const ID: ClinicSignupIdConsentCopy = {
-  heading: "Sebelum mulai, mohon baca dan setujui hal berikut:",
+  heading: "Dengan ini saya menyatakan bahwa saya mengirimkan formulir ini:",
   ownBehalf:
-    "Saya mengisi formulir ini atas nama saya sendiri; atau atas nama orang lain, dan saya menyatakan bahwa orang tersebut telah memberikan persetujuannya serta saya berwenang memberikan jawaban dalam formulir ini.",
-  requiredMark: "Wajib",
-  optionalMark: "Opsional",
-  consentProcessingLead:
-    "Saya menyetujui Gray Matter Solutions Pte Ltd mengumpulkan dan memproses nama, alamat email, jawaban kuis, dan hasil penilaian kognitif saya — termasuk data kesehatan saya — untuk menjalankan penilaian ini dan mengirimkan hasilnya kepada saya, serta menyetujui pengiriman data tersebut ke luar wilayah Republik Indonesia, sebagaimana dijelaskan dalam ",
-  consentProcessingTail: ".",
-  consentMarketing:
-    "Saya menyetujui Gray Matter Solutions menghubungi saya melalui email berisi buletin, informasi kesehatan otak, dan undangan acara.",
-  consentMarketingNote:
-    "Persetujuan ini opsional. Penilaian tetap gratis dan hasil Anda tetap dikirim meskipun kotak ini tidak dicentang.",
-  errProcessing: "Mohon setujui pemrosesan data pribadi Anda untuk melanjutkan.",
+    "Atas nama saya sendiri; atau atas nama orang lain, dan saya menyatakan bahwa orang tersebut telah memberikan persetujuannya serta saya berwenang memberikan jawaban dalam formulir ini.",
+  consentLead:
+    "Dengan mendaftar, saya menyetujui Gray Matter Solutions Pte Ltd mengumpulkan dan memproses nama, alamat email, jawaban kuis, dan hasil penilaian kognitif saya — termasuk data kesehatan saya — untuk menjalankan penilaian ini dan mengirimkan hasilnya kepada saya, serta untuk menghubungi saya melalui email berisi buletin, informasi kesehatan otak, dan undangan acara; termasuk pengiriman data tersebut ke luar wilayah Republik Indonesia. Saya telah membaca ",
+  consentTail:
+    ", yang memuat dasar hukum, tujuan, jenis data, jangka waktu penyimpanan, dan hak saya sebagai Subjek Data Pribadi.",
+  errConsent: "Mohon centang persetujuan tersebut untuk melanjutkan.",
 
   noticeLinkLabel: "Pemberitahuan Pelindungan Data Pribadi",
 
@@ -197,7 +191,7 @@ const ID: ClinicSignupIdConsentCopy = {
     {
       term: "Tujuan pemrosesan",
       detail:
-        "Menjalankan penilaian, menghitung skor kecepatan pemrosesan serta profil risiko Anda, menyusun laporan, dan mengirimkan hasilnya ke alamat email Anda. Bila Anda mencentang kotak opsional, juga untuk mengirimkan buletin, informasi kesehatan otak, dan undangan acara.",
+        "Menjalankan penilaian, menghitung skor kecepatan pemrosesan serta profil risiko Anda, menyusun laporan, dan mengirimkan hasilnya ke alamat email Anda, serta mengirimkan buletin, informasi kesehatan otak, dan undangan acara.",
     },
     {
       term: "Jenis data pribadi",
@@ -261,19 +255,14 @@ const ID: ClinicSignupIdConsentCopy = {
 /* ================================================================ English == */
 
 const EN: ClinicSignupIdConsentCopy = {
-  heading: "Before you start, please read and agree to the following:",
+  heading: "I hereby confirm that I am submitting this form:",
   ownBehalf:
-    "I am completing this form on my own behalf; or on behalf of another person, and I confirm that they have given their consent and that I am authorised to provide the answers in this form.",
-  requiredMark: "Required",
-  optionalMark: "Optional",
-  consentProcessingLead:
-    "I consent to Gray Matter Solutions Pte Ltd collecting and processing my name, email address, quiz answers and cognitive assessment result — including my health data — in order to run this assessment and send me the result, and to that data being transferred outside the Republic of Indonesia, as set out in the ",
-  consentProcessingTail: ".",
-  consentMarketing:
-    "I consent to Gray Matter Solutions contacting me by email with newsletters, brain health information and event invitations.",
-  consentMarketingNote:
-    "This consent is optional. The assessment is free and your result is sent whether or not you tick this box.",
-  errProcessing: "Please agree to the processing of your personal data to continue.",
+    "On my own behalf; or on behalf of another person, and I confirm that they have given their consent and that I am authorised to provide the answers in this form.",
+  consentLead:
+    "By registering, I consent to Gray Matter Solutions Pte Ltd collecting and processing my name, email address, quiz answers and cognitive assessment result — including my health data — in order to run this assessment and send me the result, and to contact me by email with newsletters, brain health information and event invitations; including the transfer of that data outside the Republic of Indonesia. I have read the ",
+  consentTail:
+    ", which sets out the lawful basis, the purposes, the types of data, the retention period and my rights as a Personal Data Subject.",
+  errConsent: "Please tick the consent to continue.",
 
   noticeLinkLabel: "Personal Data Protection Notice",
 
@@ -291,7 +280,7 @@ const EN: ClinicSignupIdConsentCopy = {
     {
       term: "Purpose of processing",
       detail:
-        "To run the assessment, calculate your processing-speed score and risk profile, produce your report, and send the result to your email address. If you tick the optional box, also to send you newsletters, brain health information and event invitations.",
+        "To run the assessment, calculate your processing-speed score and risk profile, produce your report, and send the result to your email address, and to send you newsletters, brain health information and event invitations.",
     },
     {
       term: "Types of personal data",

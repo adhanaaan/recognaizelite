@@ -234,15 +234,16 @@ export const CLINIC_SIGNUP: LiteVariant = {
  * the Indonesian slot in the locale files the shared Symbol Matching leg reads,
  * so the game screens follow the funnel.
  *
- * The consent is Indonesia's, not Singapore's. /clinic-signup asks one
- * compulsory tickbox that bundles the processing with the marketing; UU No. 27
- * Tahun 2022 does not allow one sentence to carry both purposes, so this funnel
- * asks twice — a required processing consent that also covers the transfer out
- * of Indonesia, and an optional marketing consent that the run does not depend
- * on. They land in `consent_analytics` and `consent_marketing` respectively, and
- * the wording they agreed to lands in `consent_version` (migration 022). The
- * clauses and the Article 21 notice live in
- * src/data/clinicSignupIdConsentCopy.ts.
+ * The consent is written to Indonesia's law rather than Singapore's. Its shape
+ * is /clinic-signup's — one compulsory tickbox, no run without it — but the
+ * sentence inside names each purpose it covers: the processing, the transfer out
+ * of the Republic of Indonesia (Art. 56), and the mail. The one tick therefore
+ * fills both `consent_analytics` and `consent_marketing`, exactly as
+ * /clinic-signup's does, and the wording agreed to lands in `consent_version`
+ * (migrations 022 and 023). The clauses and the Article 21 notice — which has a
+ * page of its own at /clinic-signup-id/privacy, in both languages — live in
+ * src/data/clinicSignupIdConsentCopy.ts, which is also candid about what asking
+ * once rather than twice costs under Art. 22(2).
  *
  * `clinic` stays "liteevent" for the reason /clinic-signup's does: the funnel
  * writes to the existing liteevent_leads table and mails the existing event

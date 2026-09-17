@@ -63,27 +63,6 @@ const fieldClass =
   "w-full rounded-xl border border-white/70 bg-white px-4 py-3 text-[15px] text-charcoal placeholder-quizOutline shadow-sm outline-none transition-colors focus:border-quizPrimary";
 
 /**
- * The chips that mark a tickbox required or optional.
- *
- * They are not decoration. Art. 22(2) of Indonesia's UU No. 27 Tahun 2022 wants
- * a consent request covering more than one purpose to keep those purposes
- * clearly distinguishable, and a clinician skimming two tickboxes of similar
- * length needs to see at a glance which one the assessment depends on.
- */
-function ConsentMark({ children, required }: { children: React.ReactNode; required: boolean }) {
-  return (
-    <span
-      className={[
-        "mr-1.5 inline-block rounded-md px-1.5 py-0.5 align-[1px] text-[10px] font-extrabold uppercase tracking-wide",
-        required ? "bg-quizPrimary text-white" : "bg-white/25 text-white",
-      ].join(" ")}
-    >
-      {children}
-    </span>
-  );
-}
-
-/**
  * /clinic-signup-id — entry. The Indonesian clinic funnel's landing page.
  *
  * /clinic-signup's landing, which is /lite-event-template's with the lead form
@@ -122,21 +101,19 @@ function ConsentMark({ children, required }: { children: React.ReactNode; requir
  * reads) is set by `useClinicSignupIdLang` on mount, and Bahasa Indonesia maps
  * to that enum's "BAHASA" slot, so the game screens follow too.
  *
- * And it asks for consent twice. /clinic-signup bundles the processing and the
- * marketing into one compulsory tickbox, which is how a Singapore funnel may
- * ask; UU No. 27 Tahun 2022 does not let one sentence carry both purposes
- * (Art. 22(2), void under Art. 22(3) if it does). So the required tick covers
- * the processing and the transfer out of Indonesia, the optional one covers
- * marketing, and refusing the second changes nothing about the run.
+ * And its consent is written to Indonesia's law rather than Singapore's. The
+ * shape is /clinic-signup's — one compulsory tickbox, the same two lines in it,
+ * no run without it — but the sentence inside names every purpose it covers:
+ * the processing, the transfer out of the Republic of Indonesia, and the mail.
+ * See src/data/clinicSignupIdConsentCopy.ts, which is candid about what asking
+ * once rather than twice costs under Art. 22(2).
  *
- * The Art. 21 notice those ticks refer to lives on /clinic-signup-id/privacy,
- * linked from inside the required tickbox itself. It used to sit on this page
- * in full — a dozen rows of legal text, the largest thing here and the least
- * read — and then as a summary paragraph under the hero, which was the same
- * problem smaller. What is left is the shape the disclosure actually wants:
- * each tickbox states its own purpose, and the sentence being consented to
- * names the notice and links it. All of the copy lives in
- * src/data/clinicSignupIdConsentCopy.ts.
+ * The Art. 21 notice that tick refers to lives on /clinic-signup-id/privacy,
+ * linked from inside the tickbox itself. It used to sit on this page in full —
+ * a dozen rows of legal text, the largest thing here and the least read — and
+ * then as a summary paragraph under the hero, which was the same problem
+ * smaller. What is left is the shape the disclosure actually wants: the
+ * sentence being consented to names the notice and links it.
  */
 export default function ClinicSignupIdEntry() {
   const { lang, setLang, enabled } = useClinicSignupIdLang();
@@ -145,11 +122,9 @@ export default function ClinicSignupIdEntry() {
 
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
-  // Two separate pieces of state for two separate purposes, and the marketing
-  // one starts false and stays false unless the clinician ticks it — a
-  // pre-ticked optional box is not consent under Art. 20.
-  const [consentedProcessing, setConsentedProcessing] = React.useState(false);
-  const [consentedMarketing, setConsentedMarketing] = React.useState(false);
+  // Starts false and stays false unless the clinician ticks it — a pre-ticked
+  // box is not consent under Art. 20, whatever it says.
+  const [consented, setConsented] = React.useState(false);
   const [error, setError] = React.useState("");
   const [saving, setSaving] = React.useState(false);
 
@@ -174,17 +149,16 @@ export default function ClinicSignupIdEntry() {
    *
    * The row is written here rather than at the end so the address is captured
    * whether or not the clinician finishes: a walk-away after the first screen
-   * still leaves a name, an email and both consent answers, and those rows are
-   * the ones with `score` still NULL. /clinic-signup-id/loading writes the same
-   * row again when the result exists, keyed by the same attempt id, and that
-   * second write is what sends the mail — `deferEmail` holds it back here, since
-   * there is nothing to report yet.
+   * still leaves a name, an email and the consent, and those rows are the ones
+   * with `score` still NULL. /clinic-signup-id/loading writes the same row again
+   * when the result exists, keyed by the same attempt id, and that second write
+   * is what sends the mail — `deferEmail` holds it back here, since there is
+   * nothing to report yet.
    *
-   * Both consents are posted, and `consentMarketing` is posted as false when it
-   * was declined rather than omitted: false is an answer the clinician gave and
-   * NULL means the question was never put, and a PDP request is answered from
-   * the difference. `consentVersion` records which wording they answered, which
-   * is what Art. 20(2) asks the controller to be able to show.
+   * The one tick fills both consent columns, because it carries both purposes.
+   * `consentVersion` records which wording it was — Art. 20(2) puts the burden
+   * of proving a consent on the controller, and "a box was ticked" is not proof
+   * of what it said.
    *
    * A failed save keeps the clinician on this screen with their typing intact,
    * rather than starting a run whose result has nowhere to go.
@@ -205,8 +179,8 @@ export default function ClinicSignupIdEntry() {
       return;
     }
 
-    if (!consentedProcessing) {
-      setError(c.errProcessing);
+    if (!consented) {
+      setError(c.errConsent);
       return;
     }
 
@@ -225,11 +199,12 @@ export default function ClinicSignupIdEntry() {
           attemptId,
           name: trimmedName,
           email: trimmedEmail,
-          // The required tick: processing the assessment data, including the
-          // transfer out of Indonesia. `consent_analytics` is the column Gray
-          // Matter's own processing consent lands in — see migration 022.
-          consentAnalytics: consentedProcessing,
-          consentMarketing: consentedMarketing,
+          // One tick, both columns. It carries the processing (including the
+          // transfer out of Indonesia) and the marketing together, so both are
+          // true on every row this funnel writes, the way /clinic-signup's are
+          // — see migration 023.
+          consentAnalytics: consented,
+          consentMarketing: consented,
           consentVersion: CLINIC_SIGNUP_ID_CONSENT_VERSION,
           utm,
           referrer,
@@ -369,60 +344,42 @@ export default function ClinicSignupIdEntry() {
                   <p className="mb-2 text-[12px] font-bold leading-snug text-white">
                     {c.heading}
                   </p>
-
-                  {/* Above both ticks, because it qualifies both: answering for
-                      somebody else is processing that person's data. */}
-                  <p className="mb-2.5 text-[11.5px] leading-[1.5] text-white/85">
-                    {c.ownBehalf}
-                  </p>
-
                   <ConsentCheckbox
-                    id="clinic-id-consent-processing"
-                    checked={consentedProcessing}
-                    onChange={(next) => { setConsentedProcessing(next); setError(""); }}
+                    id="clinic-id-consent"
+                    checked={consented}
+                    onChange={(next) => { setConsented(next); setError(""); }}
                     size={22}
                   >
-                    <span className="block text-[11.5px] font-semibold leading-[1.5] text-white">
-                      <ConsentMark required>{c.requiredMark}</ConsentMark>
-                      {c.consentProcessingLead}
-                      {/*
-                       * The notice, linked from inside the sentence that
-                       * consents to it.
-                       *
-                       * New tab, because the name and email above are React
-                       * state and this is the worst possible moment to throw
-                       * away what someone typed. `stopPropagation` because the
-                       * link sits inside the tickbox's own <label>: the HTML
-                       * spec already says a label must not forward activation
-                       * from an interactive descendant, but a stray tick here
-                       * would be a consent nobody gave, which is not a thing to
-                       * leave to browser agreement.
-                       */}
-                      <a
-                        href={`${CLINIC_SIGNUP_ID.basePath}/privacy`}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="underline decoration-white/60 underline-offset-2 hover:decoration-white"
-                      >
-                        {c.noticeLinkLabel}
-                      </a>
-                      {c.consentProcessingTail}
-                    </span>
-                  </ConsentCheckbox>
-
-                  <ConsentCheckbox
-                    id="clinic-id-consent-marketing"
-                    checked={consentedMarketing}
-                    onChange={(next) => { setConsentedMarketing(next); setError(""); }}
-                    size={22}
-                    className="mt-3"
-                  >
-                    <span className="block text-[11.5px] leading-[1.5] text-white/85">
-                      <ConsentMark required={false}>{c.optionalMark}</ConsentMark>
-                      {c.consentMarketing}
-                      <span className="mt-1 block text-[11px] italic text-white/70">
-                        {c.consentMarketingNote}
+                    <span className="block space-y-1 text-[11.5px] leading-[1.5] text-white/85">
+                      <span className="block">{c.ownBehalf}</span>
+                      {/* The compulsory half, set brighter: it is the sentence
+                          a clinician is likeliest to skim, and the one the
+                          submit actually turns on. */}
+                      <span className="block font-semibold text-white">
+                        {c.consentLead}
+                        {/*
+                         * The notice, linked from inside the sentence that
+                         * consents to it.
+                         *
+                         * New tab, because the name and email above are React
+                         * state and this is the worst possible moment to throw
+                         * away what someone typed. `stopPropagation` because
+                         * the link sits inside the tickbox's own <label>: the
+                         * HTML spec already says a label must not forward
+                         * activation from an interactive descendant, but a
+                         * stray tick here would be a consent nobody gave,
+                         * which is not a thing to leave to browser agreement.
+                         */}
+                        <a
+                          href={`${CLINIC_SIGNUP_ID.basePath}/privacy`}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="underline decoration-white/60 underline-offset-2 hover:decoration-white"
+                        >
+                          {c.noticeLinkLabel}
+                        </a>
+                        {c.consentTail}
                       </span>
                     </span>
                   </ConsentCheckbox>
