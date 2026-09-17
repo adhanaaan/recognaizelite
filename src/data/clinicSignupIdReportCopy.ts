@@ -37,7 +37,7 @@ const SPEED_CHIP_STYLE = {
 const ID_PERKS = [
   "Mengikuti percakapan yang berlangsung cepat",
   "Menyesuaikan diri dengan cepat pada situasi yang berubah",
-  "Menghitung total belanja sebelum kasir selesai memindai",
+  "Menghitung total belanja sebelum diberitahu kasir",
 ] as const;
 
 const ID_STRUGGLES = [
@@ -129,7 +129,7 @@ const ID_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> = {
         ageLabel ? `— Chelsea, berusia ${ageLabel} seperti Anda` : "— Chelsea, seusia dengan Anda",
     },
     exit: {
-      body: "Skor Anda sudah ada di kotak masuk, beserta satu set strategi ringkas untuk menaikkannya.",
+      body: "Skor Anda akan masuk ke email, beserta satu set strategi ringkas untuk menaikkannya.",
       body2:
         "Saat Anda siap menguji tiga domain otak lainnya, Anda tahu di mana kami berada.",
     },
@@ -148,7 +148,7 @@ const ID_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> = {
       scrollCue: "Jelaskan lebih lanjut",
     },
     meaning: {
-      intro: "Inilah yang terbuka dengan kecepatan yang lebih tinggi:",
+      intro: "Dengan kecepatan yang lebih tinggi, Anda bisa:",
       perks: ID_PERKS,
       accent: ID_WEAK_ACCENT,
     },
@@ -170,7 +170,7 @@ const ID_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> = {
       actionables: [
         "Utamakan tidur — targetkan 7-9 jam; satu jam tambahan saja bisa menajamkan waktu reaksi Anda besok.",
         "Bergeraklah 20 menit — jalan cepat atau kardio apa pun meningkatkan aliran darah ke otak dan memperbaiki kecepatan pemrosesan.",
-        "Ikuti penilaian lengkap — ketahui domain mana yang sebenarnya menahan Anda agar Anda membenahi hambatan yang tepat.",
+        "Ikuti penilaian lengkap — ketahui domain mana yang sebenarnya memengaruhi performa Anda agar Anda membenahi hambatan yang tepat.",
       ],
     },
     baseline: {
@@ -178,9 +178,9 @@ const ID_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> = {
       h2Lead: "Anda baru menyelesaikan ",
       h2Gradient: "2 dari 5",
       paragraphs: [
-        "Permainan kecepatan dan jawaban kuis Anda memberi kami dua sumbu: kecepatan dan risiko. Hari ini kecepatannya rendah, dan satu permainan dalam satu hari adalah sinyal yang berisik.",
+        "Permainan kecepatan dan jawaban kuis Anda memberi kami dua sumbu: kecepatan dan risiko. Jika hari ini kecepatannya rendah, itu bukan berarti tanda kesehatan otak yang buruk.",
         "Memori, perhatian, dan fungsi eksekutif masing-masing menceritakan hal berbeda, dan Anda bisa lambat pada kecepatan tetapi kuat pada ketiganya.",
-        "Tes lengkap mencari mana yang sebenarnya menahan Anda, sehingga strategi Anda menyasar hambatan yang tepat.",
+        "Tes lengkap bisa mencari mana yang sebenarnya menahan performa Anda, sehingga bisa menyesuaikan strategi yang tepat.",
       ],
     },
     product: ID_OPTIMIZER_PRODUCT,
@@ -192,7 +192,7 @@ const ID_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> = {
         ageLabel ? `— Chelsea, berusia ${ageLabel} seperti Anda` : "— Chelsea, seusia dengan Anda",
     },
     exit: {
-      body: "Skor Anda sudah ada di kotak masuk, beserta satu set strategi ringkas untuk menaikkannya.",
+      body: "Skor Anda akan masuk ke email, beserta satu set strategi ringkas untuk menaikkannya.",
       body2:
         "Saat Anda siap mencari domain yang sebenarnya memperlambat Anda, Anda tahu di mana kami berada.",
     },
@@ -257,7 +257,7 @@ const ID_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> = {
       attribution: () => "— Siew Ling, 64, seusia dengan Anda",
     },
     exit: {
-      body: "Hasil Anda sudah ada di kotak masuk, dengan penjelasan sederhana untuk setiap skor.",
+      body: "Hasil Anda akan masuk ke email, dengan penjelasan sederhana untuk setiap skor.",
       body2:
         "Saat Anda siap memeriksa tiga domain lainnya, kami ada di sini. Laporannya bisa Anda bawa ke dokter Anda.",
     },
@@ -317,7 +317,7 @@ const ID_COPY: Record<LiteTwoVariantKey, LiteTwoReportCopy> = {
       attribution: () => "— Siew Ling, 64, seusia dengan Anda",
     },
     exit: {
-      body: "Hasil Anda ada di kotak masuk dengan penjelasan sederhana untuk setiap skor.",
+      body: "Hasil Anda akan masuk ke email dengan penjelasan sederhana untuk setiap skor.",
       body2:
         "Jika hasil yang lebih lambat itu membuat Anda khawatir, bawalah laporannya ke dokter Anda. Kami ada di sini untuk tiga domain lainnya.",
     },
