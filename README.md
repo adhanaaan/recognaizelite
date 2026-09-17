@@ -120,7 +120,7 @@ that difference:
 | `/lite-event-template` | `liteevent` | `liteevent_leads` + `liteevent_report_interest` | 018, 020 |
 | `/lite-event/ntuhomecoming` | `liteevent` | same two, `utm_campaign = 'ntuhomecoming'` | 018, 020 |
 | `/clinic-signup` | `liteevent` | same two, `utm_campaign = 'clinic-signup'` | 018, 019, 020, 021 |
-| `/clinic-signup-id` | `liteevent` | same two, `utm_campaign = 'clinic-signup-id'` | 018, 019, 020, 022 |
+| `/clinic-signup-id` | `liteevent` | same two, `utm_campaign = 'clinic-signup-id'` | 018, 019, 020, 022, 023 |
 
 `/lite-clinician` has eight pages, not nine: it carries no voucher page and no
 commerce CTA, so `report-full` does not exist for it. The clinician next step is
@@ -177,23 +177,28 @@ to `BAHASA`, which is the Indonesian slot in `src/locales`, so the shared Symbol
 Matching leg follows. Setting `BAHASA_INDONESIA = false` takes the picker off
 the page and the funnel runs in English.
 
-Its consent is Indonesia's, not Singapore's. `/clinic-signup` asks one
-compulsory tickbox that bundles the processing with the marketing; UU No. 27
-Tahun 2022 (UU PDP) does not let one sentence carry both purposes — Art. 22(2)
-wants each purpose stated and separable, and Art. 22(3) voids a consent that
-fails it. So this landing page asks twice: a **required** consent covering the
-collection and processing of the name, email, quiz answers and cognitive result
-(health data under Art. 4(2)) and the transfer of it out of Indonesia (Art. 56),
-and an **optional** marketing consent the run does not depend on. They land in
-`consent_analytics` and `consent_marketing`, and `consent_version` (migration
-`022`) records which wording was agreed to, because Art. 20(2) puts the burden of
-proving a consent on the controller.
+Its consent is written to Indonesia's law rather than Singapore's, but keeps
+`/clinic-signup`'s shape: **one compulsory tickbox**, no run without it. What
+differs is the sentence in it, which names each purpose it covers — collecting
+and processing the name, email, quiz answers and cognitive result (health data
+under Art. 4(2)); the transfer of that data out of Indonesia (Art. 56); and the
+newsletters — and links the full notice. The one tick therefore fills **both**
+`consent_analytics` and `consent_marketing`, the way `/clinic-signup`'s does, so
+neither column is a free choice on this funnel's rows (migration `023` spells
+that out; group by `consent_version` before reading either as an opt-in).
+`consent_version` (migration `022`) records which wording was agreed to, because
+Art. 20(2) puts the burden of proving a consent on the controller.
+
+An earlier revision asked twice — required processing, optional marketing —
+because Art. 22(2) wants a request covering several purposes to state each
+separably and Art. 22(3) voids one that does not. Asking once is the product
+decision; `src/data/clinicSignupIdConsentCopy.ts` is candid about what it costs
+and how to split it back if that reading ever has to be defended.
 
 The Art. 21(1) notice — lawful basis, purpose, data types, details collected,
-processing period, retention, transfer, rights — is layered. The required
-tickbox states the purpose it consents to and names the notice in the same
-sentence, linking `/clinic-signup-id/privacy` in a new tab so a half-filled form
-survives the trip. That page renders **both languages at once**, Indonesian
+processing period, retention, transfer, rights — is layered. The tickbox states
+the purposes it consents to and names the notice in the same sentence, linking
+`/clinic-signup-id/privacy` in a new tab so a half-filled form survives the trip. That page renders **both languages at once**, Indonesian
 first: it is the only screen
 whose words are the agreement rather than a description of it, Indonesian is the
 version that governs, and a direct link to it arrives with no language picker
