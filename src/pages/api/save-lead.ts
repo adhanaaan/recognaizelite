@@ -385,7 +385,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
      * NULL, which is the honest value for a question never put to the visitor.
      *
      * consent_at is stamped only when at least one of them arrives, so it
-     * dates the consent rather than the row.
+     * dates the consent rather than the row, and consent_version records which
+     * wording was agreed to when the funnel names one.
      */
     /**
      * Hold the result email back on this write. Default false, so every funnel
@@ -400,6 +401,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const askedForConsent =
       consentAnalytics !== null || consentMarketing !== null || consentPartner !== null;
 
+    /**
+     * Which wording the visitor ticked, when the funnel names one.
+     *
+     * /clinic-signup-id posts it because Art. 20(2) of Indonesia's UU No. 27
+     * Tahun 2022 puts the burden of proving consent on the controller, and the
+     * booleans above only prove that something was ticked. Every other funnel
+     * posts none, so the key is left out of the row entirely rather than
+     * written as NULL — same reason the consents themselves are.
+     */
+    const consentVersion = str(body.consentVersion);
+
     // Typed with every key optional so the columns can be left out entirely
     // rather than written as explicit NULLs — an update from a funnel that
     // never asks must not blank a consent another screen recorded.
@@ -408,12 +420,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       consent_marketing?: boolean | null;
       consent_partner?: boolean | null;
       consent_at?: string | null;
+      consent_version?: string;
     } = askedForConsent
       ? {
           consent_analytics: consentAnalytics,
           consent_marketing: consentMarketing,
           consent_partner: consentPartner,
           consent_at: new Date().toISOString(),
+          ...(consentVersion ? { consent_version: consentVersion } : {}),
         }
       : {};
 

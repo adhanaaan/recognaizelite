@@ -119,6 +119,8 @@ that difference:
 | `/lite-event` | `liteevent` | `liteevent_leads` | 018 |
 | `/lite-event-template` | `liteevent` | `liteevent_leads` + `liteevent_report_interest` | 018, 020 |
 | `/lite-event/ntuhomecoming` | `liteevent` | same two, `utm_campaign = 'ntuhomecoming'` | 018, 020 |
+| `/clinic-signup` | `liteevent` | same two, `utm_campaign = 'clinic-signup'` | 018, 019, 020, 021 |
+| `/clinic-signup-id` | `liteevent` | same two, `utm_campaign = 'clinic-signup-id'` | 018, 019, 020, 022 |
 
 `/lite-clinician` has eight pages, not nine: it carries no voucher page and no
 commerce CTA, so `report-full` does not exist for it. The clinician next step is
@@ -155,6 +157,46 @@ tables. The route nests under `/lite-event` because it is one of that family's
 occasions; Next resolves it to its own directory without touching `/lite-event`'s
 pages. Adding the next occasion is the same recipe: a `LiteVariant` with its
 campaign, and the pages copied with the variant swapped.
+
+`/clinic-signup-id` is the Indonesian clinic funnel: `/clinic-signup` page for
+page, with its own routes, campaign and sessionStorage namespace, and two
+differences that both come from where it runs.
+
+Its languages are English and Bahasa Indonesia, and nothing else. The
+/lite-event family's picker offers English, 中文 and Bahasa Melayu out of
+`src/i18n/liteEvent.ts`; this funnel has its own store, copy and toggle in
+`src/i18n/clinicSignupId.ts` and `src/i18n/clinicSignupIdCopy.ts`, keyed by its
+own `ClinicSignupIdLang`. Keeping the two apart is deliberate: widening
+`LiteEventLang` would have forced an Indonesian entry into every copy map the
+other funnels own, and a clinician who picked 中文 on a /lite-event link in the
+same browser would arrive here in a language this funnel does not translate.
+The Indonesian copy is complete — landing, quiz bank
+(`brainHealthQuestions.id.ts`), stat cards, loading and all four report variants
+(`clinicSignupIdReportCopy.ts`) — and picking it also sets the app-wide language
+to `BAHASA`, which is the Indonesian slot in `src/locales`, so the shared Symbol
+Matching leg follows. Setting `BAHASA_INDONESIA = false` takes the picker off
+the page and the funnel runs in English.
+
+Its consent is Indonesia's, not Singapore's. `/clinic-signup` asks one
+compulsory tickbox that bundles the processing with the marketing; UU No. 27
+Tahun 2022 (UU PDP) does not let one sentence carry both purposes — Art. 22(2)
+wants each purpose stated and separable, and Art. 22(3) voids a consent that
+fails it. So this landing page asks twice: a **required** consent covering the
+collection and processing of the name, email, quiz answers and cognitive result
+(health data under Art. 4(2)) and the transfer of it out of Indonesia (Art. 56),
+and an **optional** marketing consent the run does not depend on. They land in
+`consent_analytics` and `consent_marketing`, and `consent_version` (migration
+`022`) records which wording was agreed to, because Art. 20(2) puts the burden of
+proving a consent on the controller. Below the hero sits the Art. 21(1) notice —
+lawful basis, purpose, data types, details collected, processing period,
+retention, transfer, rights — all of it in
+`src/data/clinicSignupIdConsentCopy.ts`.
+
+Two placeholders must be filled before the link goes to anyone in Indonesia:
+`GMS_PDP_CONTACT_EMAIL` (`src/utils/liteOne.ts`), the address Art. 21 rights are
+exercised at, and `GMS_PRIVACY_POLICY_URL` beside it. The retention period the
+notice states, `CLINIC_SIGNUP_ID_RETENTION_MONTHS`, is 24 months by assumption
+and wants a decision from whoever owns the data policy.
 
 `/lite-two` is `/lite-one`'s flow with the report swapped for the v2
 scroll-snapped design, personalised per the RevitalAIze v2 comps: the copy

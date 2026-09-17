@@ -1,32 +1,50 @@
 import React from "react";
-import {
-  LANG_LABELS,
-  LITE_EVENT_LANGS,
-  type LiteEventLang,
-} from "src/i18n/liteEvent";
 
 /**
- * The three-way language switch at the top of /lite-event's landing page.
+ * The language switch at the top of a funnel's landing page.
  *
- * Renders nothing when `CHINESE_MALAY` is off — the caller passes `enabled`
- * straight through from `useLiteEventLang()`, so flipping that one constant
- * takes the control off the page rather than leaving a dead single-option pill.
+ * Renders nothing when the funnel's toggle is off — the caller passes `enabled`
+ * straight through from its language hook, so flipping that one constant takes
+ * the control off the page rather than leaving a dead single-option pill.
+ *
+ * It is generic over the language code because the funnels do not offer the
+ * same set: /lite-event and its family offer English, 中文 and Bahasa Melayu
+ * (`LITE_EVENT_LANGS`, `LANG_LABELS`), while /clinic-signup-id offers English
+ * and Bahasa Indonesia (`CLINIC_SIGNUP_ID_LANGS`,
+ * `CLINIC_SIGNUP_ID_LANG_LABELS`). The caller passes its own set and labels;
+ * this component only draws them.
  *
  * It sits on the hero video, so it uses the same translucent glass plate as
  * `HeroPill`; the selected segment goes solid white so the current language is
  * readable at arm's length across a booth table.
  */
-export function LanguagePicker({
+
+/**
+ * BCP 47 tags for the `lang` attribute on each button, so a screen reader
+ * announces "Bahasa Indonesia" in Indonesian rather than in English. A code
+ * with no entry is used as-is, which is correct for any plain two-letter tag.
+ */
+const HTML_LANG: Record<string, string> = {
+  zh: "zh-Hans",
+};
+
+export function LanguagePicker<L extends string>({
   lang,
   onChange,
   enabled,
   label,
+  langs,
+  labels,
 }: {
-  lang: LiteEventLang;
-  onChange: (lang: LiteEventLang) => void;
+  lang: L;
+  onChange: (lang: L) => void;
   enabled: boolean;
   /** Screen-reader label for the group, in the language currently showing. */
   label: string;
+  /** The codes to offer, in the order they should appear. */
+  langs: readonly L[];
+  /** What each code is called, each written in its own language. */
+  labels: Record<L, string>;
 }) {
   if (!enabled) return null;
 
@@ -36,13 +54,13 @@ export function LanguagePicker({
       aria-label={label}
       className="inline-flex items-center gap-1 rounded-full border border-white/25 bg-white/[0.12] p-1 backdrop-blur-[10px]"
     >
-      {LITE_EVENT_LANGS.map((code) => {
+      {langs.map((code) => {
         const active = code === lang;
         return (
           <button
             key={code}
             type="button"
-            lang={code === "zh" ? "zh-Hans" : code === "ms" ? "ms" : "en"}
+            lang={HTML_LANG[code] ?? code}
             aria-pressed={active}
             onClick={() => onChange(code)}
             className={[
@@ -52,7 +70,7 @@ export function LanguagePicker({
                 : "text-white/85 hover:text-white",
             ].join(" ")}
           >
-            {LANG_LABELS[code]}
+            {labels[code]}
           </button>
         );
       })}

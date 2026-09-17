@@ -217,6 +217,56 @@ export const CLINIC_SIGNUP: LiteVariant = {
 };
 
 /**
+ * /clinic-signup-id — the Indonesian clinic funnel.
+ *
+ * /clinic-signup's flow, page for page: the landing page takes the name, the
+ * email and the consents and opens the lead row there, before the game, so a
+ * clinician who wanders off mid-run still leaves a contactable row behind.
+ * Those rows are the ones with `score` still NULL, and /clinic-signup-id/loading
+ * completes the same row afterwards.
+ *
+ * Two things differ from /clinic-signup, and both come from where it runs.
+ *
+ * The languages are English and Bahasa Indonesia, and nothing else. Its picker
+ * is not the /lite-event family's — see src/i18n/clinicSignupId.ts for why the
+ * language store is its own, and src/i18n/clinicSignupIdCopy.ts for the copy.
+ * Picking Bahasa Indonesia also sets the app-wide language to "BAHASA", which is
+ * the Indonesian slot in the locale files the shared Symbol Matching leg reads,
+ * so the game screens follow the funnel.
+ *
+ * The consent is Indonesia's, not Singapore's. /clinic-signup asks one
+ * compulsory tickbox that bundles the processing with the marketing; UU No. 27
+ * Tahun 2022 does not allow one sentence to carry both purposes, so this funnel
+ * asks twice — a required processing consent that also covers the transfer out
+ * of Indonesia, and an optional marketing consent that the run does not depend
+ * on. They land in `consent_analytics` and `consent_marketing` respectively, and
+ * the wording they agreed to lands in `consent_version` (migration 022). The
+ * clauses and the Article 21 notice live in
+ * src/data/clinicSignupIdConsentCopy.ts.
+ *
+ * `clinic` stays "liteevent" for the reason /clinic-signup's does: the funnel
+ * writes to the existing liteevent_leads table and mails the existing event
+ * template, so a run through it is a real run and nothing has to be provisioned
+ * server-side first. `defaultCampaign` is what separates this funnel's rows from
+ * the rest of the event traffic afterwards, and `storagePrefix` keeps its
+ * sessionStorage namespace to itself, so a run here can never overwrite the
+ * report, profile or attempt id of a run through another funnel in the same
+ * browser — /clinic-signup's included, which is why the two prefixes differ.
+ *
+ * `hookClinic` stays "LiteEvent" as well, because that is what puts the shared
+ * Symbol Matching screens in the Clinical Empathy palette (see isLiteOneMode()).
+ * The funnels are kept apart after the game by hookReportPath, which the entry
+ * page points at this basePath.
+ */
+export const CLINIC_SIGNUP_ID: LiteVariant = {
+  clinic: LITE_EVENT_CLINIC,
+  hookClinic: "LiteEvent",
+  basePath: "/clinic-signup-id",
+  defaultCampaign: "clinic-signup-id",
+  storagePrefix: "recognaize-clinicsignup-id",
+};
+
+/**
  * /parkway — the Parkway Shenton partner funnel.
  *
  * The flow is /lite-event-template's, taken page for page: same landing,
@@ -600,6 +650,23 @@ export const SEVERITY_TO_KEY: Record<string, string> = {
  * unchanged.
  */
 export const GMS_PRIVACY_POLICY_URL = "";
+
+/**
+ * !! PLACEHOLDER — needs the address Gray Matter Solutions answers data-subject
+ * requests on, BEFORE /clinic-signup-id is put in front of anyone in Indonesia.
+ *
+ * Article 21 of Indonesia's UU No. 27 Tahun 2022 has the controller tell the
+ * data subject how to reach it before consent is taken, and Articles 5-13 give
+ * rights — access, correction, erasure, withdrawal — that have to be
+ * exercisable somewhere. An unsubscribe link answers the marketing half and
+ * nothing else, so a notice with no address is an incomplete notice rather than
+ * an unstyled one.
+ *
+ * Empty until it is filled: `consentLinkHref` keeps the unset address off the
+ * screen, and the withdrawal sentence closes without naming one — see
+ * src/data/clinicSignupIdConsentCopy.ts.
+ */
+export const GMS_PDP_CONTACT_EMAIL = "";
 
 /** Whether a URL is set, i.e. whether to render its words as a link at all. */
 export const consentLinkHref = (url: string): string | null =>
