@@ -2,7 +2,7 @@
   "Assessment Complete": {
     "ENGLISH": "Assessment Complete",
     "MANDARIN": "评估完成",
-    "BAHASA": "",
+    "BAHASA": "Penilaian Selesai",
     "MALAY": "Penilaian Selesai",
     "TAGALOG": "",
     "MALAYALAM": ""
@@ -10,7 +10,7 @@
   "Well done on completing the games, talk to your doctor to get your result.": {
     "ENGLISH": "Well done on completing the games, talk to your doctor to get your result.",
     "MANDARIN": "恭喜完成所有游戏，请与您的医生沟通以获取结果。",
-    "BAHASA": "",
+    "BAHASA": "Selamat, Anda telah menyelesaikan permainannya. Bicarakan dengan dokter Anda untuk mendapatkan hasilnya.",
     "MALAY": "Syabas kerana menyelesaikan permainan, bercakap dengan doktor anda untuk mendapatkan keputusan anda.",
     "TAGALOG": "",
     "MALAYALAM": ""
@@ -18,7 +18,7 @@
   "Leave": {
     "ENGLISH": "Leave",
     "MANDARIN": "退出",
-    "BAHASA": "",
+    "BAHASA": "Keluar",
     "MALAY": "Keluar",
     "TAGALOG": "",
     "MALAYALAM": ""

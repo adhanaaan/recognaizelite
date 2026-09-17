@@ -18,6 +18,7 @@ import { updateTaskProgress, useTaskProgress } from "src/stores/useTaskProgress"
 import { isDarkHookMode, isLiteOneMode, isNoviMode, isSjmcMode, isShortAssessment } from "src/utils/assessment";
 import { LITE } from "src/constants/liteOneTheme";
 import { APP_LANG } from "src/constants";
+import { clinicSignupIdGameCopy } from "src/i18n/clinicSignupIdCopy";
 import { liteEventGameCopy } from "src/i18n/liteEventCopy";
 import { getTimeLap } from "src/utils/helpers";
 import { verifyCompletedTasks } from "src/utils/task-verif";
@@ -91,9 +92,12 @@ const Task2Wrapper = () => {
   const sjmcW = isSjmcMode();
   const liteW = isLiteOneMode();
   // The lite countdown card names the task. /lite-event can be running in
-  // Chinese or Malay, which it carries here through APP_LANG; every other lite
-  // funnel leaves that at ENGLISH and gets the English lines it always had.
-  const liteCountdown = liteEventGameCopy(APP_LANG);
+  // Chinese or Malay and /clinic-signup-id in Bahasa Indonesia, which they carry
+  // here through APP_LANG; every other lite funnel leaves that at ENGLISH and
+  // gets the English lines it always had. The Indonesian funnel is asked first
+  // and returns null for anything but its own language, so the two copy modules
+  // stay independent of each other rather than importing in a cycle.
+  const liteCountdown = clinicSignupIdGameCopy(APP_LANG) ?? liteEventGameCopy(APP_LANG);
 
   return (
     <>

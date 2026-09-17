@@ -24,7 +24,14 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const FUNNEL_RE = /^\/[a-z0-9-]+(?:\/[a-z0-9-]+)*$/i;
 const FUNNEL_MAX_LEN = 64;
 
-const LANGS = new Set(["en", "zh", "ms"]);
+/**
+ * The language the report was read in, as each funnel's own picker codes it:
+ * "en" / "zh" / "ms" from the /lite-event family (src/i18n/liteEvent.ts) and
+ * "id" from /clinic-signup-id (src/i18n/clinicSignupId.ts). A funnel that adds
+ * a language has to add it here too, or its rows lose the column — the request
+ * is rejected outright rather than stored with a code nothing can read back.
+ */
+const LANGS = new Set(["en", "zh", "ms", "id"]);
 
 function str(value: unknown): string | null {
   if (typeof value !== "string") return null;

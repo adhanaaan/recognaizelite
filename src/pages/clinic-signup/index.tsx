@@ -12,7 +12,11 @@ import {
 import { LanguagePicker } from "src/components/LiteOne/LanguagePicker";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
 import { clinicSignupConsentCopy } from "src/data/clinicSignupConsentCopy";
-import { useLiteEventLang } from "src/i18n/liteEvent";
+import {
+  LANG_LABELS,
+  LITE_EVENT_LANGS,
+  useLiteEventLang,
+} from "src/i18n/liteEvent";
 import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
@@ -267,6 +271,8 @@ export default function ClinicSignupEntry() {
                     onChange={setLang}
                     enabled={enabled}
                     label={t.picker.label}
+                    langs={LITE_EVENT_LANGS}
+                    labels={LANG_LABELS}
                   />
                 </div>
               )}

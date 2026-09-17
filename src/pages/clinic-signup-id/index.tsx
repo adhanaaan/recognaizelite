@@ -11,13 +11,16 @@ import {
 } from "src/components/LiteOne/LandingSections";
 import { LanguagePicker } from "src/components/LiteOne/LanguagePicker";
 import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
-import { parkwayShentonConsentCopy } from "src/data/parkwayShentonConsentCopy";
 import {
-  LANG_LABELS,
-  LITE_EVENT_LANGS,
-  useLiteEventLang,
-} from "src/i18n/liteEvent";
-import { liteEventCopy } from "src/i18n/liteEventCopy";
+  CLINIC_SIGNUP_ID_CONSENT_VERSION,
+  clinicSignupIdConsentCopy,
+} from "src/data/clinicSignupIdConsentCopy";
+import {
+  CLINIC_SIGNUP_ID_LANGS,
+  CLINIC_SIGNUP_ID_LANG_LABELS,
+  useClinicSignupIdLang,
+} from "src/i18n/clinicSignupId";
+import { clinicSignupIdCopy } from "src/i18n/clinicSignupIdCopy";
 import { resetResults } from "src/stores/useResultStore";
 import { resetTaskProgress } from "src/stores/useTaskProgress";
 import { resetQuestionnaire } from "src/stores/useQuestionnaireStore";
@@ -28,7 +31,8 @@ import {
   setHookReportPath,
 } from "src/utils/assessment";
 import {
-  PARKWAY_SHENTON,
+  CLINIC_SIGNUP_ID,
+  GMS_PDP_CONTACT_EMAIL,
   GMS_PRIVACY_POLICY_URL,
   clearLiteSession,
   consentLinkHref,
@@ -36,23 +40,13 @@ import {
   readOrCreateAttemptId,
   stashLiteProfile,
 } from "src/utils/liteOne";
-import { IHH, PARTNER_CONSENT_REQUIRED } from "src/utils/parkway";
 
 /**
- * /parkwayshenton — the Parkway Shenton copy of this /clinic-signup screen.
+ * /clinic-signup-id — the Indonesian clinic copy of this /clinic-signup screen.
  *
  * The flow is /clinic-signup's: the name, the email and the consents are taken
  * here, on the landing page, and the lead row is opened before the game rather
- * than after it. There is no lead form after the quiz and no consent screen
- * before the result — /parkway has both, and this funnel folds both questions
- * into this one hero. See PARKWAY_SHENTON in src/utils/liteOne.ts.
- *
- * What this page adds to /clinic-signup's is the partner. Gray Matter
- * Solutions' consent is unchanged and is the first tickbox; IHH Healthcare
- * Singapore's three clauses are the second, verbatim and in English whichever
- * language the picker is set to (see src/data/parkwayConsentCopy.ts for why).
- * Both are required, and both are recorded — `consentMarketing` and
- * `consentPartner`, which land in separate columns.
+ * than after it. See CLINIC_SIGNUP_ID in src/utils/liteOne.ts.
  */
 
 /**
@@ -72,25 +66,41 @@ const fieldClass =
   "w-full rounded-xl border border-white/70 bg-white px-4 py-3 text-[15px] text-charcoal placeholder-quizOutline shadow-sm outline-none transition-colors focus:border-quizPrimary";
 
 /**
- * /parkwayshenton — entry. The Parkway Shenton funnel's landing page.
+ * The chips that mark a tickbox required or optional.
+ *
+ * They are not decoration. Art. 22(2) of Indonesia's UU No. 27 Tahun 2022 wants
+ * a consent request covering more than one purpose to keep those purposes
+ * clearly distinguishable, and a clinician skimming two tickboxes of similar
+ * length needs to see at a glance which one the assessment depends on.
+ */
+function ConsentMark({ children, required }: { children: React.ReactNode; required: boolean }) {
+  return (
+    <span
+      className={[
+        "mr-1.5 inline-block rounded-md px-1.5 py-0.5 align-[1px] text-[10px] font-extrabold uppercase tracking-wide",
+        required ? "bg-quizPrimary text-white" : "bg-white/25 text-white",
+      ].join(" ")}
+    >
+      {children}
+    </span>
+  );
+}
+
+/**
+ * /clinic-signup-id — entry. The Indonesian clinic funnel's landing page.
  *
  * /clinic-signup's landing, which is /lite-event-template's with the lead form
  * pulled forward onto it. The hero, language picker and trust band are the
- * template's; where that funnel's CTA simply starts the run, this one takes the
- * name, the email and both compulsory consents first, and opens the lead row
- * before the game.
+ * template's; the CTA takes the name, the email and the consents first, and
+ * opens the lead row before the game.
  *
  * That is the point of this funnel: the email is captured by default. A
- * visitor who tries the assessment and wanders off after the first screen
- * has still left a contactable row behind, which is not true of a funnel that
- * asks at the end. The cost is a heavier hero — heavier here than on
- * /clinic-signup, since the partner's three clauses sit in it too — and it is
- * worth it.
+ * clinician who tries the assessment and wanders off after the first screen has
+ * still left a contactable row behind, which is not true of a funnel that asks
+ * at the end. The cost is a heavier hero, and it is worth it.
  *
- * There is no /parkwayshenton/results as a result, and no /parkwayshenton/
- * consent either: both questions /parkway spreads across two screens are asked
- * on this one, and the quiz hands straight to /parkwayshenton/loading, which
- * completes the row this page opened.
+ * There is no /clinic-signup-id/results as a result — the quiz hands straight
+ * to /clinic-signup-id/loading, which completes the row this page opened.
  *
  * Like the template, it mails the result: the funnel's clinic is "liteevent",
  * which EMAIL_CLINICS maps to the event template — see
@@ -104,58 +114,79 @@ const fieldClass =
  * resetTaskProgress() matters: without it a visitor who already finished a run
  * lands on the celebration screen instead of the game.
  *
- * Unlike its siblings this funnel can run in Chinese or Malay: the picker at
- * the top of the hero sets the language for every screen from here to the
- * report. See src/i18n/liteEvent.ts — including the one constant that turns the
- * whole thing off. The app-wide language (which the shared /symbol-matching
- * leg reads) is set by `useLiteEventLang` on mount, which is why this page no
- * longer calls setAppLanguage("ENGLISH") the way the other entries do.
+ * ---------------------------------------------------------------------------
+ * WHAT THIS SCREEN DOES THAT /clinic-signup DOES NOT
+ * ---------------------------------------------------------------------------
+ * It runs in English or Bahasa Indonesia, and in no other language: the picker
+ * at the top of the hero sets the language for every screen from here to the
+ * report, out of this funnel's own store rather than the /lite-event family's —
+ * see src/i18n/clinicSignupId.ts, including the one constant that turns the
+ * whole thing off. The app-wide language (which the shared /symbol-matching leg
+ * reads) is set by `useClinicSignupIdLang` on mount, and Bahasa Indonesia maps
+ * to that enum's "BAHASA" slot, so the game screens follow too.
+ *
+ * And it asks for consent twice. /clinic-signup bundles the processing and the
+ * marketing into one compulsory tickbox, which is how a Singapore funnel may
+ * ask; UU No. 27 Tahun 2022 does not let one sentence carry both purposes
+ * (Art. 22(2), void under Art. 22(3) if it does). So the required tick covers
+ * the processing and the transfer out of Indonesia, the optional one covers
+ * marketing, and refusing the second changes nothing about the run. The Art. 21
+ * notice they refer to sits below the hero — it has to be on the page the
+ * consent is given on, and it is, but it is far too long to read over moving
+ * footage. All of that copy lives in src/data/clinicSignupIdConsentCopy.ts.
  */
-export default function ParkwayShentonEntry() {
-  const { lang, setLang, enabled } = useLiteEventLang();
-  const t = liteEventCopy(lang);
-  const consent = parkwayShentonConsentCopy(lang);
-  const c = consent.gms;
-  const pk = consent.partner;
+export default function ClinicSignupIdEntry() {
+  const { lang, setLang, enabled } = useClinicSignupIdLang();
+  const t = clinicSignupIdCopy(lang);
+  const c = clinicSignupIdConsentCopy(lang);
 
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [consented, setConsented] = React.useState(false);
-  const [partnerConsented, setPartnerConsented] = React.useState(false);
+  // Two separate pieces of state for two separate purposes, and the marketing
+  // one starts false and stays false unless the clinician ticks it — a
+  // pre-ticked optional box is not consent under Art. 20.
+  const [consentedProcessing, setConsentedProcessing] = React.useState(false);
+  const [consentedMarketing, setConsentedMarketing] = React.useState(false);
   const [error, setError] = React.useState("");
   const [saving, setSaving] = React.useState(false);
 
   const policyHref = consentLinkHref(GMS_PRIVACY_POLICY_URL);
-  const noticeHref = consentLinkHref(IHH.dataProtectionNoticeUrl);
+  const contactHref = consentLinkHref(GMS_PDP_CONTACT_EMAIL);
 
   useEffect(() => {
-    setHookClinic(PARKWAY_SHENTON.hookClinic);
-    setHookEntryPath(PARKWAY_SHENTON.basePath);
-    setHookReportPath(`${PARKWAY_SHENTON.basePath}/game-complete`);
+    setHookClinic(CLINIC_SIGNUP_ID.hookClinic);
+    setHookEntryPath(CLINIC_SIGNUP_ID.basePath);
+    setHookReportPath(`${CLINIC_SIGNUP_ID.basePath}/game-complete`);
     setAssessmentMode("short");
     resetTaskProgress();
     resetResults();
     resetQuestionnaire();
     // Wipes the previous run's attempt id along with its report and profile.
     // It matters more here than on the other funnels: this page opens a lead
-    // row keyed by that attempt id, so the next patient handed the same iPad
-    // would otherwise overwrite the previous one's name, email and consents
+    // row keyed by that attempt id, so a second clinician on the same iPad
+    // would otherwise overwrite the first one's name, email and consents
     // instead of getting a row of their own.
-    clearLiteSession(PARKWAY_SHENTON);
+    clearLiteSession(CLINIC_SIGNUP_ID);
   }, []);
 
   /**
    * Opens the lead row, then starts the run.
    *
    * The row is written here rather than at the end so the address is captured
-   * whether or not the visitor finishes: a walk-away after the first screen
-   * still leaves a name, an email and both consents behind, and those rows are
-   * the ones with `score` still NULL. /parkwayshenton/loading writes the same
+   * whether or not the clinician finishes: a walk-away after the first screen
+   * still leaves a name, an email and both consent answers, and those rows are
+   * the ones with `score` still NULL. /clinic-signup-id/loading writes the same
    * row again when the result exists, keyed by the same attempt id, and that
-   * second write is what sends the mail — `deferEmail` holds it back here,
-   * since there is nothing to report yet.
+   * second write is what sends the mail — `deferEmail` holds it back here, since
+   * there is nothing to report yet.
    *
-   * A failed save keeps the visitor on this screen with their typing intact,
+   * Both consents are posted, and `consentMarketing` is posted as false when it
+   * was declined rather than omitted: false is an answer the clinician gave and
+   * NULL means the question was never put, and a PDP request is answered from
+   * the difference. `consentVersion` records which wording they answered, which
+   * is what Art. 20(2) asks the controller to be able to show.
+   *
+   * A failed save keeps the clinician on this screen with their typing intact,
    * rather than starting a run whose result has nowhere to go.
    */
   const handleSubmit = async (e: React.FormEvent) => {
@@ -174,36 +205,32 @@ export default function ParkwayShentonEntry() {
       return;
     }
 
-    if (!consented) {
-      setError(t.results.errConsent);
-      return;
-    }
-
-    if (PARTNER_CONSENT_REQUIRED && !partnerConsented) {
-      setError(pk.errConsent);
+    if (!consentedProcessing) {
+      setError(c.errProcessing);
       return;
     }
 
     setSaving(true);
     setError("");
 
-    const { utm, referrer } = readAttribution(PARKWAY_SHENTON);
-    const attemptId = readOrCreateAttemptId(PARKWAY_SHENTON);
+    const { utm, referrer } = readAttribution(CLINIC_SIGNUP_ID);
+    const attemptId = readOrCreateAttemptId(CLINIC_SIGNUP_ID);
 
     try {
       const res = await fetch("/api/save-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          clinic: PARKWAY_SHENTON.clinic,
+          clinic: CLINIC_SIGNUP_ID.clinic,
           attemptId,
           name: trimmedName,
           email: trimmedEmail,
-          consentMarketing: consented,
-          // The partner's own, in the column a PDPA request is answered from.
-          // Sent even when it is false: this page put the question, so "read it
-          // and declined" is a different fact from "never asked".
-          consentPartner: partnerConsented,
+          // The required tick: processing the assessment data, including the
+          // transfer out of Indonesia. `consent_analytics` is the column Gray
+          // Matter's own processing consent lands in — see migration 022.
+          consentAnalytics: consentedProcessing,
+          consentMarketing: consentedMarketing,
+          consentVersion: CLINIC_SIGNUP_ID_CONSENT_VERSION,
           utm,
           referrer,
           deferEmail: true,
@@ -227,9 +254,9 @@ export default function ParkwayShentonEntry() {
       ageRange: "",
       gender: "",
       score: null,
-    }, PARKWAY_SHENTON);
+    }, CLINIC_SIGNUP_ID);
 
-    Router.push(`${PARKWAY_SHENTON.basePath}/ready`);
+    Router.push(`${CLINIC_SIGNUP_ID.basePath}/ready`);
   };
 
   return (
@@ -286,11 +313,13 @@ export default function ParkwayShentonEntry() {
                 {t.landing.heroSub}
               </p>
 
-              {/* The language switch sits between the subheadline and the CTA:
+              {/* The language switch sits between the subheadline and the form:
                   the visitor reads what this is, picks their language, then
-                  starts. The wrapper is gated on `enabled` too, not just the
-                  picker — an empty div would still leave its `mt-7` gap above
-                  the CTA once the toggle is off. */}
+                  fills it in — which matters more here than on the funnels that
+                  only start a run from this screen, because what they are
+                  agreeing to is on it. The wrapper is gated on `enabled` too,
+                  not just the picker — an empty div would still leave its
+                  `mt-7` gap. */}
               {enabled && (
                 <div className="lite-rise mt-7" style={{ animationDelay: "240ms" }}>
                   <LanguagePicker
@@ -298,8 +327,8 @@ export default function ParkwayShentonEntry() {
                     onChange={setLang}
                     enabled={enabled}
                     label={t.picker.label}
-                    langs={LITE_EVENT_LANGS}
-                    labels={LANG_LABELS}
+                    langs={CLINIC_SIGNUP_ID_LANGS}
+                    labels={CLINIC_SIGNUP_ID_LANG_LABELS}
                   />
                 </div>
               )}
@@ -315,7 +344,7 @@ export default function ParkwayShentonEntry() {
                 style={{ animationDelay: "280ms" }}
               >
                 <input
-                  id="pkws-name"
+                  id="clinic-id-name"
                   type="text"
                   autoComplete="name"
                   aria-label={t.results.nameLabel}
@@ -325,7 +354,7 @@ export default function ParkwayShentonEntry() {
                   className={fieldClass}
                 />
                 <input
-                  id="pkws-email"
+                  id="clinic-id-email"
                   type="email"
                   autoComplete="email"
                   inputMode="email"
@@ -340,73 +369,40 @@ export default function ParkwayShentonEntry() {
                   <p className="mb-2 text-[12px] font-bold leading-snug text-white">
                     {c.heading}
                   </p>
+
+                  {/* Above both ticks, because it qualifies both: answering for
+                      somebody else is processing that person's data. */}
+                  <p className="mb-2.5 text-[11.5px] leading-[1.5] text-white/85">
+                    {c.ownBehalf}
+                  </p>
+
                   <ConsentCheckbox
-                    id="pkws-consent-gms"
-                    checked={consented}
-                    onChange={(next) => { setConsented(next); setError(""); }}
+                    id="clinic-id-consent-processing"
+                    checked={consentedProcessing}
+                    onChange={(next) => { setConsentedProcessing(next); setError(""); }}
                     size={22}
                   >
-                    <span className="block space-y-1 text-[11.5px] leading-[1.5] text-white/85">
-                      <span className="block">{c.ownBehalf}</span>
-                      {/* The compulsory half, set brighter: it is the sentence
-                          a visitor is likeliest to skim, and the one the
-                          submit actually turns on. */}
-                      <span className="block font-semibold text-white">{c.consent}</span>
+                    <span className="block text-[11.5px] font-semibold leading-[1.5] text-white">
+                      <ConsentMark required>{c.requiredMark}</ConsentMark>
+                      {c.consentProcessing}
                     </span>
                   </ConsentCheckbox>
-                </div>
 
-                {/* The partner's consent, asked separately because it is a
-                    separate agreement with a separate holder — /parkway gives
-                    it a screen of its own; this funnel has no such screen, so
-                    it is asked here.
-
-                    Set on a solid white panel rather than over the footage
-                    like the block above it: that one is two short lines, this
-                    one is three clauses of legal text, and nobody reads three
-                    paragraphs of 11px type over moving video. Same reasoning
-                    as the fields. */}
-                <div className="mt-4">
-                  <p className="mb-2 text-[12px] font-bold leading-snug text-white">
-                    {pk.eyebrow}
-                  </p>
-                  <div className="rounded-xl bg-white px-3.5 py-3 shadow-sm">
-                    <ConsentCheckbox
-                      id="pkws-consent-partner"
-                      checked={partnerConsented}
-                      onChange={(next) => { setPartnerConsented(next); setError(""); }}
-                      size={22}
-                    >
-                      {/* One tickbox for the three clauses, as the partner's
-                          own form is written. */}
-                      <span className="block space-y-2 text-[11.5px] leading-[1.5] text-charcoal">
-                        <span className="block">
-                          {pk.clauses.treatmentLead}
-                          {noticeHref ? (
-                            <a
-                              href={noticeHref}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="font-semibold underline underline-offset-2"
-                              // The label wraps the whole block, so without
-                              // this a tap on the notice would tick the box on
-                              // the way out.
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {pk.clauses.noticeName}
-                            </a>
-                          ) : (
-                            <span className="font-semibold underline underline-offset-2">
-                              {pk.clauses.noticeName}
-                            </span>
-                          )}
-                          {pk.clauses.treatmentTail}
-                        </span>
-                        <span className="block">{pk.clauses.marketing}</span>
-                        <span className="block">{pk.clauses.dnc}</span>
+                  <ConsentCheckbox
+                    id="clinic-id-consent-marketing"
+                    checked={consentedMarketing}
+                    onChange={(next) => { setConsentedMarketing(next); setError(""); }}
+                    size={22}
+                    className="mt-3"
+                  >
+                    <span className="block text-[11.5px] leading-[1.5] text-white/85">
+                      <ConsentMark required={false}>{c.optionalMark}</ConsentMark>
+                      {c.consentMarketing}
+                      <span className="mt-1 block text-[11px] italic text-white/70">
+                        {c.consentMarketingNote}
                       </span>
-                    </ConsentCheckbox>
-                  </div>
+                    </span>
+                  </ConsentCheckbox>
                 </div>
 
                 {error && (
@@ -431,15 +427,57 @@ export default function ParkwayShentonEntry() {
             </div>
           </HeroVideo>
 
-          {/* The fine print the tick refers to, below the hero rather than
-              inside it. It has to be on the page the consent is given on, and
-              it is — but six lines of legal text over moving footage is both
-              unreadable and the largest thing in the hero, so it sits on solid
-              ground under the fold instead, where it can actually be read. */}
+          {/*
+           * The Art. 21 notice the ticks refer to, below the hero rather than
+           * inside it. The law wants it given before consent is taken and on
+           * the page the consent is given on, and it is — but it runs to a
+           * dozen rows, and a dozen rows of legal text over moving footage is
+           * both unreadable and the largest thing in the hero. It sits on solid
+           * ground under the fold instead, where it can actually be read.
+           */}
           <section className="border-t border-quizOutline-variant/60 bg-quizSurface">
-            <div className="mx-auto w-full max-w-[560px] space-y-2 px-6 py-5 text-[11px] leading-[1.6] text-quizOutline">
-              <p>
-                {c.dataProtectionLead}
+            <div className="mx-auto w-full max-w-[560px] px-6 py-6 text-[11px] leading-[1.6] text-quizOutline">
+              <h2 className="text-[12.5px] font-bold text-quizSecondary">{c.noticeTitle}</h2>
+              <p className="mt-1.5">{c.noticeLead}</p>
+
+              {/* A description list, not paragraphs: each row is one of the
+                  things Art. 21(1) names, and the term is what a reader — or a
+                  regulator — scans for. */}
+              <dl className="mt-3 space-y-2">
+                {c.items.map((item) => (
+                  <div key={item.term}>
+                    <dt className="font-semibold text-quizSecondary">{item.term}</dt>
+                    <dd>{item.detail}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <h3 className="mt-4 text-[11.5px] font-bold text-quizSecondary">{c.rightsTitle}</h3>
+              <ul className="mt-1.5 list-disc space-y-1 pl-4">
+                {c.rights.map((right) => (
+                  <li key={right}>{right}</li>
+                ))}
+              </ul>
+
+              <p className="mt-3">
+                {c.withdrawLead}
+                {contactHref && (
+                  <>
+                    {c.contactLead}
+                    <a
+                      href={`mailto:${contactHref}`}
+                      className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2"
+                    >
+                      {contactHref}
+                    </a>
+                    {c.contactTail}
+                  </>
+                )}
+                {c.withdrawTail}
+              </p>
+
+              <p className="mt-2">
+                {c.policyLead}
                 {policyHref ? (
                   <a
                     href={policyHref}
@@ -454,21 +492,17 @@ export default function ParkwayShentonEntry() {
                     {c.policyName}
                   </span>
                 )}
-                {c.dataProtectionTail}
+                {c.policyTail}
               </p>
-              <p>{c.processingNote}</p>
-              {/* The partner's withdrawal note. Below the fold with the rest of
-                  the fine print for the reason given there — it is what the
-                  tick above refers to, not part of what it agrees to, and the
-                  DPO's address is a link worth being able to read. */}
-              <p>
-                {pk.withdrawal}
-                <a
-                  href={`mailto:${IHH.dpoEmail}`}
-                  className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2"
-                >
-                  {IHH.dpoEmail}
-                </a>
+
+              <p className="mt-2">{c.processorNote}</p>
+              <p className="mt-2">{c.minorsNote}</p>
+              {c.languageNote && <p className="mt-2 italic">{c.languageNote}</p>}
+
+              {/* So the version a clinician agreed to is on the screen they
+                  agreed on, and not only in the row it is written to. */}
+              <p className="mt-3 text-[10px] text-quizOutline/70">
+                {c.versionLabel}: {CLINIC_SIGNUP_ID_CONSENT_VERSION}
               </p>
             </div>
           </section>

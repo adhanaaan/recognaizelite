@@ -10,7 +10,7 @@
   "Proceed": {
     "ENGLISH": "Proceed",
     "MANDARIN": "继续",
-    "BAHASA": "",
+    "BAHASA": "Lanjutkan",
     "MALAY": "Teruskan",
     "TAGALOG": "",
     "MALAYALAM": ""
@@ -18,7 +18,7 @@
   "Start assessment": {
     "ENGLISH": "Start assessment",
     "MANDARIN": "开始评估",
-    "BAHASA": "",
+    "BAHASA": "Mulai penilaian",
     "MALAY": "Mula penilaian",
     "TAGALOG": "",
     "MALAYALAM": ""
@@ -26,7 +26,7 @@
   "Start tutorial": {
     "ENGLISH": "Start tutorial",
     "MANDARIN": "开始教程",
-    "BAHASA": "",
+    "BAHASA": "Mulai tutorial",
     "MALAY": "Mula tutorial",
     "TAGALOG": "",
     "MALAYALAM": ""
@@ -34,7 +34,7 @@
   "Next game (as subheader)": {
     "ENGLISH": "Next game (as subheader)",
     "MANDARIN": "接下来",
-    "BAHASA": "",
+    "BAHASA": "Berikutnya",
     "MALAY": "Seterusnya",
     "TAGALOG": "",
     "MALAYALAM": ""
@@ -42,7 +42,7 @@
   "Next game (in button)": {
     "ENGLISH": "Next game (in button)",
     "MANDARIN": "下个游戏",
-    "BAHASA": "",
+    "BAHASA": "Permainan berikutnya",
     "MALAY": "Permainan seterusnya",
     "TAGALOG": "",
     "MALAYALAM": ""
@@ -50,7 +50,7 @@
   "Game complete": {
     "ENGLISH": "Game complete",
     "MANDARIN": "游戏完成",
-    "BAHASA": "",
+    "BAHASA": "Permainan selesai",
     "MALAY": "Permainan selesai",
     "TAGALOG": "",
     "MALAYALAM": ""
