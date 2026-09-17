@@ -9,7 +9,6 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
-import { ConsentCheckbox } from "src/components/LiteOne/ConsentCheckbox";
 import {
   MotionRadar,
   MotionScoreCurve,
@@ -52,19 +51,23 @@ import {
  * The flow is /clinic-signup's: the name, the email and the consents are taken
  * on the landing page, so the email is captured before the run rather than
  * after it. What this funnel changes is its languages — English and Bahasa
- * Indonesia, from src/i18n/clinicSignupId.ts — and the consent those two
- * tickboxes ask for, which is Indonesia's rather than Singapore's. See
- * CLINIC_SIGNUP_ID in src/utils/liteOne.ts.
+ * Indonesia, from src/i18n/clinicSignupId.ts — and the consent its one tickbox
+ * asks for, which is Indonesia's rather than Singapore's. See CLINIC_SIGNUP_ID
+ * in src/utils/liteOne.ts.
  *
  * The closing is the template's, not /lite-event's: /lite-event's report ends
  * on a price card and a button to the voucher page; this one keeps every
- * personalised line above it and swaps the commerce for two things the booth
- * team can act on: an "I'm interested" button under the three steps, and a
- * "What happens next" card that names the in-person next step and ends on a
- * tips opt-in. Both are recorded, keyed by the run's attempt id, in
- * liteevent_report_interest (migration 020) via /api/lite-report-interest —
- * see recordReportInterest. report-full.tsx still exists but nothing here
- * links to it any more.
+ * personalised line above it and swaps the commerce for what the booth team can
+ * act on — an "I'm interested" button under the three steps, and a "What
+ * happens next" card naming the in-person next step. It is recorded, keyed by
+ * the run's attempt id, in liteevent_report_interest (migration 020) via
+ * /api/lite-report-interest — see recordReportInterest.
+ *
+ * Where the template's card ends on a "send me brain health tips" tickbox, this
+ * one ends on the credibility line: the landing page already took a compulsory
+ * consent covering that mail, so the tickbox would be asking for something
+ * already given. report-full.tsx still exists but nothing here links to it any
+ * more.
  */
 
 /**
@@ -196,28 +199,29 @@ export default function ClinicSignupIdReport() {
 
   const [shared, setShared] = React.useState(false);
 
-  // The closing's two trackers. Hydrated from the device copy so a refresh
-  // shows the same state the run's row holds; each change is mirrored there
-  // and posted, best-effort, to /api/lite-report-interest.
+  /*
+   * The closing's one tracker. Hydrated from the device copy so a refresh shows
+   * the same state the run's row holds; the change is mirrored there and
+   * posted, best-effort, to /api/lite-report-interest.
+   *
+   * The sibling funnels close on two — this button and a "send me brain health
+   * tips" tickbox. This funnel has no second one: its landing page already
+   * takes a compulsory consent covering newsletters and brain health mail, so
+   * asking again at the end would be asking for something already given, and a
+   * box left unticked would read as a refusal of a consent the run was
+   * conditional on. `tipsOptIn` therefore stays NULL on this funnel's interest
+   * rows, which is the honest value for a question never put.
+   */
   const [interested, setInterested] = React.useState(false);
-  const [tipsOptIn, setTipsOptIn] = React.useState(false);
   React.useEffect(() => {
     const stored = readReportInterest(CLINIC_SIGNUP_ID);
-    if (stored) {
-      setInterested(stored.interested);
-      setTipsOptIn(stored.tipsOptIn);
-    }
+    if (stored) setInterested(stored.interested);
   }, []);
   const markInterested = () => {
     if (interested) return;
     setInterested(true);
     stashReportInterest({ interested: true }, CLINIC_SIGNUP_ID);
     void recordReportInterest({ interested: true }, CLINIC_SIGNUP_ID, { lang });
-  };
-  const toggleTips = (next: boolean) => {
-    setTipsOptIn(next);
-    stashReportInterest({ tipsOptIn: next }, CLINIC_SIGNUP_ID);
-    void recordReportInterest({ tipsOptIn: next }, CLINIC_SIGNUP_ID, { lang });
   };
   const share = async (text: string) => {
     const url = typeof window === "undefined" ? "" : `${window.location.origin}${CLINIC_SIGNUP_ID.basePath}`;
@@ -852,18 +856,6 @@ export default function ClinicSignupIdReport() {
                   <p className="mt-[19px] rounded-2xl border border-quizPrimary bg-quizPrimary-container px-[18px] py-[13px] text-center text-[17.5px] font-bold leading-[1.5] text-quizPrimary-onContainer">
                     {t.report.nextCallout}
                   </p>
-
-                  {/* The trial's second tracker, and the card's one control. */}
-                  <ConsentCheckbox
-                    id="levt-tpl-tips-opt-in"
-                    checked={tipsOptIn}
-                    onChange={toggleTips}
-                    className="mt-[22px] py-1"
-                  >
-                    <span className="mt-[2px] block text-[15.5px] leading-[1.4] text-quizSecondary">
-                      {t.report.tipsOptIn}
-                    </span>
-                  </ConsentCheckbox>
 
                   <p className="mt-[21px] text-center text-[13px] leading-[1.35] text-quizOutline">
                     {t.report.credibilityLine}
