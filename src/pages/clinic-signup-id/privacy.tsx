@@ -23,9 +23,10 @@ import {
  * personal data, the details of the information collected, the period of
  * processing, the retention period, the transfer out of Indonesia, and the
  * Art. 5-13 rights. The landing page used to carry all of it under the hero;
- * it now carries a summary and a link here, which is the layered notice the
- * article is normally satisfied by — the tickbox labels still state each
- * purpose at the point of consent, and this page holds the detail.
+ * it now links here from inside the required tickbox, which is the layered
+ * notice the article is normally satisfied by — the tickbox states the purpose
+ * it consents to and names this page in the same sentence, and this page holds
+ * the detail.
  *
  * ---------------------------------------------------------------------------
  * WHY BOTH LANGUAGES ARE ON THE PAGE AT ONCE

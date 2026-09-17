@@ -190,11 +190,11 @@ and an **optional** marketing consent the run does not depend on. They land in
 proving a consent on the controller.
 
 The Art. 21(1) notice — lawful basis, purpose, data types, details collected,
-processing period, retention, transfer, rights — is layered. A summary under the
-hero names the controller and the lawful basis and links the full notice at
-`/clinic-signup-id/privacy`, in a new tab so a half-filled form survives the
-trip; each tickbox still states its own purpose where the consent is given. That
-page renders **both languages at once**, Indonesian first: it is the only screen
+processing period, retention, transfer, rights — is layered. The required
+tickbox states the purpose it consents to and names the notice in the same
+sentence, linking `/clinic-signup-id/privacy` in a new tab so a half-filled form
+survives the trip. That page renders **both languages at once**, Indonesian
+first: it is the only screen
 whose words are the agreement rather than a description of it, Indonesian is the
 version that governs, and a direct link to it arrives with no language picker
 state to read. All of the copy, summary and notice alike, is in
