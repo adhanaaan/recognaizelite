@@ -187,10 +187,20 @@ collection and processing of the name, email, quiz answers and cognitive result
 and an **optional** marketing consent the run does not depend on. They land in
 `consent_analytics` and `consent_marketing`, and `consent_version` (migration
 `022`) records which wording was agreed to, because Art. 20(2) puts the burden of
-proving a consent on the controller. Below the hero sits the Art. 21(1) notice —
-lawful basis, purpose, data types, details collected, processing period,
-retention, transfer, rights — all of it in
-`src/data/clinicSignupIdConsentCopy.ts`.
+proving a consent on the controller.
+
+The Art. 21(1) notice — lawful basis, purpose, data types, details collected,
+processing period, retention, transfer, rights — is layered. A summary under the
+hero names the controller and the lawful basis and links the full notice at
+`/clinic-signup-id/privacy`, in a new tab so a half-filled form survives the
+trip; each tickbox still states its own purpose where the consent is given. That
+page renders **both languages at once**, Indonesian first: it is the only screen
+whose words are the agreement rather than a description of it, Indonesian is the
+version that governs, and a direct link to it arrives with no language picker
+state to read. All of the copy, summary and notice alike, is in
+`src/data/clinicSignupIdConsentCopy.ts`, versioned by
+`CLINIC_SIGNUP_ID_CONSENT_VERSION` — bump it whenever a clause changes in
+substance, so an old row's `consent_version` still names the text it answered.
 
 Two placeholders must be filled before the link goes to anyone in Indonesia:
 `GMS_PDP_CONTACT_EMAIL` (`src/utils/liteOne.ts`), the address Art. 21 rights are
