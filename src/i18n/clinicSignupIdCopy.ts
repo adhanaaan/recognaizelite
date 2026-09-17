@@ -221,7 +221,7 @@ const ID: LiteEventCopy = {
 
     baselineLabel: "Garis dasar Anda",
     baselineProgress: "2 dari 5 selesai",
-    radarAxes: ["Kecepatan", "Memori", "Perhatian", "Eksekutif", "Risiko"],
+    radarAxes: ["Kecepatan", "Memori", "Perhatian", "Eksekutif", "Skor Risiko"],
     radarAria: "Radar garis dasar: dua dari lima bagian terukur, tiga masih kosong",
 
     howItWorksEyebrow: "Cara kerjanya",
@@ -256,7 +256,7 @@ const ID: LiteEventCopy = {
 
     nextSectionLabel: "Langkah berikutnya",
     interested: "Saya tertarik",
-    interestedDone: "Terima kasih, sudah dicatat",
+    interestedDone: "Terima kasih, sudah tercatat",
     nextEyebrow: "Apa yang terjadi berikutnya",
     nextH2: "Ambil langkah berikutnya bersama ReCOGnAIze",
     nextBody:
@@ -270,6 +270,9 @@ const ID: LiteEventCopy = {
       "Hasil ditinjau bersama tenaga medis profesional",
     ],
     nextCallout: "Bicara dengan tim kami di booth",
+    /* Unused on this funnel: the report's tickbox was removed, because the
+       landing page's compulsory consent already covers this mail. The key
+       stays because LiteEventCopy requires it — the sibling funnels render it. */
     tipsOptIn: "Kirimi saya tips kesehatan otak, dan akses awal saat kami meluncur.",
     credibilityLine: "Dibangun bersama Dementia Research Centre, NTU · Lancet Commission 2024",
 
