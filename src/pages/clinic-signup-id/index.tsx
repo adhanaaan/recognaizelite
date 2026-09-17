@@ -129,13 +129,14 @@ function ConsentMark({ children, required }: { children: React.ReactNode; requir
  * the processing and the transfer out of Indonesia, the optional one covers
  * marketing, and refusing the second changes nothing about the run.
  *
- * The Art. 21 notice those ticks refer to is layered: a summary under the hero
- * naming the controller and the lawful basis, and the full disclosure on
- * /clinic-signup-id/privacy, which the summary links in a new tab. It used to
- * sit here in full, a dozen rows of it, which is both the largest thing on the
- * page and the least read thing on it. What has to be at the point of consent
- * still is — each tickbox states its own purpose. All of the copy, summary and
- * notice alike, lives in src/data/clinicSignupIdConsentCopy.ts.
+ * The Art. 21 notice those ticks refer to lives on /clinic-signup-id/privacy,
+ * linked from inside the required tickbox itself. It used to sit on this page
+ * in full — a dozen rows of legal text, the largest thing here and the least
+ * read — and then as a summary paragraph under the hero, which was the same
+ * problem smaller. What is left is the shape the disclosure actually wants:
+ * each tickbox states its own purpose, and the sentence being consented to
+ * names the notice and links it. All of the copy lives in
+ * src/data/clinicSignupIdConsentCopy.ts.
  */
 export default function ClinicSignupIdEntry() {
   const { lang, setLang, enabled } = useClinicSignupIdLang();
@@ -383,7 +384,30 @@ export default function ClinicSignupIdEntry() {
                   >
                     <span className="block text-[11.5px] font-semibold leading-[1.5] text-white">
                       <ConsentMark required>{c.requiredMark}</ConsentMark>
-                      {c.consentProcessing}
+                      {c.consentProcessingLead}
+                      {/*
+                       * The notice, linked from inside the sentence that
+                       * consents to it.
+                       *
+                       * New tab, because the name and email above are React
+                       * state and this is the worst possible moment to throw
+                       * away what someone typed. `stopPropagation` because the
+                       * link sits inside the tickbox's own <label>: the HTML
+                       * spec already says a label must not forward activation
+                       * from an interactive descendant, but a stray tick here
+                       * would be a consent nobody gave, which is not a thing to
+                       * leave to browser agreement.
+                       */}
+                      <a
+                        href={`${CLINIC_SIGNUP_ID.basePath}/privacy`}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="underline decoration-white/60 underline-offset-2 hover:decoration-white"
+                      >
+                        {c.noticeLinkLabel}
+                      </a>
+                      {c.consentProcessingTail}
                     </span>
                   </ConsentCheckbox>
 
@@ -425,45 +449,6 @@ export default function ClinicSignupIdEntry() {
               <HeroFeaturedIn logos={PRESS} label={t.landing.featuredIn} />
             </div>
           </HeroVideo>
-
-          {/*
-           * The Art. 21 notice, as a summary pointing at the full one.
-           *
-           * All dozen rows of it used to sit here. They read badly under a
-           * hero and nobody scrolled them, so the detail moved to
-           * /clinic-signup-id/privacy and this is the layered notice that
-           * stands in its place: the controller, the lawful basis and what the
-           * full notice covers, given before consent is taken, with the
-           * purposes themselves still stated on the tickboxes the clinician
-           * actually ticks.
-           *
-           * The link opens in a new tab on purpose. The name and email in the
-           * hero are React state, so navigating away in the same tab would
-           * throw away what they have typed to go and read what they are
-           * agreeing to — which is exactly the moment not to punish.
-           */}
-          <section className="border-t border-quizOutline-variant/60 bg-quizSurface">
-            <div className="mx-auto w-full max-w-[560px] px-6 py-5 text-[11px] leading-[1.6] text-quizOutline">
-              <p>
-                {c.noticeSummaryLead}
-                <a
-                  href={`${CLINIC_SIGNUP_ID.basePath}/privacy`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2"
-                >
-                  {c.noticeLinkLabel}
-                </a>
-                {c.noticeSummaryTail}
-              </p>
-
-              {/* So the version a clinician agreed to is on the screen they
-                  agreed on, and not only in the row it is written to. */}
-              <p className="mt-3 text-[10px] text-quizOutline/70">
-                {c.versionLabel}: {CLINIC_SIGNUP_ID_CONSENT_VERSION}
-              </p>
-            </div>
-          </section>
 
           <TrustBand
             lead={t.landing.trustLead}

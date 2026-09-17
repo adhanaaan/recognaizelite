@@ -104,25 +104,26 @@ export type ClinicSignupIdConsentCopy = {
   /** The chips that mark each tickbox, so which is which is visible at a glance. */
   requiredMark: string;
   optionalMark: string;
-  /** Tickbox 1 — required. Processing, incl. the transfer out of Indonesia. */
-  consentProcessing: string;
+  /**
+   * Tickbox 1 — required. Processing, incl. the transfer out of Indonesia.
+   *
+   * Split around the notice's name, which renders as a link to
+   * /clinic-signup-id/privacy inside the tickbox label. The reference lives in
+   * the sentence being consented to rather than in a paragraph beside it: what
+   * the tick agrees to is "this, as set out over there", and Art. 21 is
+   * satisfied by the disclosure being reachable at the moment of consent, not
+   * by it being printed underneath.
+   */
+  consentProcessingLead: string;
+  consentProcessingTail: string;
   /** Tickbox 2 — optional. Marketing, and the line that says it is optional. */
   consentMarketing: string;
   consentMarketingNote: string;
   /** Shown when the run is started without the required tick. */
   errProcessing: string;
 
-  /**
-   * The short notice that stays with the form, pointing at the full one.
-   *
-   * Art. 21 wants the disclosure given before consent is taken, not merely
-   * available somewhere — so the summary names the controller, the lawful
-   * basis and what the full notice covers, rather than being a bare "see our
-   * policy" link. Split around the link's own words.
-   */
-  noticeSummaryLead: string;
+  /** The notice's name, as the tickbox link and the page's own heading. */
   noticeLinkLabel: string;
-  noticeSummaryTail: string;
 
   /* ------------------------------------------- the notice on its own page -- */
   /** <title> for /clinic-signup-id/privacy. */
@@ -171,18 +172,16 @@ const ID: ClinicSignupIdConsentCopy = {
     "Saya mengisi formulir ini atas nama saya sendiri; atau atas nama orang lain, dan saya menyatakan bahwa orang tersebut telah memberikan persetujuannya serta saya berwenang memberikan jawaban dalam formulir ini.",
   requiredMark: "Wajib",
   optionalMark: "Opsional",
-  consentProcessing:
-    "Saya menyetujui Gray Matter Solutions Pte Ltd mengumpulkan dan memproses nama, alamat email, jawaban kuis, dan hasil penilaian kognitif saya — termasuk data kesehatan saya — untuk menjalankan penilaian ini dan mengirimkan hasilnya kepada saya, serta menyetujui pengiriman data tersebut ke luar wilayah Republik Indonesia sebagaimana dijelaskan di bawah.",
+  consentProcessingLead:
+    "Saya menyetujui Gray Matter Solutions Pte Ltd mengumpulkan dan memproses nama, alamat email, jawaban kuis, dan hasil penilaian kognitif saya — termasuk data kesehatan saya — untuk menjalankan penilaian ini dan mengirimkan hasilnya kepada saya, serta menyetujui pengiriman data tersebut ke luar wilayah Republik Indonesia, sebagaimana dijelaskan dalam ",
+  consentProcessingTail: ".",
   consentMarketing:
     "Saya menyetujui Gray Matter Solutions menghubungi saya melalui email berisi buletin, informasi kesehatan otak, dan undangan acara.",
   consentMarketingNote:
     "Persetujuan ini opsional. Penilaian tetap gratis dan hasil Anda tetap dikirim meskipun kotak ini tidak dicentang.",
   errProcessing: "Mohon setujui pemrosesan data pribadi Anda untuk melanjutkan.",
 
-  noticeSummaryLead:
-    "Data pribadi Anda dikumpulkan dan diproses oleh Gray Matter Solutions Pte Ltd atas dasar persetujuan Anda, sesuai UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi. Rincian lengkapnya — tujuan, jenis data, jangka waktu penyimpanan, pengiriman ke luar wilayah Indonesia, dan hak Anda — ada dalam ",
   noticeLinkLabel: "Pemberitahuan Pelindungan Data Pribadi",
-  noticeSummaryTail: ", yang terbuka di tab baru agar isian Anda tidak hilang.",
 
   pageTitle: "Pemberitahuan Pelindungan Data Pribadi | ReCOGnAIze",
   backToSignup: "← Kembali ke formulir pendaftaran",
@@ -267,18 +266,16 @@ const EN: ClinicSignupIdConsentCopy = {
     "I am completing this form on my own behalf; or on behalf of another person, and I confirm that they have given their consent and that I am authorised to provide the answers in this form.",
   requiredMark: "Required",
   optionalMark: "Optional",
-  consentProcessing:
-    "I consent to Gray Matter Solutions Pte Ltd collecting and processing my name, email address, quiz answers and cognitive assessment result — including my health data — in order to run this assessment and send me the result, and to that data being transferred outside the Republic of Indonesia as described below.",
+  consentProcessingLead:
+    "I consent to Gray Matter Solutions Pte Ltd collecting and processing my name, email address, quiz answers and cognitive assessment result — including my health data — in order to run this assessment and send me the result, and to that data being transferred outside the Republic of Indonesia, as set out in the ",
+  consentProcessingTail: ".",
   consentMarketing:
     "I consent to Gray Matter Solutions contacting me by email with newsletters, brain health information and event invitations.",
   consentMarketingNote:
     "This consent is optional. The assessment is free and your result is sent whether or not you tick this box.",
   errProcessing: "Please agree to the processing of your personal data to continue.",
 
-  noticeSummaryLead:
-    "Your personal data is collected and processed by Gray Matter Solutions Pte Ltd on the basis of your consent, under Law No. 27 of 2022 on Personal Data Protection. The full details — purposes, data types, retention, transfer outside Indonesia and your rights — are in the ",
   noticeLinkLabel: "Personal Data Protection Notice",
-  noticeSummaryTail: ", which opens in a new tab so you don't lose what you have typed.",
 
   pageTitle: "Personal Data Protection Notice | ReCOGnAIze",
   backToSignup: "← Back to the sign-up form",
