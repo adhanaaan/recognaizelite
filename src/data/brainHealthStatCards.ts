@@ -42,6 +42,18 @@ export const STAT_CARDS: StatCard[] = [
     citation: null,
   },
   {
+    // Indonesia's counterpart, for /clinic-signup-id — its audience is
+    // Indonesian clinicians, so the Singapore prevalence figure the other
+    // funnels in this family lead with doesn't land the same way. `citation`
+    // is null for the same reason nhmsMalaysia's is: the stat card screen
+    // renders `source` directly and this study has no citation pill.
+    id: "strideIndonesia",
+    stat: "1 in 4",
+    body: "Indonesians aged 65 and over live with dementia.",
+    source: "STRiDE Programme study, 2023",
+    citation: null,
+  },
+  {
     id: "salthouse",
     stat: "From age 45",
     body: "Processing speed, which is how quickly the brain handles information, can begin to gradually slow down from around age 45.",

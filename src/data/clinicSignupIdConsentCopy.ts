@@ -112,7 +112,23 @@ export type ClinicSignupIdConsentCopy = {
   /** Shown when the run is started without the required tick. */
   errProcessing: string;
 
-  /* -------------------------------------------- the notice below the hero -- */
+  /**
+   * The short notice that stays with the form, pointing at the full one.
+   *
+   * Art. 21 wants the disclosure given before consent is taken, not merely
+   * available somewhere — so the summary names the controller, the lawful
+   * basis and what the full notice covers, rather than being a bare "see our
+   * policy" link. Split around the link's own words.
+   */
+  noticeSummaryLead: string;
+  noticeLinkLabel: string;
+  noticeSummaryTail: string;
+
+  /* ------------------------------------------- the notice on its own page -- */
+  /** <title> for /clinic-signup-id/privacy. */
+  pageTitle: string;
+  /** The way back, for a clinician who opened the notice mid-sign-up. */
+  backToSignup: string;
   noticeTitle: string;
   /** Names the controller and the law the notice is given under. */
   noticeLead: string;
@@ -163,6 +179,13 @@ const ID: ClinicSignupIdConsentCopy = {
     "Persetujuan ini opsional. Penilaian tetap gratis dan hasil Anda tetap dikirim meskipun kotak ini tidak dicentang.",
   errProcessing: "Mohon setujui pemrosesan data pribadi Anda untuk melanjutkan.",
 
+  noticeSummaryLead:
+    "Data pribadi Anda dikumpulkan dan diproses oleh Gray Matter Solutions Pte Ltd atas dasar persetujuan Anda, sesuai UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi. Rincian lengkapnya — tujuan, jenis data, jangka waktu penyimpanan, pengiriman ke luar wilayah Indonesia, dan hak Anda — ada dalam ",
+  noticeLinkLabel: "Pemberitahuan Pelindungan Data Pribadi",
+  noticeSummaryTail: ", yang terbuka di tab baru agar isian Anda tidak hilang.",
+
+  pageTitle: "Pemberitahuan Pelindungan Data Pribadi | ReCOGnAIze",
+  backToSignup: "← Kembali ke formulir pendaftaran",
   noticeTitle: "Pemberitahuan Pelindungan Data Pribadi",
   noticeLead:
     "Pengendali Data Pribadi Anda adalah Gray Matter Solutions Pte Ltd, sebuah perseroan yang berkedudukan di Singapura. Pemberitahuan ini diberikan sebelum persetujuan Anda diminta, sebagaimana diatur Pasal 21 Undang-Undang No. 27 Tahun 2022 tentang Pelindungan Data Pribadi.",
@@ -252,6 +275,13 @@ const EN: ClinicSignupIdConsentCopy = {
     "This consent is optional. The assessment is free and your result is sent whether or not you tick this box.",
   errProcessing: "Please agree to the processing of your personal data to continue.",
 
+  noticeSummaryLead:
+    "Your personal data is collected and processed by Gray Matter Solutions Pte Ltd on the basis of your consent, under Law No. 27 of 2022 on Personal Data Protection. The full details — purposes, data types, retention, transfer outside Indonesia and your rights — are in the ",
+  noticeLinkLabel: "Personal Data Protection Notice",
+  noticeSummaryTail: ", which opens in a new tab so you don't lose what you have typed.",
+
+  pageTitle: "Personal Data Protection Notice | ReCOGnAIze",
+  backToSignup: "← Back to the sign-up form",
   noticeTitle: "Personal Data Protection Notice",
   noticeLead:
     "The Personal Data Controller is Gray Matter Solutions Pte Ltd, a company incorporated in Singapore. This notice is given before your consent is requested, as Article 21 of Law No. 27 of 2022 on Personal Data Protection requires.",

@@ -96,8 +96,11 @@ function allSteps(t: LiteEventCopy): StepDef[] {
 
     // The only stat card this funnel keeps — the rest (lancet2024, salthouse)
     // are dropped so the quiz carries a single credibility beat instead of
-    // three, at the position IMH WiSE already had.
-    { kind: "statCard", cardId: "imhWise" },
+    // three. Indonesia's own prevalence figure, not Singapore's imhWise: this
+    // funnel's audience is Indonesian clinicians, and the STRiDE Programme
+    // figure is the one that lands with them the way IMH WiSE lands with a
+    // Singapore audience. See "strideIndonesia" in brainHealthStatCards.ts.
+    { kind: "statCard", cardId: "strideIndonesia" },
 
     { kind: "question", questionId: "tracks" },
 

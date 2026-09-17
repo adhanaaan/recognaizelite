@@ -32,10 +32,7 @@ import {
 } from "src/utils/assessment";
 import {
   CLINIC_SIGNUP_ID,
-  GMS_PDP_CONTACT_EMAIL,
-  GMS_PRIVACY_POLICY_URL,
   clearLiteSession,
-  consentLinkHref,
   readAttribution,
   readOrCreateAttemptId,
   stashLiteProfile,
@@ -130,10 +127,15 @@ function ConsentMark({ children, required }: { children: React.ReactNode; requir
  * ask; UU No. 27 Tahun 2022 does not let one sentence carry both purposes
  * (Art. 22(2), void under Art. 22(3) if it does). So the required tick covers
  * the processing and the transfer out of Indonesia, the optional one covers
- * marketing, and refusing the second changes nothing about the run. The Art. 21
- * notice they refer to sits below the hero — it has to be on the page the
- * consent is given on, and it is, but it is far too long to read over moving
- * footage. All of that copy lives in src/data/clinicSignupIdConsentCopy.ts.
+ * marketing, and refusing the second changes nothing about the run.
+ *
+ * The Art. 21 notice those ticks refer to is layered: a summary under the hero
+ * naming the controller and the lawful basis, and the full disclosure on
+ * /clinic-signup-id/privacy, which the summary links in a new tab. It used to
+ * sit here in full, a dozen rows of it, which is both the largest thing on the
+ * page and the least read thing on it. What has to be at the point of consent
+ * still is — each tickbox states its own purpose. All of the copy, summary and
+ * notice alike, lives in src/data/clinicSignupIdConsentCopy.ts.
  */
 export default function ClinicSignupIdEntry() {
   const { lang, setLang, enabled } = useClinicSignupIdLang();
@@ -149,9 +151,6 @@ export default function ClinicSignupIdEntry() {
   const [consentedMarketing, setConsentedMarketing] = React.useState(false);
   const [error, setError] = React.useState("");
   const [saving, setSaving] = React.useState(false);
-
-  const policyHref = consentLinkHref(GMS_PRIVACY_POLICY_URL);
-  const contactHref = consentLinkHref(GMS_PDP_CONTACT_EMAIL);
 
   useEffect(() => {
     setHookClinic(CLINIC_SIGNUP_ID.hookClinic);
@@ -428,76 +427,35 @@ export default function ClinicSignupIdEntry() {
           </HeroVideo>
 
           {/*
-           * The Art. 21 notice the ticks refer to, below the hero rather than
-           * inside it. The law wants it given before consent is taken and on
-           * the page the consent is given on, and it is — but it runs to a
-           * dozen rows, and a dozen rows of legal text over moving footage is
-           * both unreadable and the largest thing in the hero. It sits on solid
-           * ground under the fold instead, where it can actually be read.
+           * The Art. 21 notice, as a summary pointing at the full one.
+           *
+           * All dozen rows of it used to sit here. They read badly under a
+           * hero and nobody scrolled them, so the detail moved to
+           * /clinic-signup-id/privacy and this is the layered notice that
+           * stands in its place: the controller, the lawful basis and what the
+           * full notice covers, given before consent is taken, with the
+           * purposes themselves still stated on the tickboxes the clinician
+           * actually ticks.
+           *
+           * The link opens in a new tab on purpose. The name and email in the
+           * hero are React state, so navigating away in the same tab would
+           * throw away what they have typed to go and read what they are
+           * agreeing to — which is exactly the moment not to punish.
            */}
           <section className="border-t border-quizOutline-variant/60 bg-quizSurface">
-            <div className="mx-auto w-full max-w-[560px] px-6 py-6 text-[11px] leading-[1.6] text-quizOutline">
-              <h2 className="text-[12.5px] font-bold text-quizSecondary">{c.noticeTitle}</h2>
-              <p className="mt-1.5">{c.noticeLead}</p>
-
-              {/* A description list, not paragraphs: each row is one of the
-                  things Art. 21(1) names, and the term is what a reader — or a
-                  regulator — scans for. */}
-              <dl className="mt-3 space-y-2">
-                {c.items.map((item) => (
-                  <div key={item.term}>
-                    <dt className="font-semibold text-quizSecondary">{item.term}</dt>
-                    <dd>{item.detail}</dd>
-                  </div>
-                ))}
-              </dl>
-
-              <h3 className="mt-4 text-[11.5px] font-bold text-quizSecondary">{c.rightsTitle}</h3>
-              <ul className="mt-1.5 list-disc space-y-1 pl-4">
-                {c.rights.map((right) => (
-                  <li key={right}>{right}</li>
-                ))}
-              </ul>
-
-              <p className="mt-3">
-                {c.withdrawLead}
-                {contactHref && (
-                  <>
-                    {c.contactLead}
-                    <a
-                      href={`mailto:${contactHref}`}
-                      className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2"
-                    >
-                      {contactHref}
-                    </a>
-                    {c.contactTail}
-                  </>
-                )}
-                {c.withdrawTail}
+            <div className="mx-auto w-full max-w-[560px] px-6 py-5 text-[11px] leading-[1.6] text-quizOutline">
+              <p>
+                {c.noticeSummaryLead}
+                <a
+                  href={`${CLINIC_SIGNUP_ID.basePath}/privacy`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2"
+                >
+                  {c.noticeLinkLabel}
+                </a>
+                {c.noticeSummaryTail}
               </p>
-
-              <p className="mt-2">
-                {c.policyLead}
-                {policyHref ? (
-                  <a
-                    href={policyHref}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2"
-                  >
-                    {c.policyName}
-                  </a>
-                ) : (
-                  <span className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2">
-                    {c.policyName}
-                  </span>
-                )}
-                {c.policyTail}
-              </p>
-
-              <p className="mt-2">{c.processorNote}</p>
-              <p className="mt-2">{c.minorsNote}</p>
-              {c.languageNote && <p className="mt-2 italic">{c.languageNote}</p>}
 
               {/* So the version a clinician agreed to is on the screen they
                   agreed on, and not only in the row it is written to. */}
