@@ -8,14 +8,11 @@
  * the exported map reads `STAT_CARDS_ID_BY_ID`: the Indonesian cards, keyed by
  * card id.
  *
- * The `imhWise` card is the one /clinic-signup-id actually shows, and it is
- * still Singapore's prevalence figure, translated rather than localised. The
- * English bank carries `nhmsMalaysia` as Malaysia's counterpart for
- * /act4health, so an Indonesian counterpart clearly belongs here too — but it
- * needs a prevalence figure and a citation the clinical team stands behind, and
- * inventing one for a card that sits next to IMH WiSE and the Lancet Commission
- * is not a translation decision. Add the card to the English bank with its
- * source, translate it here, and point the quiz's `statCard` step at it.
+ * The `strideIndonesia` card is the one /clinic-signup-id actually shows —
+ * Indonesia's own prevalence figure, the counterpart to `imhWise` (Singapore,
+ * shown by /lite-event) and `nhmsMalaysia` (Malaysia, shown by /act4health).
+ * `imhWise` and `nhmsMalaysia` are translated here too, for parity with the
+ * English bank, even though this funnel doesn't show them.
  */
 
 import type { StatCard } from "src/data/brainHealthStatCards";
@@ -40,6 +37,13 @@ export const STAT_CARDS_ID: StatCard[] = [
     stat: "1 dari 10",
     body: "warga Malaysia berusia 60 tahun ke atas hidup dengan demensia.",
     source: "National Health and Morbidity Survey (NHMS) 2025",
+    citation: null,
+  },
+  {
+    id: "strideIndonesia",
+    stat: "1 dari 4",
+    body: "warga Indonesia berusia 65 tahun ke atas hidup dengan demensia.",
+    source: "Studi Program STRiDE, 2023",
     citation: null,
   },
   {
