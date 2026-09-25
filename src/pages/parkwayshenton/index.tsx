@@ -49,8 +49,10 @@ import { IHH, PARTNER_CONSENT_REQUIRED } from "src/utils/parkway";
  *
  * What this page adds to /clinic-signup's is the partner. Gray Matter
  * Solutions' consent is unchanged and is the first tickbox; IHH Healthcare
- * Singapore's three clauses are the second, verbatim and in English whichever
- * language the picker is set to (see src/data/parkwayConsentCopy.ts for why).
+ * Singapore's three clauses are the second — IHH's verbatim English, or our
+ * Chinese or Malay of it when the picker is set to either (see
+ * src/data/parkwayShentonConsentCopy.ts for why this funnel translates them
+ * where /parkway does not).
  * Both are required, and both are recorded — `consentMarketing` and
  * `consentPartner`, which land in separate columns.
  */
