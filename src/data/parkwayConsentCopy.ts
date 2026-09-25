@@ -12,7 +12,9 @@
  * Do-Not-Call carve-out are terms of art, and a paraphrase of either is a
  * different promise. IHH supplied them in English; they go out in English
  * until IHH supplies their own translations, at which point `clauses` and
- * `withdrawal` below are where those drop in.
+ * `withdrawal` below are where those drop in. (/parkwayshenton, which asks for
+ * the same consent in its hero, does translate them — the reasoning, and the
+ * translations, are in src/data/parkwayShentonConsentCopy.ts.)
  *
  * What *is* translated is the screen around them — the headline, the line
  * naming the partnership, the label over the block and the button — because
