@@ -121,12 +121,12 @@ export const IHH = {
   /** From the design. The one address in this block that is not a guess. */
   dpoEmail: "pdpo@ihhhealthcare.com",
   /**
-   * !! PLACEHOLDER — needs IHH's published notice URL before this funnel goes
-   * out. The clause names the notice and the design links it, so the link has
-   * to point somewhere; it is left obviously unset rather than guessed at, and
-   * `consentLinkHref` below is what keeps an unset one off the screen.
+   * IHH's published notice, which the first clause names and links. Supplied
+   * by IHH with their Chinese consent wording. `consentLinkHref` below still
+   * guards it, so clearing it takes the link off the screen rather than
+   * leaving a dead one.
    */
-  dataProtectionNoticeUrl: "",
+  dataProtectionNoticeUrl: "https://www.ihhhealthcare.com/singapore/data-protection-notice",
 } as const;
 
 /**
