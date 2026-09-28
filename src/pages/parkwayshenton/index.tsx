@@ -471,6 +471,7 @@ export default function ParkwayShentonEntry() {
                 >
                   {IHH.dpoEmail}
                 </a>
+                {pk.withdrawalTail}
               </p>
             </div>
           </section>

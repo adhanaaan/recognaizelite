@@ -24,7 +24,7 @@
  *   `partner` — src/data/parkwayConsentCopy.ts, the clauses /parkway shows on
  *               its "Before we send" screen. This funnel has no such screen,
  *               so the same clauses are asked for on the landing page instead.
- *               The Chinese and Malay of them are this file's — see below.
+ *               The Chinese and Malay of them live in this file — see below.
  *
  * ---------------------------------------------------------------------------
  * WHY THE PARTNER'S CLAUSES TRANSLATE HERE, AND NOT ON /parkway
@@ -37,13 +37,15 @@
  * the clauses and the withdrawal note follow the language picker too.
  *
  * English is still IHH's own wording, quoted from parkwayConsentCopy.ts. The
- * Chinese and Malay below are ours, translated from it clause for clause, not
- * supplied by IHH — so they are written to say no more and no less than the
- * English: "reasonably related purposes" and the Do-Not-Call carve-out keep
- * their scope, the notice keeps IHH's name, and the registry keeps its
- * English name in brackets so there is no doubt which one is meant. Should
- * IHH supply their own translations, PARTNER_TRANSLATED below is where they
- * drop in, replacing these outright.
+ * Chinese below is IHH's too — their own translation, supplied by email and
+ * reproduced verbatim, punctuation included; do not edit it to match the
+ * English or the house style. The Malay is still ours, translated from the
+ * English clause for clause, not supplied by IHH — so it is written to say no
+ * more and no less than the English: "reasonably related purposes" and the
+ * Do-Not-Call carve-out keep their scope, the notice keeps IHH's name, and
+ * the registry keeps its English name in brackets so there is no doubt which
+ * one is meant. Should IHH supply a Malay translation, PARTNER_TRANSLATED
+ * below is where it drops in, replacing ours outright.
  */
 
 import {
@@ -64,10 +66,16 @@ export type ParkwayShentonConsentCopy = {
     /** The three clauses, verbatim. The first names IHH's notice. */
     clauses: ParkwayConsentCopy["clauses"];
     /**
-     * The withdrawal note under them. Ends on the DPO's address, which the
-     * page appends as a mailto link from IHH.dpoEmail rather than repeating.
+     * The withdrawal note under them, up to the DPO's address, which the page
+     * appends as a mailto link from IHH.dpoEmail rather than repeating.
      */
     withdrawal: string;
+    /**
+     * Whatever follows the address. Empty in English and Malay, where the
+     * sentence ends on it; IHH's Chinese puts the address in brackets
+     * mid-sentence, so the verb comes after.
+     */
+    withdrawalTail: string;
     /**
      * Shown if the hero's button is pressed without this box ticked.
      *
@@ -89,7 +97,10 @@ const ERR_PARTNER: Record<LiteEventLang, string> = {
   ms: `Sila juga bersetuju dengan kebenaran ${IHH.name} untuk meneruskan.`,
 };
 
-type PartnerTranslation = Pick<ParkwayShentonConsentCopy["partner"], "clauses" | "withdrawal">;
+type PartnerTranslation = Pick<
+  ParkwayShentonConsentCopy["partner"],
+  "clauses" | "withdrawal" | "withdrawalTail"
+>;
 
 /**
  * IHH's clauses and withdrawal note in the two other languages, for the
@@ -97,24 +108,27 @@ type PartnerTranslation = Pick<ParkwayShentonConsentCopy["partner"], "clauses" |
  * verbatim wording and comes from parkwayConsentCopy.ts, so it is never
  * restated here.
  *
- * The notice's name is split the way the English is, around the link. In
- * Chinese the title marks sit outside it, in the lead and the tail, so the
- * underline runs under the name alone.
+ * The notice's name is split the way the English is, around the link. IHH's
+ * Chinese names the notice once in prose and then says to visit it by its
+ * page title, followed by "(url: …)"; the title is what is linked, to the
+ * same URL (IHH.dataProtectionNoticeUrl), so the bracketed address is dropped
+ * rather than printed beside a link that already goes there.
  */
 const PARTNER_TRANSLATED: Record<Exclude<LiteEventLang, "en">, PartnerTranslation> = {
   zh: {
     clauses: {
       treatmentLead:
-        "提供本表格所列的信息，即表示本人同意 IHH Healthcare Singapore 及其代表和／或代理人收集、使用及披露本人的个人资料，用于为本人提供医疗治疗以及其他合理相关的用途。相关用途详载于《",
-      noticeName: "IHH Healthcare Singapore 资料保护通知",
-      treatmentTail: "》，亦可应要求索取。",
+        "通过提供本表列出的信息，我同意新加坡 IHH Healthcare 及其代表、代理和/或业务合作伙伴收集、使用和披露我的个人数据，以便为我提供治疗和用于其他合理的相关用途。在新加坡 IHH Healthcare 数据保护通知中列出了此类用途，具体请可访问 ",
+      noticeName: "IHH SG Data Protection Notice - IHH Healthcare",
+      treatmentTail: "。",
       marketing:
-        "本人亦同意 IHH Healthcare Singapore 及其代表、代理人和／或业务伙伴收集、使用及披露本人的个人资料，用于营销及推广用途。",
+        "我也同意IHH Healthcare Singapore，其代表，代理和/或业务合作伙伴出于营销和促销目的的收集，使用和披露我的个人数据。",
       dnc:
-        "本人同意通过短信（SMS）、电话及其他以新加坡电话号码为基础的通讯方式接收营销信息，无论本人是否已在谢绝来电登记处（Do-Not-Call Registry）登记。",
+        "我同意接收通过短信、电话和其他基于新加坡电话号码的方式发送的营销信息，不管我是否登记了“谢绝来电(Do Not Call)”。",
     },
     withdrawal:
-      "本人明白，本人可随时通过取消订阅功能，或填写可向我们职员索取的表格，或发送电子邮件至 IHH Healthcare Singapore 资料保护官（DPO），撤回上述同意。电子邮件地址：",
+      "我知晓，我可以随时通过取消订阅功能、使用可要求员工提供的表格或发送电子邮件给新加坡 IHH Healthcare (",
+    withdrawalTail: ") 撤回此同意。",
   },
   ms: {
     clauses: {
@@ -129,6 +143,7 @@ const PARTNER_TRANSLATED: Record<Exclude<LiteEventLang, "en">, PartnerTranslatio
     },
     withdrawal:
       "Saya faham bahawa saya boleh menarik balik kebenaran tersebut pada bila-bila masa melalui kemudahan berhenti melanggan ATAU borang yang boleh didapati daripada kakitangan kami atas permintaan ATAU melalui e-mel kepada Pegawai Perlindungan Data (DPO) IHH Healthcare Singapore di ",
+    withdrawalTail: "",
   },
 };
 
@@ -141,6 +156,7 @@ export const parkwayShentonConsentCopy = (lang: LiteEventLang): ParkwayShentonCo
       eyebrow: partner.eyebrow,
       clauses: translated?.clauses ?? partner.clauses,
       withdrawal: translated?.withdrawal ?? partner.withdrawal,
+      withdrawalTail: translated?.withdrawalTail ?? "",
       errConsent: ERR_PARTNER[lang] ?? ERR_PARTNER.en,
     },
   };
