@@ -2,8 +2,8 @@ import Head from "next/head";
 import Router from "next/router";
 import React from "react";
 import { LiteShell } from "src/components/LiteOne/LiteShell";
+import { parkwayShentonLoadingCopy } from "src/data/parkwayShentonLoadingCopy";
 import { useLiteEventLang } from "src/i18n/liteEvent";
-import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { computeScore } from "src/lib/brainHealthScoring";
 import { useQuestionnaireStore } from "src/stores/useQuestionnaireStore";
 import { useResultStore } from "src/stores/useResultStore";
@@ -39,9 +39,13 @@ import type { DomainReport } from "src/types/report";
  * same, it has just moved to where the numbers now arrive.
  *
  * It is a single POST on mount, alongside the report fetch the screen already
- * made, and the crumbs run for their five beats either way: a save that fails
- * must not strand a visitor who has finished the assessment in front of a
- * spinner. The row it would have completed keeps the details the landing saved.
+ * made, and the ring fills for its full run either way: a save that fails must
+ * not strand a visitor who has finished the assessment in front of a spinner.
+ * The row it would have completed keeps the details the landing saved.
+ *
+ * The screen itself is Figma "09 · Loading" (node 711-6635): a progress ring,
+ * the heading, and three lines that tick off as the ring fills. Its copy is
+ * this funnel's own — src/data/parkwayShentonLoadingCopy.ts.
  */
 
 function delay(ms: number) {
@@ -49,39 +53,134 @@ function delay(ms: number) {
 }
 
 /**
- * Suspense crumbs, ported from b2cfunnel's AnalysingScreen
- * (`src/components/screens/AnalysingScreen.tsx`) along with its 1300ms beat.
- * The lines themselves live in the copy set; only the count and the beat are
- * fixed here, and every language carries the same five, so the screen holds
- * for the same time whichever one is showing.
+ * One beat per checklist line. Every language carries the same three, so the
+ * screen holds for the same time whichever one is showing.
  */
-const CRUMB_MS = 1300;
+const STEP_MS = 2000;
 
-const CRUMB_COUNT = 5;
+const STEP_COUNT = 3;
 
-/** The crumbs have to finish before the report page replaces this one. */
-const MIN_VISIBLE_MS = CRUMB_MS * CRUMB_COUNT;
+/** The ring has to fill before the report page replaces this one. */
+const MIN_VISIBLE_MS = STEP_MS * STEP_COUNT;
+
+/** How long 100% and the last tick stay up before the report replaces them. */
+const DONE_HOLD_MS = 600;
+
+/** The design's orange (Primary/Orange/500) — the ring and the ticks. */
+const ORANGE = "#E8784A";
+
+/** The ring's geometry, measured off the design: 188px across, a 24px band. */
+const RING_SIZE = 188;
+const RING_STROKE = 24;
+const RING_R = (RING_SIZE - RING_STROKE) / 2;
+const RING_LEN = 2 * Math.PI * RING_R;
+
+/**
+ * The progress ring. Starts at twelve o'clock and fills clockwise; the unfilled
+ * track is the shell's own warm tint, so an empty ring still reads as a ring.
+ */
+function ProgressRing({ percent, label }: { percent: number; label: string }) {
+  return (
+    <div
+      className="relative shrink-0"
+      style={{ width: RING_SIZE, height: RING_SIZE }}
+      role="progressbar"
+      aria-label={label}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={percent}
+    >
+      <svg viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`} className="size-full -rotate-90" aria-hidden>
+        <circle
+          cx={RING_SIZE / 2}
+          cy={RING_SIZE / 2}
+          r={RING_R}
+          fill="none"
+          stroke="#F9DDCF"
+          strokeWidth={RING_STROKE}
+        />
+        {percent > 0 && (
+          <circle
+            cx={RING_SIZE / 2}
+            cy={RING_SIZE / 2}
+            r={RING_R}
+            fill="none"
+            stroke={ORANGE}
+            strokeWidth={RING_STROKE}
+            strokeLinecap="round"
+            strokeDasharray={RING_LEN}
+            strokeDashoffset={RING_LEN * (1 - percent / 100)}
+            className="transition-[stroke-dashoffset] duration-300 ease-out"
+          />
+        )}
+      </svg>
+      <p className="absolute inset-0 flex items-center justify-center text-[32px] font-semibold leading-[1.2] tabular-nums text-charcoal">
+        {percent}%
+      </p>
+    </div>
+  );
+}
+
+/**
+ * A checklist line's marker: an empty ring while it waits, the design's filled
+ * tick once it's done. The tick is Iconify's lets-icons:check-fill — the icon
+ * the design names — drawn inline so the screen needs no icon fetch.
+ */
+function StepMark({ done }: { done: boolean }) {
+  return (
+    <span aria-hidden className="relative block size-6 shrink-0">
+      <span
+        className={`absolute inset-[3px] rounded-full border-2 border-quizOutline-variant transition-opacity duration-300 ${
+          done ? "opacity-0" : "opacity-100"
+        }`}
+      />
+      <svg
+        viewBox="0 0 24 24"
+        className={`absolute inset-0 size-6 transition-[opacity,transform] duration-300 ease-out ${
+          done ? "scale-100 opacity-100" : "scale-50 opacity-0"
+        }`}
+        style={{ color: ORANGE }}
+      >
+        <path
+          fill="currentColor"
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18m-.232-5.36l5-6l-1.536-1.28l-4.3 5.159l-2.225-2.226l-1.414 1.414l3 3l.774.774z"
+        />
+      </svg>
+    </span>
+  );
+}
 
 export default function ParkwayShentonLoading() {
   const { lang } = useLiteEventLang();
-  const t = liteEventCopy(lang);
+  const copy = parkwayShentonLoadingCopy(lang);
   const { result } = useResultStore();
   const quizAnswers = useQuestionnaireStore((s) => s.answers);
   const [name, setName] = React.useState("");
-  const [crumb, setCrumb] = React.useState(0);
+  /** Share of MIN_VISIBLE_MS gone by, 0 to 1. */
+  const [elapsed, setElapsed] = React.useState(0);
+  /** The report is fetched and the lead saved (or given up on). */
+  const [done, setDone] = React.useState(false);
 
   React.useEffect(() => {
     const profile = readLiteProfile(PARKWAY_SHENTON);
     if (profile?.name) setName(profile.name);
   }, []);
 
-  // Advance the crumb line, then hold on the last one — navigation is driven by
-  // the effect below, not by the end of this cycle.
+  // Fill the ring against the clock. Navigation is driven by the effect below,
+  // not by the end of this run.
   React.useEffect(() => {
-    if (crumb >= CRUMB_COUNT - 1) return;
-    const timer = setTimeout(() => setCrumb((i) => i + 1), CRUMB_MS);
-    return () => clearTimeout(timer);
-  }, [crumb]);
+    let frame = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const share = Math.min(1, (now - start) / MIN_VISIBLE_MS);
+      setElapsed(share);
+      if (share < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   /**
    * Completes the row the landing opened, then moves on.
@@ -104,6 +203,12 @@ export default function ParkwayShentonLoading() {
     let cancelled = false;
     const go = () => {
       if (!cancelled) Router.replace(`${PARKWAY_SHENTON.basePath}/report`);
+    };
+    // Show 100% and the last tick for a beat before the report replaces them.
+    const finish = () => {
+      if (cancelled) return;
+      setDone(true);
+      setTimeout(go, DONE_HOLD_MS);
     };
 
     const profile = readLiteProfile(PARKWAY_SHENTON);
@@ -182,10 +287,9 @@ export default function ParkwayShentonLoading() {
     };
 
     /**
-     * The report, then the save, then the report screen once the crumbs have
-     * had their run. Every failure path still calls `go`: a visitor who has
-     * finished the assessment must never be left on a spinner because a write
-     * failed.
+     * The report, then the save, then the report screen once the ring has had
+     * its run. Every failure path still finishes: a visitor who has completed
+     * the assessment must never be left on a spinner because a write failed.
      */
     const stashed = readStashedReport(PARKWAY_SHENTON);
     const reportReady: Promise<DomainReport | null> = stashed
@@ -201,42 +305,60 @@ export default function ParkwayShentonLoading() {
             // failure here still saves the lead and moves the visitor on.
             .catch(() => null);
 
-    Promise.all([reportReady.then(completeLead), delay(MIN_VISIBLE_MS)]).then(go, go);
+    Promise.all([reportReady.then(completeLead), delay(MIN_VISIBLE_MS)]).then(finish, finish);
 
     return () => {
       cancelled = true;
     };
   }, [result]);
 
-  const greeting = name ? t.loading.greetingNamed(name) : t.loading.greeting;
+  const heading = name ? copy.headingNamed(name) : copy.heading;
+  // The clock takes the ring to 99% and ticks the first two lines; the last
+  // tick and 100% wait for the work itself, so the screen never claims to be
+  // finished while the save is still in flight.
+  const percent = done ? 100 : Math.min(99, Math.floor(elapsed * 100));
+  const stepsDone = done ? STEP_COUNT : Math.min(STEP_COUNT - 1, Math.floor(elapsed * STEP_COUNT));
 
   return (
     <>
       <Head>
-        <title>{t.loading.headTitle}</title>
+        <title>{copy.headTitle}</title>
       </Head>
 
-      <LiteShell>
-        <div className="relative flex flex-1 flex-col items-center justify-center px-6 text-center">
-          <div
-            className="size-14 animate-spin rounded-full border-4 border-quizSurface-high border-t-quizPrimary"
-            role="status"
-            aria-label={t.loading.spinnerLabel}
-          />
+      {/* No logo band: the design gives the whole screen to the ring. */}
+      <LiteShell showHeader={false}>
+        <div className="relative flex flex-1 flex-col items-center justify-center px-6 py-12 text-center">
+          <div className="lite-rise">
+            <ProgressRing percent={percent} label={copy.progressLabel} />
+          </div>
 
-          <p
-            className="lite-rise mt-8 max-w-[320px] font-display text-[24px] font-extrabold leading-[1.2] text-charcoal sm:text-[28px]"
+          <h1
+            className="lite-rise mt-7 max-w-[340px] font-display text-[28px] font-extrabold leading-[1.2] text-charcoal"
             style={{ animationDelay: "80ms" }}
           >
-            {greeting}
-          </p>
+            {heading}
+          </h1>
 
-          <p
-            key={crumb}
-            className="lite-crumb mt-4 min-h-[3rem] max-w-[320px] text-[14px] leading-relaxed text-quizSecondary"
+          <ul
+            className="lite-rise mt-7 w-full max-w-[308px] space-y-5 text-left"
+            style={{ animationDelay: "160ms" }}
           >
-            {t.loading.crumbs[crumb]}
-          </p>
+            {copy.steps.map((line, i) => {
+              const stepDone = i < stepsDone;
+              return (
+                <li key={line} className="flex items-center gap-[15px]">
+                  <StepMark done={stepDone} />
+                  <span
+                    className={`text-[15px] leading-[1.6] transition-colors duration-300 ${
+                      stepDone ? "text-charcoal" : "text-charcoal/45"
+                    }`}
+                  >
+                    {line}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </LiteShell>
     </>

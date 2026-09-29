@@ -54,6 +54,7 @@ export function HeroVideo({
   children,
   partnerLogo,
   whiteLogo = false,
+  fadeTo,
 }: {
   children: React.ReactNode;
   /** Co-branded funnels show the partner's mark beside the Gray Matter logo. */
@@ -64,6 +65,14 @@ export function HeroVideo({
    * partner's mark is kept at its designed colours and needs the plate.
    */
   whiteLogo?: boolean;
+  /**
+   * A CSS colour for the video to fade into at its foot, in place of the
+   * cream page. For a funnel that carries on in a dark band under the hero:
+   * a dark fade doesn't threaten white copy the way the cream one does, so
+   * the content no longer has to stop short of it and runs to the hero's
+   * bottom edge.
+   */
+  fadeTo?: string;
 }) {
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
@@ -170,7 +179,10 @@ export function HeroVideo({
 
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-b from-transparent to-quizSurface-container"
+        className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 ${
+          fadeTo ? "" : "bg-gradient-to-b from-transparent to-quizSurface-container"
+        }`}
+        style={fadeTo ? { backgroundImage: `linear-gradient(to bottom, transparent, ${fadeTo})` } : undefined}
       />
       {/*
        * `flex-1 flex-col` lets `HeroContent` spread its three groups — the
@@ -178,9 +190,12 @@ export function HeroVideo({
        * The `py` values clear the lock-up above (~52px) and the cream fade
        * below (h-24 = 96px), so the top group sits just under the lock-up and
        * the featured-in panel lands just above the fade instead of behind it.
+       * With `fadeTo` there is no cream to clear, so the bottom is tight.
        */}
       <div
-        className={`relative z-20 flex flex-1 flex-col justify-between ${WRAP_NARROW} pb-28 pt-24`}
+        className={`relative z-20 flex flex-1 flex-col justify-between ${WRAP_NARROW} ${
+          fadeTo ? "pb-6" : "pb-28"
+        } pt-24`}
       >
         {children}
       </div>
