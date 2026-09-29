@@ -27,6 +27,7 @@ import {
   rise,
   stagger,
 } from "src/components/LiteOne/ReportV2/motion";
+import { REPORT_STEP_IMAGES, StepImage } from "src/components/LiteOne/ReportV2/StepImage";
 import { useReportData } from "src/components/LiteOne/ReportV2/useReportData";
 import { RANK_GRADIENT } from "src/components/LiteOne/ReportLab/visuals";
 import {
@@ -104,10 +105,11 @@ const SECTIONS = [
 ];
 
 /**
- * The three steps, each illustrated from the design. `image` points at an asset
- * the clinic supplies; StepImage drops itself if the file isn't in the repo
- * yet, so the section degrades to the text-only layout rather than rendering
- * broken images.
+ * The three steps, each illustrated from the design. Step 1's WhatsApp chat is
+ * this clinic's own and lives in its directory; steps 2 and 3 show the product
+ * and come from the general one every report shares (REPORT_STEP_IMAGES).
+ * StepImage drops itself if a file isn't in the repo yet, so the section
+ * degrades to the text-only layout rather than rendering broken images.
  */
 const HOW_IT_WORKS_STEPS = [
   {
@@ -121,14 +123,14 @@ const HOW_IT_WORKS_STEPS = [
     step: "Step 2",
     title: "Play a 10 minute brain health game",
     body: "Test your memory, attention, and decision making.",
-    image: "/images/act4health/steps/step-2-games.png",
+    image: REPORT_STEP_IMAGES.games,
     imageAlt: "The brain health games running on a phone, a tablet and a laptop",
   },
   {
     step: "Step 3",
     title: "Get the full report",
     body: "Review your brain performance with actionable ways to improve.",
-    image: "/images/act4health/steps/step-3-report.png",
+    image: REPORT_STEP_IMAGES.report,
     imageAlt: "A cognitive performance report scoring four brain domains",
   },
 ];
@@ -145,27 +147,6 @@ function withRecognaizeSerif(text: string): React.ReactNode {
       {part}
     </React.Fragment>
   ));
-}
-
-/**
- * One step's illustration. Removes itself if the asset 404s, so a step whose
- * image hasn't been committed yet still reads as a normal text step instead of
- * a broken-image placeholder.
- */
-function StepImage({ src, alt }: { src: string; alt: string }) {
-  const [failed, setFailed] = React.useState(false);
-  if (failed) return null;
-  return (
-    <div className="mt-4 overflow-hidden rounded-[20px] border border-[#F2DDCE] bg-white">
-      <img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        onError={() => setFailed(true)}
-        className="block h-auto w-full"
-      />
-    </div>
-  );
 }
 
 function WhatsAppGlyph({ className }: { className?: string }) {

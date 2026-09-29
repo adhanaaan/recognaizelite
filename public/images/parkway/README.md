@@ -26,4 +26,6 @@ in `src/utils/parkway.ts`; change it there rather than renaming the file.
 
 - `sites/` — the four Parkway Shenton site photographs used by the report. See
   that directory's own README.
-- `steps/` — the two illustrated steps under the report's "What to do now?".
+
+The two illustrated steps under the report's "What to do now?" are not here:
+they are shared by every funnel's report, in public/images/report/steps/.
