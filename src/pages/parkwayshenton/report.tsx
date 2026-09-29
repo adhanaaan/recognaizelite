@@ -29,6 +29,7 @@ import {
   stagger,
 } from "src/components/LiteOne/ReportV2/motion";
 import { ScrollMoreCue } from "src/components/LiteOne/ReportV2/ScrollMoreCue";
+import { REPORT_STEP_IMAGES, StepImage } from "src/components/LiteOne/ReportV2/StepImage";
 import { useReportData } from "src/components/LiteOne/ReportV2/useReportData";
 import { RANK_GRADIENT } from "src/components/LiteOne/ReportLab/visuals";
 import { liteEventReportCopy } from "src/data/liteEventReportCopy";
@@ -666,14 +667,19 @@ export default function ParkwayShentonReport() {
             </SnapSection>
 
             {/* --------------------------------------- 6 · the product --- */}
+            {/* "What to do now?" — Figma "R5 · Report — The test", node
+                1091-2624. /parkway's section with this funnel's first step;
+                see src/data/parkwayShentonReportCopy.ts. */}
             <SnapSection id="recognaize">
               <Cascade amount={0.2}>
-                <EyebrowV2>{copy.product.eyebrow}</EyebrowV2>
+                <EyebrowV2>{pk.product.eyebrow}</EyebrowV2>
                 <motion.h2
                   variants={rise}
                   className="mt-3 font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.12] tracking-[-0.025em] text-[#1C110A]"
                 >
-                  {copy.product.h2}
+                  {pk.product.h2Lead}
+                  <br />
+                  {pk.product.h2Tail}
                 </motion.h2>
                 <motion.p variants={rise} className="mt-4 text-[15.5px] leading-[1.6] text-[#6B5245]">
                   {copy.product.bodyLead}
@@ -706,41 +712,27 @@ export default function ParkwayShentonReport() {
                   />
                 </motion.div>
 
-                <div className="mt-9">
-                  <EyebrowV2>{t.report.howItWorksEyebrow}</EyebrowV2>
-                </div>
-                <motion.h2
-                  variants={rise}
-                  className="mt-3 font-display text-[clamp(28px,7.6vw,36px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-[#1C110A]"
-                >
-                  {t.report.howItWorksH2}
-                </motion.h2>
-
-                <motion.ol variants={stagger} className="mt-8 space-y-6">
-                  {t.report.howItWorksSteps.map(({ step, title, body, domains }, i) => (
-                    <motion.li key={title} variants={rise}>
+                <motion.ol variants={stagger} className="mt-9 space-y-6">
+                  {pk.product.steps.map((st, i) => (
+                    <motion.li key={st.step} variants={rise}>
                       <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#B4653C]">
-                        {step}
+                        {st.step}
                       </p>
                       <p className="mt-2 font-display text-[20px] font-extrabold tracking-[-0.01em] text-[#1C110A]">
-                        {title}
+                        {st.title}
                       </p>
-                      <p className="mt-2 text-[14.5px] leading-[1.6] text-[#6B5245]">{body}</p>
+                      <p className="mt-2 text-[14.5px] leading-[1.6] text-[#6B5245]">{st.body}</p>
 
-                      {domains.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {domains.map((d) => (
-                            <span
-                              key={d}
-                              className="rounded-full border border-[#E7D3C4] bg-white px-4 py-2 text-[13px] font-bold text-[#5F4638]"
-                            >
-                              {d}
-                            </span>
-                          ))}
-                        </div>
+                      {/* Step 1 is a conversation, so it has no picture; steps
+                          2 and 3 show the product they describe. */}
+                      {i === 1 && (
+                        <StepImage src={REPORT_STEP_IMAGES.games} alt={pk.product.stepGamesAlt} />
+                      )}
+                      {i === 2 && (
+                        <StepImage src={REPORT_STEP_IMAGES.report} alt={pk.product.stepReportAlt} />
                       )}
 
-                      {i < t.report.howItWorksSteps.length - 1 && (
+                      {i < pk.product.steps.length - 1 && (
                         <div aria-hidden className="mt-6 h-px bg-[#F2DDCE]" />
                       )}
                     </motion.li>

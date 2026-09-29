@@ -69,9 +69,9 @@ const PRESS: PressLogo[] = [
   { src: "logo-pubmed.svg", alt: "PubMed", h: 20 },
 ];
 
-/** The hero's fields. Solid white, because they sit on moving footage. */
+/** The sign-up's fields — /lite-event/results' inputs, on the cream under the hero. */
 const fieldClass =
-  "w-full rounded-xl border border-white/70 bg-white px-4 py-3 text-[15px] text-charcoal placeholder-quizOutline shadow-sm outline-none transition-colors focus:border-quizPrimary";
+  "w-full rounded-xl border border-quizOutline-variant bg-quizSurface-lowest px-4 py-3 text-[15px] text-charcoal placeholder-quizOutline outline-none transition-colors focus:border-quizPrimary";
 
 /**
  * /parkwayshenton — entry. The Parkway Shenton funnel's landing page.
@@ -249,20 +249,20 @@ export default function ParkwayShentonEntry() {
           separate band above it would state the same thing twice. */}
       <LiteShell scroll showHeader={false}>
         {/*
-         * The whole page is meant to sit above the fold, so the hero has no
-         * fixed height of its own — `flex flex-col` here plus `flex-1` on
-         * HeroVideo makes it fill exactly whatever the trust band doesn't
-         * need, on any viewport, with no dead space and no cropping.
-         * `min-h-[100dvh]` is a floor, not a fixed height: on a viewport
-         * taller than the content needs, the hero simply grows to fill it.
+         * The video ends under the language picker; the sign-up follows on
+         * the cream the video fades into. The hero has no fixed height of its
+         * own — `flex flex-col` here plus `flex-1` on HeroVideo lets it grow
+         * into any space the sections below leave on a very tall viewport,
+         * and otherwise it is exactly as tall as its content.
          */}
         <div className="flex min-h-[100dvh] flex-col">
-          <HeroVideo>
+          <HeroVideo whiteLogo>
             {/*
-             * Three groups, spread by HeroVideo's `justify-between`: the
-             * credibility pill near the top under the lock-up, the headline
-             * stack in the middle, and the featured-in bar at the bottom above
-             * the cream fade.
+             * Two groups, spread by HeroVideo's `justify-between`: the
+             * credibility pill near the top under the lock-up, and the
+             * headline stack under it — with the featured-in bar inside that
+             * stack, above the language picker, rather than as a third group
+             * at the bottom.
              */}
             <div className="lite-rise" style={{ animationDelay: "40ms" }}>
               <HeroPill>{t.landing.pill}</HeroPill>
@@ -288,13 +288,20 @@ export default function ParkwayShentonEntry() {
                 {t.landing.heroSub}
               </p>
 
-              {/* The language switch sits between the subheadline and the CTA:
-                  the visitor reads what this is, picks their language, then
-                  starts. The wrapper is gated on `enabled` too, not just the
-                  picker — an empty div would still leave its `mt-7` gap above
-                  the CTA once the toggle is off. */}
+              {/* The press marks straight after the subheadline, before the
+                  visitor is asked to do anything: proof first, then the
+                  language, then the sign-up. */}
+              <div className="lite-rise mt-7 w-full" style={{ animationDelay: "240ms" }}>
+                <HeroFeaturedIn logos={PRESS} label={t.landing.featuredIn} />
+              </div>
+
+              {/* The language switch is the last thing on the video: the
+                  visitor reads what this is, picks their language, then fills
+                  in the sign-up below. The wrapper is gated on `enabled` too,
+                  not just the picker — an empty div would still leave its
+                  `mt-7` gap at the foot of the hero once the toggle is off. */}
               {enabled && (
-                <div className="lite-rise mt-7" style={{ animationDelay: "240ms" }}>
+                <div className="lite-rise mt-7" style={{ animationDelay: "280ms" }}>
                   <LanguagePicker
                     lang={lang}
                     onChange={setLang}
@@ -305,148 +312,139 @@ export default function ParkwayShentonEntry() {
                   />
                 </div>
               )}
+            </div>
+          </HeroVideo>
 
-              {/* The sign-up, in the slot the CTA used to have to itself.
-                  Solid white fields rather than translucent ones: they sit on
-                  a moving video, and a tinted input over changing footage is
-                  unreadable half the time. */}
-              <form
-                onSubmit={handleSubmit}
-                noValidate
-                className="lite-rise mt-7 w-full max-w-[340px] text-left"
-                style={{ animationDelay: "280ms" }}
-              >
-                <input
-                  id="pkws-name"
-                  type="text"
-                  autoComplete="name"
-                  aria-label={t.results.nameLabel}
-                  placeholder={t.results.namePlaceholder}
-                  value={name}
-                  onChange={(e) => { setName(e.target.value); setError(""); }}
-                  className={fieldClass}
-                />
-                <input
-                  id="pkws-email"
-                  type="email"
-                  autoComplete="email"
-                  inputMode="email"
-                  aria-label={t.results.emailLabel}
-                  placeholder={t.results.emailPlaceholder}
-                  value={email}
-                  onChange={(e) => { setEmail(e.target.value); setError(""); }}
-                  className={`${fieldClass} mt-2.5`}
-                />
+          {/* The sign-up, under the video rather than on it, on the same cream
+              as the hero's bottom fade so the two run together. */}
+          <section className="bg-quizSurface-container px-6 pb-8">
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className="lite-rise mx-auto w-full max-w-[340px] text-left"
+              style={{ animationDelay: "320ms" }}
+            >
+              <input
+                id="pkws-name"
+                type="text"
+                autoComplete="name"
+                aria-label={t.results.nameLabel}
+                placeholder={t.results.namePlaceholder}
+                value={name}
+                onChange={(e) => { setName(e.target.value); setError(""); }}
+                className={fieldClass}
+              />
+              <input
+                id="pkws-email"
+                type="email"
+                autoComplete="email"
+                inputMode="email"
+                aria-label={t.results.emailLabel}
+                placeholder={t.results.emailPlaceholder}
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                className={`${fieldClass} mt-2.5`}
+              />
 
-                <div className="mt-4">
-                  <p className="mb-2 text-[12px] font-bold leading-snug text-white">
-                    {c.heading}
-                  </p>
+              <div className="mt-4">
+                <p className="mb-2 text-[12px] font-bold leading-snug text-charcoal">
+                  {c.heading}
+                </p>
+                <ConsentCheckbox
+                  id="pkws-consent-gms"
+                  checked={consented}
+                  onChange={(next) => { setConsented(next); setError(""); }}
+                  size={22}
+                >
+                  <span className="block space-y-1 text-[11.5px] leading-[1.5] text-charcoal/80">
+                    <span className="block">{c.ownBehalf}</span>
+                    {/* The compulsory half, set darker: it is the sentence
+                        a visitor is likeliest to skim, and the one the
+                        submit actually turns on. */}
+                    <span className="block font-semibold text-charcoal">{c.consent}</span>
+                  </span>
+                </ConsentCheckbox>
+              </div>
+
+              {/* The partner's consent, asked separately because it is a
+                  separate agreement with a separate holder — /parkway gives
+                  it a screen of its own; this funnel has no such screen, so
+                  it is asked here.
+
+                  Set on a white panel, unlike the block above it: that one
+                  is two short lines, this one is IHH's whole consent, and
+                  the panel marks it off as the partner's. */}
+              <div className="mt-4">
+                <p className="mb-2 text-[12px] font-bold leading-snug text-charcoal">
+                  {pk.eyebrow}
+                </p>
+                <div className="rounded-xl border border-quizOutline-variant/70 bg-white px-3.5 py-3 shadow-sm">
                   <ConsentCheckbox
-                    id="pkws-consent-gms"
-                    checked={consented}
-                    onChange={(next) => { setConsented(next); setError(""); }}
+                    id="pkws-consent-partner"
+                    checked={partnerConsented}
+                    onChange={(next) => { setPartnerConsented(next); setError(""); }}
                     size={22}
                   >
-                    <span className="block space-y-1 text-[11.5px] leading-[1.5] text-white/85">
-                      <span className="block">{c.ownBehalf}</span>
-                      {/* The compulsory half, set brighter: it is the sentence
-                          a visitor is likeliest to skim, and the one the
-                          submit actually turns on. */}
-                      <span className="block font-semibold text-white">{c.consent}</span>
+                    {/* One tickbox for the three clauses, as the partner's
+                        own form is written. */}
+                    <span className="block space-y-2 text-[11.5px] leading-[1.5] text-charcoal">
+                      <span className="block">
+                        {pk.clauses.treatmentLead}
+                        {noticeHref ? (
+                          <a
+                            href={noticeHref}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="font-semibold underline underline-offset-2"
+                            // The label wraps the whole block, so without
+                            // this a tap on the notice would tick the box on
+                            // the way out.
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {pk.clauses.noticeName}
+                          </a>
+                        ) : (
+                          <span className="font-semibold underline underline-offset-2">
+                            {pk.clauses.noticeName}
+                          </span>
+                        )}
+                        {pk.clauses.treatmentTail}
+                      </span>
+                      <span className="block">{pk.clauses.marketing}</span>
+                      <span className="block">{pk.clauses.dnc}</span>
+                      {/* The withdrawal note is part of the partner's consent
+                          block as IHH sets it out, so it sits in the same
+                          panel. The address is a link inside a label, hence
+                          the stopPropagation, as with the notice above. */}
+                      <span className="block">
+                        {pk.withdrawal}
+                        <a
+                          href={`mailto:${IHH.dpoEmail}`}
+                          className="font-semibold underline underline-offset-2"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {IHH.dpoEmail}
+                        </a>
+                        {pk.withdrawalTail}
+                      </span>
                     </span>
                   </ConsentCheckbox>
                 </div>
+              </div>
 
-                {/* The partner's consent, asked separately because it is a
-                    separate agreement with a separate holder — /parkway gives
-                    it a screen of its own; this funnel has no such screen, so
-                    it is asked here.
+              {error && (
+                <p role="alert" className="mt-3 text-[13px] font-medium text-quizError">
+                  {error}
+                </p>
+              )}
 
-                    Set on a solid white panel rather than over the footage
-                    like the block above it: that one is two short lines, this
-                    one is three clauses of legal text, and nobody reads three
-                    paragraphs of 11px type over moving video. Same reasoning
-                    as the fields. */}
-                <div className="mt-4">
-                  <p className="mb-2 text-[12px] font-bold leading-snug text-white">
-                    {pk.eyebrow}
-                  </p>
-                  <div className="rounded-xl bg-white px-3.5 py-3 shadow-sm">
-                    <ConsentCheckbox
-                      id="pkws-consent-partner"
-                      checked={partnerConsented}
-                      onChange={(next) => { setPartnerConsented(next); setError(""); }}
-                      size={22}
-                    >
-                      {/* One tickbox for the three clauses, as the partner's
-                          own form is written. */}
-                      <span className="block space-y-2 text-[11.5px] leading-[1.5] text-charcoal">
-                        <span className="block">
-                          {pk.clauses.treatmentLead}
-                          {noticeHref ? (
-                            <a
-                              href={noticeHref}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="font-semibold underline underline-offset-2"
-                              // The label wraps the whole block, so without
-                              // this a tap on the notice would tick the box on
-                              // the way out.
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {pk.clauses.noticeName}
-                            </a>
-                          ) : (
-                            <span className="font-semibold underline underline-offset-2">
-                              {pk.clauses.noticeName}
-                            </span>
-                          )}
-                          {pk.clauses.treatmentTail}
-                        </span>
-                        <span className="block">{pk.clauses.marketing}</span>
-                        <span className="block">{pk.clauses.dnc}</span>
-                        {/* The withdrawal note is part of the partner's consent
-                            block as IHH sets it out, so it sits in the same
-                            panel. The address is a link inside a label, hence
-                            the stopPropagation, as with the notice above. */}
-                        <span className="block">
-                          {pk.withdrawal}
-                          <a
-                            href={`mailto:${IHH.dpoEmail}`}
-                            className="font-semibold underline underline-offset-2"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {IHH.dpoEmail}
-                          </a>
-                          {pk.withdrawalTail}
-                        </span>
-                      </span>
-                    </ConsentCheckbox>
-                  </div>
-                </div>
-
-                {error && (
-                  <p
-                    role="alert"
-                    className="mt-3 rounded-lg bg-black/45 px-3 py-2 text-[12.5px] font-semibold text-white"
-                  >
-                    {error}
-                  </p>
-                )}
-
-                <div className="mt-4">
-                  <LiteButton type="submit" disabled={saving}>
-                    {saving ? t.results.saving : t.landing.cta}
-                  </LiteButton>
-                </div>
-              </form>
-            </div>
-
-            <div className="lite-rise" style={{ animationDelay: "360ms" }}>
-              <HeroFeaturedIn logos={PRESS} label={t.landing.featuredIn} />
-            </div>
-          </HeroVideo>
+              <div className="mt-4">
+                <LiteButton type="submit" disabled={saving}>
+                  {saving ? t.results.saving : t.landing.cta}
+                </LiteButton>
+              </div>
+            </form>
+          </section>
 
           {/* The fine print the tick refers to, below the hero rather than
               inside it. It has to be on the page the consent is given on, and

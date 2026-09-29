@@ -28,6 +28,7 @@ import {
   stagger,
 } from "src/components/LiteOne/ReportV2/motion";
 import { ScrollMoreCue } from "src/components/LiteOne/ReportV2/ScrollMoreCue";
+import { REPORT_STEP_IMAGES, StepImage } from "src/components/LiteOne/ReportV2/StepImage";
 import { useReportData } from "src/components/LiteOne/ReportV2/useReportData";
 import { RANK_GRADIENT } from "src/components/LiteOne/ReportLab/visuals";
 import { liteEventReportCopy } from "src/data/liteEventReportCopy";
@@ -131,27 +132,6 @@ function ThickArrowDown({ className }: { className?: string }) {
       <path d="M12 4v16" />
       <path d="M6 14l6 6 6-6" />
     </svg>
-  );
-}
-
-/**
- * One step's illustration. Removes itself if the asset 404s, so a step whose
- * image hasn't been committed yet still reads as a normal text step instead of
- * a broken-image placeholder — the same guard /act4health's report uses.
- */
-function StepImage({ src, alt }: { src: string; alt: string }) {
-  const [failed, setFailed] = React.useState(false);
-  if (failed) return null;
-  return (
-    <div className="mt-4 overflow-hidden rounded-[20px] border border-[#F2DDCE] bg-white">
-      <img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        onError={() => setFailed(true)}
-        className="block h-auto w-full"
-      />
-    </div>
   );
 }
 
@@ -796,13 +776,13 @@ export default function ParkwayReport() {
                       {i === 0 && <SiteCarousel />}
                       {i === 1 && (
                         <StepImage
-                          src="/images/parkway/steps/step-2-games.png"
+                          src={REPORT_STEP_IMAGES.games}
                           alt={pk.product.stepGamesAlt}
                         />
                       )}
                       {i === 2 && (
                         <StepImage
-                          src="/images/parkway/steps/step-3-report.png"
+                          src={REPORT_STEP_IMAGES.report}
                           alt={pk.product.stepReportAlt}
                         />
                       )}
