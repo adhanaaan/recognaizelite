@@ -257,12 +257,13 @@ export default function ParkwayShentonEntry() {
          * taller than the content needs, the hero simply grows to fill it.
          */}
         <div className="flex min-h-[100dvh] flex-col">
-          <HeroVideo>
+          <HeroVideo whiteLogo>
             {/*
-             * Three groups, spread by HeroVideo's `justify-between`: the
-             * credibility pill near the top under the lock-up, the headline
-             * stack in the middle, and the featured-in bar at the bottom above
-             * the cream fade.
+             * Two groups, spread by HeroVideo's `justify-between`: the
+             * credibility pill near the top under the lock-up, and the
+             * headline stack under it — with the featured-in bar inside that
+             * stack, above the language picker, rather than as a third group
+             * at the bottom.
              */}
             <div className="lite-rise" style={{ animationDelay: "40ms" }}>
               <HeroPill>{t.landing.pill}</HeroPill>
@@ -288,13 +289,20 @@ export default function ParkwayShentonEntry() {
                 {t.landing.heroSub}
               </p>
 
-              {/* The language switch sits between the subheadline and the CTA:
-                  the visitor reads what this is, picks their language, then
-                  starts. The wrapper is gated on `enabled` too, not just the
-                  picker — an empty div would still leave its `mt-7` gap above
-                  the CTA once the toggle is off. */}
+              {/* The press marks straight after the subheadline, before the
+                  visitor is asked to do anything: proof first, then the
+                  language, then the sign-up. */}
+              <div className="lite-rise mt-7 w-full" style={{ animationDelay: "240ms" }}>
+                <HeroFeaturedIn logos={PRESS} label={t.landing.featuredIn} />
+              </div>
+
+              {/* The language switch sits between the featured-in bar and the
+                  CTA: the visitor reads what this is, picks their language,
+                  then starts. The wrapper is gated on `enabled` too, not just
+                  the picker — an empty div would still leave its `mt-7` gap
+                  above the CTA once the toggle is off. */}
               {enabled && (
-                <div className="lite-rise mt-7" style={{ animationDelay: "240ms" }}>
+                <div className="lite-rise mt-7" style={{ animationDelay: "280ms" }}>
                   <LanguagePicker
                     lang={lang}
                     onChange={setLang}
@@ -314,7 +322,7 @@ export default function ParkwayShentonEntry() {
                 onSubmit={handleSubmit}
                 noValidate
                 className="lite-rise mt-7 w-full max-w-[340px] text-left"
-                style={{ animationDelay: "280ms" }}
+                style={{ animationDelay: "320ms" }}
               >
                 <input
                   id="pkws-name"
@@ -441,10 +449,6 @@ export default function ParkwayShentonEntry() {
                   </LiteButton>
                 </div>
               </form>
-            </div>
-
-            <div className="lite-rise" style={{ animationDelay: "360ms" }}>
-              <HeroFeaturedIn logos={PRESS} label={t.landing.featuredIn} />
             </div>
           </HeroVideo>
 

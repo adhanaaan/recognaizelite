@@ -53,10 +53,17 @@ const PLATE = "bg-white shadow-[0_8px_28px_rgba(0,0,0,0.22)]";
 export function HeroVideo({
   children,
   partnerLogo,
+  whiteLogo = false,
 }: {
   children: React.ReactNode;
   /** Co-branded funnels show the partner's mark beside the Gray Matter logo. */
   partnerLogo?: { src: string; alt: string };
+  /**
+   * Knock the Gray Matter logo out to white and drop the white plate, so it
+   * sits straight on the video. Only for a lock-up without `partnerLogo`: a
+   * partner's mark is kept at its designed colours and needs the plate.
+   */
+  whiteLogo?: boolean;
 }) {
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
@@ -131,15 +138,19 @@ export function HeroVideo({
       />
 
       {/* Gray Matter logo floating on the video on a white plate — with the
-          partner's mark beside it when the funnel is co-branded. */}
+          partner's mark beside it when the funnel is co-branded — or, with
+          `whiteLogo`, in white straight on the video. The white is a filter
+          on the one logo file rather than a second asset: the SVG's mark and
+          wordmark are embedded images, and brightness(0) invert(1) turns
+          every opaque pixel white while keeping the edges' alpha. */}
       <div className="absolute inset-x-0 top-0 z-20 flex justify-center px-5 pt-5 sm:pt-6">
         <div
-          className={`flex items-center gap-3 rounded-2xl px-5 py-2.5 ${PLATE}`}
+          className={`flex items-center gap-3 rounded-2xl px-5 py-2.5 ${whiteLogo ? "" : PLATE}`}
         >
           <img
             src="/images/lite-one/logo-gray-matter.svg"
             alt="Gray Matter Solutions"
-            className="h-[28px] w-auto sm:h-[32px]"
+            className={`h-[28px] w-auto sm:h-[32px] ${whiteLogo ? "brightness-0 invert" : ""}`}
           />
           {partnerLogo && (
             <>
