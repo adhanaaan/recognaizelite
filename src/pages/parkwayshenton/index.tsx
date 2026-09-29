@@ -406,6 +406,21 @@ export default function ParkwayShentonEntry() {
                         </span>
                         <span className="block">{pk.clauses.marketing}</span>
                         <span className="block">{pk.clauses.dnc}</span>
+                        {/* The withdrawal note is part of the partner's consent
+                            block as IHH sets it out, so it sits in the same
+                            panel. The address is a link inside a label, hence
+                            the stopPropagation, as with the notice above. */}
+                        <span className="block">
+                          {pk.withdrawal}
+                          <a
+                            href={`mailto:${IHH.dpoEmail}`}
+                            className="font-semibold underline underline-offset-2"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {IHH.dpoEmail}
+                          </a>
+                          {pk.withdrawalTail}
+                        </span>
                       </span>
                     </ConsentCheckbox>
                   </div>
@@ -459,20 +474,6 @@ export default function ParkwayShentonEntry() {
                 {c.dataProtectionTail}
               </p>
               <p>{c.processingNote}</p>
-              {/* The partner's withdrawal note. Below the fold with the rest of
-                  the fine print for the reason given there — it is what the
-                  tick above refers to, not part of what it agrees to, and the
-                  DPO's address is a link worth being able to read. */}
-              <p>
-                {pk.withdrawal}
-                <a
-                  href={`mailto:${IHH.dpoEmail}`}
-                  className="font-semibold text-quizSecondary underline decoration-quizOutline-variant underline-offset-2"
-                >
-                  {IHH.dpoEmail}
-                </a>
-                {pk.withdrawalTail}
-              </p>
             </div>
           </section>
 
