@@ -71,6 +71,7 @@ const CLINIC_OPTIONS: { value: string; label: string }[] = [
   { value: "act4health", label: "Act4Health" },
   { value: "litebcgolf", label: "Business China Golf 2026" },
   { value: "liteevent", label: "Corporate events" },
+  { value: "pspilot", label: "Parkway Shenton pilot" },
 ];
 
 const ROLE_LABELS: Record<string, string> = {

@@ -60,6 +60,8 @@ const EMAIL_CLINICS: Record<
   // has just handed the iPad back, and the mail is the only copy of the result
   // they keep once the screen is wiped for the next person.
   liteevent: { brand: "ReCOGnAIze Lite", render: renderEventResultEmail },
+  // /parkwayshenton: the same mail as the event funnel, from its own table.
+  pspilot: { brand: "ReCOGnAIze Lite", render: renderEventResultEmail },
 };
 
 export function emailEnabledForClinic(clinic: string): boolean {
