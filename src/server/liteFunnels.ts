@@ -20,6 +20,9 @@ export const LITE_TABLES: Record<string, string> = {
   act4health: "act4health_leads",
   litebcgolf: "litebcgolf_leads",
   liteevent: "liteevent_leads",
+  // /parkwayshenton: the event funnel plus a "which clinic" question, so its
+  // rows need a column the shared table does not have. Migration 024.
+  pspilot: "ps_pilot",
 };
 
 /** Table for a lite clinic, or null if the clinic isn't a lite funnel. */
@@ -40,6 +43,9 @@ export function liteTableFor(clinic: string | null | undefined): string | null {
  */
 export const LITE_INTEREST_TABLES: Record<string, string> = {
   liteevent: "liteevent_report_interest",
+  // Shares the event funnels' table: the row is joined to its lead on
+  // attempt_id, and `clinic` / `funnel` on it say which funnel wrote it.
+  pspilot: "liteevent_report_interest",
 };
 
 /** Report-interest table for a lite clinic, or null if it records none. */

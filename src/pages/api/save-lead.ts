@@ -36,7 +36,10 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 //   litebcgolf  → public.litebcgolf_leads   (the Business China golf tournament funnel:
 //                                           a one-day event link, so its numbers are a
 //                                           single afternoon rather than a campaign.)
-const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo", "act4health", "litebcgolf", "liteevent"]);
+//   pspilot     → public.ps_pilot           (/parkwayshenton: the event funnel plus a "which
+//                                           clinic are you from" quiz question, stored in
+//                                           clinic_location. Own table for that column.)
+const ALLOWED_CLINICS = new Set(["sjmc", "hookikigai", "healthtechx", "tcmbrain", "sjmcmandarin", "novi", "liteone", "liteworldalz", "liteclinician", "litetwo", "act4health", "litebcgolf", "liteevent", "pspilot"]);
 
 const HEALTH_GOALS = ["stay_sharp", "improve_focus", "prevent_decline", "longevity"] as const;
 const SUPPLEMENT_OPTIONS = ["yes_regularly", "occasionally", "no_but_interested", "no"] as const;
@@ -51,6 +54,17 @@ const ORG_TYPE_OPTIONS = [
 
 const ORGANIZATION_MAX_LEN = 200;
 const COGNITIVE_INTEREST_MAX_LEN = 1000;
+
+/**
+ * The answers to /parkwayshenton's "Which clinic are you from?", as stored in
+ * ps_pilot.clinic_location. Mirrors PS_PILOT_CLINIC_IDS in
+ * src/data/parkwayShentonQuestions.ts; a clinic added to the question has to be
+ * added here too, or its rows are refused rather than stored with a value
+ * nothing can read back.
+ */
+const PS_PILOT_CLINIC_LOCATIONS = [
+  "republic_plaza", "ang_mo_kio", "mount_elizabeth", "woodleigh", "not_in_clinic",
+] as const;
 
 function str(value: unknown): string | null {
   if (typeof value !== "string") return null;
@@ -395,6 +409,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
      */
     const deferEmail = body.deferEmail === true;
 
+    /**
+     * Which clinic the visitor is coming from — asked last in the quiz, only by
+     * /parkwayshenton, and only ps_pilot has the column. Left out of the row
+     * entirely when absent, so the landing page's first write (before the quiz)
+     * and every other funnel never blank an answer that was given.
+     */
+    const clinicLocation = str(body.clinicLocation);
+    if (clinicLocation && !(PS_PILOT_CLINIC_LOCATIONS as readonly string[]).includes(clinicLocation)) {
+      return res.status(400).json({ error: "Invalid clinic" });
+    }
+    if (clinicLocation && clinic !== "pspilot") {
+      return res.status(400).json({ error: "Invalid clinic" });
+    }
+
     const consentAnalytics = bool(body.consentAnalytics);
     const consentMarketing = bool(body.consentMarketing);
     const consentPartner = bool(body.consentPartner);
@@ -444,6 +472,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       band,
       persona,
       completed_at: new Date().toISOString(),
+      ...(clinicLocation ? { clinic_location: clinicLocation } : {}),
       ...consentRow,
     };
 

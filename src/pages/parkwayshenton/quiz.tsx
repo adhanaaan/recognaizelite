@@ -5,7 +5,10 @@ import { QuestionStep } from "src/components/Quiz/QuestionStep";
 import { QuestionGroupScreen } from "src/components/Quiz/QuestionGroupScreen";
 import { QuizProgressBar } from "src/components/Quiz/ProgressBar";
 import { StatCardScreen } from "src/components/Quiz/StatCardScreen";
-import { LITE_EVENT_TEMPLATE_QUESTION_BANKS } from "src/data/liteEventTemplateQuestions";
+import {
+  PARKWAY_SHENTON_QUESTION_BANKS,
+  PS_PILOT_CLINIC_QUESTION_ID,
+} from "src/data/parkwayShentonQuestions";
 import { STAT_CARDS_BY_ID } from "src/data/brainHealthStatCards";
 import { STAT_CARDS_MS_BY_ID } from "src/data/brainHealthStatCards.ms";
 import { STAT_CARDS_ZH_BY_ID } from "src/data/brainHealthStatCards.zh";
@@ -43,11 +46,11 @@ type StepDef =
  * exactly as it grades an English one, and the answers written to
  * liteevent_leads stay comparable across languages.
  *
- * The template asks from its own banks: the shared ones plus this funnel's
- * wording changes. See src/data/liteEventTemplateQuestions.ts.
+ * The template's banks plus the one question only this link asks, which clinic
+ * the visitor is coming from. See src/data/parkwayShentonQuestions.ts.
  */
 const QUESTION_BANKS: Record<LiteEventLang, Record<string, Question>> =
-  LITE_EVENT_TEMPLATE_QUESTION_BANKS;
+  PARKWAY_SHENTON_QUESTION_BANKS;
 
 const STAT_CARD_BANKS: Record<LiteEventLang, Record<string, StatCard>> = {
   en: STAT_CARDS_BY_ID,
@@ -104,6 +107,11 @@ function allSteps(t: LiteEventCopy): StepDef[] {
     },
     { kind: "question", questionId: "persistence" }, // pruned if forgetfulness not noticed
     { kind: "question", questionId: "someoneElseNoticed" },
+
+    // Only this link asks it, and it is last so it sits after every scored
+    // question and can never come between a visitor and the assessment. It is
+    // not scored — see src/data/parkwayShentonQuestions.ts.
+    { kind: "question", questionId: PS_PILOT_CLINIC_QUESTION_ID },
   ];
 }
 

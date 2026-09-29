@@ -18,6 +18,7 @@ export const LITE_TWO_CLINIC = "litetwo";
 export const ACT4HEALTH_CLINIC = "act4health";
 export const BCGOLF_CLINIC = "litebcgolf";
 export const LITE_EVENT_CLINIC = "liteevent";
+export const PS_PILOT_CLINIC = "pspilot";
 
 /**
  * One entry per funnel built on the lite flow. /lite-worldalzmonth is a copy of
@@ -323,22 +324,25 @@ export const PARKWAY: LiteVariant = {
  * hand-off and /parkway's on a WhatsApp booking, this one ends on the clinic's
  * own staff — see src/data/parkwayShentonReportCopy.ts.
  *
- * `clinic` stays "liteevent" for the reason /clinic-signup's does: the funnel
- * writes to the existing liteevent_leads table and mails the existing event
- * template, so a run through it is a real run and nothing has to be provisioned
- * server-side first. `defaultCampaign` is what separates this clinic's rows
- * from the rest of the event traffic afterwards, and `storagePrefix` keeps its
- * sessionStorage namespace to itself, so a run here can never overwrite the
- * report, profile or attempt id of a run through another funnel in the same
- * browser — /parkway's included, which is why the two prefixes differ.
+ * The quiz has one question the other funnels do not: which clinic the visitor
+ * is coming from, asked last. It is why this funnel has a table of its own.
+ * `clinic` is "pspilot", which /api/save-lead and /api/lite-attempt route to
+ * ps_pilot (migration 024) instead of liteevent_leads, so the answer has a
+ * column to live in and this partner's rows never blend into the event traffic.
+ * The result email is still the event template, and the report-interest taps
+ * still land in liteevent_report_interest, joined on attempt_id — see
+ * src/server/liteFunnels.ts. `storagePrefix` keeps the funnel's sessionStorage
+ * namespace to itself, so a run here can never overwrite the report, profile or
+ * attempt id of a run through another funnel in the same browser — /parkway's
+ * included, which is why the two prefixes differ.
  *
- * `hookClinic` stays "LiteEvent" as well, because that is what puts the shared
+ * `hookClinic` stays "LiteEvent", because that is what puts the shared
  * Symbol Matching screens in the Clinical Empathy palette (see isLiteOneMode()).
  * The funnels are kept apart after the game by hookReportPath, which the entry
  * page points at this basePath.
  */
 export const PARKWAY_SHENTON: LiteVariant = {
-  clinic: LITE_EVENT_CLINIC,
+  clinic: PS_PILOT_CLINIC,
   hookClinic: "LiteEvent",
   basePath: "/parkwayshenton",
   defaultCampaign: "parkwayshenton",

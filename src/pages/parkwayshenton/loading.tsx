@@ -3,6 +3,7 @@ import Router from "next/router";
 import React from "react";
 import { LiteShell } from "src/components/LiteOne/LiteShell";
 import { parkwayShentonLoadingCopy } from "src/data/parkwayShentonLoadingCopy";
+import { PS_PILOT_CLINIC_QUESTION_ID } from "src/data/parkwayShentonQuestions";
 import { useLiteEventLang } from "src/i18n/liteEvent";
 import { computeScore } from "src/lib/brainHealthScoring";
 import { useQuestionnaireStore } from "src/stores/useQuestionnaireStore";
@@ -263,6 +264,12 @@ export default function ParkwayShentonLoading() {
             percentile: report ? Math.round(report.percentile) : null,
             severity: severityKey(report?.severity),
             quizAnswers: hasQuizAnswers ? quizAnswers : null,
+            // The one question only this link asks, sent as its own field so
+            // it lands in ps_pilot.clinic_location as well as in quiz_answers.
+            clinicLocation:
+              typeof quizAnswers[PS_PILOT_CLINIC_QUESTION_ID] === "string"
+                ? quizAnswers[PS_PILOT_CLINIC_QUESTION_ID]
+                : null,
             brainHealthScore: brainScore ? brainScore.total : null,
             riskScore: brainScore ? brainScore.riskScore : null,
             symptomScore: brainScore ? brainScore.symptomScore : null,
