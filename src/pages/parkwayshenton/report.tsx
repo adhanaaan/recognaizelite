@@ -133,6 +133,8 @@ export default function ParkwayShentonReport() {
   // The closing's three lines, which this funnel does differently; everything
   // else on the page still reads from the shared sets.
   const pk = parkwayShentonReportCopy(lang);
+  // The shared axes with this funnel's name for the fifth, "Risk Safety".
+  const radarAxes = [...t.report.radarAxes.slice(0, 4), pk.radarRiskAxis];
   const scrollerRef = React.useRef<HTMLDivElement>(null);
   const heroRef = React.useRef<HTMLDivElement>(null);
   // Watched by ScrollMoreCue: on a viewport too short to show the hero's own
@@ -656,11 +658,11 @@ export default function ParkwayShentonReport() {
                   </div>
                   <div className="mt-4">
                     <MotionRadar
-                      axes={t.report.radarAxes}
+                      axes={radarAxes}
                       aria={t.report.radarAria}
                       filled={{
-                        [t.report.radarAxes[0]]: Math.max(0.25, percentile / 100),
-                        [t.report.radarAxes[4]]: riskFill,
+                        [radarAxes[0]]: Math.max(0.25, percentile / 100),
+                        [radarAxes[4]]: riskFill,
                       }}
                     />
                   </div>

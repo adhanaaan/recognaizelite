@@ -40,6 +40,12 @@ export type ParkwayShentonReportCopy = {
   /** The closing card's callout, in place of "Speak to our team at the booth". */
   nextCallout: string;
   /**
+   * The baseline radar's fifth axis, in place of the shared "Risk". Read as
+   * "risk safety" (the higher the fill, the safer), as /act4health words it,
+   * so a full axis doesn't read as "high risk".
+   */
+  radarRiskAxis: string;
+  /**
    * "What to do now?" — /parkway's, with this funnel's first step. /parkway's
    * own button label (`cta`) is left out: the button here is the one above.
    */
@@ -68,18 +74,21 @@ const EN: Base = {
   cta: "Talk to our doctors or clinic assistants to find out more",
   ctaDone: "Noted — our team will take it from here",
   nextCallout: "Talk to our doctors or clinic assistants",
+  radarRiskAxis: "Risk Safety",
 };
 
 const ZH: Base = {
   cta: "想了解更多，请与我们的医生或诊所助理聊聊",
   ctaDone: "已记录 — 接下来交给我们的团队",
   nextCallout: "与我们的医生或诊所助理聊聊",
+  radarRiskAxis: "风险安全",
 };
 
 const MS: Base = {
   cta: "Berbual dengan doktor atau pembantu klinik kami untuk maklumat lanjut",
   ctaDone: "Dicatat — pasukan kami akan meneruskan dari sini",
   nextCallout: "Berbual dengan doktor atau pembantu klinik kami",
+  radarRiskAxis: "Keselamatan Risiko",
 };
 
 const BY_LANG: Record<LiteEventLang, Base> = { en: EN, zh: ZH, ms: MS };
