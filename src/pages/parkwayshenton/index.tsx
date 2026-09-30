@@ -234,6 +234,159 @@ export default function ParkwayShentonEntry() {
     Router.push(`${PARKWAY_SHENTON.basePath}/ready`);
   };
 
+  /**
+   * The sign-up, rendered in one of two places. On a phone it sits under the
+   * video on the cream, as the design has it. On desktop the video fills the
+   * whole first screen, so the form goes onto it, straight under the language
+   * picker, and is still filled in above the fold. Both copies share one set
+   * of state; only one is ever displayed (the other is `display: none`, so it
+   * is neither focusable nor submitted), and `idSuffix` keeps their ids — and
+   * the labels tied to them — apart. `onVideo` swaps the dark-on-cream text
+   * for white.
+   */
+  const renderForm = (onVideo: boolean, idSuffix: string, className = "") => (
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className={`lite-rise mx-auto w-full max-w-[340px] text-left ${className}`}
+      style={{ animationDelay: "280ms" }}
+    >
+      <input
+        id={`pkws-name${idSuffix}`}
+        type="text"
+        autoComplete="name"
+        aria-label={t.results.nameLabel}
+        placeholder={t.results.namePlaceholder}
+        value={name}
+        onChange={(e) => { setName(e.target.value); setError(""); }}
+        className={fieldClass}
+      />
+      <input
+        id={`pkws-email${idSuffix}`}
+        type="email"
+        autoComplete="email"
+        inputMode="email"
+        aria-label={t.results.emailLabel}
+        placeholder={t.results.emailPlaceholder}
+        value={email}
+        onChange={(e) => { setEmail(e.target.value); setError(""); }}
+        className={`${fieldClass} mt-2.5`}
+      />
+
+      <div className="mt-4">
+        <p className={`mb-2 text-[12px] font-bold leading-snug ${onVideo ? "text-white" : "text-charcoal"}`}>
+          {c.heading}
+        </p>
+        <ConsentCheckbox
+          id={`pkws-consent-gms${idSuffix}`}
+          checked={consented}
+          onChange={(next) => { setConsented(next); setError(""); }}
+          size={22}
+        >
+          <span className={`block space-y-1 text-[11.5px] leading-[1.5] ${onVideo ? "text-white/90" : "text-charcoal/80"}`}>
+            <span className="block">{c.ownBehalf}</span>
+            {/* The compulsory half, set darker: it is the sentence
+                a visitor is likeliest to skim, and the one the
+                submit actually turns on. */}
+            <span className={`block font-semibold ${onVideo ? "text-white" : "text-charcoal"}`}>{c.consent}</span>
+          </span>
+        </ConsentCheckbox>
+      </div>
+
+      {/* The partner's consent, asked separately because it is a
+          separate agreement with a separate holder — /parkway gives
+          it a screen of its own; this funnel has no such screen, so
+          it is asked here.
+
+          Set on a white panel, unlike the block above it: that one
+          is two short lines, this one is IHH's whole consent, and
+          the panel marks it off as the partner's. */}
+      <div className="mt-4">
+        <p className={`mb-2 text-[12px] font-bold leading-snug ${onVideo ? "text-white" : "text-charcoal"}`}>
+          {pk.eyebrow}
+        </p>
+        <div className="rounded-xl border border-quizOutline-variant/70 bg-white px-3.5 py-3 shadow-sm">
+          <ConsentCheckbox
+            id={`pkws-consent-partner${idSuffix}`}
+            checked={partnerConsented}
+            onChange={(next) => { setPartnerConsented(next); setError(""); }}
+            size={22}
+          >
+            {/* One tickbox for the three clauses, as the partner's
+                own form is written. */}
+            <span className="block space-y-2 text-[11.5px] leading-[1.5] text-charcoal">
+              <span className="block">
+                {pk.clauses.treatmentLead}
+                {noticeHref ? (
+                  <a
+                    href={noticeHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold underline underline-offset-2"
+                    // The label wraps the whole block, so without
+                    // this a tap on the notice would tick the box on
+                    // the way out.
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {pk.clauses.noticeName}
+                  </a>
+                ) : (
+                  <span className="font-semibold underline underline-offset-2">
+                    {pk.clauses.noticeName}
+                  </span>
+                )}
+                {pk.clauses.treatmentTail}
+              </span>
+              <span className="block">{pk.clauses.marketing}</span>
+              <span className="block">{pk.clauses.dnc}</span>
+              {/* The withdrawal note is part of the partner's consent
+                  block as IHH sets it out, so it sits in the same
+                  panel. The address is a link inside a label, hence
+                  the stopPropagation, as with the notice above. */}
+              <span className="block">
+                {pk.withdrawal}
+                <a
+                  href={`mailto:${IHH.dpoEmail}`}
+                  className="font-semibold underline underline-offset-2"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {IHH.dpoEmail}
+                </a>
+                {pk.withdrawalTail}
+              </span>
+            </span>
+          </ConsentCheckbox>
+        </div>
+      </div>
+
+      {/* The press marks between the consents and the button, as the
+          design places them: the last word before the visitor starts. */}
+      <div className="mt-4">
+        <HeroFeaturedIn logos={PRESS} label={t.landing.featuredIn} />
+      </div>
+
+      {/* Right above the button that raised it. */}
+      {error && (
+        <p
+        role="alert"
+        className={
+          onVideo
+            ? "mt-4 rounded-lg bg-black/40 px-3 py-2 text-[12.5px] font-semibold text-white"
+            : "mt-4 text-[13px] font-medium text-quizError"
+        }
+      >
+          {error}
+        </p>
+      )}
+
+      <div className="mt-4">
+        <LiteButton type="submit" disabled={saving}>
+          {saving ? t.results.saving : t.landing.cta}
+        </LiteButton>
+      </div>
+    </form>
+  );
+
   return (
     <>
       <Head>
@@ -254,9 +407,9 @@ export default function ParkwayShentonEntry() {
          * has no fixed height of its own — `flex flex-col` here plus `flex-1`
          * on HeroVideo lets it grow into any space the sections below leave
          * on a very tall viewport, and otherwise it is exactly as tall as its
-         * content. On desktop the wrapper holds it to the full viewport, so
-         * the video is the whole first screen and the sign-up starts below
-         * the fold.
+         * content. On desktop the wrapper holds it to at least the full
+         * viewport, so the video is the whole first screen, and the sign-up
+         * sits on it under the picker rather than on the cream below.
          */}
         <div className="flex min-h-[100dvh] flex-col">
           <div className="flex flex-1 flex-col lg:min-h-[100dvh]">
@@ -311,149 +464,20 @@ export default function ParkwayShentonEntry() {
                       />
                     </div>
                   )}
+
+                  {/* Desktop only: the sign-up on the video, under the
+                      picker. See renderForm. */}
+                  {renderForm(true, "-lg", "mt-8 hidden lg:block")}
                 </div>
               </div>
             </HeroVideo>
           </div>
 
-          {/* The sign-up, under the video rather than on it, on the same cream
-              as the hero's bottom fade so the two run together. The top
-              padding only matters on desktop, where the form no longer
-              follows straight on from the picker. */}
-          <section className="bg-quizSurface-container px-6 pb-8 lg:pt-10">
-            <form
-              onSubmit={handleSubmit}
-              noValidate
-              className="lite-rise mx-auto w-full max-w-[340px] text-left"
-              style={{ animationDelay: "280ms" }}
-            >
-              <input
-                id="pkws-name"
-                type="text"
-                autoComplete="name"
-                aria-label={t.results.nameLabel}
-                placeholder={t.results.namePlaceholder}
-                value={name}
-                onChange={(e) => { setName(e.target.value); setError(""); }}
-                className={fieldClass}
-              />
-              <input
-                id="pkws-email"
-                type="email"
-                autoComplete="email"
-                inputMode="email"
-                aria-label={t.results.emailLabel}
-                placeholder={t.results.emailPlaceholder}
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setError(""); }}
-                className={`${fieldClass} mt-2.5`}
-              />
-
-              <div className="mt-4">
-                <p className="mb-2 text-[12px] font-bold leading-snug text-charcoal">
-                  {c.heading}
-                </p>
-                <ConsentCheckbox
-                  id="pkws-consent-gms"
-                  checked={consented}
-                  onChange={(next) => { setConsented(next); setError(""); }}
-                  size={22}
-                >
-                  <span className="block space-y-1 text-[11.5px] leading-[1.5] text-charcoal/80">
-                    <span className="block">{c.ownBehalf}</span>
-                    {/* The compulsory half, set darker: it is the sentence
-                        a visitor is likeliest to skim, and the one the
-                        submit actually turns on. */}
-                    <span className="block font-semibold text-charcoal">{c.consent}</span>
-                  </span>
-                </ConsentCheckbox>
-              </div>
-
-              {/* The partner's consent, asked separately because it is a
-                  separate agreement with a separate holder — /parkway gives
-                  it a screen of its own; this funnel has no such screen, so
-                  it is asked here.
-
-                  Set on a white panel, unlike the block above it: that one
-                  is two short lines, this one is IHH's whole consent, and
-                  the panel marks it off as the partner's. */}
-              <div className="mt-4">
-                <p className="mb-2 text-[12px] font-bold leading-snug text-charcoal">
-                  {pk.eyebrow}
-                </p>
-                <div className="rounded-xl border border-quizOutline-variant/70 bg-white px-3.5 py-3 shadow-sm">
-                  <ConsentCheckbox
-                    id="pkws-consent-partner"
-                    checked={partnerConsented}
-                    onChange={(next) => { setPartnerConsented(next); setError(""); }}
-                    size={22}
-                  >
-                    {/* One tickbox for the three clauses, as the partner's
-                        own form is written. */}
-                    <span className="block space-y-2 text-[11.5px] leading-[1.5] text-charcoal">
-                      <span className="block">
-                        {pk.clauses.treatmentLead}
-                        {noticeHref ? (
-                          <a
-                            href={noticeHref}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="font-semibold underline underline-offset-2"
-                            // The label wraps the whole block, so without
-                            // this a tap on the notice would tick the box on
-                            // the way out.
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {pk.clauses.noticeName}
-                          </a>
-                        ) : (
-                          <span className="font-semibold underline underline-offset-2">
-                            {pk.clauses.noticeName}
-                          </span>
-                        )}
-                        {pk.clauses.treatmentTail}
-                      </span>
-                      <span className="block">{pk.clauses.marketing}</span>
-                      <span className="block">{pk.clauses.dnc}</span>
-                      {/* The withdrawal note is part of the partner's consent
-                          block as IHH sets it out, so it sits in the same
-                          panel. The address is a link inside a label, hence
-                          the stopPropagation, as with the notice above. */}
-                      <span className="block">
-                        {pk.withdrawal}
-                        <a
-                          href={`mailto:${IHH.dpoEmail}`}
-                          className="font-semibold underline underline-offset-2"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {IHH.dpoEmail}
-                        </a>
-                        {pk.withdrawalTail}
-                      </span>
-                    </span>
-                  </ConsentCheckbox>
-                </div>
-              </div>
-
-              {/* The press marks between the consents and the button, as the
-                  design places them: the last word before the visitor starts. */}
-              <div className="mt-4">
-                <HeroFeaturedIn logos={PRESS} label={t.landing.featuredIn} />
-              </div>
-
-              {/* Right above the button that raised it. */}
-              {error && (
-                <p role="alert" className="mt-4 text-[13px] font-medium text-quizError">
-                  {error}
-                </p>
-              )}
-
-              <div className="mt-4">
-                <LiteButton type="submit" disabled={saving}>
-                  {saving ? t.results.saving : t.landing.cta}
-                </LiteButton>
-              </div>
-            </form>
+          {/* Phone and tablet: the sign-up under the video rather than on it,
+              on the same cream as the hero's bottom fade so the two run
+              together. On desktop it is on the video instead. */}
+          <section className="bg-quizSurface-container px-6 pb-8 lg:hidden">
+              {renderForm(false, "")}
           </section>
 
           {/* The fine print the tick refers to, below the hero rather than
