@@ -69,16 +69,9 @@ const PRESS: PressLogo[] = [
   { src: "logo-pubmed.svg", alt: "PubMed", h: 20 },
 ];
 
-/**
- * The band the sign-up sits on, under the video — the design's taupe. The
- * video fades into it (HeroVideo's `fadeTo`) and it fades into the cream at
- * its own foot, so the three read as one surface with no hard edge.
- */
-const FORM_BG = "#8D7C74";
-
-/** The sign-up's fields. Solid white, so they stand out on the taupe. */
+/** The sign-up's fields — /lite-event/results' inputs, on the cream under the hero. */
 const fieldClass =
-  "w-full rounded-xl border border-white/70 bg-white px-4 py-3 text-[15px] text-charcoal placeholder-quizOutline shadow-sm outline-none transition-colors focus:border-quizPrimary";
+  "w-full rounded-xl border border-quizOutline-variant bg-quizSurface-lowest px-4 py-3 text-[15px] text-charcoal placeholder-quizOutline outline-none transition-colors focus:border-quizPrimary";
 
 /**
  * /parkwayshenton — entry. The Parkway Shenton funnel's landing page.
@@ -256,75 +249,82 @@ export default function ParkwayShentonEntry() {
           separate band above it would state the same thing twice. */}
       <LiteShell scroll showHeader={false}>
         {/*
-         * The video ends under the language picker and fades into the taupe
-         * band the sign-up sits on. The hero has no fixed height of its own —
-         * `flex flex-col` here plus `flex-1` on HeroVideo lets it grow into
-         * any space the sections below leave on a very tall viewport, and
-         * otherwise it is exactly as tall as its content.
+         * The video ends under the language picker and fades into the cream
+         * the sign-up sits on, as on the other funnels. On a phone the hero
+         * has no fixed height of its own — `flex flex-col` here plus `flex-1`
+         * on HeroVideo lets it grow into any space the sections below leave
+         * on a very tall viewport, and otherwise it is exactly as tall as its
+         * content. On desktop the wrapper holds it to the full viewport, so
+         * the video is the whole first screen and the sign-up starts below
+         * the fold.
          */}
         <div className="flex min-h-[100dvh] flex-col">
-          <HeroVideo whiteLogo fadeTo={FORM_BG}>
-            {/*
-             * Two groups, spread by HeroVideo's `justify-between`: the
-             * credibility pill near the top under the lock-up, and the
-             * headline stack under it, down to the language picker.
-             */}
-            <div className="lite-rise" style={{ animationDelay: "40ms" }}>
-              <HeroPill>{t.landing.pill}</HeroPill>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <h1
-                className="lite-rise font-display text-[30px] leading-[1.16] text-white sm:text-[46px]"
-                style={{ animationDelay: "110ms" }}
-              >
-                <span className="font-medium">{t.landing.heroLine1Lead}</span>
-                <span className="font-medium italic">{t.landing.heroLine1Emph}</span>
-                <br />
-                <span className="font-extrabold">{t.landing.heroLine2Lead}</span>
-                <span className="font-extrabold italic">{t.landing.heroLine2Emph}</span>
-                <span className="font-extrabold">{t.landing.heroLine2Tail}</span>
-              </h1>
-
-              <p
-                className="lite-rise mt-6 max-w-[420px] font-display text-[17px] font-bold leading-snug text-white/95 sm:text-[19px]"
-                style={{ animationDelay: "200ms" }}
-              >
-                {t.landing.heroSub}
-              </p>
-
-              {/* The language switch is the last thing on the video: the
-                  visitor reads what this is, picks their language, then fills
-                  in the sign-up below. The wrapper is gated on `enabled` too,
-                  not just the picker — an empty div would still leave its
-                  `mt-7` gap at the foot of the hero once the toggle is off. */}
-              {enabled && (
-                <div className="lite-rise mt-7" style={{ animationDelay: "240ms" }}>
-                  <LanguagePicker
-                    lang={lang}
-                    onChange={setLang}
-                    enabled={enabled}
-                    label={t.picker.label}
-                    langs={LITE_EVENT_LANGS}
-                    labels={LANG_LABELS}
-                  />
+          <div className="flex flex-1 flex-col lg:min-h-[100dvh]">
+            <HeroVideo whiteLogo>
+              {/*
+               * Two groups. On a phone HeroVideo's `justify-between` spreads
+               * them: the credibility pill near the top under the lock-up, and
+               * the headline stack under it, down to the language picker. On
+               * desktop the full-height video would push them to opposite ends
+               * of the screen, so the wrapper stops being `contents` there and
+               * centres them together instead.
+               */}
+              <div className="contents lg:my-auto lg:flex lg:flex-col lg:items-center lg:gap-8">
+                <div className="lite-rise" style={{ animationDelay: "40ms" }}>
+                  <HeroPill>{t.landing.pill}</HeroPill>
                 </div>
-              )}
-            </div>
-          </HeroVideo>
 
-          {/* The sign-up, under the video on the taupe band it fades into.
-              The band fades to cream at its foot, behind the button, the same
-              way the hero on the other funnels hands off to the page. */}
-          <section className="relative px-6 pb-8" style={{ backgroundColor: FORM_BG }}>
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-quizSurface-container"
-            />
+                <div className="flex flex-col items-center">
+                  <h1
+                    className="lite-rise font-display text-[30px] leading-[1.16] text-white sm:text-[46px]"
+                    style={{ animationDelay: "110ms" }}
+                  >
+                    <span className="font-medium">{t.landing.heroLine1Lead}</span>
+                    <span className="font-medium italic">{t.landing.heroLine1Emph}</span>
+                    <br />
+                    <span className="font-extrabold">{t.landing.heroLine2Lead}</span>
+                    <span className="font-extrabold italic">{t.landing.heroLine2Emph}</span>
+                    <span className="font-extrabold">{t.landing.heroLine2Tail}</span>
+                  </h1>
+
+                  <p
+                    className="lite-rise mt-6 max-w-[420px] font-display text-[17px] font-bold leading-snug text-white/95 sm:text-[19px]"
+                    style={{ animationDelay: "200ms" }}
+                  >
+                    {t.landing.heroSub}
+                  </p>
+
+                  {/* The language switch is the last thing on the video: the
+                      visitor reads what this is, picks their language, then fills
+                      in the sign-up below. The wrapper is gated on `enabled` too,
+                      not just the picker — an empty div would still leave its
+                      `mt-7` gap at the foot of the hero once the toggle is off. */}
+                  {enabled && (
+                    <div className="lite-rise mt-7" style={{ animationDelay: "240ms" }}>
+                      <LanguagePicker
+                        lang={lang}
+                        onChange={setLang}
+                        enabled={enabled}
+                        label={t.picker.label}
+                        langs={LITE_EVENT_LANGS}
+                        labels={LANG_LABELS}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </HeroVideo>
+          </div>
+
+          {/* The sign-up, under the video rather than on it, on the same cream
+              as the hero's bottom fade so the two run together. The top
+              padding only matters on desktop, where the form no longer
+              follows straight on from the picker. */}
+          <section className="bg-quizSurface-container px-6 pb-8 lg:pt-10">
             <form
               onSubmit={handleSubmit}
               noValidate
-              className="lite-rise relative mx-auto w-full max-w-[340px] text-left"
+              className="lite-rise mx-auto w-full max-w-[340px] text-left"
               style={{ animationDelay: "280ms" }}
             >
               <input
@@ -350,7 +350,7 @@ export default function ParkwayShentonEntry() {
               />
 
               <div className="mt-4">
-                <p className="mb-2 text-[12px] font-bold leading-snug text-white">
+                <p className="mb-2 text-[12px] font-bold leading-snug text-charcoal">
                   {c.heading}
                 </p>
                 <ConsentCheckbox
@@ -359,12 +359,12 @@ export default function ParkwayShentonEntry() {
                   onChange={(next) => { setConsented(next); setError(""); }}
                   size={22}
                 >
-                  <span className="block space-y-1 text-[11.5px] leading-[1.5] text-white/90">
+                  <span className="block space-y-1 text-[11.5px] leading-[1.5] text-charcoal/80">
                     <span className="block">{c.ownBehalf}</span>
-                    {/* The compulsory half, set brighter and bolder: it is the
-                        sentence a visitor is likeliest to skim, and the one
-                        the submit actually turns on. */}
-                    <span className="block font-semibold text-white">{c.consent}</span>
+                    {/* The compulsory half, set darker: it is the sentence
+                        a visitor is likeliest to skim, and the one the
+                        submit actually turns on. */}
+                    <span className="block font-semibold text-charcoal">{c.consent}</span>
                   </span>
                 </ConsentCheckbox>
               </div>
@@ -378,10 +378,10 @@ export default function ParkwayShentonEntry() {
                   is two short lines, this one is IHH's whole consent, and
                   the panel marks it off as the partner's. */}
               <div className="mt-4">
-                <p className="mb-2 text-[12px] font-bold leading-snug text-white">
+                <p className="mb-2 text-[12px] font-bold leading-snug text-charcoal">
                   {pk.eyebrow}
                 </p>
-                <div className="rounded-xl bg-white px-3.5 py-3 shadow-sm">
+                <div className="rounded-xl border border-quizOutline-variant/70 bg-white px-3.5 py-3 shadow-sm">
                   <ConsentCheckbox
                     id="pkws-consent-partner"
                     checked={partnerConsented}
@@ -443,10 +443,7 @@ export default function ParkwayShentonEntry() {
 
               {/* Right above the button that raised it. */}
               {error && (
-                <p
-                  role="alert"
-                  className="mt-4 rounded-lg bg-black/35 px-3 py-2 text-[12.5px] font-semibold text-white"
-                >
+                <p role="alert" className="mt-4 text-[13px] font-medium text-quizError">
                   {error}
                 </p>
               )}
