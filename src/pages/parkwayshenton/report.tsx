@@ -1,4 +1,5 @@
 import {
+  AnimatePresence,
   MotionConfig,
   motion,
   useMotionTemplate,
@@ -9,7 +10,6 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
-import { ConsentCheckbox } from "src/components/LiteOne/ConsentCheckbox";
 import {
   MotionRadar,
   MotionScoreCurve,
@@ -58,17 +58,19 @@ import {
  * The closing is /clinic-signup's shape with the partner's destination. Where
  * /lite-event's report ends on a price card and a button to the voucher page,
  * this one keeps every personalised line above it and swaps the commerce for
- * two things the clinic can act on: a button under the three steps, and a
- * "What happens next" card that names the in-person next step and ends on a
- * tips opt-in. Both are recorded, keyed by the run's attempt id, in
+ * two things the clinic can act on: a sticky "Talk to our doctors or clinic
+ * assistants" button along the foot of the screen once the reader is past the
+ * rank, and a "What happens next" card that names the same in-person next
+ * step. The button's tap is recorded, keyed by the run's attempt id, in
  * liteevent_report_interest (migration 020) via /api/lite-report-interest —
- * see recordReportInterest. report-full.tsx still exists but nothing here
- * links to it any more.
+ * see recordReportInterest. Unlike its siblings this report has no tips
+ * opt-in, and the route ignores one for this funnel.
+ * report-full.tsx still exists but nothing here links to it any more.
  *
  * What differs from /clinic-signup is where those two send the reader. That
  * funnel hands off to the team at a booth and /parkway opens a WhatsApp
  * booking; here the next step is the doctors and clinic assistants already in
- * the room, so the button and the card's callout both say so — the three lines
+ * the room, so the sticky button and the card's callout both say so — the three lines
  * in src/data/parkwayShentonReportCopy.ts, and the only copy on this page that
  * is this funnel's own.
  */
@@ -205,17 +207,14 @@ export default function ParkwayShentonReport() {
 
   const [shared, setShared] = React.useState(false);
 
-  // The closing's two trackers. Hydrated from the device copy so a refresh
-  // shows the same state the run's row holds; each change is mirrored there
-  // and posted, best-effort, to /api/lite-report-interest.
+  // The closing's one tracker, the sticky "Talk to our doctors" button.
+  // Hydrated from the device copy so a refresh shows the same state the run's
+  // row holds; a tap is mirrored there and posted, best-effort, to
+  // /api/lite-report-interest, which sets `interested` and `interested_at`.
   const [interested, setInterested] = React.useState(false);
-  const [tipsOptIn, setTipsOptIn] = React.useState(false);
   React.useEffect(() => {
     const stored = readReportInterest(PARKWAY_SHENTON);
-    if (stored) {
-      setInterested(stored.interested);
-      setTipsOptIn(stored.tipsOptIn);
-    }
+    if (stored) setInterested(stored.interested);
   }, []);
   const markInterested = () => {
     if (interested) return;
@@ -223,11 +222,20 @@ export default function ParkwayShentonReport() {
     stashReportInterest({ interested: true }, PARKWAY_SHENTON);
     void recordReportInterest({ interested: true }, PARKWAY_SHENTON, { lang });
   };
-  const toggleTips = (next: boolean) => {
-    setTipsOptIn(next);
-    stashReportInterest({ tipsOptIn: next }, PARKWAY_SHENTON);
-    void recordReportInterest({ tipsOptIn: next }, PARKWAY_SHENTON, { lang });
-  };
+
+  // The sticky button stays off the first screen: the hero has its own "Tell
+  // me more" cue (and ScrollMoreCue's pill on short viewports) at the same
+  // spot, and the rank is what the reader should see first. It slides in once
+  // they are half a screen past it and stays for the rest of the report.
+  const [ctaShown, setCtaShown] = React.useState(false);
+  React.useEffect(() => {
+    const root = scrollerRef.current;
+    if (!root) return;
+    const onScroll = () => setCtaShown(root.scrollTop > root.clientHeight * 0.5);
+    onScroll();
+    root.addEventListener("scroll", onScroll, { passive: true });
+    return () => root.removeEventListener("scroll", onScroll);
+  }, []);
   const share = async (text: string) => {
     const url = typeof window === "undefined" ? "" : `${window.location.origin}${PARKWAY_SHENTON.basePath}`;
     try {
@@ -739,42 +747,6 @@ export default function ParkwayShentonReport() {
                   ))}
                 </motion.ol>
 
-                {/* The first tracker, in the slot the design gives its
-                    booking button (Figma "R5 · Report — The test", node
-                    721-9748). Where /lite-event opens the voucher page, this
-                    records a raised hand and stays confirmed; the next step is
-                    the clinic's own staff, which is what the label says and
-                    what the card two sections down repeats. */}
-                <motion.button
-                  variants={rise}
-                  type="button"
-                  onClick={markInterested}
-                  disabled={interested}
-                  aria-pressed={interested}
-                  whileTap={interested ? undefined : { scale: 0.98 }}
-                  // px-6 and a wrapping leading, where /clinic-signup's button
-                  // has px-8 and leading-none: that one is two words, this one
-                  // is a sentence, and on a 375px phone it takes two lines —
-                  // which collapse on top of each other without a line height.
-                  className="mt-8 flex w-full items-center justify-center gap-2 rounded-full px-6 py-[15px] text-center text-[15.5px] font-bold leading-[1.3] tracking-[0.02em] text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06] disabled:cursor-default disabled:hover:brightness-100"
-                  style={{ background: RANK_GRADIENT }}
-                >
-                  {interested && (
-                    <svg
-                      aria-hidden
-                      viewBox="0 0 24 24"
-                      className="size-[18px] shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M4.5 12.6l5 5 10-10.5" />
-                    </svg>
-                  )}
-                  {interested ? pk.ctaDone : pk.cta}
-                </motion.button>
 
                 <motion.figure
                   variants={rise}
@@ -859,17 +831,6 @@ export default function ParkwayShentonReport() {
                     {pk.nextCallout}
                   </p>
 
-                  {/* The trial's second tracker, and the card's one control. */}
-                  <ConsentCheckbox
-                    id="pkws-tips-opt-in"
-                    checked={tipsOptIn}
-                    onChange={toggleTips}
-                    className="mt-[22px] py-1"
-                  >
-                    <span className="mt-[2px] block text-[15.5px] leading-[1.4] text-quizSecondary">
-                      {t.report.tipsOptIn}
-                    </span>
-                  </ConsentCheckbox>
 
                   <p className="mt-[21px] text-center text-[13px] leading-[1.35] text-quizOutline">
                     {t.report.credibilityLine}
@@ -940,7 +901,56 @@ export default function ParkwayShentonReport() {
                 </motion.p>
               </Cascade>
             </SnapSection>
+
+            {/* Room for the sticky button, so it never covers the last lines. */}
+            <div aria-hidden className="h-28" />
           </div>
+
+          {/* The sticky CTA. Outside the scroller so it stays put while the
+              report moves under it; the fade behind it keeps the button from
+              sitting on top of whatever text is passing. One-way, like the
+              button it replaced under the three steps: it confirms and stays
+              confirmed. */}
+          <AnimatePresence>
+            {ctaShown && (
+              <motion.div
+                initial={{ opacity: 0, y: reduced ? 0 : 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: reduced ? 0 : 24 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-5 pb-[max(16px,env(safe-area-inset-bottom))] pt-10"
+                style={{ backgroundImage: "linear-gradient(to bottom, rgba(255,248,243,0), #FFF8F3 55%)" }}
+              >
+                <motion.button
+                  type="button"
+                  onClick={markInterested}
+                  disabled={interested}
+                  aria-pressed={interested}
+                  whileTap={interested ? undefined : { scale: 0.98 }}
+                  // A wrapping leading: the label is a sentence, and on a
+                  // 375px phone it takes two lines.
+                  className="pointer-events-auto mx-auto flex w-full max-w-[560px] items-center justify-center gap-2 rounded-full px-6 py-[15px] text-center text-[15.5px] font-bold leading-[1.3] tracking-[0.02em] text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06] disabled:cursor-default disabled:hover:brightness-100"
+                  style={{ background: RANK_GRADIENT }}
+                >
+                  {interested && (
+                    <svg
+                      aria-hidden
+                      viewBox="0 0 24 24"
+                      className="size-[18px] shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M4.5 12.6l5 5 10-10.5" />
+                    </svg>
+                  )}
+                  {interested ? pk.ctaDone : pk.cta}
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </ScrollerContext.Provider>
       </MotionConfig>
     </>

@@ -33,6 +33,9 @@ const FUNNEL_MAX_LEN = 64;
  */
 const LANGS = new Set(["en", "zh", "ms", "id"]);
 
+/** Clinics whose report asks no tips question, so never writes tips_opt_in. */
+const NO_TIPS_OPT_IN = new Set(["pspilot"]);
+
 function str(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
@@ -74,7 +77,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const interested = bool(body.interested);
-  const tipsOptIn = bool(body.tipsOptIn);
+  // /parkwayshenton's report has no tips opt-in, so its rows never carry one:
+  // a stale client (a tab left open from before the tickbox came out) is
+  // ignored rather than allowed to write the column.
+  const tipsOptIn = NO_TIPS_OPT_IN.has(str(body.clinic) ?? "") ? null : bool(body.tipsOptIn);
   if (interested === null && tipsOptIn === null) {
     return res.status(400).json({ error: "Nothing to record" });
   }
