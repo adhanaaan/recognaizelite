@@ -82,10 +82,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Lead storage is not configured" });
   }
 
+  const score = num(body.score);
+
   const { error } = await supabase.from(table).insert({
     attempt_id: attemptId,
     email: null,
-    score: num(body.score),
+    score,
     percentile,
     severity,
     utm_source: str(utm.source),
@@ -98,9 +100,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 
   if (error) {
-    // A re-fire of the same attempt (refresh, double-mount in dev) is a no-op,
-    // not a failure — the row already says what we wanted it to say.
     if (error.code === "23505") {
+      // The row already exists. Usually that is a re-fire of the same attempt
+      // (refresh, double-mount in dev) and the row already says this. But
+      // /clinic-signup and /parkwayshenton open the row on their landing page,
+      // before the game, so this is where its score arrives: fill in whatever
+      // numbers this call carries, and nothing else — no contact details,
+      // consents or timestamps are touched.
+      const numbers = {
+        ...(score !== null ? { score } : {}),
+        ...(percentile !== null ? { percentile } : {}),
+        ...(severity ? { severity } : {}),
+      };
+      if (Object.keys(numbers).length > 0) {
+        const { error: updateError } = await supabase
+          .from(table)
+          .update(numbers)
+          .eq("attempt_id", attemptId);
+        if (updateError) {
+          console.error(`Supabase update (${table} attempt) failed:`, updateError);
+          return res.status(500).json({ error: "Failed to record attempt", detail: updateError.message });
+        }
+      }
       return res.status(200).json({ success: true, duplicate: true });
     }
     console.error(`Supabase insert (${table} attempt) failed:`, error);
