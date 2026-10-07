@@ -477,6 +477,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     /**
+     * The run's numbers, for the update path. The insert path already gets
+     * them from sharedRow; the update used to carry contactRow alone, which was
+     * fine while /api/lite-attempt always wrote them first — but /clinic-signup
+     * and /parkwayshenton open the row on their landing page, before there is a
+     * score, so their result write has to bring the numbers itself. Left out
+     * when absent, so a write without them (the landing's own) never blanks
+     * what the game end recorded.
+     */
+    const resultRow = {
+      ...(score !== null ? { score } : {}),
+      ...(percentile !== null ? { percentile } : {}),
+      ...(severity ? { severity } : {}),
+    };
+
+    /**
      * Mails the visitor their result and adds them to the campaign Audience.
      *
      * Called only on a path that already wrote the row — the lead is the
@@ -517,7 +532,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Schema-cache fallback, as below: an environment that pre-dates
       // migration 011 (quiz columns) or 019 (consent) still takes the lead,
       // minus only the columns its table is actually missing.
-      const { data, error } = await writeSheddingUnknownColumns(contactRow, (row) =>
+      const { data, error } = await writeSheddingUnknownColumns({ ...contactRow, ...resultRow }, (row) =>
         supabase.from(liteTable).update(row).eq("attempt_id", attemptId).select("id")
       );
 

@@ -6,7 +6,12 @@ import { SectionBadge } from "src/components/LiteOne/SectionBadge";
 import { useLiteEventLang } from "src/i18n/liteEvent";
 import { liteEventCopy } from "src/i18n/liteEventCopy";
 import { useResultStore } from "src/stores/useResultStore";
-import { PARKWAY_SHENTON, readTask2Score } from "src/utils/liteOne";
+import {
+  PARKWAY_SHENTON,
+  readAttemptId,
+  readTask2Score,
+  recordLiteAttempt,
+} from "src/utils/liteOne";
 
 /**
  * /parkwayshenton — the Parkway Shenton copy of this /clinic-signup screen.
@@ -34,6 +39,27 @@ export default function ParkwayShentonGameComplete() {
   const t = liteEventCopy(lang);
   const { result } = useResultStore();
   const score = readTask2Score(result);
+
+  /**
+   * Saves the score to ps_pilot the moment the game ends, onto the row the
+   * landing page opened (same attempt id). /parkwayshenton/loading writes it
+   * again with the percentile and the quiz, but a visitor who walks away during
+   * the quiz would otherwise leave a row with no score at all.
+   *
+   * Best-effort, and skipped without a score (a reload here empties the
+   * in-memory result store). `recorded` guards StrictMode's double mount.
+   */
+  const recorded = React.useRef(false);
+  React.useEffect(() => {
+    if (recorded.current || score === null) return;
+    const attemptId = readAttemptId(PARKWAY_SHENTON);
+    if (!attemptId) return;
+    recorded.current = true;
+    void recordLiteAttempt(
+      { attemptId, score, percentile: null, severity: null },
+      PARKWAY_SHENTON
+    );
+  }, [score]);
 
   return (
     <>
