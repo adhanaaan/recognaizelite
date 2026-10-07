@@ -1,0 +1,468 @@
+﻿Page,Section,English,Chinese,Bahasa Melayu
+"=HYPERLINK(""https://recognaizelite.vercel.app/parkwayshenton"",""/parkwayshenton"")",Hero – badge,Clinically validated at NTU LKCMedicine,经南洋理工大学李光前医学院临床验证,Disahkan secara klinikal di NTU LKCMedicine
+,Hero – headline,"You tracked everything
+What about your brain?","您什么都追踪了
+那您的大脑呢？","Anda pantau segalanya
+Bagaimana dengan otak anda?"
+,Hero – subheading,Take a 3-min quiz and find out how your brain is performing,花 3 分钟做个测试，看看您的大脑表现如何,Ambil kuiz 3 minit dan ketahui prestasi otak anda
+,Language picker – screen-reader label,Choose your language,选择语言,Pilih bahasa anda
+,Language picker – button (each in its own language),English,English,English
+,Language picker – button (each in its own language),中文,中文,中文
+,Language picker – button (each in its own language),Bahasa Melayu,Bahasa Melayu,Bahasa Melayu
+,Form – name placeholder,Your name,您的姓名,Nama anda
+,Form – name field label (screen reader),Name,姓名,Nama
+,Form – email placeholder,your@email.com,your@email.com,anda@emel.com
+,Form – email field label (screen reader),Email,电邮,E-mel
+,Consent (Gray Matter) – heading,I hereby confirm that I am submitting this form:,我在此确认，我提交此表格：,Saya dengan ini mengesahkan bahawa saya menghantar borang ini:
+,Consent (Gray Matter) – tickbox line 1,"On my own behalf; or on behalf of another person, and I confirm that I am authorized to provide the answers in this form.",以本人名义提交；或代表他人提交，并确认本人已获授权在此表格中提供相关答案。,"Bagi pihak diri saya sendiri; atau bagi pihak orang lain, dan saya mengesahkan bahawa saya diberi kuasa untuk memberikan jawapan dalam borang ini."
+,Consent (Gray Matter) – tickbox line 2 (bold),"By registering, I consent for Gray Matter Solutions to contact me with emails and newsletters.",注册即表示本人同意 Gray Matter Solutions 通过电子邮件与通讯与本人联系。,"Dengan mendaftar, saya bersetuju untuk dihubungi oleh Gray Matter Solutions melalui e-mel dan surat berita."
+,Consent (IHH) – heading,We need your consent on,我们需要您的同意,Kami perlukan kebenaran anda
+,Consent (IHH) – clause 1 (notice name is a link),"By providing the information set out in this form, I consent to IHH Healthcare Singapore and their representatives and/or agents collecting, using and disclosing my personal data to provide me with medical treatment and other reasonably related purposes. Such purposes are set out in the IHH Healthcare Singapore Data Protection Notice, or available on request.",通过提供本表列出的信息，我同意新加坡 IHH Healthcare 及其代表、代理和/或业务合作伙伴收集、使用和披露我的个人数据，以便为我提供治疗和用于其他合理的相关用途。在新加坡 IHH Healthcare 数据保护通知中列出了此类用途，具体请可访问 IHH SG Data Protection Notice - IHH Healthcare。,"Dengan memberikan maklumat yang dinyatakan dalam borang ini, saya bersetuju untuk IHH Healthcare Singapore serta wakil dan/atau ejen mereka mengumpul, menggunakan dan mendedahkan data peribadi saya bagi memberikan rawatan perubatan kepada saya dan bagi tujuan lain yang berkaitan secara munasabah. Tujuan-tujuan tersebut dinyatakan dalam Notis Perlindungan Data IHH Healthcare Singapore, atau boleh didapati atas permintaan."
+,Consent (IHH) – clause 2,"I also consent to IHH Healthcare Singapore, their representatives, agents and/or business partners collecting, using and disclosing my personal data for marketing and promotional purposes.",我也同意IHH Healthcare Singapore，其代表，代理和/或业务合作伙伴出于营销和促销目的的收集，使用和披露我的个人数据。,"Saya juga bersetuju untuk IHH Healthcare Singapore, wakil, ejen dan/atau rakan niaga mereka mengumpul, menggunakan dan mendedahkan data peribadi saya bagi tujuan pemasaran dan promosi."
+,Consent (IHH) – clause 3,"I agree to receiving marketing messages via SMS, telephone call and other Singapore phone number-based messaging, regardless of my registration with the Do-Not-Call registry.",我同意接收通过短信、电话和其他基于新加坡电话号码的方式发送的营销信息，不管我是否登记了“谢绝来电(Do Not Call)”。,"Saya bersetuju untuk menerima mesej pemasaran melalui SMS, panggilan telefon dan perkhidmatan pesanan lain yang berasaskan nombor telefon Singapura, tanpa mengira sama ada saya berdaftar dengan Daftar Jangan Hubungi (Do-Not-Call Registry)."
+,Consent (IHH) – withdrawal note (email is a link),I understand that I may withdraw such consent at any time via unsubscribe facilities OR forms available on request from our staff OR by email to IHH Healthcare Singapore DPO at pdpo@ihhhealthcare.com,我知晓，我可以随时通过取消订阅功能、使用可要求员工提供的表格或发送电子邮件给新加坡 IHH Healthcare (pdpo@ihhhealthcare.com) 撤回此同意。,Saya faham bahawa saya boleh menarik balik kebenaran tersebut pada bila-bila masa melalui kemudahan berhenti melanggan ATAU borang yang boleh didapati daripada kakitangan kami atas permintaan ATAU melalui e-mel kepada Pegawai Perlindungan Data (DPO) IHH Healthcare Singapore di pdpo@ihhhealthcare.com
+,Featured in – label,As featured in,媒体报道,Disiarkan di
+,Error – no name,Please enter your name.,请输入您的姓名。,Sila masukkan nama anda.
+,Error – invalid email,Please enter a valid email address.,请输入有效的电邮地址。,Sila masukkan alamat e-mel yang sah.
+,Error – Gray Matter consent not ticked,Please agree to the required consent to continue.,请勾选必填的同意项以继续。,Sila setujui kebenaran yang diperlukan untuk meneruskan.
+,Error – IHH consent not ticked,Please also agree to IHH Healthcare Singapore's consent to continue.,请同时同意 IHH Healthcare Singapore 的条款以继续。,Sila juga bersetuju dengan kebenaran IHH Healthcare Singapore untuk meneruskan.
+,Error – save failed,We couldn't save that. Please try again.,保存失败，请再试一次。,Kami tidak dapat menyimpannya. Sila cuba lagi.
+,Button,Get started for free,免费开始,Mula secara percuma
+,Button – while saving,Saving…,正在保存…,Menyimpan…
+,Fine print – data protection (Privacy Policy is a link),"By registering, you agree for Gray Matter Solutions Pte Ltd and its related corporations and/or third-party service providers to collect, store, process and/or disclose your personal data for the purpose of sending you your assessment results, electronic direct mailers (EDMs), newsletters, and invitations to talks and events organised by us. You can unsubscribe at any time by clicking the link in the footer of our emails. For more information about our privacy practices, refer to our Privacy Policy.",注册即表示您同意 Gray Matter Solutions Pte Ltd 及其关联公司和／或第三方服务供应商收集、储存、处理和／或披露您的个人资料，用于向您发送评估结果、电子邮件通讯（EDM）、新闻通讯，以及由我方举办的讲座与活动邀请。您可随时点击邮件页脚的链接取消订阅。有关我们隐私做法的更多信息，请参阅我们的隐私政策。,"Dengan mendaftar, anda bersetuju untuk Gray Matter Solutions Pte Ltd dan syarikat berkaitannya dan/atau penyedia perkhidmatan pihak ketiga mengumpul, menyimpan, memproses dan/atau mendedahkan data peribadi anda bagi tujuan menghantar keputusan penilaian anda, mel terus elektronik (EDM), surat berita, serta jemputan ke ceramah dan acara yang dianjurkan oleh kami. Anda boleh berhenti melanggan pada bila-bila masa dengan mengklik pautan di bahagian bawah e-mel kami. Untuk maklumat lanjut tentang amalan privasi kami, rujuk Dasar Privasi kami."
+,Fine print – Mailchimp note,We use Mailchimp as our marketing platform. By registering you acknowledge that your information will be transferred to Mailchimp for processing.,我们使用 Mailchimp 作为营销平台。注册即表示您了解您的信息将传输至 Mailchimp 进行处理。,"Kami menggunakan Mailchimp sebagai platform pemasaran kami. Dengan mendaftar, anda mengakui bahawa maklumat anda akan dipindahkan kepada Mailchimp untuk diproses."
+,Footer – trust line,Based on the 2024 Lancet Commission risk model and the CAIDE dementia risk score.,基于 2024 年《柳叶刀》委员会 风险模型与 CAIDE 痴呆症风险评分。,Berasaskan model risiko Suruhanjaya Lancet 2024 dan skor risiko demensia CAIDE.
+,Browser tab title,Brain Health Check | ReCOGnAIze,脑健康检查 | ReCOGnAIze,Pemeriksaan Kesihatan Otak | ReCOGnAIze
+,Link preview – title,You tracked everything. What about your brain?,什么都追踪了，那大脑呢？,Anda pantau segalanya. Bagaimana dengan otak anda?
+,Link preview – description,Take a 3-min quiz and find out how your brain is performing.,花 3 分钟做个测试，看看您的大脑表现如何。,Ambil kuiz 3 minit dan ketahui prestasi otak anda.
+,Search description (meta),"You track your heart, your sleep, your blood sugar. This is the same idea for your brain: a 3-minute check and a score you can act on.",您会关注心脏、睡眠和血糖。大脑同样值得关注：3 分钟检测，一个可以据以行动的分数。,"Anda pantau jantung, tidur dan gula dalam darah. Ini idea yang sama untuk otak anda: pemeriksaan 3 minit dan skor yang boleh anda gunakan."
+"=HYPERLINK(""https://recognaizelite.vercel.app/parkwayshenton/ready"",""/parkwayshenton/ready"")",Heading,"In the next
+3 mins","接下来的
+3 分钟","Dalam masa
+3 minit"
+,Steps – step 1,Play a 60-second cognitive game,玩一个 60 秒的认知小游戏,Main satu permainan kognitif 60 saat
+,Steps – step 2,Take a medically-backed quiz on brain health risk factors,完成一份有医学依据的脑健康风险因素问卷,Jawab kuiz berasaskan perubatan tentang faktor risiko kesihatan otak
+,Steps – step 2 picture label (top),Several times,每周数次,Beberapa kali
+,Steps – step 2 picture label (bottom),Not that noticeable,没有察觉,Tidak ketara
+,Steps – step 3,See how you compare to people your age,看看您与同龄人相比表现如何,Lihat perbandingan anda dengan orang sebaya
+,Steps – step 3 picture label (left),Weak,偏弱,Lemah
+,Steps – step 3 picture label (right),Adequate,良好,Memadai
+,Closing line,"And most importantly,
+Learn how you can improve","而最重要的是，
+了解如何改善","Dan yang paling penting,
+Ketahui cara anda boleh bertambah baik"
+,Button,I'm ready!,我准备好了！,Saya sedia!
+,Browser tab title,What happens next | ReCOGnAIze,接下来会发生什么 | ReCOGnAIze,Apa yang seterusnya | ReCOGnAIze
+"=HYPERLINK(""https://recognaizelite.vercel.app/parkwayshenton/challenge"",""/parkwayshenton/challenge"")",Hero – step badge,Step 1 of 3,第 1 步，共 3 步,Langkah 1 daripada 3
+,Hero – heading,Reaction time challenge,反应速度挑战,Cabaran masa reaksi
+,Hero – body,How fast does your brain process? Match as many symbols to their numbers as you can in 60 seconds.,您的大脑处理信息有多快？在 60 秒内尽可能多地把符号与对应的数字配对。,Berapa pantas otak anda memproses maklumat? Padankan sebanyak mungkin simbol dengan nombornya dalam masa 60 saat.
+,Demo – badge,Demo · plays itself,演示 · 自动播放,Demo · main sendiri
+,Button,Start tutorial,开始教程,Mula tutorial
+,Browser tab title,Reaction time challenge | ReCOGnAIze,反应速度挑战 | ReCOGnAIze,Cabaran masa reaksi | ReCOGnAIze
+"=HYPERLINK(""https://recognaizelite.vercel.app/symbol-matching/demo"",""/symbol-matching/demo"")",Game tutorial – score label (reach via /parkwayshenton/challenge → Start tutorial so it shows in the chosen language and orange styling),Score:,分数:,Skor:
+,Game tutorial – demo badge,Demo,演示,Demo
+,Game tutorial – tip 1,Focus on the symbol at the top of the screen.,专注于屏幕顶部的符号。,Fokus pada simbol di bahagian atas skrin.
+,Game tutorial – button,Next,下一步,Seterusnya
+,Game tutorial – tip 2,"Look for the matching symbol and its number. Here, it is 7.",寻找匹配的符号及其数字。在这里，是7。,"Cari simbol yang sepadan dan nombornya. Di sini, ia adalah 7."
+,Game tutorial – button,Previous,上一步,Sebelumnya
+,Game tutorial – button,Next,下一步,Seterusnya
+,Game tutorial – tip 3 (phone/tablet),Tap “7” in the number pad below.,"点击下方数字键盘中的""7""。","Ketik ""7"" dalam pad nombor di bawah."
+,Game tutorial – tip 3 (desktop),Click No. 7 on the number pad or type “7” on your keyboard,"点击数字键盘上的第7号或在键盘上输入""7""。","Klik No. 7 pada pad nombor atau taip ""7"" pada papan kekunci anda."
+,Game tutorial – tip 4,"Be careful, the order of the symbols will change after every turn.",请注意，符号的顺序在每轮后都会改变。,"Berhati-hati, susunan simbol akan berubah selepas setiap giliran."
+,Game tutorial – button,Next,下一步,Seterusnya
+,Game tutorial – tip 5,Now try out the next 3 rounds by yourself!,现在自己尝试接下来的3轮！,Sekarang cuba 3 pusingan seterusnya sendiri!
+,Game tutorial – button,Previous,上一步,Sebelumnya
+,Game tutorial – button,Start demo,开始演示,Mula demo
+,Game tutorial – tutorial done,"Great!
+Now it’s time to take the actual test.",现在是进行正式测试的时候了。,Bagus! Kini tiba masanya untuk mengambil ujian sebenar.
+,Game tutorial – button,Try again,再试一次,Cuba lagi
+,Game tutorial – button,Start test,开始测试,Mula ujian
+"=HYPERLINK(""https://recognaizelite.vercel.app/symbol-matching/game"",""/symbol-matching/game"")",Game – countdown title (reach by finishing the tutorial → Start test; opening this link directly shows 403),Reaction time challenge,反应速度挑战,Cabaran masa reaksi
+,Game – countdown subtitle,Match as many symbols to their numbers,把符号与对应的数字配对,Padankan simbol dengan nombornya
+,Game – score label,Score:,分数:,Skor:
+,Game – saving,"Saving your result, please wait.",正在保存您的结果，请稍候。,"Menyimpan keputusan anda, sila tunggu."
+,Game – save error title,Error saving your result.,保存结果时出错。,Ralat menyimpan keputusan anda.
+,Game – save error body,Please check your internet connection and try again.,请检查您的网络连接后重试。,Sila periksa sambungan internet anda dan cuba lagi.
+,Game – save error button,RETRY,重试,CUBA LAGI
+,Game – complete (flashes before redirect),Assessment Complete,评估完成,Penilaian Selesai
+,Game – complete body (flashes before redirect),Your report is ready to view.,您的报告已准备就绪。,Laporan anda sedia untuk dilihat.
+,Game – complete button (flashes before redirect),View report,查看报告,Lihat laporan
+,Game – shown only if the game page is reopened after finishing,You've completed this game,,
+"=HYPERLINK(""https://recognaizelite.vercel.app/parkwayshenton/game-complete"",""/parkwayshenton/game-complete"")",Badge (opens directly; score shows — without a game),1 | Cognitive Game,1 | 认知游戏,1 | Permainan Kognitif
+,Heading,Game complete!,游戏完成！,Permainan selesai!
+,Score line (number follows; shows — if opened directly),Correct symbols:,正确配对：,Simbol betul:
+,Next – label,Next,接下来,Seterusnya
+,Next – body,Take a medically-backed quiz on brain health risk factors,完成一份有医学依据的脑健康风险因素问卷,Jawab kuiz berasaskan perubatan tentang faktor risiko kesihatan otak
+,Button,Continue,继续,Teruskan
+,Browser tab title,Game complete | ReCOGnAIze,游戏完成 | ReCOGnAIze,Permainan selesai | ReCOGnAIze
+"=HYPERLINK(""https://recognaizelite.vercel.app/parkwayshenton/quiz"",""/parkwayshenton/quiz"")",Quiz – progress (numbers filled in),Question {current} of {total},第 {current} 题，共 {total} 题,Soalan {current} daripada {total}
+,Quiz – age – question,What is your age?,您的年龄是？,Berapa umur anda?
+,Quiz – age – option,18 to 29,18 至 29 岁,18 hingga 29
+,Quiz – age – option,30 to 39,30 至 39 岁,30 hingga 39
+,Quiz – age – option,40 to 49,40 至 49 岁,40 hingga 49
+,Quiz – age – option,50 to 59,50 至 59 岁,50 hingga 59
+,Quiz – age – option,60 and older,60 岁及以上,60 dan ke atas
+,Quiz – age – source pill,CAIDE · Dementia Risk Score,CAIDE · 痴呆症风险评分,CAIDE · Skor Risiko Demensia
+,Quiz – back button (every question after the first),← Back,← 返回,← Kembali
+,Quiz – sex – question,What is your sex assigned at birth?,您的出生时生理性别是？,Apakah jantina anda semasa lahir?
+,Quiz – sex – option,Female,女,Perempuan
+,Quiz – sex – option,Male,男,Lelaki
+,Quiz – hotFlushes (women only) – question,"Have you noticed hot flushes, night sweats, or changes to your menstrual cycle?",您是否出现过潮热、盗汗或月经周期变化？,"Pernahkah anda perasan rasa panas mendadak, berpeluh malam, atau perubahan haid?"
+,Quiz – hotFlushes (women only) – option,Yes,是,Ya
+,Quiz – hotFlushes (women only) – option,No,否,Tidak
+,Quiz – hotFlushes (women only) – source pill,STRAW+10 · Reproductive Aging · 2012,STRAW+10 · 生殖衰老 · 2012,STRAW+10 · Penuaan Reproduktif · 2012
+,Quiz – familyHistory – question,Do you have a family history of dementia or Alzheimer's?,您是否有痴呆症或阿尔茨海默病的家族史？,Adakah anda mempunyai sejarah keluarga demensia atau Alzheimer?
+,Quiz – familyHistory – option,"Yes, immediate family (parents or siblings)",是，直系亲属（父母或兄弟姐妹）,"Ya, keluarga terdekat (ibu bapa atau adik-beradik)"
+,Quiz – familyHistory – option,"Yes, extended family (grandparents, aunts, and uncles)",是，旁系亲属（祖父母、叔伯、姑姨）,"Ya, keluarga lanjutan (nenek kakek, bapa/emak saudara)"
+,Quiz – familyHistory – option,No,否,Tidak
+,Quiz – familyHistory – option,I'm not sure,不确定,Saya tidak pasti
+,Quiz – familyHistory – source pill,CAIDE · Dementia Risk Score,CAIDE · 痴呆症风险评分,CAIDE · Skor Risiko Demensia
+,Quiz – group: risk factors – heading,Some risk factors,一些风险因素,Beberapa faktor risiko
+,Quiz – group: risk factors – note,"These are about your own health, not your family's.",以下问题是关于您本人的健康状况，而非家人的。,"Soalan ini tentang kesihatan anda sendiri, bukan keluarga anda."
+,Quiz – group: risk factors – highBp – question,High blood pressure?,高血压？,Tekanan darah tinggi?
+,Quiz – group: risk factors – highBp – option,Yes,是,Ya
+,Quiz – group: risk factors – highBp – option,No,否,Tidak
+,Quiz – group: risk factors – highBp – option,Not sure,不确定,Tidak pasti
+,Quiz – group: risk factors – highCholesterol – question,High cholesterol?,高胆固醇？,Kolesterol tinggi?
+,Quiz – group: risk factors – highCholesterol – option,Yes,是,Ya
+,Quiz – group: risk factors – highCholesterol – option,No,否,Tidak
+,Quiz – group: risk factors – highCholesterol – option,Not sure,不确定,Tidak pasti
+,Quiz – group: risk factors – diabetes – question,Diabetes or pre-diabetes?,糖尿病或糖尿病前期？,Diabetes atau pra-diabetes?
+,Quiz – group: risk factors – diabetes – option,Yes,是,Ya
+,Quiz – group: risk factors – diabetes – option,No,否,Tidak
+,Quiz – group: risk factors – diabetes – option,Not sure,不确定,Tidak pasti
+,Quiz – group: risk factors – hearingLoss – question,Untreated hearing loss?,未治疗的听力损失？,Kehilangan pendengaran tanpa rawatan?
+,Quiz – group: risk factors – hearingLoss – hint,Without hearing aids or other support.,指未使用助听器或其他辅助设备。,Tanpa alat bantu pendengaran atau bantuan lain.
+,Quiz – group: risk factors – hearingLoss – option,Yes,是,Ya
+,Quiz – group: risk factors – hearingLoss – option,No,否,Tidak
+,Quiz – group: risk factors – hearingLoss – option,Not sure,不确定,Tidak pasti
+,Quiz – group: risk factors – visionLoss – question,Untreated vision loss?,未矫正的视力问题？,Kehilangan penglihatan tanpa rawatan?
+,Quiz – group: risk factors – visionLoss – hint,"Uncorrected by glasses, lenses, or surgery.",指未通过眼镜、隐形眼镜或手术矫正。,"Tidak diperbetulkan dengan cermin mata, kanta atau pembedahan."
+,Quiz – group: risk factors – visionLoss – option,Yes,是,Ya
+,Quiz – group: risk factors – visionLoss – option,No,否,Tidak
+,Quiz – group: risk factors – visionLoss – option,Not sure,不确定,Tidak pasti
+,Quiz – group: risk factors – button,Continue,继续,Teruskan
+,Quiz – group: risk factors – source pill,Lancet Commission · Dementia Prevention · 2024,Lancet Commission · 痴呆症预防 · 2024,Lancet Commission · Pencegahan Demensia · 2024
+,Quiz – group: lifestyle – heading,Your lifestyle,您的生活方式,Gaya hidup anda
+,Quiz – group: lifestyle – smoking – question,"Are you a current smoker, or were you a smoker within the last 10 years?",您目前是否吸烟，或在过去 10 年内曾吸烟？,"Adakah anda merokok sekarang, atau pernah merokok dalam 10 tahun lepas?"
+,Quiz – group: lifestyle – smoking – option,I currently smoke,我目前吸烟,Saya merokok sekarang
+,Quiz – group: lifestyle – smoking – option,I smoked within the last 10 years,我在过去 10 年内吸过烟,Saya merokok dalam 10 tahun lepas
+,Quiz – group: lifestyle – smoking – option,"Never, or longer than 10 years ago",从未吸烟，或已戒烟超过 10 年,"Tidak pernah, atau lebih 10 tahun lalu"
+,Quiz – group: lifestyle – sleep – question,"On average, how long do you sleep at night?",您平均每晚睡多久？,"Secara purata, berapa lama anda tidur pada waktu malam?"
+,Quiz – group: lifestyle – sleep – option,Less than 6 hours,少于 6 小时,Kurang daripada 6 jam
+,Quiz – group: lifestyle – sleep – option,6 to 7 hours,6 至 7 小时,6 hingga 7 jam
+,Quiz – group: lifestyle – sleep – option,7 to 9 hours,7 至 9 小时,7 hingga 9 jam
+,Quiz – group: lifestyle – sleep – option,More than 9 hours,超过 9 小时,Lebih daripada 9 jam
+,Quiz – group: lifestyle – exercise – question,How much cardio exercise do you get per week?,您每周进行多少有氧运动？,Berapa banyak senaman kardio anda lakukan setiap minggu?
+,Quiz – group: lifestyle – exercise – option,Less than 75 minutes,少于 75 分钟,Kurang daripada 75 minit
+,Quiz – group: lifestyle – exercise – option,75 to 149 minutes,75 至 149 分钟,75 hingga 149 minit
+,Quiz – group: lifestyle – exercise – option,150 to 300 minutes,150 至 300 分钟,150 hingga 300 minit
+,Quiz – group: lifestyle – exercise – option,More than 300 minutes,超过 300 分钟,Lebih daripada 300 minit
+,Quiz – group: lifestyle – diet – question,How would you describe your diet?,您如何描述自己的饮食？,Bagaimana anda menggambarkan pemakanan anda?
+,Quiz – group: lifestyle – diet – option,Mostly processed or high in sugar,以加工食品或高糖食物为主,Kebanyakannya diproses atau tinggi gula
+,Quiz – group: lifestyle – diet – option,A mix of fresh and processed,新鲜食材与加工食品混合,Campuran makanan segar dan diproses
+,Quiz – group: lifestyle – diet – option,"Mostly fresh, balanced meals",以新鲜、均衡的膳食为主,Kebanyakannya segar dan seimbang
+,Quiz – group: lifestyle – alcohol – question,How many alcoholic drinks do you have per week?,您每周饮用多少含酒精饮品？,Berapa banyak minuman beralkohol anda ambil setiap minggu?
+,Quiz – group: lifestyle – alcohol – hint,"1 drink is about 1 small wine, half a pint of beer, or 1 shot of spirits.",1 杯约等于 1 小杯葡萄酒、半瓶啤酒或 1 杯烈酒。,"1 minuman bersamaan kira-kira 1 gelas wain kecil, setengah pain bir, atau 1 syot spirit."
+,Quiz – group: lifestyle – alcohol – option,None,不喝酒,Tiada
+,Quiz – group: lifestyle – alcohol – option,1 to 7,1 至 7 杯,1 hingga 7
+,Quiz – group: lifestyle – alcohol – option,8 to 14,8 至 14 杯,8 hingga 14
+,Quiz – group: lifestyle – alcohol – option,15 to 21,15 至 21 杯,15 hingga 21
+,Quiz – group: lifestyle – alcohol – option,More than 21,超过 21 杯,Lebih daripada 21
+,Quiz – group: lifestyle – button,Continue,继续,Teruskan
+,Did you know – label,Did you know,您知道吗,Tahukah anda
+,Did you know – stat,1 in 11,每 11 人中有 1 人,1 daripada 11
+,Did you know – body,"Singaporeans aged 60 and over live with dementia, with numbers projected to reach 152,000 by 2030.","60 岁及以上的新加坡人患有痴呆症，预计到 2030 年人数将达到 152,000 人。","rakyat Singapura berumur 60 tahun ke atas hidup dengan demensia, dengan jumlahnya dijangka mencecah 152,000 pada 2030."
+,Did you know – source,"Source: IMH WiSE Study, 2024",来源: IMH WiSE 研究，2024,"Sumber: Kajian IMH WiSE, 2024"
+,Did you know – button,Continue,继续,Teruskan
+,Quiz – tracks – question,What do you already keep an eye on?,您平时关注哪些方面？,Apa yang anda sudah pantau?
+,Quiz – tracks – hint,Select all that apply.,请选择所有适用项。,Pilih semua yang berkenaan.
+,Quiz – tracks – option,"Productivity, focus or work performance",工作效率、专注力或工作表现,"Produktiviti, fokus atau prestasi kerja"
+,Quiz – tracks – option,"Sleep, HRV, strength or supplements",睡眠、心率变异性、体能或营养补充,"Tidur, HRV, kekuatan atau suplemen"
+,Quiz – tracks – option,"Hormones, cycle or menopause symptoms",荷尔蒙、月经周期或更年期症状,"Hormon, haid atau gejala menopaus"
+,Quiz – tracks – option,A family member's health (I help care for someone),家人的健康（我在照顾某人）,Kesihatan anggota keluarga (saya menjaga seseorang)
+,Quiz – tracks – option,Nothing in particular,没有特别关注,Tiada yang tertentu
+,Quiz – tracks – button,Continue,继续,Teruskan
+,Quiz – group: changes noticed – heading,Changes you might have noticed,您可能察觉到的变化,Perubahan yang mungkin anda perasan
+,Quiz – group: changes noticed – concentrating – question,How often do you have trouble concentrating on meetings or sustained tasks?,您在会议或持续性任务中多常出现注意力不集中的情况？,Berapa kerap anda sukar menumpukan perhatian dalam mesyuarat atau tugasan panjang?
+,Quiz – group: changes noticed – concentrating – option,Almost daily,几乎每天,Hampir setiap hari
+,Quiz – group: changes noticed – concentrating – option,Several times a week,每周数次,Beberapa kali seminggu
+,Quiz – group: changes noticed – concentrating – option,Rarely,很少,Jarang
+,Quiz – group: changes noticed – concentrating – option,Not that I notice,没有注意到,Tidak saya perasan
+,Quiz – group: changes noticed – judgement – question,"Compared to a few years ago, how often do you have problems with judgement or decision-making?",与几年前相比，您多常在判断或决策方面遇到困难？,"Berbanding beberapa tahun lalu, berapa kerap anda menghadapi masalah pertimbangan atau membuat keputusan?"
+,Quiz – group: changes noticed – judgement – option,Almost daily,几乎每天,Hampir setiap hari
+,Quiz – group: changes noticed – judgement – option,Several times a week,每周数次,Beberapa kali seminggu
+,Quiz – group: changes noticed – judgement – option,Rarely,很少,Jarang
+,Quiz – group: changes noticed – judgement – option,Not that I notice,没有注意到,Tidak saya perasan
+,Quiz – group: changes noticed – forgetfulness – question,"How often do you experience forgetfulness, such as where you put things or what you meant to do?",您多常出现健忘，例如忘记东西放哪或原本要做什么？,"Berapa kerap anda terlupa, seperti di mana anda letak sesuatu atau apa yang anda hendak lakukan?"
+,Quiz – group: changes noticed – forgetfulness – option,Almost daily,几乎每天,Hampir setiap hari
+,Quiz – group: changes noticed – forgetfulness – option,Several times a week,每周数次,Beberapa kali seminggu
+,Quiz – group: changes noticed – forgetfulness – option,Rarely,很少,Jarang
+,Quiz – group: changes noticed – forgetfulness – option,Not that I notice,没有注意到,Tidak saya perasan
+,Quiz – group: changes noticed – button,Continue,继续,Teruskan
+,Quiz – group: changes noticed – source pill,SCD literature · Subjective Cognitive Decline,SCD literature · 主观认知衰退研究文献,SCD literature · Literatur Kemerosotan Kognitif Subjektif
+,Quiz – persistence (only if forgetfulness noticed) – question,Has this forgetfulness been persistent rather than a one-off?,这种健忘是持续性的，还是偶发的？,Adakah keadaan terlupa ini berterusan dan bukan sekali sekala?
+,Quiz – persistence (only if forgetfulness noticed) – option,"Yes, it has persisted",是，一直持续,"Ya, ia berterusan"
+,Quiz – persistence (only if forgetfulness noticed) – option,"No, it comes and goes",不是，时有时无,"Tidak, ia datang dan pergi"
+,Quiz – persistence (only if forgetfulness noticed) – source pill,SCD literature · Subjective Cognitive Decline,SCD literature · 主观认知衰退研究文献,SCD literature · Literatur Kemerosotan Kognitif Subjektif
+,Quiz – someoneElseNoticed – question,"Have family or friends mentioned noticing changes in your behaviour or habits, even if you haven't?",是否有其他人注意到您的行为或习惯发生了变化？,"Pernahkah keluarga atau rakan menyebut mereka perasan perubahan pada tingkah laku atau tabiat anda, walaupun anda tidak?"
+,Quiz – someoneElseNoticed – option,Yes,是,Ya
+,Quiz – someoneElseNoticed – option,No,否,Tidak
+,Quiz – someoneElseNoticed – source pill,SCD literature · Subjective Cognitive Decline,SCD literature · 主观认知衰退研究文献,SCD literature · Literatur Kemerosotan Kognitif Subjektif
+,Quiz – clinic – question,Which clinic are you from?,您来自哪家诊所？,Anda datang dari klinik yang mana?
+,Quiz – clinic – option,"Parkway Medical Clinic, Republic Plaza","Parkway Medical Clinic, Republic Plaza","Parkway Medical Clinic, Republic Plaza"
+,Quiz – clinic – option,"Parkway Family Medicine Clinic, Ang Mo Kio","Parkway Family Medicine Clinic, Ang Mo Kio","Parkway Family Medicine Clinic, Ang Mo Kio"
+,Quiz – clinic – option,"Parkway Executive Health Screeners, Mount Elizabeth Hospital","Parkway Executive Health Screeners, Mount Elizabeth Hospital","Parkway Executive Health Screeners, Mount Elizabeth Hospital"
+,Quiz – clinic – option,Parkway MediCentre @ The Woodleigh Mall,Parkway MediCentre @ The Woodleigh Mall,Parkway MediCentre @ The Woodleigh Mall
+,Quiz – clinic – option,I’m not in a clinic,我不在诊所,Saya tidak berada di klinik
+,Quiz – after last answer,Preparing your result…,正在生成您的结果…,Menyediakan keputusan anda…
+,Browser tab title,Brain Health Quiz | ReCOGnAIze,脑健康问卷 | ReCOGnAIze,Kuiz Kesihatan Otak | ReCOGnAIze
+"=HYPERLINK(""https://recognaizelite.vercel.app/parkwayshenton/loading"",""/parkwayshenton/loading"")",Loading – progress ring (screen reader) (opens directly; moves on to the report after a few seconds),Generating your report,正在生成您的报告,Menjana laporan anda
+,Loading – heading,We are generating your report,正在生成您的报告,Kami sedang menjana laporan anda
+,Loading – heading with name,"{name}, we are generating your report",{name}，正在生成您的报告,"{name}, kami sedang menjana laporan anda"
+,Loading – step 1,Calculating your processing speed score,正在计算您的处理速度分数,Mengira skor kelajuan pemprosesan anda
+,Loading – step 2,Reviewing your health and lifestyle answers,正在审阅您的健康与生活方式回答,Menyemak jawapan kesihatan dan gaya hidup anda
+,Loading – step 3,Preparing your brain health recommendation,正在准备您的脑健康建议,Menyediakan cadangan kesihatan otak anda
+,Browser tab title,Generating your report | ReCOGnAIze,正在生成您的报告 | ReCOGnAIze,Menjana laporan anda | ReCOGnAIze
+"=HYPERLINK(""https://recognaizelite.vercel.app/parkwayshenton/report"",""/parkwayshenton/report"")",Results – preview notice (only when no game was played on this device) (opens directly with sample numbers; add ?persona=…&band=… to see each version),"Preview mode. No finished game on this device, so the numbers below are a sample.",预览模式。此设备上没有已完成的游戏记录，以下数字为示例。,"Mod pratonton. Tiada permainan yang selesai pada peranti ini, jadi nombor di bawah adalah contoh."
+,Header – share button,Share results,分享结果,Kongsi keputusan
+,Header – share button after copying,Copied,已复制,Disalin
+,Share – share-sheet title,My brain speed score,我的大脑速度分数,Skor kelajuan otak saya
+,Share – shared text,I reacted faster than {percentile}% of {peers} on a 60-second cognitive test.,在一个 60 秒的认知测试中，我的反应速度快过 {percentile}% 的{peers}。,Reaksi saya lebih pantas daripada {percentile}% {peers} dalam ujian kognitif 60 saat.
+,Share – {peers} with age,people aged {age band},{age band} 岁的人,orang berumur {age band}
+,Share – {peers} without age,people your age,同龄人,orang sebaya anda
+,Results – floating cue on short screens,More results below,下方还有更多结果,Lagi keputusan di bawah
+,Results – section dots (screen reader) – group label,Report sections,,
+,Results – section dots (screen reader),Your rank,您的排名,Kedudukan anda
+,Results – section dots (screen reader),What it means,这代表什么,Apa maknanya
+,Results – section dots (screen reader),Risk factors,风险因素,Faktor risiko
+,Results – section dots (screen reader),Your baseline,您的基线,Garis dasar anda
+,Results – section dots (screen reader),The test,完整测试,Ujian penuh
+,Results – section dots (screen reader),Next steps,下一步,Langkah seterusnya
+,Results – section dots (screen reader),Wrap up,结语,Penutup
+,"Results · Rank – label [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak]",Reaction time challenge,反应速度挑战,Cabaran masa reaksi
+,"Results · Rank – label [40+, fast score: ?persona=senior&band=strong | 40+, slower score: ?persona=senior&band=weak]",Processing speed check,处理速度检测,Pemeriksaan kelajuan pemprosesan
+,"Results · Rank – headline [under 40, fast score: ?persona=optimizer&band=strong]",You are faster than {percentile}% of your peers.,您的反应速度 快过 {percentile}% 的同龄人。,Anda lebih pantas daripada {percentile}% orang sebaya anda.
+,"Results · Rank – headline [under 40, slower score: ?persona=optimizer&band=weak]",Most people were faster than you today.,今天大多数人的反应比您快。,Kebanyakan orang lebih pantas daripada anda hari ini.
+,"Results · Rank – headline [40+, fast score: ?persona=senior&band=strong]",Your speed is above average for your age band.,您的速度高于同年龄组的平均水平。,Kelajuan anda melebihi purata bagi kumpulan umur anda.
+,"Results · Rank – headline [40+, slower score: ?persona=senior&band=weak]",Your speed came in below your age band today.,今天您的速度低于同年龄组的水平。,Kelajuan anda di bawah kumpulan umur anda hari ini.
+,"Results · Rank – headline with name [under 40, fast score: ?persona=optimizer&band=strong]","{name}, you are faster than {percentile}% of your peers.",{name}，您的反应速度 快过 {percentile}% 的同龄人。,"{name}, anda lebih pantas daripada {percentile}% orang sebaya anda."
+,"Results · Rank – headline with name [under 40, slower score: ?persona=optimizer&band=weak]","{name}, most people were faster than you today.",{name}，今天大多数人的反应比您快。,"{name}, kebanyakan orang lebih pantas daripada anda hari ini."
+,"Results · Rank – headline with name [40+, fast score: ?persona=senior&band=strong]","{name}, your speed is above average for your age band.",{name}，您的速度高于同年龄组的平均水平。,"{name}, kelajuan anda melebihi purata bagi kumpulan umur anda."
+,"Results · Rank – headline with name [40+, slower score: ?persona=senior&band=weak]","{name}, your speed came in below your age band today.",{name}，今天您的速度低于同年龄组的水平。,"{name}, kelajuan anda di bawah kumpulan umur anda hari ini."
+,Results · Rank – age band label,Your age band,您的年龄组,Kumpulan umur anda
+,Results · Rank – age chip,Aged {age band},{age band} 岁,Umur {age band}
+,Results · Rank – age chip (no age),All ages,所有年龄,Semua umur
+,Results · Rank – {age band} value,18 to 29,18 至 29,18 hingga 29
+,Results · Rank – {age band} value,30 to 39,30 至 39,30 hingga 39
+,Results · Rank – {age band} value,40 to 49,40 至 49,40 hingga 49
+,Results · Rank – {age band} value,50 to 59,50 至 59,50 hingga 59
+,Results · Rank – {age band} value,60 and over,60 及以上,60 dan ke atas
+,Results · Rank – chart marker,YOU,您,ANDA
+,Results · Rank – chart (screen reader),Your reaction time sits at the {percentile}th percentile of your age band,,
+,"Results · Rank – line under chart [under 40, fast score: ?persona=optimizer&band=strong]",That is the top {top %}% of your age band on processing speed.,这是您年龄组中处理速度排名前 {top %}% 的水平。,Itu {top %}% teratas dalam kumpulan umur anda bagi kelajuan pemprosesan.
+,"Results · Rank – line under chart [under 40, slower score: ?persona=optimizer&band=weak]",{seconds} seconds on average — the bottom {percentile}% of your age band.,平均 {seconds} 秒——处于您年龄组的后 {percentile}%。,{seconds} saat secara purata — {percentile}% terbawah dalam kumpulan umur anda.
+,"Results · Rank – line under chart [40+, fast score: ?persona=senior&band=strong]",{seconds} seconds on average — the top {top %}% for ages {age band}.,平均 {seconds} 秒——位于{age band} 岁人群中的前 {top %}%。,{seconds} saat secara purata — {top %}% teratas bagi umur {age band}.
+,"Results · Rank – line under chart [40+, slower score: ?persona=senior&band=weak]",{seconds} seconds on average. One game on one day is not a diagnosis.,平均 {seconds} 秒。单独一天的一次游戏并不构成诊断。,{seconds} saat secara purata. Satu permainan pada satu hari bukan satu diagnosis.
+,"Results · Rank – line under chart (no time / no age) [under 40, fast score: ?persona=optimizer&band=strong]",That is the top {top %}% of your age band on processing speed.,这是您年龄组中处理速度排名前 {top %}% 的水平。,Itu {top %}% teratas dalam kumpulan umur anda bagi kelajuan pemprosesan.
+,"Results · Rank – line under chart (no time / no age) [under 40, slower score: ?persona=optimizer&band=weak]",That is the bottom {percentile}% of your age band on processing speed.,这是您年龄组中处理速度排名后 {percentile}% 的水平。,Itu {percentile}% terbawah dalam kumpulan umur anda bagi kelajuan pemprosesan.
+,"Results · Rank – line under chart (no time / no age) [40+, fast score: ?persona=senior&band=strong]",That is the top {top %}% for your age band on processing speed.,这是同年龄组中处理速度排名前 {top %}% 的水平。,Itu {top %}% teratas bagi kumpulan umur anda bagi kelajuan pemprosesan.
+,"Results · Rank – line under chart (no time / no age) [40+, slower score: ?persona=senior&band=weak]",One game on one day is not a diagnosis.,单独一天的一次游戏并不构成诊断。,Satu permainan pada satu hari bukan satu diagnosis.
+,Results · Rank – {domain} value,processing speed,处理速度,kelajuan pemprosesan
+,"Results · Rank – scroll cue [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak]",Tell me more,了解更多,Beritahu saya lebih lanjut
+,"Results · Rank – scroll cue [40+, fast score: ?persona=senior&band=strong | 40+, slower score: ?persona=senior&band=weak]",What did we measure?,我们测了什么？,Apa yang kami ukur?
+,Results · Meaning – label,What that actually means,这究竟代表什么,Apa maksudnya sebenarnya
+,Results · Meaning – heading,Processing speed is how fast your brain takes in what it sees and responds.,处理速度就是您的大脑多快能够接收所看到的信息并作出反应。,Kelajuan pemprosesan ialah sepantas mana otak anda menerima apa yang dilihatnya dan bertindak balas.
+,"Results · Meaning – intro [under 40, fast score: ?persona=optimizer&band=strong]","With high processing speed, you can:",处理速度快，意味着您可以：,"Dengan kelajuan pemprosesan yang tinggi, anda boleh:"
+,"Results · Meaning – intro [under 40, slower score: ?persona=optimizer&band=weak]",Here's what a faster speed would unlock:,速度更快能为您带来什么：,Ini yang akan terbuka dengan kelajuan yang lebih tinggi:
+,"Results · Meaning – intro [40+, fast score: ?persona=senior&band=strong]",This is where you notice it in daily life:,在日常生活中，您会在这些地方感受到：,Di sinilah anda perasan kesannya dalam kehidupan harian:
+,"Results · Meaning – intro [40+, slower score: ?persona=senior&band=weak]",A slower speed often shows up like this:,速度偏慢，常常会这样表现出来：,Kelajuan yang lebih perlahan sering muncul seperti ini:
+,"Results · Meaning – point 1 [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak | 40+, fast score: ?persona=senior&band=strong]",Keep up with fast-paced conversations,跟上节奏很快的对话,Mengikuti perbualan yang pantas
+,"Results · Meaning – point 1 [40+, slower score: ?persona=senior&band=weak]",Fast conversations take more effort to follow,快节奏的对话需要更费力才能跟上,Perbualan pantas lebih memerlukan usaha untuk diikuti
+,"Results · Meaning – point 2 [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak | 40+, fast score: ?persona=senior&band=strong]",Adapt swiftly to changing environments,迅速适应变化的环境,Menyesuaikan diri dengan cepat kepada persekitaran yang berubah
+,"Results · Meaning – point 2 [40+, slower score: ?persona=senior&band=weak]",Busy environments feel harder to keep up with,在嘈杂的环境里更难跟上进度,Persekitaran yang sibuk terasa lebih sukar diikuti
+,"Results · Meaning – point 3 [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak | 40+, fast score: ?persona=senior&band=strong]",Add up the bill before the cashier finishes scanning,在收银员扫完之前就算好账单,Mengira jumlah bil sebelum kasyer habis memindai
+,"Results · Meaning – point 3 [40+, slower score: ?persona=senior&band=weak]",Adding up the bill takes longer than it used to,算账单比以前花更久的时间,Mengira jumlah bil mengambil masa lebih lama daripada dahulu
+,"Results · Meaning – closing line [under 40, fast score: ?persona=optimizer&band=strong | 40+, fast score: ?persona=senior&band=strong]","If those feel effortless, your score just told you why.",如果这些对您来说毫不费力，您的分数正好说明了原因。,"Jika semua itu terasa mudah, skor anda baru sahaja memberitahu sebabnya."
+,"Results · Meaning – closing line [under 40, slower score: ?persona=optimizer&band=weak | 40+, slower score: ?persona=senior&band=weak]","If any of those feel like work lately, your score is the reason.",如果最近这些当中有任何一项让您觉得吃力，您的分数就是原因。,"Jika mana-mana daripada itu terasa memenatkan kebelakangan ini, skor anda ialah sebabnya."
+,Results · Risk – label,Also measured,我们还测了什么,Turut diukur
+,Results · Risk – heading,Speed was not the only thing we looked at.,速度并不是我们唯一关注的。,Kelajuan bukan satu-satunya perkara yang kami lihat.
+,"Results · Risk – body [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak]","We looked at your risk factors too — health and lifestyle habits like high blood pressure, poor sleep, or not enough exercise can slow your brain down over time.",我们也看了您的风险因素——高血压、睡眠不足、运动不够这类健康与生活习惯，长期下来会拖慢大脑的速度。,"Kami juga melihat faktor risiko anda — tabiat kesihatan dan gaya hidup seperti tekanan darah tinggi, tidur yang tidak cukup, atau senaman yang kurang boleh memperlahankan otak anda dari masa ke masa."
+,"Results · Risk – body [40+, fast score: ?persona=senior&band=strong | 40+, slower score: ?persona=senior&band=weak]","We also looked at your risk factors. Habits like high blood pressure, poor sleep, hearing loss, or too little exercise can slow your thinking over the years.",我们也看了您的风险因素。高血压、睡眠不足、听力损失或运动太少这类习惯，多年下来会拖慢您的思考速度。,"Kami juga melihat faktor risiko anda. Tabiat seperti tekanan darah tinggi, tidur yang tidak cukup, kehilangan pendengaran, atau senaman yang terlalu sedikit boleh memperlahankan pemikiran anda selama bertahun-tahun."
+,Results · Risk – chart legend,Risk factors managed,风险因素已管理,Faktor risiko diuruskan
+,Results · Risk – chart legend,Risk factors unmanaged,风险因素未管理,Faktor risiko tidak diuruskan
+,Results · Risk – chart (screen reader),"Illustrative chart: processing speed declines gently with age when risk factors are managed, and drops steeply when they are left unmanaged",示意图：管理好风险因素时，处理速度随年龄缓慢下降；放任不管则会急剧下降。,"Carta ilustrasi: kelajuan pemprosesan menurun secara perlahan dengan umur apabila faktor risiko diuruskan, dan menurun dengan mendadak apabila dibiarkan."
+,Results · Risk – chart axis (top),Faster,较快,Pantas
+,Results · Risk – chart axis (bottom),Slower,较慢,Perlahan
+,Results · Risk – chart axis (age),Age 30,年龄 30,Umur 30
+,Results · Risk – chart caption,"Illustrative trend, shaped by Jaarsma et al. 2024 and Yaffe et al. 2020 (CARDIA). Not a clinical prediction.",示意性趋势，参考 Jaarsma 等（2024）与 Yaffe 等（2020，CARDIA）。并非临床预测。,"Trend ilustrasi, dibentuk oleh Jaarsma et al. 2024 dan Yaffe et al. 2020 (CARDIA). Bukan ramalan klinikal."
+,Results · Risk – risk level label,Your risk level:,您的风险等级：,Tahap risiko anda:
+,Results · Risk – risk meter,Low,低,Rendah
+,Results · Risk – risk meter,Moderate,中等,Sederhana
+,Results · Risk – risk meter,Elevated,偏高,Tinggi
+,Results · Risk – risk meter,High,高,Sangat tinggi
+,Results · Risk – factors intro,Some factors that affect your risk level:,影响您风险等级的一些因素:,Beberapa faktor yang mempengaruhi tahap risiko anda:
+,Results · Risk – factors intro with name,"Some factors that affect your risk level, {name}:","影响您风险等级的一些因素, {name}:","Beberapa faktor yang mempengaruhi tahap risiko anda, {name}:"
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Age,年龄,Umur
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Hormonal changes,荷尔蒙变化,Perubahan hormon
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Family history,家族史,Sejarah keluarga
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Blood pressure,血压,Tekanan darah
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Cholesterol,胆固醇,Kolesterol
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Diabetes / pre-diabetes,糖尿病／糖尿病前期,Diabetes / pra-diabetes
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Untreated hearing loss,未矫正的听力损失,Kehilangan pendengaran tanpa rawatan
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Untreated vision loss,未矫正的视力损失,Kehilangan penglihatan tanpa rawatan
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Smoking,吸烟,Merokok
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Sleep,睡眠,Tidur
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Exercise,运动,Senaman
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Diet,饮食,Pemakanan
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Alcohol,饮酒,Alkohol
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Physical activity,体能活动,Aktiviti fizikal
+,"Results · Risk – factor chip (only the visitor's own, up to 5)",Stress,压力,Tekanan
+,Results · Risk – good news label,The good news is,好消息是,Berita baiknya
+,Results · Risk – good news,"About 45%
+of dementia cases worldwide could be prevented or delayed by addressing the modifiable risk factors across a person's life.","约 45%
+的全球痴呆症病例，可以通过管理一生中可改变的风险因素来预防或延缓。","Kira-kira 45%
+kes demensia di seluruh dunia boleh dicegah atau dilambatkan dengan menangani faktor risiko yang boleh diubah sepanjang hayat seseorang."
+,Results · Risk – actions intro [all versions],Here are 3 actionables you can do right now,以下是您现在就能做的 3 件事,Ini 3 tindakan yang anda boleh buat sekarang
+,"Results · Risk – action 1 [under 40, fast score: ?persona=optimizer&band=strong]","Keep doing what you're doing — your speed is strong, so protect it with consistent sleep and regular exercise.",保持现在的状态——您的速度很好，用规律的睡眠和运动把它守住。,"Teruskan apa yang anda buat — kelajuan anda kukuh, jadi lindunginya dengan tidur yang konsisten dan senaman yang tetap."
+,"Results · Risk – action 1 [under 40, slower score: ?persona=optimizer&band=weak]",Prioritise sleep — aim for 7-9 hours; even one extra hour can sharpen reaction time the next day.,优先保证睡眠——目标 7 至 9 小时；哪怕多睡一小时，第二天的反应速度都会更好。,Utamakan tidur — sasarkan 7-9 jam; satu jam tambahan pun boleh menajamkan masa reaksi anda esok.
+,"Results · Risk – action 1 [40+, fast score: ?persona=senior&band=strong]",Take a gentle walk every day — even 15 minutes helps blood flow to the brain and supports long-term cognitive health.,每天散步——哪怕 15 分钟，也有助于大脑供血，支持长期的认知健康。,Berjalan perlahan setiap hari — 15 minit pun membantu aliran darah ke otak dan menyokong kesihatan kognitif jangka panjang.
+,"Results · Risk – action 1 [40+, slower score: ?persona=senior&band=weak]",Take a gentle walk every day — even 15 minutes helps blood flow to the brain and supports thinking speed.,每天散步——哪怕 15 分钟，也有助于大脑供血，支持思考速度。,Berjalan perlahan setiap hari — 15 minit pun membantu aliran darah ke otak dan menyokong kelajuan berfikir.
+,"Results · Risk – action 2 [under 40, fast score: ?persona=optimizer&band=strong]","Challenge your brain daily — try a new route to work, learn a new skill, or switch up your routine.",每天给大脑一点挑战——换一条上班路线、学一项新技能，或者调整一下日常安排。,"Cabar otak anda setiap hari — cuba jalan baharu ke tempat kerja, pelajari kemahiran baharu, atau ubah rutin anda."
+,"Results · Risk – action 2 [under 40, slower score: ?persona=optimizer&band=weak]",Move for 20 minutes — a brisk walk or any cardio boosts blood flow to the brain and improves processing speed.,动 20 分钟——快走或任何有氧运动都能促进大脑供血，改善处理速度。,Bergerak selama 20 minit — berjalan pantas atau apa-apa kardio meningkatkan aliran darah ke otak dan memperbaiki kelajuan pemprosesan.
+,"Results · Risk – action 2 [40+, fast score: ?persona=senior&band=strong]",Stay socially active — regular conversations and group activities keep your brain engaged across multiple domains.,保持社交活跃——经常聊天和参加团体活动，能让大脑的多个领域都保持运作。,Kekal aktif bersosial — perbualan tetap dan aktiviti berkumpulan mengekalkan otak anda terlibat merentas beberapa domain.
+,"Results · Risk – action 2 [40+, slower score: ?persona=senior&band=weak]","Keep a simple routine — regular meals, consistent sleep, and familiar structure all reduce cognitive load.",保持简单的作息——规律的三餐、稳定的睡眠和熟悉的安排，都能减轻大脑的负担。,"Kekalkan rutin yang mudah — waktu makan yang tetap, tidur yang konsisten, dan struktur yang biasa mengurangkan beban kognitif."
+,"Results · Risk – action 3 [under 40, fast score: ?persona=optimizer&band=strong]",Track your baseline — take the full assessment so you have a reference point to compare against over time.,记录您的基线——做完整评估，日后就有一个可以对照的参考点。,Rekod garis dasar anda — ambil penilaian penuh supaya anda ada titik rujukan untuk dibandingkan pada masa depan.
+,"Results · Risk – action 3 [under 40, slower score: ?persona=optimizer&band=weak]",Take the full assessment — find out which domain is actually holding you back so you fix the real bottleneck.,做完整评估——找出真正拖慢您的那个领域，才能对症下药。,Ambil penilaian penuh — ketahui domain mana yang sebenarnya menghalang anda supaya anda betulkan halangan yang sebenar.
+,"Results · Risk – action 3 [40+, fast score: ?persona=senior&band=strong]",Set a baseline with the full assessment — so you and your doctor have numbers to compare against over time.,用完整评估建立基线——这样您和医生日后就有数字可以对照。,Tetapkan garis dasar dengan penilaian penuh — supaya anda dan doktor anda ada nombor untuk dibandingkan dari masa ke masa.
+,"Results · Risk – action 3 [40+, slower score: ?persona=senior&band=weak]","Take the full assessment — share the results with your doctor so they have numbers to work with, not just symptoms.",做完整评估——把结果分享给医生，让他们手上有数字，而不只是症状。,"Ambil penilaian penuh — kongsi keputusan dengan doktor anda supaya mereka ada nombor untuk digunakan, bukan hanya gejala."
+,"Results · Baseline – label [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak]",Your baseline so far,目前的基线,Garis dasar anda sejauh ini
+,"Results · Baseline – label [40+, fast score: ?persona=senior&band=strong | 40+, slower score: ?persona=senior&band=weak]",What we covered today,今天我们测了什么,Apa yang kami liputi hari ini
+,"Results · Baseline – heading [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak]","You've only covered 
+2 out of 5","您只完成了 
+5 项中的 2 项","Anda baru melengkapkan 
+2 daripada 5"
+,"Results · Baseline – heading [40+, fast score: ?persona=senior&band=strong | 40+, slower score: ?persona=senior&band=weak]","You've only covered 
+2 of 5","您只完成了 
+5 项中的 2 项","Anda baru melengkapkan 
+2 daripada 5"
+,Results · Baseline – card label,Your baseline,您的基线,Garis dasar anda
+,Results · Baseline – card progress,2 of 5 done,已完成 5 项中的 2 项,2 daripada 5 selesai
+,Results · Baseline – radar axis,Speed,速度,Kelajuan
+,Results · Baseline – radar axis,Memory,记忆,Memori
+,Results · Baseline – radar axis,Attention,注意力,Perhatian
+,Results · Baseline – radar axis,Executive,执行功能,Eksekutif
+,Results · Baseline – radar axis,Risk Safety,风险安全,Keselamatan Risiko
+,Results · Baseline – radar (screen reader),"Baseline radar: two of five parts measured, three still empty",基线雷达图：5 个部分中已测量 2 个，其余 3 个仍为空白。,"Radar garis dasar: dua daripada lima bahagian diukur, tiga masih kosong."
+,"Results · Baseline – paragraph 1 [under 40, fast score: ?persona=optimizer&band=strong]",The speed game and your quiz answers gave us two axes — speed and risk.,速度游戏和您的问卷答案给了我们两个维度——速度与风险。,Permainan kelajuan dan jawapan kuiz anda memberi kami dua paksi — kelajuan dan risiko.
+,"Results · Baseline – paragraph 1 [under 40, slower score: ?persona=optimizer&band=weak]","The speed game and your quiz answers gave us two axes: speed and risk. Today speed came in low, and one game on one day is a noisy signal.",速度游戏和您的问卷答案给了我们两个维度：速度与风险。今天速度偏低，而单独一天的一次游戏本身就有波动。,"Permainan kelajuan dan jawapan kuiz anda memberi kami dua paksi: kelajuan dan risiko. Hari ini kelajuan datang rendah, dan satu permainan pada satu hari ialah isyarat yang bising."
+,"Results · Baseline – paragraph 1 [40+, fast score: ?persona=senior&band=strong]",Today's game measured one thing: how fast you take in information and respond. Your quiz answers gave us the second: your risk profile.,今天的游戏只测了一件事：您接收信息并作出反应的速度。您的问卷答案给了我们第二件事：您的风险状况。,Permainan hari ini mengukur satu perkara: sepantas mana anda menerima maklumat dan bertindak balas. Jawapan kuiz anda memberi kami yang kedua: profil risiko anda.
+,"Results · Baseline – paragraph 1 [40+, slower score: ?persona=senior&band=weak]","Today's game measured one thing: how fast you take in information and respond. A slower result on a single day can come from tiredness, medication, or simply an unfamiliar game.",今天的游戏只测了一件事：您接收信息并作出反应的速度。单独一天结果偏慢，可能只是疲倦、药物，或者单纯对游戏不熟悉。,"Permainan hari ini mengukur satu perkara: sepantas mana anda menerima maklumat dan bertindak balas. Keputusan yang lebih perlahan pada satu hari boleh berpunca daripada keletihan, ubat, atau sekadar permainan yang belum biasa."
+,"Results · Baseline – paragraph 2 [under 40, fast score: ?persona=optimizer&band=strong]","But your brain doesn't work on two dimensions. Memory, attention, and executive function each tell a different story, and you can score well on one while struggling with another.",但大脑不只有两个维度。记忆、注意力和执行功能各自说着不同的故事，一项表现好并不代表另一项没问题。,"Tetapi otak anda tidak berfungsi pada dua dimensi. Memori, perhatian dan fungsi eksekutif masing-masing menceritakan kisah berbeza, dan anda boleh cemerlang pada satu sementara bergelut dengan yang lain."
+,"Results · Baseline – paragraph 2 [under 40, slower score: ?persona=optimizer&band=weak]","Memory, attention and executive function each tell a different story, and you can be slow on speed while strong on all three.",记忆、注意力和执行功能各自说着不同的故事，速度慢也完全可能三者都很强。,"Memori, perhatian dan fungsi eksekutif masing-masing menceritakan kisah berbeza, dan anda boleh perlahan pada kelajuan tetapi kukuh pada ketiga-tiganya."
+,"Results · Baseline – paragraph 2 [40+, fast score: ?persona=senior&band=strong]","Brain health is not one number. Memory, attention and executive function each do a different job, and it is common to be steady in one and slower in another.",脑健康不是一个数字。记忆、注意力和执行功能各司其职，某一项稳而另一项慢，是很常见的。,"Kesihatan otak bukan satu nombor. Memori, perhatian dan fungsi eksekutif masing-masing melakukan kerja berbeza, dan biasa untuk seseorang stabil pada satu dan lebih perlahan pada yang lain."
+,"Results · Baseline – paragraph 2 [40+, slower score: ?persona=senior&band=weak]","Memory, attention and executive function each do a different job, and a slow speed does not tell us how those three are doing.",记忆、注意力和执行功能各司其职，速度慢并不能说明这三项的情况。,"Memori, perhatian dan fungsi eksekutif masing-masing melakukan kerja berbeza, dan kelajuan yang perlahan tidak memberitahu kami keadaan ketiga-tiganya."
+,"Results · Baseline – paragraph 3 [under 40, fast score: ?persona=optimizer&band=strong]","The full test fills in the rest, so your recommendations actually match your brain.",完整测试会补上其余部分，让建议真正贴合您的大脑。,"Ujian penuh mengisi yang selebihnya, supaya saranan anda benar-benar padan dengan otak anda."
+,"Results · Baseline – paragraph 3 [under 40, slower score: ?persona=optimizer&band=weak]","The full test finds which one is actually holding you back, so your strategies target the real bottleneck.",完整测试会找出真正拖住您的那一项，让策略对准真正的瓶颈。,"Ujian penuh mencari yang mana sebenarnya menghalang anda, supaya strategi anda menyasarkan halangan yang sebenar."
+,"Results · Baseline – paragraph 3 [40+, fast score: ?persona=senior&band=strong]","The full test covers the remaining three, so what we recommend matches your whole profile.",完整测试会覆盖其余三项，让我们的建议贴合您的整体状况。,"Ujian penuh meliputi tiga yang selebihnya, supaya apa yang kami sarankan padan dengan seluruh profil anda."
+,"Results · Baseline – paragraph 3 [40+, slower score: ?persona=senior&band=weak]","The full test covers the remaining three, so you and your doctor see the whole picture instead of one number.",完整测试会覆盖其余三项，让您和医生看到全貌，而不是一个数字。,"Ujian penuh meliputi tiga yang selebihnya, supaya anda dan doktor anda melihat gambaran keseluruhan dan bukan satu nombor."
+,Results · What to do – label,What to do now?,接下来该怎么做？,Apa langkah seterusnya?
+,Results · What to do – heading,"Take the
+FULL ReCOGnAIze assessment","做完整的
+ReCOGnAIze 评估","Ambil
+penilaian ReCOGnAIze PENUH"
+,"Results · What to do – body [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak]","Validated against MRI scans, built on a five-year NTU study of 1,500 people and published in Alzheimer's & Dementia.","经磁共振扫描验证，基于南洋理工大学对 1,500 人的五年研究，成果发表于 Alzheimer's & Dementia.","Disahkan terhadap imbasan MRI, dibina atas kajian NTU selama lima tahun terhadap 1,500 orang dan diterbitkan dalam Alzheimer's & Dementia."
+,"Results · What to do – body [40+, fast score: ?persona=senior&band=strong | 40+, slower score: ?persona=senior&band=weak]","Validated against MRI brain scans, built on a five-year NTU study of 1,500 adults, published in Alzheimer's & Dementia.","经磁共振脑部扫描验证，基于南洋理工大学对 1,500 名成人的五年研究，成果发表于 Alzheimer's & Dementia.","Disahkan terhadap imbasan otak MRI, dibina atas kajian NTU selama lima tahun terhadap 1,500 orang dewasa, diterbitkan dalam Alzheimer's & Dementia."
+,Results · What to do – step 1 label,Step 1,第 1 步,Langkah 1
+,Results · What to do – step 1 title,Consult with your doctor or clinic assistant,咨询您的医生或诊所助理,Berunding dengan doktor atau pembantu klinik anda
+,Results · What to do – step 1 body,Get more information on the full cognitive test.,进一步了解完整的认知测试。,Dapatkan maklumat lanjut tentang ujian kognitif penuh.
+,Results · What to do – step 2 label,Step 2,第 2 步,Langkah 2
+,Results · What to do – step 2 title,Play a 10 minute brain health game,玩 10 分钟的脑健康游戏,Main permainan kesihatan otak 10 minit
+,Results · What to do – step 2 body,"An online assessment with games that measure speed, attention, decision making, and memory.",线上评估，通过游戏测量您的速度、注意力、决策力和记忆力。,"Penilaian dalam talian dengan permainan yang mengukur kelajuan, perhatian, pembuatan keputusan dan memori."
+,Results · What to do – step 2 image description,"The brain health games running on a phone, a tablet and a laptop",脑健康游戏在手机、平板和笔记本电脑上运行,"Permainan kesihatan otak pada telefon, tablet dan komputer riba"
+,Results · What to do – step 3 label,Step 3,第 3 步,Langkah 3
+,Results · What to do – step 3 title,Get your full report,获取您的完整报告,Dapatkan laporan penuh anda
+,Results · What to do – step 3 body,Review your brain performance with actionable ways to improve.,查看您的大脑表现，以及可以着手改善的具体做法。,Semak prestasi otak anda berserta cara yang boleh anda amalkan untuk memperbaikinya.
+,Results · What to do – step 3 image description,A cognitive performance report scoring four brain domains,涵盖四大脑功能领域的认知表现报告,Laporan prestasi kognitif yang menilai empat domain otak
+,Results · What to do – doctor quote,"Each of these games measures a specific brain function the same way I would assess it in clinic. We are not testing whether you can play, we are testing how well each part of your brain is doing the work it does for you every day.",这些游戏中的每一个，都在以我在诊所中评估的同样方式测量一项特定的大脑功能。我们测的不是您会不会玩游戏，而是大脑的每个部分在日常工作中表现得有多好。,"Setiap permainan ini mengukur fungsi otak tertentu dengan cara yang sama seperti saya menilainya di klinik. Kami tidak menguji sama ada anda boleh bermain, kami menguji sebaik mana setiap bahagian otak anda melakukan kerja hariannya untuk anda."
+,Results · What to do – doctor name,A/Prof Nagaendran Kandiah,Nagaendran Kandiah 副教授,Prof Madya Nagaendran Kandiah
+,Results · What to do – doctor role,"Co-founder, Gray Matter Solutions
+MBBS, FAMS (Neurology), FRCP (Edin)","Gray Matter Solutions 联合创办人
+MBBS, FAMS (神经内科), FRCP (Edin)","Pengasas bersama, Gray Matter Solutions
+MBBS, FAMS (Neurologi), FRCP (Edin)"
+,Results · Next steps – label,What happens next,接下来会怎样,Apa yang berlaku seterusnya
+,Results · Next steps – heading,Take the next step with ReCOGnAIze,迈出下一步，体验 ReCOGnAIze,Teruskan langkah anda dengan ReCOGnAIze
+,Results · Next steps – body,Your Brain Health Score and recommendations are on their way to your inbox. Today's quiz estimates your risk profile; the ReCOGnAIze assessment shows how your brain is actually performing.,您的脑健康分数和建议正在发送到您的邮箱。今天的测验估算的是您的风险概况；ReCOGnAIze 评估则显示您的大脑实际表现如何。,Skor Kesihatan Otak dan cadangan anda sedang dalam perjalanan ke peti masuk anda. Kuiz hari ini menganggarkan profil risiko anda; penilaian ReCOGnAIze menunjukkan prestasi sebenar otak anda.
+,Results · Next steps – reassurance,"Whatever your score today, most of the factors behind it can change. That is the point of checking early.",无论您今天的分数如何，背后的大多数因素都是可以改变的。这正是早做检查的意义。,"Walau apa pun skor anda hari ini, kebanyakan faktor di sebaliknya boleh berubah. Itulah gunanya memeriksa lebih awal."
+,Results · Next steps – product name,ReCOGnAIze brain health assessment,ReCOGnAIze 脑健康评估,Penilaian kesihatan otak ReCOGnAIze
+,Results · Next steps – point,Developed at NTU's Dementia Research Centre,由南洋理工大学痴呆症研究中心开发,"Dibangunkan di Dementia Research Centre, NTU"
+,Results · Next steps – point,Registered with Singapore's HSA,已在新加坡卫生科学局（HSA）注册,Berdaftar dengan HSA Singapura
+,Results · Next steps – point,Results reviewed with a medical professional,结果由医疗专业人员与您一同解读,Keputusan disemak bersama profesional perubatan
+,Results · Next steps – callout,Talk to our doctors or clinic assistants,与我们的医生或诊所助理聊聊,Berbual dengan doktor atau pembantu klinik kami
+,Results · Next steps – credibility line,Built with NTU's Dementia Research Centre · 2024 Lancet Commission,与南洋理工大学痴呆症研究中心共同打造 · 2024 年《柳叶刀》委员会,"Dibina bersama Dementia Research Centre, NTU · Suruhanjaya Lancet 2024"
+,"Results · Closing – testimonial paragraph 1 [under 40, fast score: ?persona=optimizer&band=strong]","Tomorrow's meeting is a tough one, and if I don't have my attention covered, I can't perform well. Thanks to checking my brain, I'm aware of how to optimize it now. Glad I found ReCOGnAIze!",明天的会议不好开，如果注意力跟不上，我就发挥不出来。多亏检查了大脑，我现在知道该怎么调整了。很高兴发现了 ReCOGnAIze！,"Mesyuarat esok satu yang sukar, dan kalau perhatian saya tidak terjaga, saya tidak dapat menyampaikan yang terbaik. Terima kasih kerana saya memeriksa otak saya, kini saya tahu cara mengoptimumkannya. Bersyukur saya jumpa ReCOGnAIze!"
+,"Results · Closing – testimonial paragraph 1 [under 40, slower score: ?persona=optimizer&band=weak]","Speed was my worst of the five, which stung. Turns out speed wasn't the problem — my executive function was, and that's why my afternoons fell apart. Fixed the right thing. Glad I found ReCOGnAIze!",五项里速度是我最差的，当时挺难受。结果问题不在速度，而是执行功能——这才是我下午总是崩掉的原因。修对了地方。很高兴发现了 ReCOGnAIze！,"Kelajuan ialah yang paling lemah antara lima, dan itu mengecewakan. Ternyata kelajuan bukan masalahnya — fungsi eksekutif saya yang bermasalah, dan itulah sebabnya waktu petang saya runtuh. Saya betulkan yang betul. Bersyukur saya jumpa ReCOGnAIze!"
+,"Results · Closing – testimonial paragraph 1 [40+, fast score: ?persona=senior&band=strong]","I kept losing the thread in conversations and blamed my age. The report showed it was my attention that had slipped, not my memory.",我常常在聊天时跟不上话题，一直以为是年纪的关系。报告显示是注意力退了，不是记忆。,"Saya sering hilang arah dalam perbualan dan menyalahkan usia saya. Laporan menunjukkan perhatian saya yang merosot, bukan memori."
+,"Results · Closing – testimonial paragraph 1 [40+, slower score: ?persona=senior&band=weak]","My first score came back slower than I expected, and it worried me.",我第一次的分数比预期慢，当时挺担心的。,"Skor pertama saya kembali lebih perlahan daripada yang saya sangka, dan itu merunsingkan saya."
+,"Results · Closing – testimonial paragraph 2 [40+, fast score: ?persona=senior&band=strong]","Now I know exactly what to work on, and my doctor has the numbers.",现在我清楚该在哪里用功，医生也有了数字。,"Sekarang saya tahu dengan tepat apa yang perlu diusahakan, dan doktor saya ada nombornya."
+,"Results · Closing – testimonial paragraph 2 [40+, slower score: ?persona=senior&band=weak]","The full test showed my memory and attention were fine. It was one area, and my doctor had numbers to work with.",完整测试显示我的记忆和注意力都没问题。只是其中一项，而医生也有了可以着手的数字。,"Ujian penuh menunjukkan memori dan perhatian saya baik. Hanya satu bahagian, dan doktor saya ada nombor untuk digunakan."
+,"Results · Closing – testimonial name [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak]","— Chelsea, aged {age band} like you",— Chelsea，和您一样 {age band} 岁,"— Chelsea, berumur {age band} seperti anda"
+,"Results · Closing – testimonial name [40+, fast score: ?persona=senior&band=strong | 40+, slower score: ?persona=senior&band=weak]","— Siew Ling, 64, similar age as you",— Siew Ling，64 岁，与您年龄相近,"— Siew Ling, 64, sebaya dengan anda"
+,"Results · Closing – testimonial name (no age) [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak]","— Chelsea, similar age as you",— Chelsea，与您年龄相近,"— Chelsea, sebaya dengan anda"
+,"Results · Closing – testimonial name (no age) [40+, fast score: ?persona=senior&band=strong | 40+, slower score: ?persona=senior&band=weak]","— Siew Ling, 64, similar age as you",— Siew Ling，64 岁，与您年龄相近,"— Siew Ling, 64, sebaya dengan anda"
+,Results · Closing – heading,Still need time to think?,还需要时间考虑？,Masih perlu masa untuk berfikir?
+,"Results · Closing – body 1 [under 40, fast score: ?persona=optimizer&band=strong | under 40, slower score: ?persona=optimizer&band=weak]","Your score is already in your inbox, along with a short set of strategies for pushing it up.",您的分数已经发到邮箱，随附一份提升分数的简短策略。,"Skor anda sudah ada dalam peti masuk, bersama satu set strategi ringkas untuk menaikkannya."
+,"Results · Closing – body 1 [40+, fast score: ?persona=senior&band=strong]","Your results are already in your inbox, with a plain explanation of every score.",您的结果已经发到邮箱，每一项分数都附有通俗的解释。,"Keputusan anda sudah ada dalam peti masuk, dengan penjelasan mudah bagi setiap skor."
+,"Results · Closing – body 1 [40+, slower score: ?persona=senior&band=weak]",Your results are in your inbox with a plain explanation of every score.,您的结果已经在邮箱里，每一项分数都附有通俗的解释。,Keputusan anda ada dalam peti masuk dengan penjelasan mudah bagi setiap skor.
+,"Results · Closing – body 2 [under 40, fast score: ?persona=optimizer&band=strong]","When you're ready to test the remaining three brain domains, you know where we are.",当您准备好测试其余三个大脑领域时，随时来找我们。,"Apabila anda sedia menguji tiga domain otak yang lain, anda tahu di mana kami berada."
+,"Results · Closing – body 2 [under 40, slower score: ?persona=optimizer&band=weak]","When you're ready to find which domain is actually slowing you down, you know where we are.",当您准备好找出究竟是哪个领域在拖慢您时，随时来找我们。,"Apabila anda sedia mencari domain yang sebenarnya memperlahankan anda, anda tahu di mana kami berada."
+,"Results · Closing – body 2 [40+, fast score: ?persona=senior&band=strong]","When you're ready to check the remaining three domains, we'll be here. You can bring the report to your doctor.",当您准备好检测其余三个领域时，我们就在这里。您也可以把报告带给医生看。,"Apabila anda sedia memeriksa tiga domain yang lain, kami akan berada di sini. Anda boleh bawa laporan itu kepada doktor anda."
+,"Results · Closing – body 2 [40+, slower score: ?persona=senior&band=weak]","If the slower result worries you, bring the report to your doctor. We'll be here for the other three domains.",如果偏慢的结果让您担心，请把报告带给医生。其余三个领域，我们随时在这里。,"Jika keputusan yang lebih perlahan itu merunsingkan anda, bawa laporan itu kepada doktor anda. Kami akan berada di sini untuk tiga domain yang lain."
+,Footer – research line,"Built on clinical research by Nanyang Technological University, LKC Medicine, Dementia Research Centre Singapore.",基于南洋理工大学、李光前医学院、新加坡痴呆症研究中心的临床研究成果。,"Dibina atas penyelidikan klinikal oleh Nanyang Technological University, LKC Medicine, Dementia Research Centre Singapore."
+,Sticky button (appears after scrolling),Talk to our doctors or clinic assistants to find out more,想了解更多，请与我们的医生或诊所助理聊聊,Berbual dengan doktor atau pembantu klinik kami untuk maklumat lanjut
+,Sticky button – after tapping,Noted — our team will take it from here,已记录 — 接下来交给我们的团队,Dicatat — pasukan kami akan meneruskan dari sini
+,Browser tab title,Your brain speed report | ReCOGnAIze,您的大脑反应速度报告 | ReCOGnAIze,Laporan kelajuan otak anda | ReCOGnAIze
+"=HYPERLINK(""https://recognaizelite.vercel.app/parkwayshenton/report-full"",""/parkwayshenton/report-full"")",Offer – back link (no button links here from the report any more; open the link directly),← Back to your result,← 返回您的结果,← Kembali ke keputusan anda
+,Offer – label,The full picture,完整版图,Gambaran penuh
+,Offer – heading,Take the complete brain health assessment,进行完整的脑健康评估,Ambil penilaian kesihatan otak yang lengkap
+,Offer – research link,Validated in peer-reviewed research,已在同行评审研究中获得验证,Disahkan dalam penyelidikan yang dinilai rakan sebaya
+,Offer – product name,BrainScan brain health assessment,BrainScan 脑健康评估,Penilaian kesihatan otak BrainScan
+,Offer – product note,Developed at NTU's Dementia Research Centre · Registered with Singapore's HSA,由南洋理工大学痴呆症研究中心开发 · 已在新加坡卫生科学局注册,Dibangunkan di Dementia Research Centre NTU · Berdaftar dengan HSA Singapura
+,Offer – includes,Clinically-validated neuroscientific games to detect specific brain functions,经临床验证的神经科学游戏，用于检测特定的大脑功能,Permainan neurosains yang disahkan secara klinikal untuk mengesan fungsi otak tertentu
+,Offer – includes,"All four cognitive domains: processing speed, memory, attention and executive function",涵盖四大认知领域：处理速度、记忆、注意力与执行功能,"Kesemua empat domain kognitif: kelajuan pemprosesan, memori, perhatian dan fungsi eksekutif"
+,Offer – includes,Review & recommendations with a full in-depth report,完整深度报告，附解读与建议,Ulasan & saranan dengan laporan mendalam yang penuh
+,Offer card – label,Special offer,专属优惠,Tawaran istimewa
+,Offer card – title,World Alzheimer's Month,世界阿尔茨海默病月,Bulan Alzheimer Sedunia
+,Offer card – dates,1 – 30 September 2026,2026 年 9 月 1 日 – 30 日,1 – 30 September 2026
+,Offer card – product,BrainScan Cognitive Test,BrainScan 认知测试,Ujian Kognitif BrainScan
+,Offer card – product note,4 cognitive domains,4 大认知领域,4 domain kognitif
+,Offer card – domains,Processing Speed · Executive Function · Memory · Attention,处理速度 · 执行功能 · 记忆 · 注意力,Kelajuan Pemprosesan · Fungsi Eksekutif · Memori · Perhatian
+,Offer card – price label,Normal price,原价,Harga biasa
+,Offer card – discount label,Alzheimer's Month discount,阿尔茨海默病月折扣,Diskaun Bulan Alzheimer
+,Offer card – total label,Total,总计,Jumlah
+,Offer card – claim code label,Your claim code:,您的兑换码：,Kod tebusan anda:
+,Offer card – button,Download proof,下载优惠凭证,Muat turun bukti tawaran
+,Offer card – button while preparing,Preparing…,正在生成…,Menyediakan…
+,Offer card – note,Show this at the front desk to claim it.,在前台出示即可兑换。,Tunjukkan ini di kaunter depan untuk menebusnya.
+,Offer – downloaded proof image (built in English only),SPECIAL OFFER,,
+,Offer – downloaded proof image (built in English only),World Alzheimer's Month,,
+,Offer – downloaded proof image (built in English only),1 – 30 September 2026,,
+,Offer – downloaded proof image (built in English only),BrainScan Cognitive Test,,
+,Offer – downloaded proof image (built in English only),Processing Speed · Executive Function · Memory · Attention,,
+,Offer – downloaded proof image (built in English only),Normal price,,
+,Offer – downloaded proof image (built in English only),Alzheimer's Month discount,,
+,Offer – downloaded proof image (built in English only),Total,,
+,Offer – downloaded proof image (built in English only),Issued {date},,
+,Offer – downloaded proof image (built in English only),BrainScan by Gray Matter Solutions,,
+,FAQ 1 – question,What is BrainScan?,什么是 BrainScan？,Apakah itu BrainScan?
+,FAQ 1 – answer,A digital brain health assessment developed at NTU's Dementia Research Centre and registered with Singapore's HSA.,一项由南洋理工大学痴呆症研究中心开发、并已在新加坡卫生科学局注册的数字化脑健康评估。,Penilaian kesihatan otak digital yang dibangunkan di Dementia Research Centre NTU dan berdaftar dengan HSA Singapura.
+,FAQ 2 – question,How is this 3-minute quiz different from BrainScan?,这个 3 分钟测试与 BrainScan 有什么不同？,Apa bezanya kuiz 3 minit ini dengan BrainScan?
+,FAQ 2 – answer,"This quiz is a free, educational estimate based on your modifiable risk factors. BrainScan is the full assessment, validated in peer-reviewed research, that shows how your brain is actually performing.",这个测试是免费的科普性估算，依据的是您可改变的风险因素。BrainScan 才是完整评估，已在同行评审研究中获得验证，显示您的大脑实际表现如何。,"Kuiz ini ialah anggaran pendidikan yang percuma berdasarkan faktor risiko anda yang boleh diubah. BrainScan ialah penilaian penuh, disahkan dalam penyelidikan yang dinilai rakan sebaya, yang menunjukkan prestasi otak anda yang sebenar."
+,FAQ 3 – question,Is this assessment legit?,这项评估可靠吗？,Adakah penilaian ini sah?
+,FAQ 3 – answer,"Yes. BrainScan was developed and validated at NTU's Lee Kong Chian School of Medicine, Dementia Research Centre, and is registered with Singapore's HSA.",可靠。BrainScan 由南洋理工大学李光前医学院痴呆症研究中心开发并验证，并已在新加坡卫生科学局注册。,"Ya. BrainScan dibangunkan dan disahkan di Lee Kong Chian School of Medicine NTU, Dementia Research Centre, dan berdaftar dengan HSA Singapura."
+,FAQ 4 – question,Who is it for?,适合什么人？,Untuk siapa ia sesuai?
+,FAQ 4 – answer,"Anyone staying ahead of their brain health: whether you want to maintain peak cognitive performance, you're navigating hormonal changes, or you're supporting a loved one living with dementia.",任何想提早掌握自己脑健康状况的人：无论您想保持巅峰认知表现、正在经历荷尔蒙变化，还是在照顾患有痴呆症的亲人。,"Sesiapa yang mahu mendahului kesihatan otaknya: sama ada anda mahu mengekalkan prestasi kognitif terbaik, sedang melalui perubahan hormon, atau menjaga orang tersayang yang hidup dengan demensia."
+,FAQ 5 – question,What should I expect next?,接下来会怎样？,Apa yang seterusnya?
+,FAQ 5 – answer,Download your offer proof and show it at the front desk to claim the discounted assessment. The test itself runs in a browser and takes about ten minutes.,下载您的优惠凭证，在前台出示即可享受折扣评估。测试本身在浏览器中进行，约需十分钟。,Muat turun bukti tawaran anda dan tunjukkannya di kaunter depan untuk menebus penilaian berdiskaun. Ujian itu sendiri berjalan dalam pelayar dan mengambil masa kira-kira sepuluh minit.
+,Footer – disclaimer,"This report is intended for wellness screening and educational purposes only. It does not diagnose medical disease or replace professional medical evaluation. Findings should be interpreted together with clinical consultation, lifestyle assessment, and where appropriate, biomedical evaluation.",本报告仅供健康筛查与科普用途，不构成疾病诊断，也不能取代专业医疗评估。结果应结合临床问诊、生活方式评估，并在必要时结合生理医学检查一并解读。,"Laporan ini bertujuan untuk pemeriksaan kesejahteraan dan pendidikan sahaja. Ia tidak mendiagnosis penyakit perubatan atau menggantikan penilaian perubatan profesional. Penemuan harus ditafsirkan bersama konsultasi klinikal, penilaian gaya hidup dan, jika bersesuaian, penilaian bioperubatan."
+,Browser tab title,The full picture | ReCOGnAIze,完整版图 | ReCOGnAIze,Gambaran penuh | ReCOGnAIze
