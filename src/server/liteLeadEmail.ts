@@ -12,9 +12,7 @@
  */
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { renderClinicianResultEmail } from "src/server/emails/clinicianResultEmail";
-import { renderEventResultEmail } from "src/server/emails/eventResultEmail";
-import { renderLiteResultEmail } from "src/server/emails/liteResultEmail";
+import { renderResultEmail } from "src/server/emails/resultEmail";
 import { EVENT as BCGOLF_EVENT } from "src/data/liteBcGolfContent";
 import type { LiteEmailRenderer } from "src/server/emails/shared";
 import { addContactToAudience, getResendConfig, sendEmail } from "src/server/resend";
@@ -29,9 +27,10 @@ import { addContactToAudience, getResendConfig, sendEmail } from "src/server/res
  * template sit beside the key rather than in shared constants, doing so forces
  * a decision about both rather than inheriting someone else's.
  *
- * The three templates differ in what they are for. The consumer one explains
- * the result; the clinician one spends its length on the published validation;
- * the event one is a courtesy note to a guest at a fundraiser.
+ * Every funnel now mails the same template — src/server/emails/resultEmail.ts,
+ * built from the Figma "Result Email — ReCOGnAIze Lite". The `render` slot is
+ * kept per funnel so one can be given its own template again without
+ * restructuring this map.
  */
 const EMAIL_CLINICS: Record<
   string,
@@ -46,22 +45,20 @@ const EMAIL_CLINICS: Record<
     event?: { name: string; date: string; venue: string };
   }
 > = {
-  liteworldalz: { brand: "Recog-Lite", render: renderLiteResultEmail },
-  liteclinician: { brand: "Recog-Lite", render: renderClinicianResultEmail },
+  liteworldalz: { brand: "Recog-Lite", render: renderResultEmail },
+  liteclinician: { brand: "Recog-Lite", render: renderResultEmail },
   litebcgolf: {
     brand: "ReCOGnAIze Lite",
-    render: renderEventResultEmail,
+    render: renderResultEmail,
     event: BCGOLF_EVENT,
   },
-  // The corporate-event funnel. /lite-two, which it is otherwise a copy of, is
-  // absent from this map and mails nothing; adding the entry is the whole
-  // difference between the two. The event template fits for the same reason it
-  // fit the golf tournament: the reader is standing at a booth with a drink,
-  // has just handed the iPad back, and the mail is the only copy of the result
-  // they keep once the screen is wiped for the next person.
-  liteevent: { brand: "ReCOGnAIze Lite", render: renderEventResultEmail },
-  // /parkwayshenton: the same mail as the event funnel, from its own table.
-  pspilot: { brand: "ReCOGnAIze Lite", render: renderEventResultEmail },
+  // The corporate-event funnel, and every funnel built on it (/parkway,
+  // /clinic-signup, /parkwayshentonultraluxe and the rest). /lite-two, which it
+  // is otherwise a copy of, is absent from this map and mails nothing; adding
+  // the entry is the whole difference between the two.
+  liteevent: { brand: "ReCOGnAIze Lite", render: renderResultEmail },
+  // /parkwayshenton: the same mail, from its own table.
+  pspilot: { brand: "ReCOGnAIze Lite", render: renderResultEmail },
 };
 
 export function emailEnabledForClinic(clinic: string): boolean {
@@ -137,8 +134,8 @@ export async function deliverLiteResultEmail(params: LiteLeadEmailParams): Promi
     band: params.band,
     // Named by the event template when the funnel is tied to one occasion.
     event: funnel.event ?? null,
-    // Rendered by the clinician and event templates; the consumer one ignores
-    // them.
+    // Part of the shared template input; the current template has its own
+    // fixed call to action and does not read them.
     demoUrl: process.env.RECOGNAIZE_DEMO_URL ?? null,
     bookingUrl: process.env.RECOGNAIZE_CALENDLY_URL ?? null,
   });
