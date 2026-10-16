@@ -121,8 +121,8 @@ const SECTION_IDS = [
  * the "What happens next" card's callout, where /parkwayshenton's read "Talk to
  * our doctors or clinic assistants". Kept here rather than in
  * parkwayShentonReportCopy so /parkwayshenton is unaffected.
- * The tap is still recorded the same way, and `pk.ctaDone` is still what the
- * button says afterwards.
+ * The sticky button scrolls to that card; its first tap is still recorded the
+ * same way.
  */
 const CTA: Record<LiteEventLang, string> = {
   en: "ENQUIRE ABOUT THE FULL TEST",
@@ -230,7 +230,40 @@ export default function ParkwayShentonUltraluxeReport() {
     const stored = readReportInterest(PARKWAY_SHENTON_ULTRALUXE);
     if (stored) setInterested(stored.interested);
   }, []);
-  const markInterested = () => {
+  /**
+   * Takes the reader to the "What happens next" card, where the enquiry is
+   * explained, and records the first tap. Unlike /parkwayshenton's, the button
+   * stays live and keeps its label after that tap — it is a way to the card,
+   * not a one-way confirmation, so a second tap from further down the report
+   * has to work too. Only the first tap is posted.
+   */
+  const enquire = () => {
+    // The sections above the card grow as they animate into view, so the
+    // card's offset at the moment of the tap is short of where it ends up.
+    // Aim, then re-aim each time the scroll comes to rest, until the card's
+    // top is where it should be (or a couple of seconds have gone by).
+    const root = scrollerRef.current;
+    const target = document.getElementById("next");
+    if (root && target) {
+      const offset = () =>
+        target.getBoundingClientRect().top - root.getBoundingClientRect().top;
+      const aim = () =>
+        root.scrollTo({ top: root.scrollTop + offset(), behavior: reduced ? "auto" : "smooth" });
+      aim();
+      let last = root.scrollTop;
+      let checks = 0;
+      const timer = window.setInterval(() => {
+        checks += 1;
+        const moving = Math.abs(root.scrollTop - last) > 1;
+        last = root.scrollTop;
+        if (moving && checks < 20) return;
+        if (Math.abs(offset()) > 4 && checks < 20) {
+          aim();
+          return;
+        }
+        window.clearInterval(timer);
+      }, 150);
+    }
     if (interested) return;
     setInterested(true);
     stashReportInterest({ interested: true }, PARKWAY_SHENTON_ULTRALUXE);
@@ -907,9 +940,8 @@ export default function ParkwayShentonUltraluxeReport() {
 
           {/* The sticky CTA. Outside the scroller so it stays put while the
               report moves under it; the fade behind it keeps the button from
-              sitting on top of whatever text is passing. One-way, like the
-              button it replaced under the three steps: it confirms and stays
-              confirmed. */}
+              sitting on top of whatever text is passing. Each tap scrolls to
+              the "What happens next" card — see `enquire`. */}
           <AnimatePresence>
             {(
               <motion.div
@@ -922,30 +954,14 @@ export default function ParkwayShentonUltraluxeReport() {
               >
                 <motion.button
                   type="button"
-                  onClick={markInterested}
-                  disabled={interested}
-                  aria-pressed={interested}
-                  whileTap={interested ? undefined : { scale: 0.98 }}
+                  onClick={enquire}
+                  whileTap={{ scale: 0.98 }}
                   // A wrapping leading: the label is a sentence, and on a
                   // 375px phone it takes two lines.
                   className="pointer-events-auto mx-auto flex w-full max-w-[560px] items-center justify-center gap-2 rounded-full px-6 py-[15px] text-center text-[15.5px] font-bold leading-[1.3] tracking-[0.02em] text-white shadow-[0_16px_34px_-16px_rgba(214,47,22,0.6)] transition-[filter] hover:brightness-[1.06] disabled:cursor-default disabled:hover:brightness-100"
                   style={{ background: RANK_GRADIENT }}
                 >
-                  {interested && (
-                    <svg
-                      aria-hidden
-                      viewBox="0 0 24 24"
-                      className="size-[18px] shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M4.5 12.6l5 5 10-10.5" />
-                    </svg>
-                  )}
-                  {interested ? pk.ctaDone : CTA[lang] ?? CTA.en}
+                  {CTA[lang] ?? CTA.en}
                 </motion.button>
               </motion.div>
             )}
