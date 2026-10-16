@@ -28,7 +28,6 @@ import {
   rise,
   stagger,
 } from "src/components/LiteOne/ReportV2/motion";
-import { ScrollMoreCue } from "src/components/LiteOne/ReportV2/ScrollMoreCue";
 import { REPORT_STEP_IMAGES, StepImage } from "src/components/LiteOne/ReportV2/StepImage";
 import { useReportData } from "src/components/LiteOne/ReportV2/useReportData";
 import { RANK_GRADIENT } from "src/components/LiteOne/ReportLab/visuals";
@@ -118,9 +117,10 @@ const SECTION_IDS = [
 ] as const;
 
 /**
- * The sticky button's label — this funnel's own, where /parkwayshenton's reads
- * "Talk to our doctors or clinic assistants to find out more". Kept here
- * rather than in parkwayShentonReportCopy so /parkwayshenton is unaffected.
+ * The report's call to action — this funnel's own, on the sticky button and in
+ * the "What happens next" card's callout, where /parkwayshenton's read "Talk to
+ * our doctors or clinic assistants". Kept here rather than in
+ * parkwayShentonReportCopy so /parkwayshenton is unaffected.
  * The tap is still recorded the same way, and `pk.ctaDone` is still what the
  * button says afterwards.
  */
@@ -152,9 +152,6 @@ export default function ParkwayShentonUltraluxeReport() {
   const radarAxes = [...t.report.radarAxes.slice(0, 4), pk.radarRiskAxis];
   const scrollerRef = React.useRef<HTMLDivElement>(null);
   const heroRef = React.useRef<HTMLDivElement>(null);
-  // Watched by ScrollMoreCue: on a viewport too short to show the hero's own
-  // scroll cue (a landscape iPad, chiefly) a floating one takes over.
-  const inlineCueRef = React.useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const { query } = useRouter();
 
@@ -224,7 +221,7 @@ export default function ParkwayShentonUltraluxeReport() {
 
   const [shared, setShared] = React.useState(false);
 
-  // The closing's one tracker, the sticky "Talk to our doctors" button.
+  // The closing's one tracker, the sticky "Enquire about the full test" button.
   // Hydrated from the device copy so a refresh shows the same state the run's
   // row holds; a tap is mirrored there and posted, best-effort, to
   // /api/lite-report-interest, which sets `interested` and `interested_at`.
@@ -240,19 +237,11 @@ export default function ParkwayShentonUltraluxeReport() {
     void recordReportInterest({ interested: true }, PARKWAY_SHENTON_ULTRALUXE, { lang });
   };
 
-  // The sticky button stays off the first screen: the hero has its own "Tell
-  // me more" cue (and ScrollMoreCue's pill on short viewports) at the same
-  // spot, and the rank is what the reader should see first. It slides in once
-  // they are half a screen past it and stays for the rest of the report.
-  const [ctaShown, setCtaShown] = React.useState(false);
-  React.useEffect(() => {
-    const root = scrollerRef.current;
-    if (!root) return;
-    const onScroll = () => setCtaShown(root.scrollTop > root.clientHeight * 0.5);
-    onScroll();
-    root.addEventListener("scroll", onScroll, { passive: true });
-    return () => root.removeEventListener("scroll", onScroll);
-  }, []);
+  // Unlike /parkwayshenton's, the sticky button is on screen from the hero
+  // onwards: this funnel wants the enquiry in front of the reader the whole way
+  // down. ScrollMoreCue's floating pill is left out for the same reason — it
+  // sits in the same spot at the foot of the screen — and the hero's own
+  // in-flow "Tell me more" cue still points the way down.
   const share = async (text: string) => {
     const url = typeof window === "undefined" ? "" : `${window.location.origin}${PARKWAY_SHENTON_ULTRALUXE.basePath}`;
     try {
@@ -336,12 +325,6 @@ export default function ParkwayShentonUltraluxeReport() {
             </motion.header>
 
             <SectionDots sections={sections} gradient={RANK_GRADIENT} />
-
-            <ScrollMoreCue
-              inlineCueRef={inlineCueRef}
-              label={t.report.moreBelow}
-              gradient={RANK_GRADIENT}
-            />
 
             {/* ------------------------------------------- 1 · the rank --- */}
             <div ref={heroRef}>
@@ -449,7 +432,6 @@ export default function ParkwayShentonUltraluxeReport() {
                 </Cascade>
 
                 <motion.div
-                  ref={inlineCueRef}
                   className="mt-10 flex flex-col items-center gap-1 text-center"
                   style={{ opacity: reduced ? 1 : cueOpacity }}
                 >
@@ -845,7 +827,7 @@ export default function ParkwayShentonUltraluxeReport() {
 
                   {/* A callout, not a button: the next step happens in person. */}
                   <p className="mt-[19px] rounded-2xl border border-quizPrimary bg-quizPrimary-container px-[18px] py-[13px] text-center text-[17.5px] font-bold leading-[1.5] text-quizPrimary-onContainer">
-                    {pk.nextCallout}
+                    {CTA[lang] ?? CTA.en}
                   </p>
 
 
@@ -929,7 +911,7 @@ export default function ParkwayShentonUltraluxeReport() {
               button it replaced under the three steps: it confirms and stays
               confirmed. */}
           <AnimatePresence>
-            {ctaShown && (
+            {(
               <motion.div
                 initial={{ opacity: 0, y: reduced ? 0 : 24 }}
                 animate={{ opacity: 1, y: 0 }}
