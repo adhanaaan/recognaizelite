@@ -349,6 +349,36 @@ export const PARKWAY_SHENTON: LiteVariant = {
   storagePrefix: "recognaize-pkwshenton",
 };
 
+/**
+ * /parkwayshentonultraluxe — /parkwayshenton, page for page, with three things
+ * taken out:
+ *
+ * - IHH Healthcare Singapore's PDPA consent. Only Gray Matter Solutions'
+ *   tickbox is left on the landing page, so `consent_partner` stays NULL
+ *   ("never asked") on every row.
+ * - The name field. The landing page takes the email and the consent only, and
+ *   the report and loading screens fall back to their un-named lines.
+ * - The quiz's last question, "Which clinic are you from?". The quiz is the
+ *   event template's bank, unchanged.
+ *
+ * With the clinic question gone there is nothing for ps_pilot's extra column
+ * to hold, so `clinic` is "liteevent", as /parkway's is: the rows go to
+ * liteevent_leads (and the report-interest taps to liteevent_report_interest),
+ * and the result email is the event template. `defaultCampaign` is what tells
+ * this funnel's rows apart from the rest of the event traffic, and the
+ * report-interest rows also carry this basePath in `funnel`.
+ *
+ * `storagePrefix` is its own, so a run here never overwrites a /parkwayshenton
+ * run's report, profile or attempt id in the same browser.
+ */
+export const PARKWAY_SHENTON_ULTRALUXE: LiteVariant = {
+  clinic: LITE_EVENT_CLINIC,
+  hookClinic: "LiteEvent",
+  basePath: "/parkwayshentonultraluxe",
+  defaultCampaign: "parkwayshentonultraluxe",
+  storagePrefix: "recognaize-pkwsultraluxe",
+};
+
 const reportKey = (v: LiteVariant) => `${v.storagePrefix}-report`;
 const profileKey = (v: LiteVariant) => `${v.storagePrefix}-profile`;
 const attemptKey = (v: LiteVariant) => `${v.storagePrefix}-attempt`;

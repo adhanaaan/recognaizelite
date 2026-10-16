@@ -1,0 +1,129 @@
+import Head from "next/head";
+import Router from "next/router";
+import React from "react";
+import { LiteButton, LiteShell } from "src/components/LiteOne/LiteShell";
+import { SectionBadge } from "src/components/LiteOne/SectionBadge";
+import { useLiteEventLang } from "src/i18n/liteEvent";
+import { liteEventCopy } from "src/i18n/liteEventCopy";
+import { useResultStore } from "src/stores/useResultStore";
+import {
+  PARKWAY_SHENTON_ULTRALUXE,
+  readAttemptId,
+  readTask2Score,
+  recordLiteAttempt,
+} from "src/utils/liteOne";
+
+/**
+ * /parkwayshentonultraluxe — a copy of this /parkwayshenton screen (see
+ * PARKWAY_SHENTON_ULTRALUXE in src/utils/liteOne.ts for what differs), which is
+ * itself the Parkway Shenton copy of this /clinic-signup screen.
+ *
+ * Unchanged from it. The flow is /clinic-signup's: the name, the email and the
+ * consents are taken on the landing page, so the run passes through here with
+ * the lead already written. What this funnel does differently is the partner's
+ * consent on that landing page and the closing of the report. See
+ * PARKWAY_SHENTON_ULTRALUXE in src/utils/liteOne.ts.
+ */
+
+const ICONS = [
+  { src: "/images/task-2/sun.png", alt: "", className: "absolute -left-2 top-[18%] size-16 lite-bob", delay: 0 },
+  { src: "/images/task-2/flash.png", alt: "", className: "absolute -right-1 top-[14%] size-14 lite-rock", delay: 400 },
+];
+
+/**
+ * Where the shared game hands control back to this funnel — GameCompleteScreen
+ * routes here via getHookReportPath(), which the entry page pointed at this
+ * path. That redirect is the whole mechanism keeping the lite funnels apart
+ * once they've all passed through /symbol-matching.
+ */
+export default function ParkwayShentonUltraluxeGameComplete() {
+  const { lang } = useLiteEventLang();
+  const t = liteEventCopy(lang);
+  const { result } = useResultStore();
+  const score = readTask2Score(result);
+
+  /**
+   * Saves the score to ps_pilot the moment the game ends, onto the row the
+   * landing page opened (same attempt id). /parkwayshentonultraluxe/loading writes it
+   * again with the percentile and the quiz, but a visitor who walks away during
+   * the quiz would otherwise leave a row with no score at all.
+   *
+   * Best-effort, and skipped without a score (a reload here empties the
+   * in-memory result store). `recorded` guards StrictMode's double mount.
+   */
+  const recorded = React.useRef(false);
+  React.useEffect(() => {
+    if (recorded.current || score === null) return;
+    const attemptId = readAttemptId(PARKWAY_SHENTON_ULTRALUXE);
+    if (!attemptId) return;
+    recorded.current = true;
+    void recordLiteAttempt(
+      { attemptId, score, percentile: null, severity: null },
+      PARKWAY_SHENTON_ULTRALUXE
+    );
+  }, [score]);
+
+  return (
+    <>
+      <Head>
+        <title>{t.gameComplete.headTitle}</title>
+      </Head>
+
+      <LiteShell>
+        <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 py-8">
+          <div className="relative mx-auto w-full max-w-[440px] text-center">
+            <div className="lite-rise" style={{ animationDelay: "0ms" }}>
+              <SectionBadge label={t.gameComplete.badge} />
+            </div>
+
+            {ICONS.map((icon) => (
+              <img
+                key={icon.src}
+                src={icon.src}
+                alt={icon.alt}
+                aria-hidden
+                className={`${icon.className} lite-rise pointer-events-none select-none`}
+                style={{ animationDelay: `${icon.delay + 200}ms` }}
+              />
+            ))}
+
+            <h1
+              className="lite-rise mt-14 font-display text-[32px] font-extrabold leading-[1.08] text-charcoal sm:text-[38px]"
+              style={{ animationDelay: "100ms" }}
+            >
+              {t.gameComplete.h1}
+            </h1>
+
+            <p
+              className="lite-rise mt-4 text-[18px] font-semibold text-charcoal"
+              style={{ animationDelay: "180ms" }}
+            >
+              {t.gameComplete.correctSymbols} {score ?? "—"}
+            </p>
+
+            <div
+              className="lite-rise mx-auto mt-16 max-w-[320px]"
+              style={{ animationDelay: "300ms" }}
+            >
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-quizOutline">
+                {t.gameComplete.nextEyebrow}
+              </p>
+              <p className="mt-2 text-[15px] leading-relaxed text-quizSecondary">
+                {t.gameComplete.nextBody}
+              </p>
+            </div>
+
+            <div
+              className="lite-rise mx-auto mt-8 max-w-[320px]"
+              style={{ animationDelay: "420ms" }}
+            >
+              <LiteButton onClick={() => Router.push(`${PARKWAY_SHENTON_ULTRALUXE.basePath}/quiz`)}>
+                {t.gameComplete.cta}
+              </LiteButton>
+            </div>
+          </div>
+        </div>
+      </LiteShell>
+    </>
+  );
+}
