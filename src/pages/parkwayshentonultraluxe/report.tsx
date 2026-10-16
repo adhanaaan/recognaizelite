@@ -39,7 +39,7 @@ import type {
   LiteTwoCopyCtx,
   LiteTwoPersona,
 } from "src/data/liteTwoReportContent";
-import { useLiteEventLang } from "src/i18n/liteEvent";
+import { useLiteEventLang, type LiteEventLang } from "src/i18n/liteEvent";
 import { liteEventCopy } from "src/i18n/liteEventCopy";
 import {
   PARKWAY_SHENTON_ULTRALUXE,
@@ -116,6 +116,19 @@ const SECTION_IDS = [
   "next",
   "closing",
 ] as const;
+
+/**
+ * The sticky button's label — this funnel's own, where /parkwayshenton's reads
+ * "Talk to our doctors or clinic assistants to find out more". Kept here
+ * rather than in parkwayShentonReportCopy so /parkwayshenton is unaffected.
+ * The tap is still recorded the same way, and `pk.ctaDone` is still what the
+ * button says afterwards.
+ */
+const CTA: Record<LiteEventLang, string> = {
+  en: "ENQUIRE ABOUT THE FULL TEST",
+  zh: "咨询完整测试",
+  ms: "TANYA TENTANG UJIAN PENUH",
+};
 
 /** The closing quotes name the product; keep its serif accent when they do. */
 function withRecognaizeSerif(text: string): React.ReactNode {
@@ -950,7 +963,7 @@ export default function ParkwayShentonUltraluxeReport() {
                       <path d="M4.5 12.6l5 5 10-10.5" />
                     </svg>
                   )}
-                  {interested ? pk.ctaDone : pk.cta}
+                  {interested ? pk.ctaDone : CTA[lang] ?? CTA.en}
                 </motion.button>
               </motion.div>
             )}
