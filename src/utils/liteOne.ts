@@ -260,6 +260,32 @@ export const CLINIC_SIGNUP: LiteVariant = {
  * The funnels are kept apart after the game by hookReportPath, which the entry
  * page points at this basePath.
  */
+/**
+ * /tcmbrain — the TCM clinic funnel, reached through Asia Integrated Wellness.
+ *
+ * Replaces the original two-page /tcmbrain, which predated the lite funnels: it
+ * sent visitors into the old /instruction flow under hookClinic "SJMC", had no
+ * quiz, and wrote to its own tcmbrain_leads table on the pre-lite schema. None
+ * of that could pick up the language picker, the questionnaire, the v2 report
+ * or the result email, so it had fallen a long way behind the newer funnels.
+ *
+ * Built as a /clinic-signup variant for the same reason that one exists: the
+ * email and consent are taken on the landing page, before the run, so a visitor
+ * who abandons the game is still reachable. Like CLINIC_SIGNUP it keeps
+ * LITE_EVENT_CLINIC, so its rows land in liteevent_leads and are told apart by
+ * utm_campaign — no migration, and the result email works the day it ships.
+ *
+ * The old tcmbrain_leads table is left alone with its existing rows; nothing
+ * writes to it any more.
+ */
+export const TCM_BRAIN: LiteVariant = {
+  clinic: LITE_EVENT_CLINIC,
+  hookClinic: "LiteEvent",
+  basePath: "/tcmbrain",
+  defaultCampaign: "tcmbrain",
+  storagePrefix: "recognaize-tcmbrain",
+};
+
 export const CLINIC_SIGNUP_ID: LiteVariant = {
   clinic: LITE_EVENT_CLINIC,
   hookClinic: "LiteEvent",
