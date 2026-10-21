@@ -59,11 +59,11 @@ const SITE_URL = "https://graymattercognition.com";
 const CONTACT_EMAIL = "tech@graymattercognition.com";
 const INSTAGRAM_URL = "https://www.instagram.com/graymatter.solutions";
 /**
- * The footer's LinkedIn and YouTube buttons. Left out of the mail until a URL
- * is set here — a social button that goes nowhere is worse than none.
+ * The footer's LinkedIn and YouTube buttons. Set to null to leave one out of
+ * the mail — a social button that goes nowhere is worse than none.
  */
-const LINKEDIN_URL: string | null = null;
-const YOUTUBE_URL: string | null = null;
+const LINKEDIN_URL: string | null = "https://www.linkedin.com/company/graymattercognition";
+const YOUTUBE_URL: string | null = "https://www.youtube.com/@adnanazammd";
 
 const VIDEOS = [
   {
