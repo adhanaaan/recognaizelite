@@ -464,7 +464,7 @@ export function renderResultEmail(input: LiteEmailInput): RenderedEmail {
     { href: `mailto:${CONTACT_EMAIL}`, file: "social-email.png", alt: "Email us" },
     LINKEDIN_URL ? { href: LINKEDIN_URL, file: "social-linkedin.png", alt: "Gray Matter Solutions on LinkedIn" } : null,
     { href: INSTAGRAM_URL, file: "social-instagram.png", alt: "Gray Matter Solutions on Instagram" },
-    YOUTUBE_URL ? { href: YOUTUBE_URL, file: "social-youtube.png", alt: "Gray Matter Solutions on YouTube" } : null,
+    YOUTUBE_URL ? { href: YOUTUBE_URL, file: "social-youtube.png", alt: "Adnan Azam Mohammed on YouTube" } : null,
   ].filter((s): s is { href: string; file: string; alt: string } => s !== null);
 
   const html = `<!doctype html>
