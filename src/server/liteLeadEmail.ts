@@ -79,6 +79,8 @@ export type LiteLeadEmailParams = {
   severity: string | null;
   brainHealthScore: number | null;
   band: string | null;
+  /** The quiz's driving-factor labels, worst first. See LiteEmailInput. */
+  drivingFactors?: string[] | null;
   /** utm_campaign, tagged onto the send so Resend can slice by it. */
   campaign: string | null;
 };
@@ -132,6 +134,7 @@ export async function deliverLiteResultEmail(params: LiteLeadEmailParams): Promi
     severity: params.severity,
     brainHealthScore: params.brainHealthScore,
     band: params.band,
+    drivingFactors: params.drivingFactors ?? null,
     // Named by the event template when the funnel is tied to one occasion.
     event: funnel.event ?? null,
     // Part of the shared template input; the current template has its own

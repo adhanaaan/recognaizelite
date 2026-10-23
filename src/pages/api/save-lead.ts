@@ -1,8 +1,10 @@
 import { randomUUID } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getDrivingFactors } from "src/lib/brainHealthScoring";
 import { liteTableFor } from "src/server/liteFunnels";
 import { deliverLiteResultEmail, emailEnabledForClinic } from "src/server/liteLeadEmail";
 import { AGE_RANGES, GENDERS, getSupabaseAdmin } from "src/utils/supabase";
+import type { Answers } from "src/types/quiz";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -521,6 +523,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           severity,
           brainHealthScore,
           band,
+          // Recomputed from the answers rather than taken from the client, so
+          // the labels are the scoring engine's own.
+          drivingFactors: quizAnswers
+            ? getDrivingFactors(quizAnswers as Answers).map((f) => f.label)
+            : null,
           campaign: utm_campaign,
         });
       } catch (err) {

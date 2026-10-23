@@ -40,6 +40,13 @@ export type LiteEmailInput = {
    * one — never a placeholder, and never the last event we happened to run.
    */
   event?: { name: string; date: string; venue: string } | null;
+  /**
+   * The quiz's modifiable risk factors, worst first, as labels ("Sleep",
+   * "Blood pressure"). From getDrivingFactors in src/lib/brainHealthScoring.ts,
+   * so they are the scoring engine's own labels, never visitor text. Empty or
+   * absent when there was no quiz or nothing scored.
+   */
+  drivingFactors?: string[] | null;
   /** Where "see a demo" points. Omitted from the mail when null. */
   demoUrl?: string | null;
   /** Booking link (Calendly or equivalent). Omitted from the mail when null. */
